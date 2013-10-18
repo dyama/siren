@@ -1,1 +1,8 @@
 *.user
+/src/*.ncb
+/src/*.suo
+/src/sirenenv/*.user
+
+/src/siren/bin
+
+/src/siren/obj
