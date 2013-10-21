@@ -1,10 +1,11 @@
-// stdafx.h : include file for standard system include files,
-// or project specific include files that are used frequently, but
-// are changed infrequently
-//
+/* THIS FILE IS PART OF *SIREN* SOURCE CODES.
+ * WHEN YOU WANT THE LICENSE OF THIS FILE, YOU CAN GET IT
+ * IN README OR LICENSE DOCMENTATION OF THIS PROJECT.
+ * ---------------------------------------------------------
+ * AUTHOR: dyama <dyama@member.fsf.org>
+ */
 
 #pragma once
-
 
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
@@ -115,3 +116,6 @@
 #pragma comment (lib, "TKSTL.lib")      // STL
 
 //#pragma comment (lib, "TKDraw.lib")     // DRAW
+
+// mruby
+#pragma comment (lib, "libmruby.lib")

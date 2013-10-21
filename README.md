@@ -55,6 +55,7 @@ Now, siren is able to read formats as follows;
 ------------------------------------------------------------
 
 * Open CASCADE Technorogy by Open CASCADE S.A.S.
+* ISO C9x compliant stdint.h for Visual Studio by Alexander Chemeris.
 * mruby by Ruby Association, Include soon.
 
  License

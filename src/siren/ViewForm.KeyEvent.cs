@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* THIS FILE IS PART OF *SIREN* SOURCE CODES.
+ * WHEN YOU WANT THE LICENSE OF THIS FILE, YOU CAN GET IT
+ * IN README OR LICENSE DOCMENTATION OF THIS PROJECT.
+ * ---------------------------------------------------------
+ * AUTHOR: dyama <dyama@member.fsf.org>
+ */
+
+using System;
 using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,7 +39,7 @@ namespace siren
         /// </summary>
         protected void initKeyEvent()
         {
-			myCurSpKey = CurSpKey.NOTHING;
+  			myCurSpKey = CurSpKey.NOTHING;
 
             kemap = new Dictionary<Keys, keyevent>();
 

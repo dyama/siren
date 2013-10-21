@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(CASROOT)\inc"
+				AdditionalIncludeDirectories=".;$(CASROOT)\inc;$(MRUBYROOT)\include;.\mruby"
 				PreprocessorDefinitions="WIN32;_DEBUG;WNT"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -62,7 +62,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(CSF_OPT_LIB32D);$(CASROOT)\win32\vc10\lib;%(AdditionalLibraryDirectories)"
+				AdditionalLibraryDirectories="&quot;$(CSF_OPT_LIB32D)&quot;;&quot;$(MRUBYROOT)\build\host\lib&quot;;&quot;$(CASROOT)\win32\vc10\lib&quot;;&quot;%(AdditionalLibraryDirectories)&quot;"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				TargetMachine="1"
@@ -116,7 +116,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".;$(CASROOT)\inc"
+				AdditionalIncludeDirectories=".;$(CASROOT)\inc;$(MRUBYROOT)\include;.\mruby"
 				PreprocessorDefinitions="WIN32;NDEBUG;WNT"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -135,7 +135,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(CSF_OPT_LIB32D);$(CASROOT)\win32\vc10\lib;%(AdditionalLibraryDirectories)"
+				AdditionalLibraryDirectories="&quot;$(CSF_OPT_LIB32D)&quot;;&quot;$(MRUBYROOT)\build\host\lib&quot;;&quot;$(CASROOT)\win32\vc10\lib&quot;;&quot;%(AdditionalLibraryDirectories)&quot;"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -287,6 +287,30 @@
 			</File>
 			<File
 				RelativePath=".\TopoDS\Explorer.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="mruby"
+			>
+			<File
+				RelativePath=".\mruby\mirb.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\mruby\mirb.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mruby\mirbif.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\mruby\mirbif.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mruby\stdint.h"
 				>
 			</File>
 		</Filter>

@@ -1,3 +1,10 @@
+/* THIS FILE IS PART OF *SIREN* SOURCE CODES.
+ * WHEN YOU WANT THE LICENSE OF THIS FILE, YOU CAN GET IT
+ * IN README OR LICENSE DOCMENTATION OF THIS PROJECT.
+ * ---------------------------------------------------------
+ * AUTHOR: dyama <dyama@member.fsf.org>
+ */
+
 #include "StdAfx.h"
 #include ".\occviewer.h"
 
@@ -472,7 +479,6 @@ bool OCCViewer::ExportIges(char* filename)
 	IGESControl_Writer writer(Interface_Static::CVal("XSTEP.iges.unit"),
                                Interface_Static::IVal("XSTEP.iges.writebrep.mode"));
  
-	
 	for (myAISContext->InitCurrent(); myAISContext->MoreCurrent(); myAISContext->NextCurrent())
 	{
 		Handle_AIS_InteractiveObject anIO = myAISContext->Current();
