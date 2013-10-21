@@ -11,10 +11,10 @@
 #pragma warning(disable : 4800)
 OCCViewer::OCCViewer(void)
 {
-	myGraphicDriver=NULL;
-	myViewer=NULL;
-	myView=NULL;
-	myAISContext=NULL;
+	myGraphicDriver = NULL;
+	myViewer = NULL;
+	myView = NULL;
+	myAISContext = NULL;
 }
 
 OCCViewer::~OCCViewer(void)
@@ -324,22 +324,22 @@ void OCCViewer::ObjectColor(int& r, int& g, int& b)
 {
 	if (myAISContext.IsNull())
 		return;
-	r=255;
-	g=255;
-	b=255;
+	r = 255;
+	g = 255;
+	b = 255;
 	Handle_AIS_InteractiveObject Current ;
 	Quantity_Color ObjCol;
 	myAISContext->InitCurrent();
 	if (!myAISContext->MoreCurrent())
 		return;
     Current = myAISContext->Current();
-	if (Current->HasColor ()) {
+	if (Current->HasColor()) {
       ObjCol = myAISContext->Color(myAISContext->Current());
 	  Quantity_Parameter r1, r2, r3;
 	  ObjCol.Values(r1, r2, r3, Quantity_TOC_RGB);
-		r=(int)r1*255;
-		g=(int)r2*255;
-		b=(int)r3*255;
+		r = (int)r1*255;
+		g = (int)r2*255;
+		b = (int)r3*255;
   	}
 }
 
@@ -602,11 +602,11 @@ void OCCViewer::CreateNewView(void* wnd)
 	if (myGraphicDriver.IsNull())
     {
       Handle(Aspect_DisplayConnection) aDisplayConnection;
-      myGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
+      myGraphicDriver = Graphic3d::InitGraphicDriver(aDisplayConnection);
     }
-	Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (wnd));
+	Handle(WNT_Window) aWNTWindow = new WNT_Window(reinterpret_cast<HWND> (wnd));
 	myView->SetWindow(aWNTWindow);
-	Standard_Integer w=100, h=100;
+	Standard_Integer w = 100, h = 100;
 	aWNTWindow->Size(w,h);
 	if (!aWNTWindow->IsMapped()) 
 		 aWNTWindow->Map();
