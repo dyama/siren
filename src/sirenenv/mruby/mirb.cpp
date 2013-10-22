@@ -35,39 +35,11 @@ Mirb::Mirb()
     mrbc_filename(mrb, cxt, "(mirb)");
     ai = mrb_gc_arena_save(mrb);
 
+    for (int i=0; i<1024; i++) {
+        ruby_code[i] = 0;
+    }
+
     return;
-}
-
-/**
- * change stdout to ostream
- * \param ost stream for output
- * \see chstderr()
- * \return true if success.
- */
-bool Mirb::chstdout(ostream* ost)
-{
-    bool res = false;
-    // if (ost != NULL)
-    //     res = user_exec("$stdout = File.open(\"/tmp/foo\", \"w\");");
-    // else
-    //     res = user_exec("$stdout = STDOUT");
-    return res;
-}
-
-/**
- * change stderr to ostream
- * \param ost stream for output
- * \see chstdout()
- * \return true if success.
- */
-bool Mirb::chstderr(ostream* ost)
-{
-    bool res = false;
-    // if (ost != NULL)
-    //     res = user_exec("$stderr = File.open(\"/tmp/bar\", \"w\");");
-    // else
-    //     res = user_exec("$stderr = STDERR");
-    return res;
 }
 
 /**
@@ -223,12 +195,11 @@ mrb_bool Mirb::is_code_block_open(struct mrb_parser_state *parser)
  * \param last_code_line code line
  * \return true if success
  */
-int Mirb::user_exec(char *last_code_line)
+int Mirb::user_exec(char *last_code_line, int& nextno)
 {
-    int err = 0;
-    char ruby_code[1024] = { 0 };
     int bc;
     struct mrb_parser_state *parser;
+    int err = 0;
 
     if ((strcmp(last_code_line, "quit") == 0) || (strcmp(last_code_line, "exit") == 0)) {
         if (!code_block_open) {
@@ -259,6 +230,7 @@ int Mirb::user_exec(char *last_code_line)
     parser->lineno = cxt->lineno;
     mrb_parser_parse(parser, cxt);
     code_block_open = is_code_block_open(parser);
+
     if (code_block_open) {
         /* no evaluation of code */
         /* ブロック内ならば実行しない */
@@ -277,7 +249,10 @@ int Mirb::user_exec(char *last_code_line)
 
             /* evaluate the bytecode */
             /* バイトコードを実行 */
-            result = mrb_run(mrb, /* pass a proc for evaulation */ mrb_proc_new(mrb, mrb->irep[bc]), mrb_top_self(mrb));
+            result = mrb_run(mrb,
+                    /* pass a proc for evaulation */
+                    mrb_proc_new(mrb, mrb->irep[bc]),
+                    mrb_top_self(mrb));
 
             /* did an exception occur? */
             /* 例外が発生したか */
@@ -298,8 +273,12 @@ int Mirb::user_exec(char *last_code_line)
         ruby_code[0] = '\0';
         mrb_gc_arena_restore(mrb, ai);
     }
+
     mrb_parser_free(parser);
     cxt->lineno++;
+
+    nextno = cxt->lineno;
+
     return err;
 }
 

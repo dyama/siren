@@ -16,7 +16,7 @@ using namespace std;
 
 #include <mruby.h>
 
-#include "mruby/array.h"
+#include <mruby/array.h>
 #include <mruby/proc.h>
 #include <mruby/data.h>
 #include <mruby/compile.h>
@@ -28,10 +28,10 @@ private:
     mrbc_context * cxt;
     mrb_state * mrb;
     mrb_value result;
-    int code_block_open;       // = FALSE;
+    mrb_bool code_block_open;       // = FALSE;
     int ai;
-    ostream* fout;
-    ostream* ferr;
+
+    char ruby_code[1024];// = { 0 };
 
 public:
     Mirb();  /**< constructor */
@@ -43,11 +43,8 @@ private:
     void p(mrb_value obj, int prompt);
     mrb_bool is_code_block_open(struct mrb_parser_state *parser);
 
-    bool chstdout(ostream* ost);
-    bool chstderr(ostream* ost);
-
 public:
-    int user_exec(char *last_code_line);
+    int user_exec(char *last_code_line, int& nextno);
     void regist(char *name, mrb_func_t func, int args);
 
  };
