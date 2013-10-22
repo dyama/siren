@@ -7,8 +7,12 @@
 
 #pragma once
 
+using namespace std;
+
 #include <stdlib.h>
 #include <string.h>
+#include <string>
+#include <ostream>
 
 #include <mruby.h>
 
@@ -21,24 +25,30 @@
 class Mirb
 {
 private:
-	mrbc_context *cxt;
-	mrb_state *mrb;
-	mrb_value result;
-	int code_block_open; // = FALSE;
-	int ai;
+    mrbc_context * cxt;
+    mrb_state * mrb;
+    mrb_value result;
+    int code_block_open;       // = FALSE;
+    int ai;
+    ostream* fout;
+    ostream* ferr;
 
 public:
-	Mirb();
-	~Mirb();
+    Mirb();  /**< constructor */
+    ~Mirb(); ///< destructor
 
 private:
-	int  init(void);
-	int  cleenup(void);
-	void p(mrb_value obj, int prompt);
-	mrb_bool Mirb::is_code_block_open(struct mrb_parser_state *parser);
+    int init(void);
+    int cleenup(void);
+    void p(mrb_value obj, int prompt);
+    mrb_bool is_code_block_open(struct mrb_parser_state *parser);
+
+    bool chstdout(ostream* ost);
+    bool chstderr(ostream* ost);
 
 public:
-	void user_exec(char* last_code_line);
-	void regist(char* name, mrb_func_t func, int args);
+    int user_exec(char *last_code_line);
+    void regist(char *name, mrb_func_t func, int args);
 
-};
+ };
+
