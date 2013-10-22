@@ -15,7 +15,11 @@ Building Equipment:
 * Open CASCADE 6.6.0
 * Microsoft Visual Studio 2008
 
-1. Setup the BAT script for your enviromnent.
+1. Clone by git the repository of siren follows:
+
+    git clone https//:github.com/dyama/siren.git
+
+2. Setup the BAT script for your enviromnent.
 
     editor tool/occenv.bat
     
@@ -29,23 +33,24 @@ The path add the version string "660" automaticaly by script.
 If your enviroment no matches this case, please link to
 install path with symbolic link.
 
-2. Clone by git the repository of siren follows:
+In the same way as;
 
-    git clone https//:github.com/dyama/siren.git
+    editor tool/mruby-vs9-occ660.bat
 
-3. Run the BAT script file with Visual Studio solution file.
+    SET "MRUBYROOT=%SCRIPTPATH%\..\..\mruby_w32"
 
-    cd siren
+Set MRUBYROOT to the path of mruby installed directory.
 
-    tool/vs9-occ660.bat src/siren.sln
+3. Run the BAT script file.
+
+    start tool/mruby-vs9-occ660.bat
+
+If you build siren on another environment, you can change
+the script calling.
 
 4. Build sirenenv.dll and siren.exe.
 
-When you hope more useful open the solution file, you can
-put scripts to a directory that registed to PATH, and scripts
-call by 'Send To' in the shell context menu of explorer.
-
- Futures
+ Overviews
 ------------------------------------------------------------
 
 * View a 3D model with mouse operation.
@@ -54,15 +59,15 @@ call by 'Send To' in the shell context menu of explorer.
  Usage
 ------------------------------------------------------------
 
-You can run as follows:
+You can run follows as;
 
     > siren.exe [filename]
 
 Now, siren is able to read formats as follows;
 
-* IGES
-* OpenCASCADE BREP
-* STEP
+* IGES format
+* OpenCASCADE BREP format
+* STEP format
 
  Thirdparty technorogies
 ------------------------------------------------------------
@@ -78,4 +83,6 @@ MIT License
 
  Author
 ------------------------------------------------------------
+
 dyama, Daisuke YAMAGUCHI <dyama@member.fsf.org>
+

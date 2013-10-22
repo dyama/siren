@@ -7,12 +7,12 @@
 
 #pragma once
 
-using namespace std;
-
 #include <stdlib.h>
 #include <string.h>
 #include <string>
 #include <ostream>
+
+using namespace std;
 
 #include <mruby.h>
 
