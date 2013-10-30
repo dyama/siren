@@ -448,7 +448,7 @@ namespace siren
 			filter += "画像ファイル(*.bmp *.gif *.xwd)| *.bmp; *.gif; *.xwd";
 			filter += "|BMP ファイル(*.bmp)|*.bmp";
 			filter += "|GIF ファイル(*.gif)|*.gif";
-			filter += "|XWD ァイル(*.xwd)|*.xwd";
+			filter += "|XWD ファイル(*.xwd)|*.xwd";
 			d.Filter = filter;
 
             d.Title = "スクリーンショットの保存";
@@ -465,6 +465,17 @@ namespace siren
             miScreenShot.Enabled = (curForm != null);
         }
 
+        private void miFile_Paint(object sender, PaintEventArgs e)
+        {
+			siren.ViewForm curForm = (siren.ViewForm) this.ActiveMdiChild;
+            if (curForm != null && curForm.Viewer.IsObjectSelected()) {
+                miSaveFile.Enabled = true;
+            }
+            else {
+                miSaveFile.Enabled = false;
+            }
+            return;
+        }
 
 	}
 

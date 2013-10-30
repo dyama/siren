@@ -215,6 +215,7 @@ namespace siren
             this.miFile.Name = "miFile";
             this.miFile.Size = new System.Drawing.Size(85, 22);
             this.miFile.Text = "ファイル(&F)";
+            this.miFile.Paint += new System.Windows.Forms.PaintEventHandler(this.miFile_Paint);
             // 
             // miFileNew
             // 
@@ -294,8 +295,8 @@ namespace siren
             // 
             // miExit
             // 
-            this.miExit.Image = ((System.Drawing.Image)(resources.GetObject("menuItem1.Image")));
-            this.miExit.Name = "menuItem1";
+            this.miExit.Image = ((System.Drawing.Image)(resources.GetObject("miExit.Image")));
+            this.miExit.Name = "miExit";
             this.miExit.ShortcutKeyDisplayString = "";
             this.miExit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
             this.miExit.Size = new System.Drawing.Size(285, 22);
