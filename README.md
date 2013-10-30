@@ -68,13 +68,14 @@ Now, siren is able to read formats as follows;
 * IGES format
 * OpenCASCADE BREP format
 * STEP format
+* CSFDB format
 
  Thirdparty technorogies
 ------------------------------------------------------------
 
 * Open CASCADE Technorogy by Open CASCADE S.A.S.
 * ISO C9x compliant stdint.h for Visual Studio by Alexander Chemeris.
-* mruby by Ruby Association, Include soon.
+* mruby by Ruby Association
 
  License
 ------------------------------------------------------------
@@ -83,7 +84,9 @@ MIT License
 
  Author
 ------------------------------------------------------------
+Main maintener:
+    dyama, Daisuke YAMAGUCHI <dyama@member.fsf.org>
 
-dyama, Daisuke YAMAGUCHI <dyama@member.fsf.org>
+Debug and sub maintener:
+    kuyon
 
-test by yu
