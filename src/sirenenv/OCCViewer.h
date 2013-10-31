@@ -9,6 +9,10 @@
 #include "stdafx.h"
 #include "mirb.h"
 
+#ifndef _MAX_PATH
+#define _MAX_PATH 1024
+#endif
+
 class OCCViewer
 {
 public:
@@ -33,7 +37,6 @@ private:
 
 public:
 	bool  InitViewer(void* wnd);
-	bool  ImportBRep(char* filename);
 	void  UpdateView(void);
 	void  RedrawView(void);
 	void  SetDegenerateModeOn(void);
@@ -71,15 +74,16 @@ public:
 	float GetVersion(void);
 	void  SetMaterial(int theMaterial);
 	void  SetTransparency(int theTrans);
-	bool  ImportCsfdb(char* filename);
-	bool  ImportIges(char* filename);
-	bool  ImportStep(char* filename);
-	bool  ExportBRep(char* filename);
-	bool  ExportIges(char* filename);
-	bool  ExpotStep(char* filename);
-	bool  ExportStl(char* filename);
-	bool  ExportVrml(char* filename);
-	bool  Dump(char* filename);
+	bool  ImportBRep (wchar_t* filename);
+	bool  ImportCsfdb(wchar_t* filename);
+	bool  ImportIges (wchar_t* filename);
+	bool  ImportStep (wchar_t* filename);
+	bool  ExportBRep (wchar_t* filename);
+	bool  ExportIges (wchar_t* filename);
+	bool  ExpotStep  (wchar_t* filename);
+	bool  ExportStl  (wchar_t* filename);
+	bool  ExportVrml (wchar_t* filename);
+	bool  Dump       (wchar_t* filename);
 	bool  IsObjectSelected(void);
 	int   DisplayMode(void);
 	void  CreateNewView(void* wnd);

@@ -95,20 +95,6 @@ bool OCCViewer::InitViewer(void* wnd)
 
 }
 
-bool OCCViewer::ImportBRep(char* filename)
-{
-	Standard_CString aFileName = (Standard_CString) filename;
-	TopoDS_Shape aShape;
-    BRep_Builder aBuilder;
-    Standard_Boolean result = BRepTools::Read(aShape,aFileName,aBuilder);
-	if (!result)
-		return false;
-	if(myAISContext->HasOpenedContext())
-		myAISContext->CloseLocalContext();
-	myAISContext->Display(new AIS_Shape(aShape));
-	return true;
-}
-
 void OCCViewer::UpdateView(void)
 {
 	if (!myView.IsNull())
@@ -380,9 +366,35 @@ void OCCViewer::SetTransparency(int theTrans)
 		myAISContext->SetTransparency(myAISContext->Current(), ((Standard_Real)theTrans) / 10.0);
 }
 
-bool OCCViewer::ImportCsfdb(char* filename)
+bool OCCViewer::ImportBRep(wchar_t* filename)
 {
-	Standard_CString aFileName = (Standard_CString) filename;
+    char fname[_MAX_PATH];
+	{
+		setlocale(LC_CTYPE, "");
+	    size_t len;
+	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
+	}
+	Standard_CString aFileName = (Standard_CString) fname;
+	TopoDS_Shape aShape;
+    BRep_Builder aBuilder;
+    Standard_Boolean result = BRepTools::Read(aShape,aFileName,aBuilder);
+	if (!result)
+		return false;
+	if(myAISContext->HasOpenedContext())
+		myAISContext->CloseLocalContext();
+	myAISContext->Display(new AIS_Shape(aShape));
+	return true;
+}
+bool OCCViewer::ImportCsfdb(wchar_t* filename)
+{
+    char fname[_MAX_PATH];
+	{
+		setlocale(LC_CTYPE, "");
+	    size_t len;
+	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
+	}
+
+	Standard_CString aFileName = (Standard_CString) fname;
     if (FSD_File::IsGoodFileType(aFileName) != Storage_VSOk)
 	    return false;
 
@@ -415,9 +427,15 @@ bool OCCViewer::ImportCsfdb(char* filename)
 	return true;
 }
 
-bool OCCViewer::ImportIges(char* filename)
+bool OCCViewer::ImportIges(wchar_t* filename)
 {
-	Standard_CString aFileName = (Standard_CString) filename;
+    char fname[_MAX_PATH];
+	{
+		setlocale(LC_CTYPE, "");
+	    size_t len;
+	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
+	}
+	Standard_CString aFileName = (Standard_CString)fname; // filename;
     IGESControl_Reader Reader;
     int status = Reader.ReadFile(aFileName);
 
@@ -432,9 +450,15 @@ bool OCCViewer::ImportIges(char* filename)
 	return true;
 }
 
-bool OCCViewer::ImportStep(char* filename)
+bool OCCViewer::ImportStep(wchar_t* filename)
 {
-	Standard_CString aFileName = (Standard_CString) filename;
+    char fname[_MAX_PATH];
+	{
+		setlocale(LC_CTYPE, "");
+	    size_t len;
+	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
+	}
+	Standard_CString aFileName = (Standard_CString) fname;
 	STEPControl_Reader aReader;
 	IFSelect_ReturnStatus status = aReader.ReadFile(aFileName);
 	if (status == IFSelect_RetDone)
@@ -462,19 +486,31 @@ bool OCCViewer::ImportStep(char* filename)
 	return true;
 }
 
-bool OCCViewer::ExportBRep(char* filename)
+bool OCCViewer::ExportBRep(wchar_t* filename)
 {
+    char fname[_MAX_PATH];
+	{
+		setlocale(LC_CTYPE, "");
+	    size_t len;
+	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
+	}
 	myAISContext->InitCurrent();
 	if (!myAISContext->MoreCurrent())
 		return false;
 	Handle_AIS_InteractiveObject anIO = myAISContext->Current();
 	Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
-	return (bool)BRepTools::Write(anIS->Shape(), (Standard_CString)filename); ;
+	return (bool)BRepTools::Write(anIS->Shape(), (Standard_CString)fname); ;
 }
 
 
-bool OCCViewer::ExportIges(char* filename)
+bool OCCViewer::ExportIges(wchar_t* filename)
 {
+    char fname[_MAX_PATH];
+	{
+		setlocale(LC_CTYPE, "");
+	    size_t len;
+	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
+	}
 	IGESControl_Controller::Init();
 	IGESControl_Writer writer(Interface_Static::CVal("XSTEP.iges.unit"),
                                Interface_Static::IVal("XSTEP.iges.writebrep.mode"));
@@ -487,11 +523,17 @@ bool OCCViewer::ExportIges(char* filename)
 		writer.AddShape (shape);
 	}
 	writer.ComputeModel();
-	return (bool)writer.Write((Standard_CString)filename);
+	return (bool)writer.Write((Standard_CString)fname);
 }
 
-bool OCCViewer::ExpotStep(char* filename)
+bool OCCViewer::ExpotStep(wchar_t* filename)
 {
+    char fname[_MAX_PATH];
+	{
+		setlocale(LC_CTYPE, "");
+	    size_t len;
+	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
+	}
     STEPControl_StepModelType type = STEPControl_AsIs;
     IFSelect_ReturnStatus status;
     STEPControl_Writer writer;
@@ -505,14 +547,20 @@ bool OCCViewer::ExpotStep(char* filename)
             return false;
     }
 
-    status = writer.Write((Standard_CString)filename);
+    status = writer.Write((Standard_CString)fname);
     if (status != IFSelect_RetDone)
             return false;
 	return true;
 }
 
-bool OCCViewer::ExportStl(char* filename)
+bool OCCViewer::ExportStl(wchar_t* filename)
 {
+    char fname[_MAX_PATH];
+	{
+		setlocale(LC_CTYPE, "");
+	    size_t len;
+	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
+	}
 	TopoDS_Compound comp;
 	BRep_Builder builder;
 	builder.MakeCompound(comp);
@@ -528,12 +576,18 @@ bool OCCViewer::ExportStl(char* filename)
 	}
 
 	StlAPI_Writer writer;
-	writer.Write(comp, (Standard_CString)filename);
+	writer.Write(comp, (Standard_CString)fname);
 	return true;
 }
 
-bool OCCViewer::ExportVrml(char* filename)
+bool OCCViewer::ExportVrml(wchar_t* filename)
 {
+    char fname[_MAX_PATH];
+	{
+		setlocale(LC_CTYPE, "");
+	    size_t len;
+	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
+	}
 	TopoDS_Compound res;
 	BRep_Builder builder;
 	builder.MakeCompound(res);
@@ -550,17 +604,23 @@ bool OCCViewer::ExportVrml(char* filename)
 	}
 
 	VrmlAPI_Writer writer;
-	writer.Write(res, (Standard_CString)filename);
+	writer.Write(res, (Standard_CString)fname);
 
 	return true;
 }
 
-bool OCCViewer::Dump(char *filename)
+bool OCCViewer::Dump(wchar_t* filename)
 {
+    char fname[_MAX_PATH];
+	{
+		setlocale(LC_CTYPE, "");
+	    size_t len;
+	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
+	}
 	if (myView.IsNull())
 		return false;
 	myView->Redraw();
-    return (bool)myView->Dump(filename);
+    return (bool)myView->Dump((Standard_CString)fname);
 }
 
 bool OCCViewer::IsObjectSelected(void)

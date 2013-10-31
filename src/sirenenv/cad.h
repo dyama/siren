@@ -32,11 +32,12 @@ public:
 		if (myOCCViewer == NULL)
 			return false;
 		int length = filename->Length;
-		char * fname = new char[length+1];
+		wchar_t* fname = new wchar_t[length+1];
 		for(int i = 0; i<length; i++)
-			fname[i] = (char)filename->ToCharArray()[i];
+			fname[i] = (wchar_t)filename->ToCharArray()[i];
 
 		fname[length] = '\0';
+
 		bool res = myOCCViewer->ImportBRep(fname);
 		delete [] fname;
 		return res;
@@ -302,12 +303,14 @@ public:
 	{
 		if (myOCCViewer == NULL)
 			return false;
-		int length = filename->Length;
-		char * fname = new char[length+1];
-		for(int i = 0; i<length; i++)
-      fname[i] = (char)filename->ToCharArray()[i];
 
-		fname[length] = '\0';
+		int length = filename->Length;
+
+		wchar_t* fname = new wchar_t[length+1];
+		for(int i = 0; i<length; i++)
+		    fname[i] = (wchar_t)filename->ToCharArray()[i];
+
+		fname[length] = L'\0';
 		bool res;
 		if (IsImport)
 		{
