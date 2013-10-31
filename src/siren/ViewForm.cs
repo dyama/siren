@@ -44,6 +44,10 @@ namespace siren
                 MessageBox.Show("グラフィックシステム初期化エラー", "Error!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            // Init default visual appearance.
+            myViewer.SetAntialiasing(false);
+            myViewer.setHighlightColor(NameOfColor.ORANGE);
+            myViewer.setSelectionColor(NameOfColor.NAVYBLUE);
 		}
 
 		private void ViewForm_SizeChanged(object sender, System.EventArgs e)

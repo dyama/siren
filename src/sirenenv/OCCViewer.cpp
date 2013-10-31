@@ -24,9 +24,6 @@ OCCViewer::~OCCViewer(void)
 
 void OCCViewer::initViewAppearance()
 {
-    // アンチエイリアスを有効化
-    myView->SetAntialiasingOn();
-
     // 画面上のトライヘドロンを表示
     myView->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER);
 
@@ -46,16 +43,16 @@ void OCCViewer::initViewAppearance()
 
 bool OCCViewer::InitViewer(void* wnd)
 {
-  try {
-    Handle(Aspect_DisplayConnection) aDisplayConnection;
-    myGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
-  }
-  catch (Standard_Failure) {
-    return false;
-  }
+    try {
+        Handle(Aspect_DisplayConnection) aDisplayConnection;
+        myGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
+    }
+    catch (Standard_Failure) {
+        return false;
+    }
 
-  TCollection_ExtendedString a3DName("Visu3D");
-  myViewer = new V3d_Viewer (myGraphicDriver, a3DName.ToExtString(),"", 1000.0, 
+    TCollection_ExtendedString a3DName("Visu3D");
+    myViewer = new V3d_Viewer (myGraphicDriver, a3DName.ToExtString(),"", 1000.0, 
                              V3d_XposYnegZpos, Quantity_NOC_GRAY30,
                              V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT, 
                              Standard_True, Standard_False);
@@ -87,12 +84,20 @@ bool OCCViewer::InitViewer(void* wnd)
 
 	initViewAppearance();
 
-	// myMap = new std::map<Standard_CString, AIS_Shape*>();
-	// myMap = new std::map<int, AIS_Shape*>();
-	// myMap2 = new std::map<Standard_CString, int>();
-
 	return true;
 
+}
+
+void OCCViewer::SetHighlightColor(Quantity_NameOfColor color)
+{
+	myAISContext->SetHilightColor(color);
+	return;
+}
+
+void OCCViewer::SetSelectionColor(Quantity_NameOfColor color)
+{
+	myAISContext->SelectionColor(color);
+	return;
 }
 
 void OCCViewer::UpdateView(void)
@@ -105,6 +110,16 @@ void OCCViewer::RedrawView(void)
 {
 	if (!myView.IsNull())
 		myView->Redraw();
+}
+
+void OCCViewer::SetAntialiasing(bool isOn)
+{
+	if (!myView.IsNull()) {
+		if (isOn)
+		    myView->SetAntialiasingOn();
+		else
+		    myView->SetAntialiasingOff();
+	}
 }
 
 void OCCViewer::SetDegenerateModeOn(void)

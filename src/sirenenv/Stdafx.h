@@ -85,7 +85,6 @@
 // #include <TCollection_BasicMap.hxx>
 //#include <Draw_VMap.hxx>
 
-
 //
 #pragma comment (lib, "TKernel.lib")
 #pragma comment (lib, "PTKernel.lib")
@@ -119,3 +118,6 @@
 
 // mruby
 #pragma comment (lib, "libmruby.lib")
+
+// local
+#include "colorname.h"

@@ -319,6 +319,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\colorname.h"
+			>
+		</File>
+		<File
 			RelativePath=".\OCCViewer.cpp"
 			>
 		</File>

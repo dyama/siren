@@ -74,6 +74,7 @@ public:
 	float GetVersion(void);
 	void  SetMaterial(int theMaterial);
 	void  SetTransparency(int theTrans);
+	void  SetAntialiasing(bool isOn);
 	bool  ImportBRep (wchar_t* filename);
 	bool  ImportCsfdb(wchar_t* filename);
 	bool  ImportIges (wchar_t* filename);
@@ -91,6 +92,8 @@ public:
 	Handle_AIS_InteractiveContext GetAISContext(void);
 	int   CharToInt(char symbol);
 	int   Debug(void);
+	void  SetHighlightColor(Quantity_NameOfColor color);
+	void  SetSelectionColor(Quantity_NameOfColor color);
 
 	// void         Set(Standard_CString name, TopoDS_Shape& shape);
 	// void         Set(int hashcode, TopoDS_Shape& shape);

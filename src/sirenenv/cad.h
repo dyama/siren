@@ -299,6 +299,12 @@ public:
 			myOCCViewer->SetTransparency(TheTrans);
 	}
 
+	void SetAntialiasing(bool isOn)
+	{
+		if (myOCCViewer != NULL)
+			myOCCViewer->SetAntialiasing(isOn);
+	}
+
 	bool TranslateModel(System::String^ filename, int format, bool IsImport)
 	{
 		if (myOCCViewer == NULL)
@@ -413,7 +419,19 @@ public:
 		return myOCCViewer->Debug();
 	}
 
-	//TopoDS_Shape Get(Standard_CString name);
+	void setHighlightColor(NameOfColor color)
+	{
+		if (myOCCViewer != NULL)
+			myOCCViewer->SetHighlightColor(static_cast<Quantity_NameOfColor>(color));
+		return;
+	}
+
+	void setSelectionColor(NameOfColor color)
+	{
+		if (myOCCViewer != NULL)
+			myOCCViewer->SetSelectionColor(static_cast<Quantity_NameOfColor>(color));
+		return;
+	}
 
 };
 
