@@ -80,6 +80,24 @@ void Mirb::p(mrb_value obj, int prompt)
     putc('\n', stdout);
 }
 
+void Mirb::p(int prompt, std::string& result)
+{
+	result = std::string();
+	this->result = mrb_funcall(mrb, this->result, "inspect", 0);
+    if (prompt) {
+        if (!mrb->exc) {
+			result  += " => ";
+        }
+        else {
+			this->result = mrb_funcall(mrb, mrb_obj_value(mrb->exc), "inspect", 0);
+        }
+    }
+	result += RSTRING_PTR(this->result);
+	result += "\n";
+    //fwrite(RSTRING_PTR(obj), RSTRING_LEN(obj), 1, stdout);
+    //putc('\n', stdout);
+}
+
 
 /* Guess if the user might want to enter more
  * or if he wants an evaluation of his code now */
@@ -195,7 +213,7 @@ mrb_bool Mirb::is_code_block_open(struct mrb_parser_state *parser)
  * \param last_code_line code line
  * \return true if success
  */
-int Mirb::user_exec(char *last_code_line, int& nextno)
+int Mirb::user_exec(char *last_code_line)
 {
     int bc;
     struct mrb_parser_state *parser;
@@ -277,8 +295,10 @@ int Mirb::user_exec(char *last_code_line, int& nextno)
     mrb_parser_free(parser);
     cxt->lineno++;
 
-    nextno = cxt->lineno;
-
     return err;
 }
 
+bool Mirb::isCodeBlockOpen()
+{
+	return (this->code_block_open == TRUE);
+}

@@ -121,3 +121,5 @@
 
 // local
 #include "colorname.h"
+
+static Handle_AIS_InteractiveContext AISContext;

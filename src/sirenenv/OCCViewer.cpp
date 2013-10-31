@@ -15,11 +15,26 @@ OCCViewer::OCCViewer(void)
 	myViewer = NULL;
 	myView = NULL;
 	myAISContext = NULL;
+	mruby_init();
 }
 
 OCCViewer::~OCCViewer(void)
 {
 	myView->Remove();
+	mruby_cleenup();
+}
+
+bool OCCViewer::mruby_init()
+{
+	myMirb = new Mirb();
+	return true;
+}
+
+bool OCCViewer::mruby_cleenup()
+{
+	if (myMirb)
+		free(myMirb);
+	return true;
 }
 
 void OCCViewer::initViewAppearance()
@@ -84,8 +99,22 @@ bool OCCViewer::InitViewer(void* wnd)
 
 	initViewAppearance();
 
-	return true;
+	AISContext = myAISContext;
 
+	// Debug
+	//mrb_func_t hoge = (mrb_value)(OCCViewer::myplus(mrb_state* mrb, mrb_value self));
+	// mrb_func_t hoge = &OCCViewer::myplus;
+
+	//mrb_value (OCCViewer::*pFunc)(mrb_state*, mrb_value) = &OCCViewer::myplus;
+	//mrb_value (*pFunc)(mrb_state*, mrb_value) = &OCCViewer::myplus;
+
+	mrb_value (*pFunc)(mrb_state*, mrb_value) = &OCCViewer::myplus;
+
+	// mrb_func_t hoge = pFunc;
+
+	myMirb->regist("test", &OCCViewer::myplus, 2);
+
+	return true;
 }
 
 void OCCViewer::SetHighlightColor(Quantity_NameOfColor color)
@@ -690,7 +719,7 @@ void OCCViewer::CreateNewView(void* wnd)
 
 bool OCCViewer::SetAISContext(OCCViewer* Viewer)
 {
-	this->myAISContext=Viewer->GetAISContext();
+	this->myAISContext = Viewer->GetAISContext();
 	if (myAISContext.IsNull())
 		return false;
 	return true;
@@ -773,3 +802,24 @@ TopoDS_Shape OCCViewer::Get(int hashcode)
 }
 
 #endif
+
+mrb_value OCCViewer::myplus(mrb_state* mrb, mrb_value self)
+{
+    mrb_int a, b;
+    mrb_get_args(mrb, "ii", &a, &b);
+
+	Standard_Real aa = (Standard_Real)a;
+	Standard_Real bb = (Standard_Real)b;
+    
+	BRepPrimAPI_MakeBox box(gp_Pnt(aa, bb, 0), 10, 10, 150);
+    TopoDS_Shape shape = box.Shape();
+
+	AISContext->Display(new AIS_Shape(shape));
+	AISContext->UpdateCurrentViewer();
+
+//    myAISContext->Display(new AIS_Shape(shape));
+//	myAISContext->UpdateCurrentViewer();
+
+	return mrb_nil_value();
+}
+

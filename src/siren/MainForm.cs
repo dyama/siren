@@ -477,6 +477,16 @@ namespace siren
             return;
         }
 
+        private void miDebug_Click(object sender, EventArgs e)
+        {
+			siren.ViewForm curForm = (siren.ViewForm) this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+
+            Terminal t = new Terminal(curForm.Viewer);
+            t.Show();
+        }
+
 	}
 
 }

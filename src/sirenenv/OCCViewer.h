@@ -13,6 +13,7 @@
 #define _MAX_PATH 1024
 #endif
 
+
 class OCCViewer
 {
 public:
@@ -25,15 +26,16 @@ private:
 	Handle_AIS_InteractiveContext myAISContext;
 	Handle_Graphic3d_GraphicDriver myGraphicDriver;
 
-	Mirb myMirb;
-
-private:
-	//std::map<Standard_CString, AIS_Shape*>* myMap;
-	//std::map<int, AIS_Shape*>* myMap;
-	//std::map<Standard_CString, int>* myMap2;
-
 private:
 	void initViewAppearance(void);
+
+public:
+	Mirb* myMirb;
+	bool  mruby_init();
+	bool  mruby_cleenup();
+
+protected:
+	static mrb_value myplus(mrb_state* mrb, mrb_value self);
 
 public:
 	bool  InitViewer(void* wnd);

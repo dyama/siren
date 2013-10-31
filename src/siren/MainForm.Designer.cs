@@ -178,6 +178,7 @@ namespace siren
             this.tsbPaste = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbHelp = new System.Windows.Forms.ToolStripButton();
+            this.miDebug = new System.Windows.Forms.ToolStripMenuItem();
             this.menu.SuspendLayout();
             this.myStatusBar.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -597,7 +598,8 @@ namespace siren
             this.miRuby.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miModule,
             this.menuItem30,
-            this.miRubyLicense});
+            this.miRubyLicense,
+            this.miDebug});
             this.miRuby.Name = "miRuby";
             this.miRuby.Size = new System.Drawing.Size(49, 22);
             this.miRuby.Text = "&Ruby";
@@ -945,6 +947,13 @@ namespace siren
             this.tsbHelp.Size = new System.Drawing.Size(23, 22);
             this.tsbHelp.Text = "ヘルプ(&L)";
             // 
+            // miDebug
+            // 
+            this.miDebug.Name = "miDebug";
+            this.miDebug.Size = new System.Drawing.Size(237, 22);
+            this.miDebug.Text = "デバッグ(&D)...";
+            this.miDebug.Click += new System.EventHandler(this.miDebug_Click);
+            // 
             // MainForm
             // 
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.Application;
@@ -1010,6 +1019,7 @@ namespace siren
         private ToolStripButton tsbPaste;
         private ToolStripSeparator toolStripSeparator8;
         private ToolStripButton tsbHelp;
+        private ToolStripMenuItem miDebug;
 
     }
 }

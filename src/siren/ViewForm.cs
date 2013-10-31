@@ -47,7 +47,7 @@ namespace siren
             // Init default visual appearance.
             myViewer.SetAntialiasing(false);
             myViewer.setHighlightColor(NameOfColor.ORANGE);
-            myViewer.setSelectionColor(NameOfColor.NAVYBLUE);
+            myViewer.setSelectionColor(NameOfColor.WHITE);
 		}
 
 		private void ViewForm_SizeChanged(object sender, System.EventArgs e)

@@ -302,14 +302,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\mruby\mirbif.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\mruby\mirbif.h"
-				>
-			</File>
-			<File
 				RelativePath=".\mruby\stdint.h"
 				>
 			</File>

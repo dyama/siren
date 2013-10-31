@@ -433,6 +433,41 @@ public:
 		return;
 	}
 
+	// mruby
+
+	int mruby_exec(System::String^ str) {
+
+		if (myOCCViewer == NULL || myOCCViewer->myMirb == NULL)
+			return -1;
+
+		char cmd[256] = {0};
+
+		for (int i=0; i<str->Length; i++) {
+			cmd[i] = (char)str->ToCharArray()[i];
+		}
+
+		return myOCCViewer->myMirb->user_exec(cmd);
+	}
+
+	System::String^ mruby_p()
+	{
+		System::String^ result = System::String::Empty;
+
+		if (!myOCCViewer)
+			return result;
+
+		std::string res;
+		myOCCViewer->myMirb->p(1, res);	
+
+		return gcnew System::String(res.c_str());
+	}
+
+	bool mruby_isCodeBlockOpen()
+	{
+		if (!myOCCViewer)
+			return false;
+		return myOCCViewer->myMirb->isCodeBlockOpen();
+	}
 };
 
 }
