@@ -123,35 +123,44 @@ namespace siren
 			case MouseButtons.Left:
 				myXmin=e.X;	myYmin=e.Y;
 				myXmax=e.X;	myYmax=e.Y;
-				if (myCurSpKey==CurSpKey.CTRL)
-					// start the dinamic zooming....
-					myCurMode=CurAct3d.ZOOM;
-				else {
-					switch(myCurMode) {
-					case CurAct3d.NOTHING:
-						DragEvent(myXmax, myYmax, MouseState.DOWN);
-						break;
-					case CurAct3d.ROTATE:
-						if (!myDegenerateModeIsOn)
-							myViewer.SetDegenerateModeOn();
-						//start the rotation
-						myViewer.StartRotation(e.X, e.Y);
-						break;
-					case siren.CurAct3d.WINZOOM:
-						this.Cursor=System.Windows.Forms.Cursors.Hand;
-						break;
-					default:
-						break;
-					}
-				}
+                if (myCurSpKey == CurSpKey.CTRL)
+                {
+                    // start the dinamic zooming....
+                    this.Cursor = System.Windows.Forms.Cursors.SizeWE;
+                    myCurMode = CurAct3d.ZOOM;
+                }
+                else
+                {
+                    switch (myCurMode)
+                    {
+                        case CurAct3d.NOTHING:
+                            DragEvent(myXmax, myYmax, MouseState.DOWN);
+                            break;
+                        case CurAct3d.ROTATE:
+                            if (!myDegenerateModeIsOn)
+                                myViewer.SetDegenerateModeOn();
+                            //start the rotation
+                            myViewer.StartRotation(e.X, e.Y);
+                            break;
+                        case siren.CurAct3d.WINZOOM:
+                            this.Cursor = System.Windows.Forms.Cursors.Hand;
+                            break;
+                        default:
+                            break;
+                    }
+                }
 				break;
 
 			case MouseButtons.Right:
 				if (!myDegenerateModeIsOn)
 					myViewer.SetDegenerateModeOn();
+                this.Cursor = System.Windows.Forms.Cursors.SizeAll;
 				myViewer.StartRotation(e.X, e.Y);
 				break;
 
+            case MouseButtons.Middle:
+                this.Cursor = System.Windows.Forms.Cursors.NoMove2D;
+                break;
 			default:
 				break;
 			}
@@ -215,8 +224,11 @@ namespace siren
 			switch(e.Button)
 			{
 			case MouseButtons.Left:
-				if (myCurSpKey == CurSpKey.CTRL)
-					return;
+                if (myCurSpKey == CurSpKey.CTRL)
+                {
+                    this.Cursor = System.Windows.Forms.Cursors.Default;
+                    return;
+                }
 				switch(myCurMode)
 				{
 				case CurAct3d.NOTHING:
@@ -294,6 +306,7 @@ namespace siren
 				break;
 			}
 			
+			this.Cursor = System.Windows.Forms.Cursors.Default;
 			siren.MainForm parent = (siren.MainForm)this.ParentForm;
 			parent.SelectionChanged();
 

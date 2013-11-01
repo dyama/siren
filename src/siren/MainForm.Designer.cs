@@ -144,6 +144,7 @@ namespace siren
             this.miModule = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem30 = new System.Windows.Forms.ToolStripSeparator();
             this.miRubyLicense = new System.Windows.Forms.ToolStripMenuItem();
+            this.miDebug = new System.Windows.Forms.ToolStripMenuItem();
             this.miOption = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.ViewerToolbar = new System.Windows.Forms.ToolStripMenuItem();
@@ -178,7 +179,6 @@ namespace siren
             this.tsbPaste = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbHelp = new System.Windows.Forms.ToolStripButton();
-            this.miDebug = new System.Windows.Forms.ToolStripMenuItem();
             this.menu.SuspendLayout();
             this.myStatusBar.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -197,7 +197,7 @@ namespace siren
             this.miHelp});
             this.menu.Location = new System.Drawing.Point(0, 0);
             this.menu.Name = "menu";
-            this.menu.Size = new System.Drawing.Size(1024, 26);
+            this.menu.Size = new System.Drawing.Size(1024, 24);
             this.menu.TabIndex = 3;
             // 
             // miFile
@@ -214,7 +214,7 @@ namespace siren
             this.miNewViewer,
             this.miExit});
             this.miFile.Name = "miFile";
-            this.miFile.Size = new System.Drawing.Size(85, 22);
+            this.miFile.Size = new System.Drawing.Size(67, 20);
             this.miFile.Text = "ファイル(&F)";
             this.miFile.Paint += new System.Windows.Forms.PaintEventHandler(this.miFile_Paint);
             // 
@@ -224,7 +224,7 @@ namespace siren
             this.miFileNew.Name = "miFileNew";
             this.miFileNew.ShortcutKeyDisplayString = "";
             this.miFileNew.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.miFileNew.Size = new System.Drawing.Size(285, 22);
+            this.miFileNew.Size = new System.Drawing.Size(247, 22);
             this.miFileNew.Text = "新しいビューア(&N)";
             this.miFileNew.Click += new System.EventHandler(this.miNewViewer_Click);
             // 
@@ -234,7 +234,7 @@ namespace siren
             this.miOpen.Name = "miOpen";
             this.miOpen.ShortcutKeyDisplayString = "";
             this.miOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.miOpen.Size = new System.Drawing.Size(285, 22);
+            this.miOpen.Size = new System.Drawing.Size(247, 22);
             this.miOpen.Text = "開く(&O)...";
             this.miOpen.Click += new System.EventHandler(this.miOpen_Click);
             // 
@@ -245,7 +245,7 @@ namespace siren
             this.miSaveFile.Name = "miSaveFile";
             this.miSaveFile.ShortcutKeyDisplayString = "";
             this.miSaveFile.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.miSaveFile.Size = new System.Drawing.Size(285, 22);
+            this.miSaveFile.Size = new System.Drawing.Size(247, 22);
             this.miSaveFile.Text = "選択オブジェクトを保存(&A)...";
             this.miSaveFile.Click += new System.EventHandler(this.SaveFile_Click);
             // 
@@ -255,14 +255,14 @@ namespace siren
             this.miFileClose.Name = "miFileClose";
             this.miFileClose.ShortcutKeyDisplayString = "";
             this.miFileClose.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this.miFileClose.Size = new System.Drawing.Size(285, 22);
+            this.miFileClose.Size = new System.Drawing.Size(247, 22);
             this.miFileClose.Text = "閉じる(&C)";
             this.miFileClose.Click += new System.EventHandler(this.miClose_Click);
             // 
             // menuItem12
             // 
             this.menuItem12.Name = "menuItem12";
-            this.menuItem12.Size = new System.Drawing.Size(282, 6);
+            this.menuItem12.Size = new System.Drawing.Size(244, 6);
             // 
             // menuItem15
             // 
@@ -271,13 +271,13 @@ namespace siren
             this.menuItem15.Name = "menuItem15";
             this.menuItem15.ShortcutKeyDisplayString = "";
             this.menuItem15.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.menuItem15.Size = new System.Drawing.Size(285, 22);
+            this.menuItem15.Size = new System.Drawing.Size(247, 22);
             this.menuItem15.Text = "印刷(&P)...";
             // 
             // menuItem19
             // 
             this.menuItem19.Name = "menuItem19";
-            this.menuItem19.Size = new System.Drawing.Size(282, 6);
+            this.menuItem19.Size = new System.Drawing.Size(244, 6);
             // 
             // miFileInfo
             // 
@@ -286,13 +286,13 @@ namespace siren
             this.miFileInfo.Name = "miFileInfo";
             this.miFileInfo.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
                         | System.Windows.Forms.Keys.P)));
-            this.miFileInfo.Size = new System.Drawing.Size(285, 22);
+            this.miFileInfo.Size = new System.Drawing.Size(247, 22);
             this.miFileInfo.Text = "ファイル情報(&I)...";
             // 
             // miNewViewer
             // 
             this.miNewViewer.Name = "miNewViewer";
-            this.miNewViewer.Size = new System.Drawing.Size(282, 6);
+            this.miNewViewer.Size = new System.Drawing.Size(244, 6);
             // 
             // miExit
             // 
@@ -300,7 +300,7 @@ namespace siren
             this.miExit.Name = "miExit";
             this.miExit.ShortcutKeyDisplayString = "";
             this.miExit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.miExit.Size = new System.Drawing.Size(285, 22);
+            this.miExit.Size = new System.Drawing.Size(247, 22);
             this.miExit.Text = "終了(&Q)";
             this.miExit.Click += new System.EventHandler(this.miExit_Click);
             // 
@@ -322,7 +322,7 @@ namespace siren
             this.menuItem16,
             this.miObjectInfo});
             this.miEdit.Name = "miEdit";
-            this.miEdit.Size = new System.Drawing.Size(61, 22);
+            this.miEdit.Size = new System.Drawing.Size(57, 20);
             this.miEdit.Text = "編集(&E)";
             // 
             // toolStripMenuItem2
@@ -332,7 +332,7 @@ namespace siren
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.ShortcutKeyDisplayString = "";
             this.toolStripMenuItem2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(281, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(229, 22);
             this.toolStripMenuItem2.Text = "元に戻す";
             // 
             // toolStripMenuItem1
@@ -342,13 +342,13 @@ namespace siren
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.ShortcutKeyDisplayString = "";
             this.toolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(281, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(229, 22);
             this.toolStripMenuItem1.Text = "やり直し";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(278, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(226, 6);
             // 
             // miSelectAll
             // 
@@ -357,7 +357,7 @@ namespace siren
             this.miSelectAll.Name = "miSelectAll";
             this.miSelectAll.ShortcutKeyDisplayString = "";
             this.miSelectAll.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.miSelectAll.Size = new System.Drawing.Size(281, 22);
+            this.miSelectAll.Size = new System.Drawing.Size(229, 22);
             this.miSelectAll.Text = "全て選択(&A)";
             // 
             // miUnselect
@@ -366,13 +366,13 @@ namespace siren
             this.miUnselect.Name = "miUnselect";
             this.miUnselect.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
                         | System.Windows.Forms.Keys.A)));
-            this.miUnselect.Size = new System.Drawing.Size(281, 22);
+            this.miUnselect.Size = new System.Drawing.Size(229, 22);
             this.miUnselect.Text = "選択解除(&U)";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(278, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(226, 6);
             // 
             // toolStripMenuItem3
             // 
@@ -381,13 +381,13 @@ namespace siren
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
             this.toolStripMenuItem3.ShortcutKeyDisplayString = "";
             this.toolStripMenuItem3.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(281, 22);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(229, 22);
             this.toolStripMenuItem3.Text = "オブジェクトの検索(&F)...";
             // 
             // menuItem9
             // 
             this.menuItem9.Name = "menuItem9";
-            this.menuItem9.Size = new System.Drawing.Size(278, 6);
+            this.menuItem9.Size = new System.Drawing.Size(226, 6);
             // 
             // miCopy
             // 
@@ -396,7 +396,7 @@ namespace siren
             this.miCopy.Name = "miCopy";
             this.miCopy.ShortcutKeyDisplayString = "";
             this.miCopy.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.miCopy.Size = new System.Drawing.Size(281, 22);
+            this.miCopy.Size = new System.Drawing.Size(229, 22);
             this.miCopy.Text = "コピー(&C)";
             // 
             // miCut
@@ -406,7 +406,7 @@ namespace siren
             this.miCut.Name = "miCut";
             this.miCut.ShortcutKeyDisplayString = "";
             this.miCut.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.miCut.Size = new System.Drawing.Size(281, 22);
+            this.miCut.Size = new System.Drawing.Size(229, 22);
             this.miCut.Text = "切り取り(&X)";
             // 
             // miPaste
@@ -416,7 +416,7 @@ namespace siren
             this.miPaste.Name = "miPaste";
             this.miPaste.ShortcutKeyDisplayString = "";
             this.miPaste.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.miPaste.Size = new System.Drawing.Size(281, 22);
+            this.miPaste.Size = new System.Drawing.Size(229, 22);
             this.miPaste.Text = "貼り付け(&V)";
             // 
             // miDelete
@@ -426,20 +426,20 @@ namespace siren
             this.miDelete.Name = "miDelete";
             this.miDelete.ShortcutKeyDisplayString = "";
             this.miDelete.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.miDelete.Size = new System.Drawing.Size(281, 22);
+            this.miDelete.Size = new System.Drawing.Size(229, 22);
             this.miDelete.Text = "削除(&D)";
             // 
             // menuItem16
             // 
             this.menuItem16.Name = "menuItem16";
-            this.menuItem16.Size = new System.Drawing.Size(278, 6);
+            this.menuItem16.Size = new System.Drawing.Size(226, 6);
             // 
             // miObjectInfo
             // 
             this.miObjectInfo.Enabled = false;
             this.miObjectInfo.Name = "miObjectInfo";
             this.miObjectInfo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.miObjectInfo.Size = new System.Drawing.Size(281, 22);
+            this.miObjectInfo.Size = new System.Drawing.Size(229, 22);
             this.miObjectInfo.Text = "オブジェクトのプロパティ(&P)";
             // 
             // miMode
@@ -453,7 +453,7 @@ namespace siren
             this.miCurve,
             this.miSurface});
             this.miMode.Name = "miMode";
-            this.miMode.Size = new System.Drawing.Size(76, 22);
+            this.miMode.Size = new System.Drawing.Size(63, 20);
             this.miMode.Text = "モード(&M)";
             // 
             // miTranslate
@@ -461,7 +461,7 @@ namespace siren
             this.miTranslate.Enabled = false;
             this.miTranslate.Name = "miTranslate";
             this.miTranslate.ShortcutKeyDisplayString = "W";
-            this.miTranslate.Size = new System.Drawing.Size(157, 22);
+            this.miTranslate.Size = new System.Drawing.Size(139, 22);
             this.miTranslate.Text = "移動(&T)";
             // 
             // miScale
@@ -469,7 +469,7 @@ namespace siren
             this.miScale.Enabled = false;
             this.miScale.Name = "miScale";
             this.miScale.ShortcutKeyDisplayString = "E";
-            this.miScale.Size = new System.Drawing.Size(157, 22);
+            this.miScale.Size = new System.Drawing.Size(139, 22);
             this.miScale.Text = "スケール(&S)";
             // 
             // miRotate
@@ -477,33 +477,33 @@ namespace siren
             this.miRotate.Enabled = false;
             this.miRotate.Name = "miRotate";
             this.miRotate.ShortcutKeyDisplayString = "R";
-            this.miRotate.Size = new System.Drawing.Size(157, 22);
+            this.miRotate.Size = new System.Drawing.Size(139, 22);
             this.miRotate.Text = "回転(&R)";
             // 
             // menuItem26
             // 
             this.menuItem26.Name = "menuItem26";
-            this.menuItem26.Size = new System.Drawing.Size(154, 6);
+            this.menuItem26.Size = new System.Drawing.Size(136, 6);
             // 
             // miVertex
             // 
             this.miVertex.Enabled = false;
             this.miVertex.Name = "miVertex";
-            this.miVertex.Size = new System.Drawing.Size(157, 22);
+            this.miVertex.Size = new System.Drawing.Size(139, 22);
             this.miVertex.Text = "点(&V)";
             // 
             // miCurve
             // 
             this.miCurve.Enabled = false;
             this.miCurve.Name = "miCurve";
-            this.miCurve.Size = new System.Drawing.Size(157, 22);
+            this.miCurve.Size = new System.Drawing.Size(139, 22);
             this.miCurve.Text = "カーブ(&C)";
             // 
             // miSurface
             // 
             this.miSurface.Enabled = false;
             this.miSurface.Name = "miSurface";
-            this.miSurface.Size = new System.Drawing.Size(157, 22);
+            this.miSurface.Size = new System.Drawing.Size(139, 22);
             this.miSurface.Text = "サーフェス(&U)";
             // 
             // miView
@@ -518,7 +518,7 @@ namespace siren
             this.WindowCascade,
             this.WindowTile});
             this.miView.Name = "miView";
-            this.miView.Size = new System.Drawing.Size(78, 22);
+            this.miView.Size = new System.Drawing.Size(63, 20);
             this.miView.Text = "ビュー(&W)";
             this.miView.Visible = false;
             this.miView.Paint += new System.Windows.Forms.PaintEventHandler(this.miView_Paint);
@@ -528,53 +528,53 @@ namespace siren
             this.menuItem4.Image = ((System.Drawing.Image)(resources.GetObject("menuItem4.Image")));
             this.menuItem4.Name = "menuItem4";
             this.menuItem4.ShortcutKeyDisplayString = "V";
-            this.menuItem4.Size = new System.Drawing.Size(272, 22);
+            this.menuItem4.Size = new System.Drawing.Size(227, 22);
             this.menuItem4.Text = "新しいビュー(&N)";
             this.menuItem4.Click += new System.EventHandler(this.menuItem4_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(269, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(224, 6);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Enabled = false;
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.ShortcutKeyDisplayString = "F";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(272, 22);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(227, 22);
             this.toolStripSeparator4.Text = "フィット(&F)";
             // 
             // miScreenShot
             // 
             this.miScreenShot.Name = "miScreenShot";
             this.miScreenShot.ShortcutKeys = System.Windows.Forms.Keys.F4;
-            this.miScreenShot.Size = new System.Drawing.Size(272, 22);
+            this.miScreenShot.Size = new System.Drawing.Size(227, 22);
             this.miScreenShot.Text = "スクリーンショットの保存(&S)...";
             this.miScreenShot.Click += new System.EventHandler(this.miScreenShot_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(269, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(224, 6);
             // 
             // menuItem2
             // 
             this.menuItem2.Name = "menuItem2";
-            this.menuItem2.Size = new System.Drawing.Size(269, 6);
+            this.menuItem2.Size = new System.Drawing.Size(224, 6);
             // 
             // WindowCascade
             // 
             this.WindowCascade.Image = ((System.Drawing.Image)(resources.GetObject("WindowCascade.Image")));
             this.WindowCascade.Name = "WindowCascade";
-            this.WindowCascade.Size = new System.Drawing.Size(272, 22);
+            this.WindowCascade.Size = new System.Drawing.Size(227, 22);
             this.WindowCascade.Text = "重ねて表示(&C)";
             this.WindowCascade.Click += new System.EventHandler(this.WindowCascade_Click);
             // 
             // WindowTile
             // 
             this.WindowTile.Name = "WindowTile";
-            this.WindowTile.Size = new System.Drawing.Size(272, 22);
+            this.WindowTile.Size = new System.Drawing.Size(227, 22);
             this.WindowTile.Text = "並べて表示(&T)";
             this.WindowTile.Click += new System.EventHandler(this.WindowTile_Click);
             // 
@@ -583,14 +583,14 @@ namespace siren
             this.miTool.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miSolidModeler});
             this.miTool.Name = "miTool";
-            this.miTool.Size = new System.Drawing.Size(74, 22);
+            this.miTool.Size = new System.Drawing.Size(62, 20);
             this.miTool.Text = "ツール(&T)";
             // 
             // miSolidModeler
             // 
             this.miSolidModeler.Enabled = false;
             this.miSolidModeler.Name = "miSolidModeler";
-            this.miSolidModeler.Size = new System.Drawing.Size(206, 22);
+            this.miSolidModeler.Size = new System.Drawing.Size(172, 22);
             this.miSolidModeler.Text = "ソリッド モデラー(&S)...";
             // 
             // miRuby
@@ -601,7 +601,7 @@ namespace siren
             this.miRubyLicense,
             this.miDebug});
             this.miRuby.Name = "miRuby";
-            this.miRuby.Size = new System.Drawing.Size(49, 22);
+            this.miRuby.Size = new System.Drawing.Size(44, 20);
             this.miRuby.Text = "&Ruby";
             // 
             // miModule
@@ -609,21 +609,28 @@ namespace siren
             this.miModule.Enabled = false;
             this.miModule.Image = ((System.Drawing.Image)(resources.GetObject("miModule.Image")));
             this.miModule.Name = "miModule";
-            this.miModule.Size = new System.Drawing.Size(237, 22);
+            this.miModule.Size = new System.Drawing.Size(211, 22);
             this.miModule.Text = "Ruby モジュールの管理(&M)...";
             // 
             // menuItem30
             // 
             this.menuItem30.Name = "menuItem30";
-            this.menuItem30.Size = new System.Drawing.Size(234, 6);
+            this.menuItem30.Size = new System.Drawing.Size(208, 6);
             // 
             // miRubyLicense
             // 
             this.miRubyLicense.Enabled = false;
             this.miRubyLicense.Image = ((System.Drawing.Image)(resources.GetObject("miRubyLicense.Image")));
             this.miRubyLicense.Name = "miRubyLicense";
-            this.miRubyLicense.Size = new System.Drawing.Size(237, 22);
+            this.miRubyLicense.Size = new System.Drawing.Size(211, 22);
             this.miRubyLicense.Text = "ライセンス情報(&L)...";
+            // 
+            // miDebug
+            // 
+            this.miDebug.Name = "miDebug";
+            this.miDebug.Size = new System.Drawing.Size(211, 22);
+            this.miDebug.Text = "Show &Terminal";
+            this.miDebug.Click += new System.EventHandler(this.miDebug_Click);
             // 
             // miOption
             // 
@@ -634,20 +641,20 @@ namespace siren
             this.toolStripSeparator6,
             this.menuItem11});
             this.miOption.Name = "miOption";
-            this.miOption.Size = new System.Drawing.Size(98, 22);
+            this.miOption.Size = new System.Drawing.Size(76, 20);
             this.miOption.Text = "オプション(&V)";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(179, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(170, 6);
             // 
             // ViewerToolbar
             // 
             this.ViewerToolbar.Checked = true;
             this.ViewerToolbar.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ViewerToolbar.Name = "ViewerToolbar";
-            this.ViewerToolbar.Size = new System.Drawing.Size(182, 22);
+            this.ViewerToolbar.Size = new System.Drawing.Size(173, 22);
             this.ViewerToolbar.Text = "ツールバー(&T)";
             this.ViewerToolbar.Click += new System.EventHandler(this.ViewerToolbar_Click);
             // 
@@ -656,14 +663,14 @@ namespace siren
             this.ViewerStatusBar.Checked = true;
             this.ViewerStatusBar.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ViewerStatusBar.Name = "ViewerStatusBar";
-            this.ViewerStatusBar.Size = new System.Drawing.Size(182, 22);
+            this.ViewerStatusBar.Size = new System.Drawing.Size(173, 22);
             this.ViewerStatusBar.Text = "ステータスバー(&S)";
             this.ViewerStatusBar.Click += new System.EventHandler(this.ViewerStatusBar_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(179, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(170, 6);
             // 
             // menuItem11
             // 
@@ -671,7 +678,7 @@ namespace siren
             this.menuItem11.Image = ((System.Drawing.Image)(resources.GetObject("menuItem11.Image")));
             this.menuItem11.Name = "menuItem11";
             this.menuItem11.ShortcutKeys = System.Windows.Forms.Keys.F10;
-            this.menuItem11.Size = new System.Drawing.Size(182, 22);
+            this.menuItem11.Size = new System.Drawing.Size(173, 22);
             this.menuItem11.Text = "環境設定(&P)...";
             // 
             // miHelp
@@ -679,7 +686,7 @@ namespace siren
             this.miHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miAbout});
             this.miHelp.Name = "miHelp";
-            this.miHelp.Size = new System.Drawing.Size(75, 22);
+            this.miHelp.Size = new System.Drawing.Size(63, 20);
             this.miHelp.Text = "ヘルプ(&H)";
             // 
             // miAbout
@@ -687,7 +694,7 @@ namespace siren
             this.miAbout.Image = ((System.Drawing.Image)(resources.GetObject("miAbout.Image")));
             this.miAbout.Name = "miAbout";
             this.miAbout.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.miAbout.Size = new System.Drawing.Size(200, 22);
+            this.miAbout.Size = new System.Drawing.Size(177, 22);
             this.miAbout.Text = "バージョン情報(&A)";
             this.miAbout.Click += new System.EventHandler(this.HelpAbout_Click);
             // 
@@ -706,7 +713,7 @@ namespace siren
             this.delete});
             this.toolBarTool.DropDownArrows = true;
             this.toolBarTool.ImageList = this.imageList1;
-            this.toolBarTool.Location = new System.Drawing.Point(0, 26);
+            this.toolBarTool.Location = new System.Drawing.Point(0, 24);
             this.toolBarTool.Name = "toolBarTool";
             this.toolBarTool.ShowToolTips = true;
             this.toolBarTool.Size = new System.Drawing.Size(1024, 28);
@@ -946,13 +953,6 @@ namespace siren
             this.tsbHelp.Name = "tsbHelp";
             this.tsbHelp.Size = new System.Drawing.Size(23, 22);
             this.tsbHelp.Text = "ヘルプ(&L)";
-            // 
-            // miDebug
-            // 
-            this.miDebug.Name = "miDebug";
-            this.miDebug.Size = new System.Drawing.Size(237, 22);
-            this.miDebug.Text = "デバッグ(&D)...";
-            this.miDebug.Click += new System.EventHandler(this.miDebug_Click);
             // 
             // MainForm
             // 

@@ -443,6 +443,8 @@ public:
 
 		::ocv = myOCCViewer;
 
+		command::test();
+
 		return myOCCViewer->myMirb->user_exec(cmd);
 	}
 

@@ -84,12 +84,12 @@ bool OCCViewer::InitViewer(void* wnd)
 	myAISContext = new AIS_InteractiveContext(myViewer);
 
 	// trihedron at origin point
-	Handle(Geom_Axis2Placement) aTrihedronAxis = new Geom_Axis2Placement(gp::XOY());
-	Handle(AIS_Trihedron) aTrihedron = new AIS_Trihedron(aTrihedronAxis);
-	aTrihedron->SetSize(0.5 * 1000);
-	//myAISContext->Display(aTrihedron, 0, -1, Standard_False, Standard_False); 
-	myAISContext->Display(aTrihedron);
-	myAISContext->Deactivate(aTrihedron);
+	// Handle(Geom_Axis2Placement) aTrihedronAxis = new Geom_Axis2Placement(gp::XOY());
+	// Handle(AIS_Trihedron) aTrihedron = new AIS_Trihedron(aTrihedronAxis);
+	// aTrihedron->SetSize(0.5 * 1000);
+	// //myAISContext->Display(aTrihedron, 0, -1, Standard_False, Standard_False); 
+	// myAISContext->Display(aTrihedron);
+	// myAISContext->Deactivate(aTrihedron);
 
 	// highlight color, selection color
     myAISContext->SetHilightColor(Quantity_NOC_YELLOW);

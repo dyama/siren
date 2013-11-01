@@ -50,6 +50,7 @@ namespace siren
             kemap.Add(Keys.D2, myViewer.BackView);
             kemap.Add(Keys.D3, myViewer.TopView);
             kemap.Add(Keys.D4, myViewer.RightView);
+            kemap.Add(Keys.Enter, showTerminal);            
         }
 
         /// <summary>
@@ -69,6 +70,17 @@ namespace siren
             
             return;
 		}
+
+        /// <summary>
+        /// Key Event: show mruby command terminal on view
+        /// </summary>
+        public void showTerminal()
+        {
+            t.Visible = true;
+            t.BringToFront();
+            t.setFocus();
+            return;
+        }
 
         /// <summary>
         /// キー イベント: KeyUp

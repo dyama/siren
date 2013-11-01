@@ -482,9 +482,7 @@ namespace siren
 			siren.ViewForm curForm = (siren.ViewForm) this.ActiveMdiChild;
             if (curForm == null)
                 return;
-
-            Terminal t = new Terminal(curForm.Viewer);
-            t.Show();
+            curForm.showTerminal();
         }
 
 	}

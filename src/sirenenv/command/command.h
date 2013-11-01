@@ -35,6 +35,11 @@ public:
 
 		return;
 	}
+
+	static void test()
+	{
+		::ocv->GetAISContext()->UpdateCurrentViewer();
+	}
 };
 
 #endif

@@ -159,11 +159,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Terminal.cs">
-      <SubType>Form</SubType>
+    <Compile Include="term.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Terminal.Designer.cs">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <Compile Include="term.Designer.cs">
+      <DependentUpon>term.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewForm.cs">
       <SubType>Form</SubType>
@@ -198,8 +198,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Terminal.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="term.resx">
+      <DependentUpon>term.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ViewForm.resx">
       <DependentUpon>ViewForm.cs</DependentUpon>

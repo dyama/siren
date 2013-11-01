@@ -1,27 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.Data;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
 namespace siren
 {
-    public partial class Terminal : Form
+    public partial class term : UserControl
     {
         protected sirenenv.Viewer myViewer;
 
         public string prompt_string = "$ ";
         public string subprompt_string = "* ";
 
-        public Terminal(sirenenv.Viewer Viewer)
+        public term(sirenenv.Viewer Viewer)
         {
             InitializeComponent();
 
             myViewer = Viewer;
             rtb.Text = prompt_string;
             Scroll2Last(rtb);
+            rtb.Focus();
+        }
+
+        public void setFocus()
+        {
+            rtb.Focus();
         }
 
         private void rtb_KeyDown(object sender, KeyEventArgs e)
@@ -35,6 +42,10 @@ namespace siren
             case Keys.Back:
                 if (getCurLine(rtb).Length == 0)
                     e.SuppressKeyPress = true;
+                break;
+            case Keys.Escape:
+                this.Visible = false;
+                this.Parent.Parent.Focus();
                 break;
             case Keys.Up:
                 e.SuppressKeyPress = true;
@@ -105,6 +116,7 @@ namespace siren
             //    err = -1;
             //}
         }
+
 
     }
 }

@@ -18,6 +18,8 @@ namespace siren
 
 	public partial class ViewForm : System.Windows.Forms.Form
 	{
+        private term t;
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -26,6 +28,9 @@ namespace siren
 			InitializeComponent();
 
 			myViewer = new Viewer();
+            t = new term(myViewer);
+            this.cont.ContentPanel.Controls.Add(t);
+            t.Visible = false;
 
             initKeyEvent();
             initMouseEvent();
