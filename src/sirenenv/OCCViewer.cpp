@@ -6,7 +6,7 @@
  */
 
 #include "StdAfx.h"
-#include ".\occviewer.h"
+#include "OCCViewer.h"
 
 #pragma warning(disable : 4800)
 OCCViewer::OCCViewer(void)
@@ -15,7 +15,6 @@ OCCViewer::OCCViewer(void)
 	myViewer = NULL;
 	myView = NULL;
 	myAISContext = NULL;
-	mruby_init();
 }
 
 OCCViewer::~OCCViewer(void)
@@ -26,7 +25,7 @@ OCCViewer::~OCCViewer(void)
 
 bool OCCViewer::mruby_init()
 {
-	myMirb = new Mirb();
+
 	return true;
 }
 
@@ -58,6 +57,7 @@ void OCCViewer::initViewAppearance()
 
 bool OCCViewer::InitViewer(void* wnd)
 {
+	// init graphic driver
     try {
         Handle(Aspect_DisplayConnection) aDisplayConnection;
         myGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
@@ -66,26 +66,24 @@ bool OCCViewer::InitViewer(void* wnd)
         return false;
     }
 
+	// init viewer
     TCollection_ExtendedString a3DName("Visu3D");
     myViewer = new V3d_Viewer (myGraphicDriver, a3DName.ToExtString(),"", 1000.0, 
                              V3d_XposYnegZpos, Quantity_NOC_GRAY30,
                              V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT, 
                              Standard_True, Standard_False);
-
 	myViewer->Init();
 	myViewer->SetDefaultLights();
 	myViewer->SetLightOn();
-	myView = myViewer->CreateView();
-	Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (wnd));
-	myView->SetWindow(aWNTWindow);
-	if (!aWNTWindow->IsMapped()) 
-		 aWNTWindow->Map();
-	myAISContext = new AIS_InteractiveContext(myViewer);
-	myAISContext->UpdateCurrentViewer();
-	myView->Redraw();
-	myView->MustBeResized();
+	myViewer->SetDefaultVisualization(V3d_ZBUFFER);
+	Standard_Integer aLayerId;
+	myViewer->AddZLayer(aLayerId);
+	myViewer->SetZBufferManagment(Standard_True);
 
-	// 原点トライヘドロン
+	// init AIS context and common appearances
+	myAISContext = new AIS_InteractiveContext(myViewer);
+
+	// trihedron at origin point
 	Handle(Geom_Axis2Placement) aTrihedronAxis = new Geom_Axis2Placement(gp::XOY());
 	Handle(AIS_Trihedron) aTrihedron = new AIS_Trihedron(aTrihedronAxis);
 	aTrihedron->SetSize(0.5 * 1000);
@@ -93,26 +91,25 @@ bool OCCViewer::InitViewer(void* wnd)
 	myAISContext->Display(aTrihedron);
 	myAISContext->Deactivate(aTrihedron);
 
-    // ハイライト色・選択色を設定
+	// highlight color, selection color
     myAISContext->SetHilightColor(Quantity_NOC_YELLOW);
 	myAISContext->SelectionColor(Quantity_NOC_RED);
 
+	myAISContext->UpdateCurrentViewer();
+
+	// init current view
+	myView = myViewer->CreateView();
+	Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (wnd));
+	myView->SetWindow(aWNTWindow);
+	if (!aWNTWindow->IsMapped()) 
+		 aWNTWindow->Map();
 	initViewAppearance();
+	myView->Redraw();
+	myView->MustBeResized();
 
-	AISContext = myAISContext;
-
-	// Debug
-	//mrb_func_t hoge = (mrb_value)(OCCViewer::myplus(mrb_state* mrb, mrb_value self));
-	// mrb_func_t hoge = &OCCViewer::myplus;
-
-	//mrb_value (OCCViewer::*pFunc)(mrb_state*, mrb_value) = &OCCViewer::myplus;
-	//mrb_value (*pFunc)(mrb_state*, mrb_value) = &OCCViewer::myplus;
-
-	mrb_value (*pFunc)(mrb_state*, mrb_value) = &OCCViewer::myplus;
-
-	// mrb_func_t hoge = pFunc;
-
-	myMirb->regist("test", &OCCViewer::myplus, 2);
+	// init mruby interpretor
+	myMirb = new Mirb();
+	command::regist_all(myMirb->mrb, this);
 
 	return true;
 }
@@ -719,7 +716,7 @@ void OCCViewer::CreateNewView(void* wnd)
 
 bool OCCViewer::SetAISContext(OCCViewer* Viewer)
 {
-	this->myAISContext = Viewer->GetAISContext();
+	myAISContext = Viewer->GetAISContext();
 	if (myAISContext.IsNull())
 		return false;
 	return true;
@@ -736,9 +733,9 @@ int OCCViewer::CharToInt(char symbol)
 	return msg.IntegerValue();
 }
 
+#if 0
 int OCCViewer::Debug()
 {
-#if 0
 	BRepPrimAPI_MakeBox box(gp_Pnt(0, 0, 0), 10, 10, 10);
 
     TopoDS_Shape shape = box.Shape();
@@ -753,11 +750,8 @@ int OCCViewer::Debug()
 
 	TopAbs_ShapeEnum e = s2.ShapeType();
 	std::cout << e << std::endl;
-#endif
 	return 0;
 }
-
-#if 0
 
 void OCCViewer::Set(Standard_CString name, TopoDS_Shape& shape)
 {
@@ -802,24 +796,4 @@ TopoDS_Shape OCCViewer::Get(int hashcode)
 }
 
 #endif
-
-mrb_value OCCViewer::myplus(mrb_state* mrb, mrb_value self)
-{
-    mrb_int a, b;
-    mrb_get_args(mrb, "ii", &a, &b);
-
-	Standard_Real aa = (Standard_Real)a;
-	Standard_Real bb = (Standard_Real)b;
-    
-	BRepPrimAPI_MakeBox box(gp_Pnt(aa, bb, 0), 10, 10, 150);
-    TopoDS_Shape shape = box.Shape();
-
-	AISContext->Display(new AIS_Shape(shape));
-	AISContext->UpdateCurrentViewer();
-
-//    myAISContext->Display(new AIS_Shape(shape));
-//	myAISContext->UpdateCurrentViewer();
-
-	return mrb_nil_value();
-}
 

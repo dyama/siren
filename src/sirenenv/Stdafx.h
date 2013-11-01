@@ -6,6 +6,8 @@
  */
 
 #pragma once
+#ifndef _STDAFX_H_
+#define _STDAFX_H_
 
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
@@ -122,4 +124,7 @@
 // local
 #include "colorname.h"
 
-static Handle_AIS_InteractiveContext AISContext;
+
+#include "command.h"
+
+#endif

@@ -25,8 +25,7 @@ using namespace std;
 class Mirb
 {
 private:
-    mrbc_context * cxt;
-    mrb_state * mrb;
+    mrbc_context* cxt;
     mrb_value result;
     mrb_bool code_block_open;       // = FALSE;
     int ai;
@@ -36,6 +35,7 @@ private:
 public:
     Mirb();  /**< constructor */
     ~Mirb(); ///< destructor
+    mrb_state* mrb;
 
 private:
     int init(void);

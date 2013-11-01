@@ -414,11 +414,6 @@ public:
 		return myOCCViewer->CharToInt(s);
 	}
 
-	int Debug(void)
-	{
-		return myOCCViewer->Debug();
-	}
-
 	void setHighlightColor(NameOfColor color)
 	{
 		if (myOCCViewer != NULL)
@@ -446,6 +441,8 @@ public:
 			cmd[i] = (char)str->ToCharArray()[i];
 		}
 
+		::ocv = myOCCViewer;
+
 		return myOCCViewer->myMirb->user_exec(cmd);
 	}
 
@@ -455,6 +452,8 @@ public:
 
 		if (!myOCCViewer)
 			return result;
+
+		::ocv = myOCCViewer;
 
 		std::string res;
 		myOCCViewer->myMirb->p(1, res);	
@@ -466,6 +465,9 @@ public:
 	{
 		if (!myOCCViewer)
 			return false;
+
+		::ocv = myOCCViewer;
+
 		return myOCCViewer->myMirb->isCodeBlockOpen();
 	}
 };

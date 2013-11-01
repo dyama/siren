@@ -13,7 +13,6 @@
 #define _MAX_PATH 1024
 #endif
 
-
 class OCCViewer
 {
 public:
@@ -21,21 +20,17 @@ public:
 	~OCCViewer(void);
 
 private:
+	void initViewAppearance(void);
+
 	Handle_V3d_Viewer myViewer;
 	Handle_V3d_View myView;
-	Handle_AIS_InteractiveContext myAISContext;
 	Handle_Graphic3d_GraphicDriver myGraphicDriver;
-
-private:
-	void initViewAppearance(void);
+	Handle_AIS_InteractiveContext myAISContext;
 
 public:
 	Mirb* myMirb;
 	bool  mruby_init();
 	bool  mruby_cleenup();
-
-protected:
-	static mrb_value myplus(mrb_state* mrb, mrb_value self);
 
 public:
 	bool  InitViewer(void* wnd);
@@ -93,7 +88,6 @@ public:
 	bool  SetAISContext(OCCViewer* Viewer);
 	Handle_AIS_InteractiveContext GetAISContext(void);
 	int   CharToInt(char symbol);
-	int   Debug(void);
 	void  SetHighlightColor(Quantity_NameOfColor color);
 	void  SetSelectionColor(Quantity_NameOfColor color);
 

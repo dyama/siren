@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(CASROOT)\inc;$(MRUBYROOT)\include;.\mruby"
+				AdditionalIncludeDirectories=".;&quot;$(CASROOT)\inc&quot;;&quot;$(MRUBYROOT)\include&quot;;.\mruby;./command"
 				PreprocessorDefinitions="WIN32;_DEBUG;WNT"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -116,7 +116,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".;$(CASROOT)\inc;$(MRUBYROOT)\include;.\mruby"
+				AdditionalIncludeDirectories=".;&quot;$(CASROOT)\inc&quot;;&quot;$(MRUBYROOT)\include&quot;;.\mruby;./command"
 				PreprocessorDefinitions="WIN32;NDEBUG;WNT"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -303,6 +303,18 @@
 			</File>
 			<File
 				RelativePath=".\mruby\stdint.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="command"
+			>
+			<File
+				RelativePath=".\command\box.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\command\command.h"
 				>
 			</File>
 		</Filter>

@@ -13,7 +13,7 @@ namespace siren
         protected sirenenv.Viewer myViewer;
 
         public string prompt_string = "$ ";
-        public string subprompt_string = "  ";
+        public string subprompt_string = "* ";
 
         public Terminal(sirenenv.Viewer Viewer)
         {
@@ -85,7 +85,7 @@ namespace siren
                 return;
             }
             int err = 0;
-            try {
+            //try {
                 err = myViewer.mruby_exec(cmd);
                 string result = "";
                 if (!myViewer.mruby_isCodeBlockOpen()) {
@@ -99,11 +99,11 @@ namespace siren
                 rtb.Text += "\n" + result + getPrompt();
                 rtb.Select(rtb.TextLength - getPrompt().Length, getPrompt().Length);
                 rtb.SelectionColor = Color.LightGreen;
-
-            }
-            catch {
-                err = -1;
-            }
+            //}
+            //catch (Exception exp) {
+            //    MessageBox.Show(exp.Message);
+            //    err = -1;
+            //}
         }
 
     }
