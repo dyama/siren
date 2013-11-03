@@ -13,6 +13,9 @@
 #define _MAX_PATH 1024
 #endif
 
+static Handle_AIS_InteractiveContext AISContext;
+static Handle_V3d_View               View;
+
 class OCCViewer
 {
 public:
@@ -22,15 +25,18 @@ public:
 private:
 	void initViewAppearance(void);
 
+	Handle_AIS_InteractiveContext myAISContext;
 	Handle_V3d_Viewer myViewer;
 	Handle_V3d_View myView;
 	Handle_Graphic3d_GraphicDriver myGraphicDriver;
-	Handle_AIS_InteractiveContext myAISContext;
 
 public:
 	Mirb* myMirb;
 	bool  mruby_init();
 	bool  mruby_cleenup();
+	int   mruby_exec(char* command);
+	static mrb_value box(mrb_state* mrb, mrb_value self);
+	static mrb_value fit(mrb_state* mrb, mrb_value self);
 
 public:
 	bool  InitViewer(void* wnd);
@@ -51,13 +57,9 @@ public:
 	void  ShiftSelect(void);
 	void  BackgroundColor(int& r, int& g, int& b);
 	void  UpdateCurrentViewer(void);
-	void  FrontView(void);
-	void  TopView(void);
-	void  LeftView(void);
-	void  BackView(void);
-	void  RightView(void);
-	void  BottomView(void);
-	void  AxoView(void);
+
+	void  setProjection(V3d_TypeOfOrientation dir);
+
 	void  ZoomAllView(void);
 	float Scale(void);
 	void  setScale(double f);

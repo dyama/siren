@@ -306,26 +306,6 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="command"
-			>
-			<File
-				RelativePath=".\command\box.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						CompileAsManaged="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\command\command.h"
-				>
-			</File>
-		</Filter>
 		<File
 			RelativePath=".\cad.h"
 			>
@@ -340,6 +320,10 @@
 		</File>
 		<File
 			RelativePath=".\OCCViewer.h"
+			>
+		</File>
+		<File
+			RelativePath=".\orientation.h"
 			>
 		</File>
 		<File

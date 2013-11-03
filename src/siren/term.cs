@@ -64,8 +64,12 @@ namespace siren
 
         private string getCurLine(RichTextBox rtb)
         {
+#if false
             int line = rtb.GetLineFromCharIndex(rtb.SelectionStart);
             string cmd = rtb.Lines[line];
+#else
+            string cmd = rtb.Lines[rtb.Lines.ToArray().Length - 1];
+#endif
             if (cmd.IndexOf(this.prompt_string, 0) == 0) {
                 cmd = cmd.Replace(this.prompt_string, "");
             }

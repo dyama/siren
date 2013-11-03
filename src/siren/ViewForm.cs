@@ -223,13 +223,34 @@ namespace siren
             myViewer.ZoomAllView();
         }
 
-        private void tsbAxoView_Click(object sender, EventArgs e) { myViewer.AxoView(); }
-        private void tsbFrontView_Click(object sender, EventArgs e) { myViewer.FrontView(); }
-        private void tsbBackView_Click(object sender, EventArgs e) { myViewer.BackView(); }
-        private void tsbLeftView_Click(object sender, EventArgs e) { myViewer.LeftView(); }
-        private void tsbRightView_Click(object sender, EventArgs e) { myViewer.RightView(); }
-        private void tsbTopView_Click(object sender, EventArgs e) { myViewer.TopView(); }
-        private void tsbBottomView_Click(object sender, EventArgs e) { myViewer.BottomView(); }
+        private void tsbAxoView_Click(object sender, EventArgs e)
+        {
+            myViewer.setProjection(TypeOfOrientation.XposYnegZpos);
+        }
+        private void tsbFrontView_Click(object sender, EventArgs e)
+        {
+            myViewer.setProjection(TypeOfOrientation.Xpos);
+        }
+        private void tsbBackView_Click(object sender, EventArgs e)
+        {
+            myViewer.setProjection(TypeOfOrientation.Xneg);
+        }
+        private void tsbLeftView_Click(object sender, EventArgs e) 
+        {
+            myViewer.setProjection(TypeOfOrientation.Ypos);
+        }
+        private void tsbRightView_Click(object sender, EventArgs e)
+        {
+            myViewer.setProjection(TypeOfOrientation.Yneg);
+        }
+        private void tsbTopView_Click(object sender, EventArgs e)
+        {
+            myViewer.setProjection(TypeOfOrientation.Zpos);
+        }
+        private void tsbBottomView_Click(object sender, EventArgs e)
+        {
+            myViewer.setProjection(TypeOfOrientation.Zneg);
+        }
 
         /// <summary>
         /// シェーディング・ワイヤフレーム切り替えボタン(トグル)

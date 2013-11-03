@@ -46,10 +46,10 @@ namespace siren
             kemap.Add(Keys.F, myViewer.ZoomAllView);
             kemap.Add(Keys.H, toggleDisplayMode);
             kemap.Add(Keys.Space, toggleWindowState);
-            kemap.Add(Keys.D1, myViewer.AxoView);
-            kemap.Add(Keys.D2, myViewer.BackView);
-            kemap.Add(Keys.D3, myViewer.TopView);
-            kemap.Add(Keys.D4, myViewer.RightView);
+            kemap.Add(Keys.D1, AxoView);
+            kemap.Add(Keys.D2, BackView);
+            kemap.Add(Keys.D3, TopView);
+            kemap.Add(Keys.D4, RightView);
             kemap.Add(Keys.Enter, showTerminal);            
         }
 
@@ -117,6 +117,33 @@ namespace siren
             return;
         }
 
-
+        private void AxoView()
+        {
+            myViewer.setProjection(TypeOfOrientation.XposYnegZpos);
+        }
+        private void FrontView()
+        {
+            myViewer.setProjection(TypeOfOrientation.Xpos);
+        }
+        private void BackView()
+        {
+            myViewer.setProjection(TypeOfOrientation.Xneg);
+        }
+        private void LeftView()
+        {
+            myViewer.setProjection(TypeOfOrientation.Ypos);
+        }
+        private void RightView()
+        {
+            myViewer.setProjection(TypeOfOrientation.Yneg);
+        }
+        private void TopView()
+        {
+            myViewer.setProjection(TypeOfOrientation.Zpos);
+        }
+        private void BottomView()
+        {
+            myViewer.setProjection(TypeOfOrientation.Zneg);
+        }
     }
 }

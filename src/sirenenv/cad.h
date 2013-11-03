@@ -163,46 +163,12 @@ public:
 			myOCCViewer->UpdateCurrentViewer();
 	}
 
-	void FrontView(void)
+	void setProjection(TypeOfOrientation dir)
 	{
-		if (myOCCViewer != NULL)
-			myOCCViewer->FrontView();
-	}
-
-	void TopView(void)
-	{
-		if (myOCCViewer != NULL)
-			myOCCViewer->TopView();
-	}
-
-	void LeftView(void)
-	{
-		if (myOCCViewer != NULL)
-			myOCCViewer->LeftView();
-	}
-
-	void BackView(void)
-	{
-		if (myOCCViewer != NULL)
-			myOCCViewer->BackView();
-	}
-
-	void RightView(void)
-	{
-		if (myOCCViewer != NULL)
-			myOCCViewer->RightView();
-	}
-
-	void BottomView(void)
-	{
-		if (myOCCViewer != NULL)
-			myOCCViewer->BottomView();
-	}
-
-	void AxoView(void)
-	{
-		if (myOCCViewer != NULL)
-			myOCCViewer->AxoView();
+		if (myOCCViewer != NULL) {
+			V3d_TypeOfOrientation o = static_cast<V3d_TypeOfOrientation>(dir);
+			myOCCViewer->setProjection(o);
+		}
 	}
 
 	float Scale(void)
@@ -441,11 +407,7 @@ public:
 			cmd[i] = (char)str->ToCharArray()[i];
 		}
 
-		::ocv = myOCCViewer;
-
-		command::test();
-
-		return myOCCViewer->myMirb->user_exec(cmd);
+		return myOCCViewer->mruby_exec(cmd);
 	}
 
 	System::String^ mruby_p()
@@ -454,8 +416,6 @@ public:
 
 		if (!myOCCViewer)
 			return result;
-
-		::ocv = myOCCViewer;
 
 		std::string res;
 		myOCCViewer->myMirb->p(1, res);	
@@ -467,8 +427,6 @@ public:
 	{
 		if (!myOCCViewer)
 			return false;
-
-		::ocv = myOCCViewer;
 
 		return myOCCViewer->myMirb->isCodeBlockOpen();
 	}

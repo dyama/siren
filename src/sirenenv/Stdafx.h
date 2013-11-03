@@ -123,8 +123,6 @@
 
 // local
 #include "colorname.h"
-
-
-#include "command.h"
+#include "orientation.h"
 
 #endif
