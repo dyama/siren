@@ -23,33 +23,6 @@ OCCViewer::~OCCViewer(void)
 	mruby_cleenup();
 }
 
-bool OCCViewer::mruby_init()
-{
-	return true;
-}
-
-bool OCCViewer::mruby_cleenup()
-{
-	if (myMirb)
-		free(myMirb);
-	return true;
-}
-
-int OCCViewer::mruby_exec(char* command)
-{
-	if (!myMirb)
-		return -1;
-
-	AISContext = myAISContext;
-	if (AISContext.IsNull())
-		return -1;
-	View = myView;
-	if (View.IsNull())
-		return -1;
-
-	return myMirb->user_exec(command);
-}
-
 void OCCViewer::initViewAppearance()
 {
     // 画面上のトライヘドロンを表示
@@ -121,12 +94,8 @@ bool OCCViewer::InitViewer(void* wnd)
 	myView->Redraw();
 	myView->MustBeResized();
 
-	// init mruby interpretor
-	myMirb = new Mirb();
-	// command::regist_all(myMirb->mrb);
 
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "box", &OCCViewer::box, MRB_ARGS_REQ(3) | MRB_ARGS_OPT(3));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "fit", &OCCViewer::fit, MRB_ARGS_NONE());
+	mruby_init();
 
 	return true;
 }
@@ -776,51 +745,3 @@ TopoDS_Shape OCCViewer::Get(int hashcode)
 }
 
 #endif
-
-mrb_value OCCViewer::box(mrb_state* mrb, mrb_value self)
-{
-    mrb_int _xs, _ys, _zs, _xp, _yp, _zp;
-    int argc = mrb_get_args(mrb, "iii|iii", &_xs, &_ys, &_zs, &_xp, &_yp, &_zp);
-
-	Standard_Real xs, ys, zs, xp = 0, yp = 0, zp = 0;
-	if (argc == 3) {
-		xs = (Standard_Real)_xs;
-		ys = (Standard_Real)_ys;
-		zs = (Standard_Real)_zs;
-	}
-	else if (argc == 6) {
-		xs = (Standard_Real)_xs;
-		ys = (Standard_Real)_ys;
-		zs = (Standard_Real)_zs;
-		xp = (Standard_Real)_xp;
-		yp = (Standard_Real)_yp;
-		zp = (Standard_Real)_zp;
-	}
-	else {
-        mrb_value myexc;
-        static const char m[] = "super called outside of method";
-        myexc = mrb_exc_new(mrb, E_NOMETHOD_ERROR, m, sizeof(m) - 1);
-        mrb->exc = mrb_obj_ptr(myexc);
-		return mrb_nil_value();
-	}
-    
-	BRepPrimAPI_MakeBox box(gp_Pnt(xp, yp, zp), xs, ys, zs);
-    TopoDS_Shape shape = box.Shape();
-
-	if (AISContext.IsNull())
-		throw "No AIS context!";
-
-	AISContext->Display(new AIS_Shape(shape));
-	AISContext->UpdateCurrentViewer();
-
-	return mrb_nil_value();
-}
-
-mrb_value OCCViewer::fit(mrb_state* mrb, mrb_value self)
-{
-	if (!View.IsNull()) {
-		View->FitAll();
-		View->ZFitAll();
-	}
-	return mrb_nil_value();
-}

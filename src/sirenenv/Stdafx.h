@@ -9,6 +9,11 @@
 #ifndef _STDAFX_H_
 #define _STDAFX_H_
 
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
 #include <windows.h>
@@ -80,14 +85,21 @@
 //for vrml export
 #include <VrmlAPI_Writer.hxx>
 
-// for primitive box
+// for primitive
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRepPrimAPI_MakeCone.hxx>
+#include <BRepPrimAPI_MakeTorus.hxx>
+#include <BRepPrimAPI_MakeWedge.hxx>
+#include <BRepPrimAPI_MakeHalfSpace.hxx>
+
+#include <BRepAlgoAPI_Common.hxx>
 
 // マップコレクション
 // #include <TCollection_BasicMap.hxx>
 //#include <Draw_VMap.hxx>
 
-//
 #pragma comment (lib, "TKernel.lib")
 #pragma comment (lib, "PTKernel.lib")
 #pragma comment (lib, "TKBO.lib")

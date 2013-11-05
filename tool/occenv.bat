@@ -16,7 +16,7 @@ IF /I ["%2"] == ["DEBUG"] (
 
 REM "OCCTñ{ëÃÇ÷ÇÃÉpÉXÇê›íË"
 
-SET "OCCBASE=C:\occ"
+SET "OCCBASE=E:\occ"
 SET "CASROOT=%OCCBASE%\%VERSION%\ros"
 SET "CSF_OPT_INC=%CASROOT%\inc"
 

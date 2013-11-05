@@ -315,6 +315,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\command.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\OCCViewer.cpp"
 			>
 		</File>

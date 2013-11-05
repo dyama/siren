@@ -15,6 +15,7 @@
 
 static Handle_AIS_InteractiveContext AISContext;
 static Handle_V3d_View               View;
+static std::map<std::string, Handle(AIS_Shape)> Map;
 
 class OCCViewer
 {
@@ -37,6 +38,18 @@ public:
 	int   mruby_exec(char* command);
 	static mrb_value box(mrb_state* mrb, mrb_value self);
 	static mrb_value fit(mrb_state* mrb, mrb_value self);
+	static mrb_value cylinder(mrb_state* mrb, mrb_value self);
+	static mrb_value cone(mrb_state* mrb, mrb_value self);
+	static mrb_value sphere(mrb_state* mrb, mrb_value self);
+	static mrb_value torus(mrb_state* mrb, mrb_value self);
+
+	static void set(std::string name, TopoDS_Shape* shape);
+	static void set(std::string name, Handle(AIS_Shape) shape);
+	static Handle(AIS_Shape) get(std::string name);
+
+	static mrb_value erase(mrb_state* mrb, mrb_value self);
+	static mrb_value common(mrb_state* mrb, mrb_value self);
+	static mrb_value test(mrb_state* mrb, mrb_value self);
 
 public:
 	bool  InitViewer(void* wnd);
