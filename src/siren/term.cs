@@ -100,25 +100,28 @@ namespace siren
                 return;
             }
             int err = 0;
-            //try {
-                err = myViewer.mruby_exec(cmd);
-                string result = "";
-                if (!myViewer.mruby_isCodeBlockOpen()) {
-                    if (err == 0) {
-                        result = myViewer.mruby_p();
-                    }
-                    else {
-                        result = "Error:" + err.ToString("X") + "\n";
-                    }
+#if false
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Reset(); sw.Start();
+#endif
+            err = myViewer.mruby_exec(cmd);
+#if false
+            sw.Stop();
+            string result = "Time:" + sw.Elapsed.ToString() + "\n";
+#else
+            string result = "";
+#endif
+            if (!myViewer.mruby_isCodeBlockOpen()) {
+                if (err == 0) {
+                    result += myViewer.mruby_p();
                 }
-                rtb.Text += "\n" + result + getPrompt();
-                rtb.Select(rtb.TextLength - getPrompt().Length, getPrompt().Length);
-                rtb.SelectionColor = Color.LightGreen;
-            //}
-            //catch (Exception exp) {
-            //    MessageBox.Show(exp.Message);
-            //    err = -1;
-            //}
+                else {
+                    result += "Error:" + err.ToString("X") + "\n";
+                }
+            }
+            rtb.Text += "\n" + result + getPrompt();
+            rtb.Select(rtb.TextLength - getPrompt().Length, getPrompt().Length);
+            rtb.SelectionColor = Color.LightGreen;
         }
 
 

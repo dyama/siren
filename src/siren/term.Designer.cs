@@ -45,8 +45,7 @@
             this.rtb.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.rtb.Location = new System.Drawing.Point(0, 0);
             this.rtb.Name = "rtb";
-            this.rtb.ShortcutsEnabled = false;
-            this.rtb.Size = new System.Drawing.Size(237, 50);
+            this.rtb.Size = new System.Drawing.Size(337, 106);
             this.rtb.TabIndex = 0;
             this.rtb.Text = "";
             this.rtb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rtb_KeyDown);
@@ -68,7 +67,7 @@
             // sc.Panel2
             // 
             this.sc.Panel2.Controls.Add(this.rtb);
-            this.sc.Size = new System.Drawing.Size(237, 61);
+            this.sc.Size = new System.Drawing.Size(337, 117);
             this.sc.SplitterDistance = 10;
             this.sc.SplitterWidth = 1;
             this.sc.TabIndex = 1;
@@ -81,7 +80,7 @@
             this.Controls.Add(this.sc);
             this.Name = "term";
             this.Padding = new System.Windows.Forms.Padding(1, 1, 2, 2);
-            this.Size = new System.Drawing.Size(240, 64);
+            this.Size = new System.Drawing.Size(340, 120);
             this.sc.Panel2.ResumeLayout(false);
             this.sc.ResumeLayout(false);
             this.ResumeLayout(false);

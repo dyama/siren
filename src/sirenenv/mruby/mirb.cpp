@@ -257,7 +257,8 @@ int Mirb::user_exec(char *last_code_line)
         if (0 < parser->nerr) {
             /* syntax error */
             /* 構文エラー */
-            printf("line %d: %s\n", parser->error_buffer[0].lineno, parser->error_buffer[0].message);
+            //printf("line %d: %s\n", parser->error_buffer[0].lineno, parser->error_buffer[0].message);
+			//message = std::string(parser->error_buffer[0].message);
             err = 1;
         }
         else {

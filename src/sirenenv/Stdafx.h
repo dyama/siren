@@ -96,6 +96,9 @@
 
 #include <BRepAlgoAPI_Common.hxx>
 
+// 
+#include <V3d_PerspectiveView.hxx>
+
 // マップコレクション
 // #include <TCollection_BasicMap.hxx>
 //#include <Draw_VMap.hxx>

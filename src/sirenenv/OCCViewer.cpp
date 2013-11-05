@@ -85,7 +85,11 @@ bool OCCViewer::InitViewer(void* wnd)
 	myAISContext->UpdateCurrentViewer();
 
 	// init current view
+#ifdef PARSEPECTIVE
+	myView = new V3d_PerspectiveView(myViewer);
+#else
 	myView = myViewer->CreateView();
+#endif
 	Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (wnd));
 	myView->SetWindow(aWNTWindow);
 	if (!aWNTWindow->IsMapped()) 

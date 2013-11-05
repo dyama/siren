@@ -15,7 +15,7 @@
 
 static Handle_AIS_InteractiveContext AISContext;
 static Handle_V3d_View               View;
-static std::map<const char*, Handle(AIS_Shape)> Map;
+static std::map<std::string, Handle(AIS_Shape)> Map;
 
 #define mrubycommand(name) static mrb_value name(mrb_state* mrb, mrb_value self)
 
@@ -49,6 +49,9 @@ public:
 
 	// View
 	mrubycommand(fit);
+	mrubycommand(update);
+	mrubycommand(display);
+	mrubycommand(color);
 
 	// Make premitive
 	mrubycommand(box);
