@@ -34,6 +34,9 @@ bool OCCViewer::mruby_init()
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cone",     &OCCViewer::cone,     MRB_ARGS_REQ(11));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "torus",    &OCCViewer::torus,    MRB_ARGS_REQ(12));
 
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "savebrep", &OCCViewer::savebrep, MRB_ARGS_REQ(2));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "loadbrep", &OCCViewer::loadbrep, MRB_ARGS_REQ(2));
+
 	return true;
 }
 
@@ -472,4 +475,47 @@ mrb_value OCCViewer::fuse(mrb_state* mrb, mrb_value self)
 	}
 	
 	return mrb_nil_value();	
+}
+
+mrb_value OCCViewer::savebrep(mrb_state* mrb, mrb_value self)
+{
+    mrb_value _name, _path;
+	int argc = mrb_get_args(mrb, "SS", &_name, &_path);
+	if (!mrb_string_p(_name) || !mrb_string_p(_path))
+		return mrb_nil_value();
+
+	char* name = RSTRING_PTR(_name);
+	char* path = RSTRING_PTR(_path);
+
+	Handle(AIS_Shape) hashape = OCCViewer::get(name);
+	
+	Standard_Boolean res = BRepTools::Write(hashape->Shape(), (Standard_CString)path);
+
+	return mrb_nil_value();	
+}
+
+mrb_value OCCViewer::loadbrep(mrb_state* mrb, mrb_value self)
+{
+    mrb_value _name, _path;
+	int argc = mrb_get_args(mrb, "SS", &_name, &_path);
+	if (!mrb_string_p(_name) || !mrb_string_p(_path))
+		return mrb_nil_value();
+
+	char* name = RSTRING_PTR(_name);
+	char* path = RSTRING_PTR(_path);
+
+	TopoDS_Shape shape;
+    BRep_Builder aBuilder;
+    Standard_Boolean res = BRepTools::Read(shape, (Standard_CString)path, aBuilder);
+
+	if (res) {
+		if(AISContext->HasOpenedContext())
+			AISContext->CloseLocalContext();
+		OCCViewer::set(name, &shape);
+	}
+	else {
+		return mrb_nil_value();
+	}
+
+	return mrb_str_new(mrb, name, sizeof(name) + 1);
 }

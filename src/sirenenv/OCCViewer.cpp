@@ -25,10 +25,10 @@ OCCViewer::~OCCViewer(void)
 
 void OCCViewer::initViewAppearance()
 {
-    // 画面上のトライヘドロンを表示
+	// Show trihedron on 3d viewer
     myView->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER);
 
-	// 背景色
+	// Background color
     Quantity_Color color1(0., 0.0, 0.25, Quantity_TOC_RGB);
     Quantity_Color color2(0., 0.4, 0.60, Quantity_TOC_RGB);
     // myView->SetBackgroundColor(Quantity_TOC_RGB, R, G, B);
@@ -36,6 +36,35 @@ void OCCViewer::initViewAppearance()
 
     // Depth-cueing (空気遠近法)の有効化
  	//myView->SetZCueingOn();
+
+#if 0
+	// test for layer
+	Handle(Visual3d_Layer) lay
+		= new Visual3d_Layer(myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_False);
+	lay->Clear();
+	lay->Begin();
+		lay->SetViewport(800, 600);
+		lay->SetTransparency(0.5);
+		lay->BeginPolygon();
+			lay->SetColor(Quantity_Color(1., 1., 1., Quantity_TOC_RGB));
+			lay->AddVertex(.95, -.9);
+			lay->AddVertex(.95, -.95);
+			lay->AddVertex(.8, -.95);
+			lay->AddVertex(.8, -.9);
+			lay->AddVertex(.95, -.9);
+		lay->ClosePrimitive();
+		lay->BeginPolyline();
+			lay->SetColor(Quantity_Color(1., 1., 1., Quantity_TOC_RGB));
+			lay->AddVertex(-.95, .9);
+			lay->AddVertex(-.95, -.5);
+			lay->AddVertex(-.8, -.5);
+			lay->AddVertex(-.8, .9);
+			lay->AddVertex(-.95, .9);
+		lay->ClosePrimitive();
+		lay->DrawText((Standard_CString)"siren", 0, 0, 120);
+		//
+	lay->End();
+#endif
 
 	myView->SetTransparency();
 	myView->FitAll();
@@ -379,6 +408,7 @@ bool OCCViewer::ImportBRep(wchar_t* filename)
 	myAISContext->Display(new AIS_Shape(aShape));
 	return true;
 }
+
 bool OCCViewer::ImportCsfdb(wchar_t* filename)
 {
     char fname[_MAX_PATH];
@@ -493,7 +523,7 @@ bool OCCViewer::ExportBRep(wchar_t* filename)
 		return false;
 	Handle_AIS_InteractiveObject anIO = myAISContext->Current();
 	Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
-	return (bool)BRepTools::Write(anIS->Shape(), (Standard_CString)fname); ;
+	return (bool)BRepTools::Write(anIS->Shape(), (Standard_CString)fname);
 }
 
 
@@ -685,67 +715,3 @@ int OCCViewer::CharToInt(char symbol)
 	TCollection_AsciiString msg = symbol;
 	return msg.IntegerValue();
 }
-
-#if 0
-int OCCViewer::Debug()
-{
-	BRepPrimAPI_MakeBox box(gp_Pnt(0, 0, 0), 10, 10, 10);
-
-    TopoDS_Shape shape = box.Shape();
-	// Set("mybox", shape);
-
-	Standard_Integer HashCode = shape.HashCode(INT_MAX);
-
-	Set(HashCode, shape);
-
-	//TopoDS_Shape s2 = Get("mybox");
-	TopoDS_Shape s2 = Get(HashCode);
-
-	TopAbs_ShapeEnum e = s2.ShapeType();
-	std::cout << e << std::endl;
-	return 0;
-}
-
-void OCCViewer::Set(Standard_CString name, TopoDS_Shape& shape)
-{
-	int hashcode = shape.HashCode(INT_MAX);
-	myMap2->insert(std::pair<Standard_CString, int>(name, hashcode));
-	return Set(hashcode, shape);
-}
-
-void OCCViewer::Set(int hashcode, TopoDS_Shape& shape)
-{
-	AIS_Shape* aisshape = new AIS_Shape(shape);
-    myAISContext->Display(aisshape);
-
-	myMap->insert(std::pair<int, AIS_Shape*>(hashcode, aisshape));
-	return;
-}
-
-TopoDS_Shape OCCViewer::Get(Standard_CString name)
-{
-	int hashcode = 0;
-	std::map<Standard_CString, int>::iterator it = myMap2->find(std::map<Standard_CString, int>::key_type(name));
-	if (it != myMap2->end())
-		hashcode = (int)((*it).second);
-	if (!hashcode)
-		return TopoDS_Shape();
-	else
-		return Get(hashcode);
-}
-
-TopoDS_Shape OCCViewer::Get(int hashcode)
-{
-	AIS_Shape* shape = NULL;
-	std::map<int, AIS_Shape*>::iterator it = myMap->find(std::map<int, AIS_Shape*>::key_type(hashcode));
-	if (it != myMap->end())
-		shape = (AIS_Shape*)((*it).second);
-	if (shape == NULL) {
-		return TopoDS_Shape();
-	}
-	else {
-		return shape->Shape();
-	}
-}
-
-#endif

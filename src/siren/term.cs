@@ -54,7 +54,7 @@ namespace siren
                 e.SuppressKeyPress = true;
                 break;
             case Keys.Left:
-
+                break;
             case Keys.Right:
             default:
 

@@ -99,6 +99,10 @@
 // 
 #include <V3d_PerspectiveView.hxx>
 
+#include <Aspect_TypeOfLayer.hxx>
+#include <Visual3d_Layer.hxx>
+#include <Handle_Visual3d_Layer.hxx>
+
 // マップコレクション
 // #include <TCollection_BasicMap.hxx>
 //#include <Draw_VMap.hxx>

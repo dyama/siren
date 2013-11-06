@@ -69,6 +69,8 @@ public:
 	mrubycommand(fuse);
 
 	// I/O
+	mrubycommand(savebrep);
+	mrubycommand(loadbrep);
 
 	// for debug
 	mrubycommand(test);
@@ -127,10 +129,5 @@ public:
 	int   CharToInt(char symbol);
 	void  SetHighlightColor(Quantity_NameOfColor color);
 	void  SetSelectionColor(Quantity_NameOfColor color);
-
-	// void         Set(Standard_CString name, TopoDS_Shape& shape);
-	// void         Set(int hashcode, TopoDS_Shape& shape);
-	// TopoDS_Shape Get(Standard_CString name);
-	// TopoDS_Shape Get(int hashcode);
 
 };
