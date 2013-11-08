@@ -86,6 +86,7 @@
 #include <VrmlAPI_Writer.hxx>
 
 // for primitive
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>

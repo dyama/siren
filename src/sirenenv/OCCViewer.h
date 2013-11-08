@@ -54,6 +54,7 @@ public:
 	mrubycommand(color);
 
 	// Make premitive
+	mrubycommand(vertex);
 	mrubycommand(box);
 	mrubycommand(cylinder);
 	mrubycommand(cone);

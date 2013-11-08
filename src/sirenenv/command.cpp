@@ -24,18 +24,19 @@ bool OCCViewer::mruby_init()
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "update",   &OCCViewer::update,   MRB_ARGS_NONE());
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "color",    &OCCViewer::color,    MRB_ARGS_REQ(4));
 
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "common",   &OCCViewer::common,   MRB_ARGS_REQ(3));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cut",      &OCCViewer::cut,      MRB_ARGS_REQ(3));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "fuse",     &OCCViewer::fuse,     MRB_ARGS_REQ(3));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "common",   &OCCViewer::common,   MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cut",      &OCCViewer::cut,      MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "fuse",     &OCCViewer::fuse,     MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
 
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "vertex",   &OCCViewer::vertex,   MRB_ARGS_REQ(3) | MRB_ARGS_OPT(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "box",      &OCCViewer::box,      MRB_ARGS_REQ(3) | MRB_ARGS_OPT(3));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cylinder", &OCCViewer::cylinder, MRB_ARGS_REQ(9));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "sphere",   &OCCViewer::sphere,   MRB_ARGS_REQ(1) | MRB_ARGS_OPT(3));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cone",     &OCCViewer::cone,     MRB_ARGS_REQ(11));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "torus",    &OCCViewer::torus,    MRB_ARGS_REQ(12));
 
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "savebrep", &OCCViewer::savebrep, MRB_ARGS_REQ(2));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "loadbrep", &OCCViewer::loadbrep, MRB_ARGS_REQ(2));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "save",     &OCCViewer::savebrep, MRB_ARGS_REQ(2));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "load",     &OCCViewer::loadbrep, MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
 
 	return true;
 }
@@ -100,7 +101,7 @@ mrb_value OCCViewer::box(mrb_state* mrb, mrb_value self)
 	// 名前を付けて管理構造体につっこむ＆自動描画
 	OCCViewer::set(name, &shape);
 
-	return mrb_str_new(mrb, name, sizeof(name) + 1);
+	return mrb_str_new(mrb, name, strlen(name));
 }
 
 
@@ -133,7 +134,7 @@ mrb_value OCCViewer::sphere(mrb_state* mrb, mrb_value self)
 
 	OCCViewer::set(name, &shape);
 
-	return mrb_str_new(mrb, name, sizeof(name) + 1);
+	return mrb_str_new(mrb, name, strlen(name));
 }
 
 mrb_value OCCViewer::cylinder(mrb_state* mrb, mrb_value self)
@@ -167,7 +168,7 @@ mrb_value OCCViewer::cylinder(mrb_state* mrb, mrb_value self)
 
 	OCCViewer::set(name, &shape);
 
-	return mrb_str_new(mrb, name, sizeof(name) + 1);
+	return mrb_str_new(mrb, name, strlen(name));
 }
 
 mrb_value OCCViewer::cone(mrb_state* mrb, mrb_value self)
@@ -200,7 +201,7 @@ mrb_value OCCViewer::cone(mrb_state* mrb, mrb_value self)
 
 	OCCViewer::set(name, &shape);
 
-	return mrb_str_new(mrb, name, sizeof(name) + 1);
+	return mrb_str_new(mrb, name, strlen(name));
 }
 
 mrb_value OCCViewer::torus(mrb_state* mrb, mrb_value self)
@@ -234,7 +235,7 @@ mrb_value OCCViewer::torus(mrb_state* mrb, mrb_value self)
 
 	OCCViewer::set(name, &shape);
 
-	return mrb_str_new(mrb, name, sizeof(name) + 1);
+	return mrb_str_new(mrb, name, strlen(name));
 }
 
 void OCCViewer::set(const char* name, const TopoDS_Shape* shape)
@@ -247,8 +248,9 @@ void OCCViewer::set(const char* name, Handle(AIS_Shape) shape)
 {
 	::Map[std::string(name)] = shape;
 
-	if (AISContext.IsNull())
-		throw "No AIS context!";
+	if (AISContext.IsNull()) {
+		throw "No AIS Interactive Context.";
+	}
 	AISContext->Display(shape);
 	AISContext->UpdateCurrentViewer();
 
@@ -264,23 +266,25 @@ Handle(AIS_Shape) OCCViewer::get(const char* name)
 
 mrb_value OCCViewer::erase(mrb_state* mrb, mrb_value self)
 {
-	if (AISContext.IsNull())
-		return mrb_nil_value();
 
-    mrb_value _name;
-	int argc = mrb_get_args(mrb, "S", &_name);
-	if (!mrb_string_p(_name))
-		return mrb_nil_value();
+    mrb_value name;
 
-	char* name = RSTRING_PTR(_name);
+	int argc = mrb_get_args(mrb, "S", &name);
 
-	Handle(AIS_Shape) myShape = OCCViewer::get(name);
+	if (!mrb_string_p(name)) {
+		static const char m[] = "Invalid specified name.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
-	if (myShape.IsNull())
-		return mrb_nil_value();
+	Handle(AIS_Shape) myShape = OCCViewer::get(RSTRING_PTR(name));
+	if (myShape.IsNull()) {
+		static const char m[] = "No such specified object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
 	AISContext->Erase(myShape, Standard_True, Standard_False);
-	AISContext->UpdateCurrentViewer();
+	//AISContext->UpdateCurrentViewer();
+	Map.erase(RSTRING_PTR(name));
 
 	return mrb_nil_value();
 }
@@ -304,7 +308,7 @@ mrb_value OCCViewer::display(mrb_state* mrb, mrb_value self)
 
 	AISContext->Display(myShape, Standard_False);
 
-	return mrb_str_new(mrb, name, sizeof(name) + 1);
+	return mrb_str_new(mrb, name, strlen(name));
 }
 
 mrb_value OCCViewer::color(mrb_state* mrb, mrb_value self)
@@ -330,7 +334,7 @@ mrb_value OCCViewer::color(mrb_state* mrb, mrb_value self)
 	Quantity_Color col =  Quantity_Color(r/255., g/255., b/255., Quantity_TOC_RGB);
     AISContext->SetColor(myShape, col.Name());
 
-	return mrb_str_new(mrb, name, sizeof(name) + 1);
+	return mrb_str_new(mrb, name, strlen(name));
 }
 
 mrb_value OCCViewer::update(mrb_state* mrb, mrb_value self)
@@ -356,166 +360,292 @@ mrb_value OCCViewer::test(mrb_state* mrb, mrb_value self)
 
 mrb_value OCCViewer::common(mrb_state* mrb, mrb_value self)
 {
-    mrb_value _a, _b, _c;
-	int argc = mrb_get_args(mrb, "SSS", &_a, &_b, &_c);
-	if (!mrb_string_p(_a) || !mrb_string_p(_b) || !mrb_string_p(_c))
-		return mrb_nil_value();
+	return mrb_nil_value();	
+    mrb_value s1, s2, name;
+	bool hasname = false;
 
-	char* a = RSTRING_PTR(_a);
-	char* b = RSTRING_PTR(_b);
-	char* c = RSTRING_PTR(_c);
+	int argc = mrb_get_args(mrb, "SS|S", &s1, &s2, &name);
 
-	Handle(AIS_Shape) B = OCCViewer::get(b);
-	Handle(AIS_Shape) C = OCCViewer::get(c);
-	
-	TopoDS_Shape BB = B->Shape();
-	TopoDS_Shape CC = C->Shape();
+	if (!mrb_string_p(s1) || !mrb_string_p(s2)) {
+		static const char m[] = "Invalid specified name at first or second.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	if (argc == 3) {
+		if (!mrb_string_p(name)) {
+			static const char m[] = "Invalid specified name at last.";
+	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+		hasname = true;
+	}
 
-	// ブーリアン演算オブジェクトを s1 と s2 で作成
-	BRepAlgoAPI_Common bo(BB, CC);
+	Handle(AIS_Shape) haS1 = OCCViewer::get(RSTRING_PTR(s1));
+	if (haS1.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	Handle(AIS_Shape) haS2 = OCCViewer::get(RSTRING_PTR(s2));
+	if (haS2.IsNull()) {
+		static const char m[] = "No such object name of specified at second.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
-	// ブーリアン演算オブジェクトのオペレーションを指定
-	// BOPAlgo_COMMON:  s1 と s2 の共通部分を得る
-	// BOPAlgo_FUSE:    s1 と s2 を結合したものを得る
-	// BOPAlgo_CUT:     s1 を s2 でカットしたものを得る
-	// BOPAlgo_CUT21:   s1 で s1 をカットしたものを得る
-	// BOPAlgo_SECTION: s1 と s2 のセクションを得る
+	BRepAlgoAPI_Common bo(haS1->Shape(), haS2->Shape());
 	bo.SetOperation(BOPAlgo_COMMON);
-
-	// 計算の実行
 	bo.Build();
 
-	// エラーが発生していなかったら
+	mrb_value result;
+
 	if (!bo.ErrorStatus()) {
-	    TopoDS_Shape S = bo.Shape();
-		OCCViewer::set(a, &S);
-		return mrb_str_new(mrb, a, sizeof(a) + 1);
+	    TopoDS_Shape shape = bo.Shape();
+		if (hasname) {
+			OCCViewer::set(RSTRING_PTR(name), &shape);
+			result = name;
+		}
+		else {
+			char aname[16];
+			sprintf(aname, "%X", shape.HashCode(INT_MAX));
+			OCCViewer::set(aname, &shape);
+			result = mrb_str_new(mrb, aname, strlen(aname));
+		}
+	}
+	else {
+		static const char m[] = "Failed to fuse operation of boolean.";
+        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 	
-	return mrb_nil_value();	
+	return result;
 }
 
 mrb_value OCCViewer::cut(mrb_state* mrb, mrb_value self)
 {
-	// mruby の引数をとってくる
-	// 今回は 3 つとも名前(文字列)
-	// 書式は cut result_name object_name1 object_name2
-    mrb_value _a, _b, _c;
-	int argc = mrb_get_args(mrb, "SSS", &_a, &_b, &_c);
-	if (!mrb_string_p(_a) || !mrb_string_p(_b) || !mrb_string_p(_c))
-		return mrb_nil_value();
+	return mrb_nil_value();	
+    mrb_value s1, s2, name;
+	bool hasname = false;
 
-	// 省略可能引数はないので、全て使う。
-	char* a = RSTRING_PTR(_a); // 結果オブジェクトの名前
-	char* b = RSTRING_PTR(_b); // オブジェクト1
-	char* c = RSTRING_PTR(_c); // オブジェクト2
+	int argc = mrb_get_args(mrb, "SS|S", &s1, &s2, &name);
 
-	// オブジェクト1と2を取得してくる
-	Handle(AIS_Shape) B = OCCViewer::get(b);
-	Handle(AIS_Shape) C = OCCViewer::get(c);
-	
-	// TopoDS_Shape に変換
-	TopoDS_Shape BB = B->Shape();
-	TopoDS_Shape CC = C->Shape();
+	if (!mrb_string_p(s1) || !mrb_string_p(s2)) {
+		static const char m[] = "Invalid specified name at first or second.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	if (argc == 3) {
+		if (!mrb_string_p(name)) {
+			static const char m[] = "Invalid specified name at last.";
+	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+		hasname = true;
+	}
 
-	// ブーリアン演算オブジェクトを BB と CC で作成
-	BRepAlgoAPI_Common bo(BB, CC);
+	Handle(AIS_Shape) haS1 = OCCViewer::get(RSTRING_PTR(s1));
+	if (haS1.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	Handle(AIS_Shape) haS2 = OCCViewer::get(RSTRING_PTR(s2));
+	if (haS2.IsNull()) {
+		static const char m[] = "No such object name of specified at second.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	BRepAlgoAPI_Common bo(haS1->Shape(), haS2->Shape());
 	bo.SetOperation(BOPAlgo_CUT);
-
-	// 計算の実行
 	bo.Build();
 
-	// エラーが発生していなかったら
+	mrb_value result;
+
 	if (!bo.ErrorStatus()) {
-	    TopoDS_Shape S = bo.Shape();
-		// 名前 a で登録
-		OCCViewer::set(a, &S);
-		return mrb_str_new(mrb, a, sizeof(a) + 1);
+	    TopoDS_Shape shape = bo.Shape();
+		if (hasname) {
+			OCCViewer::set(RSTRING_PTR(name), &shape);
+			result = name;
+		}
+		else {
+			char aname[16];
+			sprintf(aname, "%X", shape.HashCode(INT_MAX));
+			OCCViewer::set(aname, &shape);
+			result = mrb_str_new(mrb, aname, strlen(aname));
+		}
+	}
+	else {
+		static const char m[] = "Failed to fuse operation of boolean.";
+        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 	
-	return mrb_nil_value();	
+	return result;
 }
 
 mrb_value OCCViewer::fuse(mrb_state* mrb, mrb_value self)
 {
-    mrb_value _a, _b, _c;
-	int argc = mrb_get_args(mrb, "SSS", &_a, &_b, &_c);
-	if (!mrb_string_p(_a) || !mrb_string_p(_b) || !mrb_string_p(_c))
-		return mrb_nil_value();
+    mrb_value s1, s2, name;
+	bool hasname = false;
 
-	char* a = RSTRING_PTR(_a);
-	char* b = RSTRING_PTR(_b);
-	char* c = RSTRING_PTR(_c);
+	int argc = mrb_get_args(mrb, "SS|S", &s1, &s2, &name);
 
-	Handle(AIS_Shape) B = OCCViewer::get(b);
-	Handle(AIS_Shape) C = OCCViewer::get(c);
-	
-	TopoDS_Shape BB = B->Shape();
-	TopoDS_Shape CC = C->Shape();
+	if (!mrb_string_p(s1) || !mrb_string_p(s2)) {
+		static const char m[] = "Invalid specified name at first or second.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	if (argc == 3) {
+		if (!mrb_string_p(name)) {
+			static const char m[] = "Invalid specified name at last.";
+	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+		hasname = true;
+	}
 
-	// ブーリアン演算オブジェクトを s1 と s2 で作成
-	BRepAlgoAPI_Common bo(BB, CC);
+	Handle(AIS_Shape) haS1 = OCCViewer::get(RSTRING_PTR(s1));
+	if (haS1.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	Handle(AIS_Shape) haS2 = OCCViewer::get(RSTRING_PTR(s2));
+	if (haS2.IsNull()) {
+		static const char m[] = "No such object name of specified at second.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
-	// ブーリアン演算オブジェクトのオペレーションを指定
-	// BOPAlgo_COMMON:  s1 と s2 の共通部分を得る
-	// BOPAlgo_FUSE:    s1 と s2 を結合したものを得る
-	// BOPAlgo_CUT:     s1 を s2 でカットしたものを得る
-	// BOPAlgo_CUT21:   s1 で s1 をカットしたものを得る
-	// BOPAlgo_SECTION: s1 と s2 のセクションを得る
+	BRepAlgoAPI_Common bo(haS1->Shape(), haS2->Shape());
 	bo.SetOperation(BOPAlgo_FUSE);
-
-	// 計算の実行
 	bo.Build();
 
-	// エラーが発生していなかったら
+	mrb_value result;
+
 	if (!bo.ErrorStatus()) {
-	    TopoDS_Shape S = bo.Shape();
-		OCCViewer::set(a, &S);
-		return mrb_str_new(mrb, a, sizeof(a) + 1);
+	    TopoDS_Shape shape = bo.Shape();
+		if (hasname) {
+			OCCViewer::set(RSTRING_PTR(name), &shape);
+			result = name;
+		}
+		else {
+			char aname[16];
+			sprintf(aname, "%X", shape.HashCode(INT_MAX));
+			OCCViewer::set(aname, &shape);
+			result = mrb_str_new(mrb, aname, strlen(aname));
+		}
+	}
+	else {
+		static const char m[] = "Failed to fuse operation of boolean.";
+        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 	
-	return mrb_nil_value();	
+	return result;
 }
 
 mrb_value OCCViewer::savebrep(mrb_state* mrb, mrb_value self)
 {
-    mrb_value _name, _path;
-	int argc = mrb_get_args(mrb, "SS", &_name, &_path);
-	if (!mrb_string_p(_name) || !mrb_string_p(_path))
-		return mrb_nil_value();
+    mrb_value path, name;
+	int argc = mrb_get_args(mrb, "SS", &path, &name);
+	if (!mrb_string_p(name) || !mrb_string_p(path)) {
+		static const char m[] = "Invalid specified name or path.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
-	char* name = RSTRING_PTR(_name);
-	char* path = RSTRING_PTR(_path);
+	mrb_value result;
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(name);
-	
-	Standard_Boolean res = BRepTools::Write(hashape->Shape(), (Standard_CString)path);
+	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
 
-	return mrb_nil_value();	
+	if (hashape.IsNull()) {
+		static const char m[] = "No such named object.";
+        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	else {
+		Standard_Boolean res = BRepTools::Write(hashape->Shape(), (Standard_CString)RSTRING_PTR(path));
+
+		if (res) {
+			result = mrb_nil_value();
+		}
+		else {
+			static const char m[] = "Failed to save BRep file.";
+	        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+	}
+
+	return result;
 }
 
 mrb_value OCCViewer::loadbrep(mrb_state* mrb, mrb_value self)
 {
-    mrb_value _name, _path;
-	int argc = mrb_get_args(mrb, "SS", &_name, &_path);
-	if (!mrb_string_p(_name) || !mrb_string_p(_path))
-		return mrb_nil_value();
+    mrb_value path, name;
+	bool hasname = false;
 
-	char* name = RSTRING_PTR(_name);
-	char* path = RSTRING_PTR(_path);
+	int argc = mrb_get_args(mrb, "S|S", &path, &name);
+
+	if (!mrb_string_p(path)) {
+		static const char m[] = "Invalid specified path.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	if (argc == 2) {
+		if (!mrb_string_p(name)) {
+			static const char m[] = "Invalid specified name.";
+	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+		hasname = true;
+	}
 
 	TopoDS_Shape shape;
     BRep_Builder aBuilder;
-    Standard_Boolean res = BRepTools::Read(shape, (Standard_CString)path, aBuilder);
+    Standard_Boolean res = BRepTools::Read(shape, (Standard_CString)RSTRING_PTR(path), aBuilder);
+
+	mrb_value result;
 
 	if (res) {
 		if(AISContext->HasOpenedContext())
 			AISContext->CloseLocalContext();
-		OCCViewer::set(name, &shape);
+		if (hasname) {
+			OCCViewer::set(RSTRING_PTR(name), &shape);
+			result = name;
+		}
+		else {
+			char aname[16];
+			sprintf(aname, "%X", shape.HashCode(INT_MAX));
+			OCCViewer::set(aname, &shape);
+			result = mrb_str_new(mrb, aname, strlen(aname));
+		}
 	}
 	else {
-		return mrb_nil_value();
+		static const char m[] = "Failed to read BRep file.";
+        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_str_new(mrb, name, sizeof(name) + 1);
+	return result;
+}
+
+mrb_value OCCViewer::vertex(mrb_state* mrb, mrb_value self)
+{
+	mrb_float x, y, z;
+	mrb_value name;
+	bool hasname = false;
+
+	int argc = mrb_get_args(mrb, "fff|S", &x, &y, &z, &name);
+	if (argc == 4) {
+		if (!mrb_string_p(name)) {
+			static const char m[] = "Invalid specified name.";
+	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+		hasname = true;
+	}
+
+	gp_Pnt p((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
+	TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(p);
+
+	mrb_value result;
+
+	if (hasname) {
+		OCCViewer::set(RSTRING_PTR(name), &v);
+		result = name;
+	}
+	else {
+		char aname[16];
+		sprintf(aname, "%X", v.HashCode(INT_MAX));
+		OCCViewer::set(aname, &v);
+		result = mrb_str_new(mrb, aname, strlen(aname));
+	}
+
+	// mrb_value r[3];
+	// r[0] = mrb_float_value(mrb, _x);
+	// r[1] = mrb_float_value(mrb, _y);
+	// r[2] = mrb_float_value(mrb, _z);
+	// mrb_value res = mrb_ary_new_from_values(mrb, 3, r);
+
+	return result;
 }
