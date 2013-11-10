@@ -20,6 +20,8 @@ bool OCCViewer::mruby_init()
 
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "fit",      &OCCViewer::fit,      MRB_ARGS_NONE());
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "erase",    &OCCViewer::erase,    MRB_ARGS_REQ(1));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "rename",    &OCCViewer::rename,    MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
+
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "display",  &OCCViewer::display,  MRB_ARGS_REQ(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "update",   &OCCViewer::update,   MRB_ARGS_NONE());
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "color",    &OCCViewer::color,    MRB_ARGS_REQ(4));
@@ -646,6 +648,49 @@ mrb_value OCCViewer::vertex(mrb_state* mrb, mrb_value self)
 	// r[1] = mrb_float_value(mrb, _y);
 	// r[2] = mrb_float_value(mrb, _z);
 	// mrb_value res = mrb_ary_new_from_values(mrb, 3, r);
+
+	return result;
+}
+
+mrb_value OCCViewer::rename(mrb_state* mrb, mrb_value self)
+{
+	mrb_value src, dest;
+	bool hasname = false;
+
+	int argc = mrb_get_args(mrb, "S|S", &src, &dest);
+	if (argc == 2) {
+		if (!mrb_string_p(dest)) {
+			static const char m[] = "Invalid specified name of dest.";
+	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+		hasname = true;
+	}
+	if (!mrb_string_p(src)) {
+		static const char m[] = "Invalid specified name of src.";
+	    return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(src));
+	if (hashape.IsNull()) {
+		static const char m[] = "No such specified object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	Map.erase(RSTRING_PTR(dest));
+    TopoDS_Shape shape = hashape->Shape();
+
+    mrb_value result;
+
+	if (hasname) {
+		OCCViewer::set(RSTRING_PTR(dest), &shape);
+		result = dest;
+	}
+	else {
+		char aname[16];
+		sprintf(aname, "%X", shape.HashCode(INT_MAX));
+		OCCViewer::set(aname, &shape);
+		result = mrb_str_new(mrb, aname, strlen(aname));
+	}
 
 	return result;
 }

@@ -63,6 +63,7 @@ public:
 
 	// Edit
 	mrubycommand(erase);
+        mrubycommand(rename);
 
 	// Boolean
 	mrubycommand(common);
