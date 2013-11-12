@@ -37,6 +37,13 @@ void OCCViewer::initViewAppearance()
     // Depth-cueing (‹ó‹C‰“‹ß–@)‚Ì—LŒø‰»
  	//myView->SetZCueingOn();
 
+	// Viewpoint control
+	myView->SetAt(0.0, 0.0, 0.0);
+	myView->SetEye(-1, -1, 1);
+	myView->SetScale(5.0);
+	myView->SetUp(0.0, 0.0, 1.0);
+	myView->SetCenter(0.0, 0.0);
+
 #if 0
 	// test for layer
 	Handle(Visual3d_Layer) lay
@@ -111,7 +118,24 @@ bool OCCViewer::InitViewer(void* wnd)
     myAISContext->SetHilightColor(Quantity_NOC_YELLOW);
 	myAISContext->SelectionColor(Quantity_NOC_RED);
 
-	myAISContext->UpdateCurrentViewer();
+	// grid
+	{
+		gp_Pnt p(0, 0, 0);
+		gp_Vec v(0, 0, 1);
+		gp_Ax3 ax(p, v);
+		Quantity_Length XOrigin = 0;
+		Quantity_Length YOrigin = 0;
+		Quantity_Length XStep = 10;
+		Quantity_Length YStep = 10;
+		Quantity_Length Rotation = 0;
+		Quantity_Length XSize = XStep * 10 + 1.0e-7;
+		Quantity_Length YSize = YStep * 10 + 1.0e-7;
+		Quantity_Length Offset = 0;
+		myViewer->SetPrivilegedPlane(ax);
+		myViewer->SetRectangularGridValues(XOrigin, YOrigin, XStep, YStep, Rotation);
+		myViewer->SetRectangularGridGraphicValues(XSize, YSize, Offset);
+		myViewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
+	}
 
 	// init current view
 #ifdef PARSEPECTIVE
@@ -127,6 +151,7 @@ bool OCCViewer::InitViewer(void* wnd)
 	myView->Redraw();
 	myView->MustBeResized();
 
+	myAISContext->UpdateCurrentViewer();
 
 	mruby_init();
 
@@ -218,14 +243,45 @@ void OCCViewer::StartRotation(int x, int y)
 
 void OCCViewer::Select(int x1, int y1, int x2, int y2)
 {
-	if (!myAISContext.IsNull())
+	if (!myAISContext.IsNull()) {
 		myAISContext->Select(x1, y1, x2, y2, myView);
+#ifdef _DEBUG
+		myAISContext->InitCurrent();
+		for (;myAISContext->MoreCurrent ();myAISContext->NextCurrent ()) {
+			Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
+			if (!hashape.IsNull()) {
+				TopoDS_Shape shape = hashape->Shape();	
+				if (!shape.IsNull()) {
+					int t = shape.ShapeType();
+					int h = shape.HashCode(INT_MAX);
+					printf("hash=%X type=%d\n", h, t);
+				}
+			}
+		}
+#endif
+	}
+
 }
 
 void OCCViewer::Select(void)
 {
-	if (!myAISContext.IsNull())
+	if (!myAISContext.IsNull()) {
 		myAISContext->Select();
+#ifdef _DEBUG
+		myAISContext->InitCurrent();
+		for (;myAISContext->MoreCurrent ();myAISContext->NextCurrent ()) {
+			Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
+			if (!hashape.IsNull()) {
+				TopoDS_Shape shape = hashape->Shape();	
+				if (!shape.IsNull()) {
+					int t = shape.ShapeType();
+					int h = shape.HashCode(INT_MAX);
+					printf("hash=%X type=%d\n", h, t);
+				}
+			}
+		}
+#endif
+	}
 }
 
 void OCCViewer::MoveTo(int x, int y)
@@ -236,14 +292,44 @@ void OCCViewer::MoveTo(int x, int y)
 
 void OCCViewer::ShiftSelect(int x1, int y1, int x2, int y2)
 {
-	if ((!myAISContext.IsNull()) && (!myView.IsNull()))
+	if ((!myAISContext.IsNull()) && (!myView.IsNull())) {
 		myAISContext->ShiftSelect(x1, y1, x2, y2, myView);
+#ifdef _DEBUG
+		myAISContext->InitCurrent();
+		for (;myAISContext->MoreCurrent ();myAISContext->NextCurrent ()) {
+			Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
+			if (!hashape.IsNull()) {
+				TopoDS_Shape shape = hashape->Shape();	
+				if (!shape.IsNull()) {
+					int t = shape.ShapeType();
+					int h = shape.HashCode(INT_MAX);
+					printf("hash=%X type=%d\n", h, t);
+				}
+			}
+		}
+#endif
+	}
 }
 
 void OCCViewer::ShiftSelect(void)
 {
-	if (!myAISContext.IsNull())
+	if (!myAISContext.IsNull()) {
 		myAISContext->ShiftSelect();
+#ifdef _DEBUG
+		myAISContext->InitCurrent();
+		for (;myAISContext->MoreCurrent ();myAISContext->NextCurrent ()) {
+			Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
+			if (!hashape.IsNull()) {
+				TopoDS_Shape shape = hashape->Shape();	
+				if (!shape.IsNull()) {
+					int t = shape.ShapeType();
+					int h = shape.HashCode(INT_MAX);
+					printf("hash=%X type=%d\n", h, t);
+				}
+			}
+		}
+#endif
+	}
 }
 
 void OCCViewer::BackgroundColor(int& r, int& g, int& b)

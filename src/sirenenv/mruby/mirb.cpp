@@ -35,6 +35,8 @@ Mirb::Mirb()
     mrbc_filename(mrb, cxt, "(mirb)");
     ai = mrb_gc_arena_save(mrb);
 
+	first_command = 1;
+
     for (int i=0; i<1024; i++) {
         ruby_code[i] = 0;
     }
@@ -215,7 +217,6 @@ mrb_bool Mirb::is_code_block_open(struct mrb_parser_state *parser)
  */
 int Mirb::user_exec(char *last_code_line)
 {
-    int bc;
     struct mrb_parser_state *parser;
     int err = 0;
 
@@ -249,6 +250,11 @@ int Mirb::user_exec(char *last_code_line)
     mrb_parser_parse(parser, cxt);
     code_block_open = is_code_block_open(parser);
 
+#if 1
+	// pass the blockcode
+	code_block_open = 0;
+#endif
+
     if (code_block_open) {
         /* no evaluation of code */
         /* ブロック内ならば実行しない */
@@ -262,6 +268,18 @@ int Mirb::user_exec(char *last_code_line)
             err = 1;
         }
         else {
+#if 1
+	        /* generate bytecode */
+	        struct RProc *proc = mrb_generate_code(mrb, parser);
+
+	        /* pass a proc for evaulation */
+	        nregs = first_command ? 0: proc->body.irep->nregs;
+	        /* evaluate the bytecode */
+	        result = mrb_context_run(mrb,
+	            proc,
+	            mrb_top_self(mrb),
+	            nregs);
+#else
             /* generate bytecode */
             /* バイトコードを生成 */
             bc = mrb_generate_code(mrb, parser);
@@ -272,7 +290,7 @@ int Mirb::user_exec(char *last_code_line)
                     /* pass a proc for evaulation */
                     mrb_proc_new(mrb, mrb->irep[bc]),
                     mrb_top_self(mrb));
-
+#endif
             /* did an exception occur? */
             /* 例外が発生したか */
             if (mrb->exc) {
@@ -295,6 +313,7 @@ int Mirb::user_exec(char *last_code_line)
 
     mrb_parser_free(parser);
     cxt->lineno++;
+	first_command = 0;
 
     return err;
 }

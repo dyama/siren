@@ -6,3 +6,7 @@
 /src/siren/bin
 
 /src/siren/obj
+
+*.h~
+
+*.cpp~

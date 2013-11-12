@@ -17,7 +17,8 @@ static Handle_AIS_InteractiveContext AISContext;
 static Handle_V3d_View               View;
 static std::map<std::string, Handle(AIS_Shape)> Map;
 
-#define mrubycommand(name) static mrb_value name(mrb_state* mrb, mrb_value self)
+#define mrbcmddec(name) static mrb_value name(mrb_state* mrb, mrb_value self)
+#define mrbcmddef(name) mrb_value OCCViewer::##name(mrb_state* mrb, mrb_value self)
 
 class OCCViewer
 {
@@ -38,44 +39,49 @@ public:
 
 	bool  mruby_init();
 	bool  mruby_cleenup();
-	int   mruby_exec(char* command);
+	int   mruby_exec(char* cmd);
+
+protected:
+
+	// Set / Get
+	static const char* set(const TopoDS_Shape& shape, const char* name = NULL);
+	static void unset(const char* name);
+	static Handle(AIS_Shape) get(const char* name);
 
 public:
 
-	// Set / Get
-	static void set(const char* name, const TopoDS_Shape* shape);
-	static void set(const char* name, const Handle(AIS_Shape) shape);
-	static Handle(AIS_Shape) get(const char* name);
+	// Core
+	mrbcmddec(erase);
+    mrbcmddec(rename);
+	mrbcmddec(copy);
 
-	// View
-	mrubycommand(fit);
-	mrubycommand(update);
-	mrubycommand(display);
-	mrubycommand(color);
+	mrbcmddec(translate);
+	mrbcmddec(rotate);
+	mrbcmddec(scale);
+	mrbcmddec(mirror);
 
-	// Make premitive
-	mrubycommand(vertex);
-	mrubycommand(box);
-	mrubycommand(cylinder);
-	mrubycommand(cone);
-	mrubycommand(sphere);
-	mrubycommand(torus);
+	// Visualization
+	mrbcmddec(fit);
+	mrbcmddec(update);
+	mrbcmddec(display);
+	mrbcmddec(color);
 
-	// Edit
-	mrubycommand(erase);
-        mrubycommand(rename);
+	// Premitive
+	mrbcmddec(vertex);
+	mrbcmddec(box);
+	mrbcmddec(cylinder);
+	mrbcmddec(cone);
+	mrbcmddec(sphere);
+	mrbcmddec(torus);
 
 	// Boolean
-	mrubycommand(common);
-	mrubycommand(cut);
-	mrubycommand(fuse);
+	mrbcmddec(common);
+	mrbcmddec(cut);
+	mrbcmddec(fuse);
 
 	// I/O
-	mrubycommand(savebrep);
-	mrubycommand(loadbrep);
-
-	// for debug
-	mrubycommand(test);
+	mrbcmddec(savebrep);
+	mrbcmddec(loadbrep);
 
 public:
 	bool  InitViewer(void* wnd);

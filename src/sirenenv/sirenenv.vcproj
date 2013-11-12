@@ -306,16 +306,32 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="command"
+			>
+			<File
+				RelativePath=".\command\boolean.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\command.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\command\io.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\command\premitive.cpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\cad.h"
 			>
 		</File>
 		<File
 			RelativePath=".\colorname.h"
-			>
-		</File>
-		<File
-			RelativePath=".\command.cpp"
 			>
 		</File>
 		<File

@@ -29,6 +29,8 @@ private:
     mrb_value result;
     mrb_bool code_block_open;       // = FALSE;
     int ai;
+	int first_command;
+	unsigned int nregs;
 
     char ruby_code[1024];// = { 0 };
 

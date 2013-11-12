@@ -60,6 +60,7 @@
 #include <MgtBRep.hxx>
 //geometry
 #include <gp_Ax2.hxx>
+#include <gp_Ax3.hxx>
 #include <Geom_Axis2Placement.hxx>
 //csfdb I/E
 #include <Message_ProgressIndicator.hxx>
@@ -85,8 +86,11 @@
 //for vrml export
 #include <VrmlAPI_Writer.hxx>
 
-// for primitive
+// BRep Builder
+#include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+// for primitive
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
