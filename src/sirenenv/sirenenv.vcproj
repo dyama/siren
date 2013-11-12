@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;&quot;$(CASROOT)\inc&quot;;&quot;$(MRUBYROOT)\include&quot;;.\mruby;./command"
+				AdditionalIncludeDirectories=".;&quot;$(CASROOT)\inc&quot;;&quot;$(MRUBYROOT)\include&quot;;.\mruby"
 				PreprocessorDefinitions="WIN32;_DEBUG;WNT"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -116,7 +116,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".;&quot;$(CASROOT)\inc&quot;;&quot;$(MRUBYROOT)\include&quot;;.\mruby;./command"
+				AdditionalIncludeDirectories=".;&quot;$(CASROOT)\inc&quot;;&quot;$(MRUBYROOT)\include&quot;;.\mruby"
 				PreprocessorDefinitions="WIN32;NDEBUG;WNT"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -191,106 +191,6 @@
 	</References>
 	<Files>
 		<Filter
-			Name="TopoDS"
-			>
-			<File
-				RelativePath=".\TopoDS\ShapeEnum.h"
-				>
-			</File>
-			<Filter
-				Name="header"
-				>
-				<File
-					RelativePath=".\TopoDS\Compound.h"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\CompSolid.h"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Edge.h"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Face.h"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Shape.h"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Shell.h"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Solid.h"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Vertex.h"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Wire.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="source"
-				>
-				<File
-					RelativePath=".\TopoDS\Compound.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\CompSolid.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Edge.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Face.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Shape.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Shell.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Solid.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Vertex.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\TopoDS\Wire.cpp"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="TopExp"
-			>
-			<File
-				RelativePath=".\TopoDS\Explorer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TopoDS\Explorer.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="mruby"
 			>
 			<File
@@ -352,10 +252,6 @@
 		</File>
 		<File
 			RelativePath=".\Stdafx.h"
-			>
-		</File>
-		<File
-			RelativePath=".\gp\Vec.h"
 			>
 		</File>
 	</Files>
