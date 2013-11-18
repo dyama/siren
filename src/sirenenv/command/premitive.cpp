@@ -22,12 +22,6 @@ mrbcmddef(vertex)
 	TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(p);
 
 	const char* rname = OCCViewer::set(v, NULL);
-
-	// mrb_value r[3];
-	// r[0] = mrb_float_value(mrb, _x);
-	// r[1] = mrb_float_value(mrb, _y);
-	// r[2] = mrb_float_value(mrb, _z);
-	// mrb_value res = mrb_ary_new_from_values(mrb, 3, r);
 	return mrb_str_new(mrb, rname, strlen(rname));
 }
 

@@ -117,3 +117,39 @@ mrbcmddef(fuse)
 	
 	return result;
 }
+
+mrbcmddef(volume)
+{
+    mrb_value name;
+	int argc = mrb_get_args(mrb, "S", &name);
+
+	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	GProp_GProps gprops;
+	BRepGProp::VolumeProperties(hashape->Shape(), gprops);
+	Standard_Real vol = gprops.Mass();
+
+	return mrb_float_value(mrb, (mrb_float)vol);
+}
+
+mrbcmddef(cog)
+{
+    mrb_value name;
+	int argc = mrb_get_args(mrb, "S", &name);
+
+	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	GProp_GProps gprops;
+	BRepGProp::VolumeProperties(hashape->Shape(), gprops);
+	gp_Pnt cog = gprops.CentreOfMass();
+
+	return pnt2ar(mrb, cog);
+}

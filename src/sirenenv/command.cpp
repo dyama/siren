@@ -37,6 +37,8 @@ bool OCCViewer::mruby_init()
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "common",   &OCCViewer::common,   MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cut",      &OCCViewer::cut,      MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "fuse",     &OCCViewer::fuse,     MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "volume",   &OCCViewer::volume,   MRB_ARGS_REQ(1));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cog",      &OCCViewer::cog,      MRB_ARGS_REQ(1));
 
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "vertex",   &OCCViewer::vertex,   MRB_ARGS_REQ(3));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "line",     &OCCViewer::line,     MRB_ARGS_REQ(2));
@@ -422,6 +424,15 @@ gp_Pnt* OCCViewer::ar2pnt(mrb_state* mrb, const mrb_value& ar)
 	return new gp_Pnt((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
 }
 
+mrb_value OCCViewer::pnt2ar(mrb_state* mrb, const gp_Pnt& rPnt)
+{
+	mrb_value res[3];
+	res[0] = mrb_float_value(mrb, rPnt.X());
+	res[1] = mrb_float_value(mrb, rPnt.Y());
+	res[2] = mrb_float_value(mrb, rPnt.Z());
+	return mrb_ary_new_from_values(mrb, 3, res);
+}
+
 mrbcmddef(bndbox)
 {
 	mrb_value name;
@@ -440,18 +451,9 @@ mrbcmddef(bndbox)
     Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
     box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
-	mrb_value _min[3];
-	_min[0] = mrb_float_value(mrb, xmin);
-	_min[1] = mrb_float_value(mrb, ymin);
-	_min[2] = mrb_float_value(mrb, zmin);
-	mrb_value rmin = mrb_ary_new_from_values(mrb, 3, _min);
-
-	mrb_value _max[3];
-	_max[0] = mrb_float_value(mrb, xmax);
-	_max[1] = mrb_float_value(mrb, ymax);
-	_max[2] = mrb_float_value(mrb, zmax);
-	mrb_value rmax = mrb_ary_new_from_values(mrb, 3, _max);
-
+	mrb_value rmin = pnt2ar(mrb, gp_Pnt(xmin, ymin, zmin));
+	mrb_value rmax = pnt2ar(mrb, gp_Pnt(xmax, ymax, zmax));
+	
 	mrb_value res[2];
 	res[0] = rmin;
 	res[1] = rmax;	

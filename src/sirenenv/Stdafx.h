@@ -113,6 +113,10 @@
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 
+// for volume
+#include <GProp_GProps.hxx>
+#include <BRepGProp.hxx>
+
 // マップコレクション
 // #include <TCollection_BasicMap.hxx>
 //#include <Draw_VMap.hxx>
