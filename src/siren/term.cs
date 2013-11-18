@@ -47,6 +47,9 @@ namespace siren
                 this.Visible = false;
                 this.Parent.Parent.Focus();
                 break;
+            case Keys.F5:
+                source("E:/test.rb");
+                break;
             case Keys.Up:
                 e.SuppressKeyPress = true;
                 break;
@@ -56,6 +59,7 @@ namespace siren
             case Keys.Left:
                 break;
             case Keys.Right:
+                break;
             default:
 
                 break;
@@ -124,6 +128,20 @@ namespace siren
             rtb.SelectionColor = Color.LightGreen;
         }
 
+        /// <summary>
+        /// sourceコマンド(デバッグのための実装)
+        /// </summary>
+        /// <param name="path"></param>
+        private void source(string path)
+        {
+            System.IO.StreamReader cReader = ( new System.IO.StreamReader(path, System.Text.Encoding.Default) );
+            string stResult = string.Empty;
+            while (cReader.Peek() >= 0) {
+                rtb.Text += cReader.ReadLine();
+                KeyDown_Enter(rtb);
+            }
+            cReader.Close();
+        }
 
     }
 }
