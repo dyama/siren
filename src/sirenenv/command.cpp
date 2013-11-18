@@ -38,9 +38,9 @@ bool OCCViewer::mruby_init()
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "fuse",     &OCCViewer::fuse,     MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
 
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "vertex",   &OCCViewer::vertex,   MRB_ARGS_REQ(3) | MRB_ARGS_OPT(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "box",      &OCCViewer::box,      MRB_ARGS_REQ(3) | MRB_ARGS_OPT(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cylinder", &OCCViewer::cylinder, MRB_ARGS_REQ(8) | MRB_ARGS_OPT(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "sphere",   &OCCViewer::sphere,   MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "box",      &OCCViewer::box,      MRB_ARGS_REQ(3) | MRB_ARGS_OPT(3));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "sphere",   &OCCViewer::sphere,   MRB_ARGS_REQ(1) | MRB_ARGS_OPT(3));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cylinder", &OCCViewer::cylinder, MRB_ARGS_REQ(8));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cone",     &OCCViewer::cone,     MRB_ARGS_REQ(10) | MRB_ARGS_OPT(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "torus",    &OCCViewer::torus,    MRB_ARGS_REQ(11) | MRB_ARGS_OPT(1));
 
@@ -173,26 +173,6 @@ mrbcmddef(rename)
 	return mrb_str_new(mrb, rname, strlen(rname));
 }
 
-mrbcmddef(vertex)
-{
-	mrb_float x, y, z;
-	mrb_value name;
-
-	int argc = mrb_get_args(mrb, "fff|S", &x, &y, &z, &name);
-
-	gp_Pnt p((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
-	TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(p);
-
-	const char* rname = OCCViewer::set(v, mrb_string_p(name) ? RSTRING_PTR(name) : NULL);
-
-	// mrb_value r[3];
-	// r[0] = mrb_float_value(mrb, _x);
-	// r[1] = mrb_float_value(mrb, _y);
-	// r[2] = mrb_float_value(mrb, _z);
-	// mrb_value res = mrb_ary_new_from_values(mrb, 3, r);
-
-	return mrb_str_new(mrb, rname, strlen(rname));
-}
 
 mrbcmddef(update)
 {

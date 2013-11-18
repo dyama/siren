@@ -250,11 +250,6 @@ int Mirb::user_exec(char *last_code_line)
     mrb_parser_parse(parser, cxt);
     code_block_open = is_code_block_open(parser);
 
-#if 1
-	// pass the blockcode
-	code_block_open = 0;
-#endif
-
     if (code_block_open) {
         /* no evaluation of code */
         /* ブロック内ならば実行しない */
@@ -268,29 +263,19 @@ int Mirb::user_exec(char *last_code_line)
             err = 1;
         }
         else {
-#if 1
 	        /* generate bytecode */
+            /* バイトコードを生成 */
 	        struct RProc *proc = mrb_generate_code(mrb, parser);
 
 	        /* pass a proc for evaulation */
 	        nregs = first_command ? 0: proc->body.irep->nregs;
 	        /* evaluate the bytecode */
+            /* バイトコードを実行 */
 	        result = mrb_context_run(mrb,
 	            proc,
 	            mrb_top_self(mrb),
 	            nregs);
-#else
-            /* generate bytecode */
-            /* バイトコードを生成 */
-            bc = mrb_generate_code(mrb, parser);
 
-            /* evaluate the bytecode */
-            /* バイトコードを実行 */
-            result = mrb_run(mrb,
-                    /* pass a proc for evaulation */
-                    mrb_proc_new(mrb, mrb->irep[bc]),
-                    mrb_top_self(mrb));
-#endif
             /* did an exception occur? */
             /* 例外が発生したか */
             if (mrb->exc) {

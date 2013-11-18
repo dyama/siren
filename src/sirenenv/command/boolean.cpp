@@ -12,7 +12,6 @@
 
 mrbcmddef(common)
 {
-	return mrb_nil_value();	
     mrb_value s1, s2, name;
 
 	int argc = mrb_get_args(mrb, "SS|S", &s1, &s2, &name);
@@ -49,7 +48,6 @@ mrbcmddef(common)
 
 mrbcmddef(cut)
 {
-	return mrb_nil_value();	
     mrb_value s1, s2, name;
 
 	int argc = mrb_get_args(mrb, "SS|S", &s1, &s2, &name);
