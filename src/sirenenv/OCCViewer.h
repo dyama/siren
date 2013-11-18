@@ -47,6 +47,7 @@ protected:
 	static const char* set(const TopoDS_Shape& shape, const char* name = NULL);
 	static void unset(const char* name);
 	static Handle(AIS_Shape) get(const char* name);
+	static gp_Pnt* ar2pnt(mrb_state* mrb, const mrb_value& ar);
 
 public:
 
@@ -54,6 +55,7 @@ public:
 	mrbcmddec(erase);
     mrbcmddec(rename);
 	mrbcmddec(copy);
+	mrbcmddec(bndbox);
 
 	mrbcmddec(translate);
 	mrbcmddec(rotate);

@@ -16,21 +16,18 @@
 mrbcmddef(vertex)
 {
 	mrb_float x, y, z;
-	mrb_value name;
-
-	int argc = mrb_get_args(mrb, "fff|S", &x, &y, &z, &name);
+	int argc = mrb_get_args(mrb, "fff", &x, &y, &z);
 
 	gp_Pnt p((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
 	TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(p);
 
-	const char* rname = OCCViewer::set(v, mrb_string_p(name) ? RSTRING_PTR(name) : NULL);
+	const char* rname = OCCViewer::set(v, NULL);
 
 	// mrb_value r[3];
 	// r[0] = mrb_float_value(mrb, _x);
 	// r[1] = mrb_float_value(mrb, _y);
 	// r[2] = mrb_float_value(mrb, _z);
 	// mrb_value res = mrb_ary_new_from_values(mrb, 3, r);
-
 	return mrb_str_new(mrb, rname, strlen(rname));
 }
 
@@ -39,14 +36,14 @@ mrbcmddef(vertex)
  */
 mrbcmddef(box)
 {
-    mrb_float sx, sy, sz;
-    mrb_float px, py, pz;
-    int argc = mrb_get_args(mrb, "fff|fff", &sx, &sy, &sz, &px, &py, &pz);
+    mrb_value size;
+    mrb_value pos;
+    int argc = mrb_get_args(mrb, "A|A", &size, &pos);
 
-	gp_Pnt op
-		= (argc == 6) ? gp_Pnt(px, py, pz) : gp_Pnt(0.0, 0.0, 0.0);
+	gp_Pnt s = *ar2pnt(mrb, size);
+	gp_Pnt op = (argc == 2) ? *ar2pnt(mrb, pos) : gp_Pnt(0.0, 0.0, 0.0);
 
-	BRepPrimAPI_MakeBox box(op, (Standard_Real)sx, (Standard_Real)sy, (Standard_Real)sz);
+	BRepPrimAPI_MakeBox box(op, s.X(), s.Y(), s.Z());
     TopoDS_Shape shape = box.Shape();
 
 	const char* rname = OCCViewer::set(shape, NULL);
@@ -59,11 +56,11 @@ mrbcmddef(box)
 mrbcmddef(sphere)
 {
     mrb_float r;
-    mrb_float px, py, pz;
-    int argc = mrb_get_args(mrb, "f|fff", &r, &px, &py, &pz);
+	mrb_value pos;
+    int argc = mrb_get_args(mrb, "f|A", &r, &pos);
 
 	gp_Pnt op
-		= (argc == 4) ? gp_Pnt(px, py, pz) : gp_Pnt(0.0, 0.0, 0.0);
+		= (argc == 2) ? *ar2pnt(mrb, pos) : gp_Pnt(0.0, 0.0, 0.0);
 
 	BRepPrimAPI_MakeSphere sp(op, (Standard_Real)r); 
     TopoDS_Shape shape = sp.Shape();

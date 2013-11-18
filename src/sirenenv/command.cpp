@@ -22,6 +22,7 @@ bool OCCViewer::mruby_init()
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "erase",    &OCCViewer::erase,    MRB_ARGS_REQ(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "rename",   &OCCViewer::rename,   MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "copy",     &OCCViewer::copy,     MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "bndbox",   &OCCViewer::bndbox,   MRB_ARGS_REQ(1));
 
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "translate",&OCCViewer::translate,MRB_ARGS_REQ(4));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "rotate",   &OCCViewer::rotate,   MRB_ARGS_REQ(8));
@@ -37,9 +38,9 @@ bool OCCViewer::mruby_init()
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cut",      &OCCViewer::cut,      MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "fuse",     &OCCViewer::fuse,     MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
 
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "vertex",   &OCCViewer::vertex,   MRB_ARGS_REQ(3) | MRB_ARGS_OPT(1));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "vertex",   &OCCViewer::vertex,   MRB_ARGS_REQ(3));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "box",      &OCCViewer::box,      MRB_ARGS_REQ(3) | MRB_ARGS_OPT(3));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "sphere",   &OCCViewer::sphere,   MRB_ARGS_REQ(1) | MRB_ARGS_OPT(3));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "sphere",   &OCCViewer::sphere,   MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cylinder", &OCCViewer::cylinder, MRB_ARGS_REQ(8));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cone",     &OCCViewer::cone,     MRB_ARGS_REQ(10) | MRB_ARGS_OPT(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "torus",    &OCCViewer::torus,    MRB_ARGS_REQ(11) | MRB_ARGS_OPT(1));
@@ -374,4 +375,85 @@ mrbcmddef(mirror)
 	}
 
 	return result;
+}
+
+gp_Pnt* OCCViewer::ar2pnt(mrb_state* mrb, const mrb_value& ar)
+{
+	mrb_value _x = mrb_ary_shift(mrb, ar);
+	mrb_value _y = mrb_ary_shift(mrb, ar);
+	mrb_value _z = mrb_ary_shift(mrb, ar);
+
+	mrb_float x, y, z;
+
+	if (mrb_nil_p(_x))
+		throw "X value is nil.";
+	else
+		if (!mrb_float_p(_x)) {
+			if (!mrb_fixnum_p(_x))
+				throw "X value is not float type.";
+			x = mrb_fixnum(_x);
+		}
+		else 
+			x = _x.value.f;
+
+	if (mrb_nil_p(_y))
+		throw "Y value is nil.";
+	else
+		if (!mrb_float_p(_y)) {
+			if (!mrb_fixnum_p(_y))
+				throw "Y value is not float type.";
+			y = mrb_fixnum(_y);
+		}
+		else 
+			y = _y.value.f;
+
+	if (mrb_nil_p(_z))
+		throw "Z value is nil.";
+	else
+		if (!mrb_float_p(_z)) {
+			if (!mrb_fixnum_p(_z))
+				throw "Z value is not float type.";
+			z = mrb_fixnum(_z);
+		}
+		else 
+			z = _z.value.f;
+	
+	return new gp_Pnt((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
+}
+
+mrbcmddef(bndbox)
+{
+	mrb_value name;
+	int argc = mrb_get_args(mrb, "S", &name);
+
+	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	TopoDS_Shape shape = hashape->Shape();
+	
+    Bnd_Box box;
+    BRepBndLib::Add(shape, box);
+    Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
+    box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+	mrb_value _min[3];
+	_min[0] = mrb_float_value(mrb, xmin);
+	_min[1] = mrb_float_value(mrb, ymin);
+	_min[2] = mrb_float_value(mrb, zmin);
+	mrb_value rmin = mrb_ary_new_from_values(mrb, 3, _min);
+
+	mrb_value _max[3];
+	_max[0] = mrb_float_value(mrb, xmax);
+	_max[1] = mrb_float_value(mrb, ymax);
+	_max[2] = mrb_float_value(mrb, zmax);
+	mrb_value rmax = mrb_ary_new_from_values(mrb, 3, _max);
+
+	mrb_value res[2];
+	res[0] = rmin;
+	res[1] = rmax;	
+
+	return mrb_ary_new_from_values(mrb, 2, res);
 }

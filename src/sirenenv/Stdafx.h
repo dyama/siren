@@ -108,6 +108,9 @@
 #include <Visual3d_Layer.hxx>
 #include <Handle_Visual3d_Layer.hxx>
 
+#include <BRepBndLib.hxx>
+#include <Bnd_Box.hxx>
+
 // マップコレクション
 // #include <TCollection_BasicMap.hxx>
 //#include <Draw_VMap.hxx>
