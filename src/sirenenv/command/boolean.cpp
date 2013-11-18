@@ -10,6 +10,9 @@
 #include "StdAfx.h"
 #include "OCCViewer.h"
 
+/**
+ * \brief get across area of s1 by s2
+ */
 mrbcmddef(common)
 {
     mrb_value s1, s2, name;
@@ -46,6 +49,9 @@ mrbcmddef(common)
 	return result;
 }
 
+/**
+ * \brief cut object (s1 by s2)
+ */
 mrbcmddef(cut)
 {
     mrb_value s1, s2, name;
@@ -82,6 +88,9 @@ mrbcmddef(cut)
 	return result;
 }
 
+/**
+ * \brief add object
+ */
 mrbcmddef(fuse)
 {
     mrb_value s1, s2, name;
@@ -118,6 +127,9 @@ mrbcmddef(fuse)
 	return result;
 }
 
+/**
+ * \brief get volume of solid object
+ */
 mrbcmddef(volume)
 {
     mrb_value name;
@@ -136,6 +148,9 @@ mrbcmddef(volume)
 	return mrb_float_value(mrb, (mrb_float)vol);
 }
 
+/**
+ * \brief get point of center of gravity
+ */
 mrbcmddef(cog)
 {
     mrb_value name;

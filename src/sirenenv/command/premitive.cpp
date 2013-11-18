@@ -25,6 +25,9 @@ mrbcmddef(vertex)
 	return mrb_str_new(mrb, rname, strlen(rname));
 }
 
+/**
+ * \brief make line
+ */
 mrbcmddef(line)
 {
     mrb_value sp, tp;

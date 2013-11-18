@@ -24,6 +24,8 @@ bool OCCViewer::mruby_init()
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "copy",     &OCCViewer::copy,     MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "bndbox",   &OCCViewer::bndbox,   MRB_ARGS_REQ(1));
 
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "compound", &OCCViewer::compound, MRB_ARGS_REQ(1));
+
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "translate",&OCCViewer::translate,MRB_ARGS_REQ(4));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "rotate",   &OCCViewer::rotate,   MRB_ARGS_REQ(8));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "scale",    &OCCViewer::scale,    MRB_ARGS_REQ(4));
@@ -380,6 +382,9 @@ mrbcmddef(mirror)
 	return result;
 }
 
+/**
+ * \brief mrubyの配列オブジェクトをOCCのgp_Pntに変換する
+ */
 gp_Pnt* OCCViewer::ar2pnt(mrb_state* mrb, const mrb_value& ar)
 {
 	mrb_value _x = mrb_ary_shift(mrb, ar);
@@ -424,6 +429,9 @@ gp_Pnt* OCCViewer::ar2pnt(mrb_state* mrb, const mrb_value& ar)
 	return new gp_Pnt((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
 }
 
+/**
+ * \brief OCCのgp_Pntをmrubyの配列オブジェクトに変換する
+ */
 mrb_value OCCViewer::pnt2ar(mrb_state* mrb, const gp_Pnt& rPnt)
 {
 	mrb_value res[3];
@@ -433,6 +441,12 @@ mrb_value OCCViewer::pnt2ar(mrb_state* mrb, const gp_Pnt& rPnt)
 	return mrb_ary_new_from_values(mrb, 3, res);
 }
 
+/**
+ * \brief オブジェクトが存在しているエリアを取得する
+ * 
+ * \note グローバル座標系において、オブジェクトが存在しているエリアを
+ *       X軸、Y軸、Z軸に対してそれぞれ最小値、最大値で取得する。
+ */
 mrbcmddef(bndbox)
 {
 	mrb_value name;
@@ -459,4 +473,31 @@ mrbcmddef(bndbox)
 	res[1] = rmax;	
 
 	return mrb_ary_new_from_values(mrb, 2, res);
+}
+
+
+mrbcmddef(compound)
+{
+	mrb_value ar;
+	int argc = mrb_get_args(mrb, "A", &ar);
+
+	TopoDS_Compound	comp;
+	BRep_Builder B;
+	B.MakeCompound(comp);
+
+	for (;;) {
+		mrb_value name = mrb_ary_shift(mrb, ar);
+		if (mrb_nil_p(name))
+			break;
+		Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+		if (hashape.IsNull()) {
+			static const char m[] = "No such object name of specified at first.";
+	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+		TopoDS_Shape shape = hashape->Shape();
+		B.Add(comp, shape);
+	}
+
+	const char* rname = OCCViewer::set(comp, NULL);
+	return mrb_str_new(mrb, rname, strlen(rname));
 }

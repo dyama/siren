@@ -57,6 +57,7 @@ public:
     mrbcmddec(rename);
 	mrbcmddec(copy);
 	mrbcmddec(bndbox);
+	mrbcmddec(compound);
 
 	mrbcmddec(translate);
 	mrbcmddec(rotate);
