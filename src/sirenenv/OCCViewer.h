@@ -70,6 +70,7 @@ public:
 
 	// Premitive
 	mrbcmddec(vertex);
+	mrbcmddec(line);
 	mrbcmddec(box);
 	mrbcmddec(cylinder);
 	mrbcmddec(cone);

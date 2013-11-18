@@ -31,6 +31,21 @@ mrbcmddef(vertex)
 	return mrb_str_new(mrb, rname, strlen(rname));
 }
 
+mrbcmddef(line)
+{
+    mrb_value sp, tp;
+    int argc = mrb_get_args(mrb, "AA", &sp, &tp);
+
+	gp_Pnt _sp = *ar2pnt(mrb, sp);
+	gp_Pnt _tp = *ar2pnt(mrb, tp);
+
+	BRepBuilderAPI_MakeEdge line(_sp, _tp);
+    TopoDS_Shape shape = line.Shape();
+
+	const char* rname = OCCViewer::set(shape, NULL);
+	return mrb_str_new(mrb, rname, strlen(rname));
+}
+
 /**
  * \brief make box
  */

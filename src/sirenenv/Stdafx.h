@@ -86,9 +86,11 @@
 //for vrml export
 #include <VrmlAPI_Writer.hxx>
 
-// BRep Builder
-#include <BRepBuilderAPI_Copy.hxx>
+// BRep Builder API, Make
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+// BRep Builder API, Modify
+#include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 // for primitive
 #include <BRepPrimAPI_MakeBox.hxx>
