@@ -137,3 +137,22 @@ mrbcmddef(torus)
 	const char* rname = OCCViewer::set(shape, NULL);
 	return mrb_str_new(mrb, rname, strlen(rname));
 }
+
+mrbcmddef(plane)
+{
+	mrb_value pos, dir;
+	mrb_float umin, umax, vmin, vmax;
+	int argc = mrb_get_args(mrb, "AAffff", &pos, &dir, &umin, &umax, &vmin, &vmax);
+
+	gp_Pnt _pos = *ar2pnt(mrb, pos);
+	gp_Pnt _dir = *ar2pnt(mrb, dir);
+	gp_Dir __dir(_dir.X(), _dir.Y(), _dir.Z());
+	gp_Pln _pln(_pos, __dir);
+
+	BRepBuilderAPI_MakeFace face(_pln, (Standard_Real)umin, (Standard_Real)umax, (Standard_Real)vmin, (Standard_Real)vmax);
+
+    TopoDS_Shape shape = face.Shape();
+
+	const char* rname = OCCViewer::set(shape, NULL);
+	return mrb_str_new(mrb, rname, strlen(rname));
+}

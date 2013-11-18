@@ -61,6 +61,7 @@
 //geometry
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Pln.hxx>
 #include <Geom_Axis2Placement.hxx>
 //csfdb I/E
 #include <Message_ProgressIndicator.hxx>
@@ -89,6 +90,7 @@
 // BRep Builder API, Make
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 // BRep Builder API, Modify
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_Transform.hxx>

@@ -49,6 +49,7 @@ bool OCCViewer::mruby_init()
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cylinder", &OCCViewer::cylinder, MRB_ARGS_REQ(8));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cone",     &OCCViewer::cone,     MRB_ARGS_REQ(10) | MRB_ARGS_OPT(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "torus",    &OCCViewer::torus,    MRB_ARGS_REQ(11) | MRB_ARGS_OPT(1));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "plane",    &OCCViewer::plane,    MRB_ARGS_REQ(6));
 
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "save",     &OCCViewer::savebrep, MRB_ARGS_REQ(2));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "load",     &OCCViewer::loadbrep, MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));

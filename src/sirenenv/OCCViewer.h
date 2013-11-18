@@ -78,6 +78,7 @@ public:
 	mrbcmddec(cone);
 	mrbcmddec(sphere);
 	mrbcmddec(torus);
+	mrbcmddec(plane);
 
 	// Boolean
 	mrbcmddec(common);
