@@ -62,7 +62,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(CSF_OPT_LIB32D)&quot;;&quot;$(MRUBYROOT)\build\host\lib&quot;;&quot;$(CASROOT)\win32\vc10\lib&quot;;&quot;%(AdditionalLibraryDirectories)&quot;"
+				AdditionalLibraryDirectories="&quot;$(CSF_OPT_LIB32D)&quot;;&quot;$(MRUBYROOT)\build\host\lib&quot;;&quot;$(CASROOT)\win32\vc9\lib&quot;;&quot;%(AdditionalLibraryDirectories)&quot;"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				TargetMachine="1"
@@ -135,7 +135,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(CSF_OPT_LIB32D)&quot;;&quot;$(MRUBYROOT)\build\host\lib&quot;;&quot;$(CASROOT)\win32\vc10\lib&quot;;&quot;%(AdditionalLibraryDirectories)&quot;"
+				AdditionalLibraryDirectories="&quot;$(CSF_OPT_LIB32D)&quot;;&quot;$(MRUBYROOT)\build\host\lib&quot;;&quot;$(CASROOT)\win32\vc9\lib&quot;;&quot;%(AdditionalLibraryDirectories)&quot;"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>

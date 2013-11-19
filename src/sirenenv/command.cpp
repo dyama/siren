@@ -112,7 +112,11 @@ const char* OCCViewer::set(const TopoDS_Shape& shape, const char* name /* = NULL
 void OCCViewer::unset(const char* name)
 {
 	Handle(AIS_Shape) myShape = OCCViewer::get(name);
+#if 0
 	AISContext->Erase(myShape, Standard_True, Standard_False);
+#else
+	AISContext->Erase(myShape, Standard_True);
+#endif
 	if (::Map.find(std::string(name)) == ::Map.end())
 		return;
 	::Map.erase(std::string(name));

@@ -119,6 +119,17 @@
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
 
+// new 
+#include <Visual3d_View.hxx>
+#include <Visual3d_ViewManager.hxx>
+#include <V3d_AmbientLight.hxx>
+#include <V3d_DirectionalLight.hxx>
+#include <V3d_LayerMgr.hxx>
+#include <V3d_LayerMgrPointer.hxx>
+#include <V3d_PositionalLight.hxx>
+#include <V3d_SpotLight.hxx>
+#include <OpenGl_GraphicDriver.hxx>
+
 // マップコレクション
 // #include <TCollection_BasicMap.hxx>
 //#include <Draw_VMap.hxx>
@@ -140,7 +151,7 @@
 #pragma comment (lib, "TKShapeSchema.lib")
 #pragma comment (lib, "TKTopAlgo.lib")
 #pragma comment (lib, "TKV3d.lib")
-#pragma comment (lib, "TKXSBase.lib")
+#pragma comment (lib, "TKXSBase.lib")e
 
 // FIle I/O
 #pragma comment (lib, "TKIGES.lib")     // IGES
@@ -150,6 +161,9 @@
 #pragma comment (lib, "TKSTEPAttr.lib") // 
 #pragma comment (lib, "TKSTEPBase.lib") // 
 #pragma comment (lib, "TKSTL.lib")      // STL
+
+// OpenGL
+#pragma comment (lib, "TKOpenGL.lib")
 
 //#pragma comment (lib, "TKDraw.lib")     // DRAW
 

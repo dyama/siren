@@ -25,10 +25,12 @@ OCCViewer::~OCCViewer(void)
 
 void OCCViewer::initViewAppearance()
 {
+
 	// Show trihedron on 3d viewer
     myView->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER);
 
 	// Background color
+	myView->SetBgGradientStyle(Aspect_GFM_VER);
     Quantity_Color color1(0., 0.0, 0.25, Quantity_TOC_RGB);
     Quantity_Color color2(0., 0.4, 0.60, Quantity_TOC_RGB);
     // myView->SetBackgroundColor(Quantity_TOC_RGB, R, G, B);
@@ -73,7 +75,18 @@ void OCCViewer::initViewAppearance()
 	lay->End();
 #endif
 
-	myView->SetTransparency();
+	//myView->SetTransparency();
+
+	// Enable ray tracing mode
+	myView->SetRaytracingMode();
+	myView->SetRasterizationMode(); // OpenGL rasterize rennaring mode
+	myView->EnableRaytracedShadows();
+	myView->EnableRaytracedAntialiasing();
+	myView->EnableRaytracedReflections();
+
+	//myView->Redraw();
+	//myView->SetAntialiasingOn();
+
 	myView->FitAll();
     myView->Update();
 }
@@ -93,11 +106,21 @@ bool OCCViewer::InitViewer(void* wnd)
     TCollection_ExtendedString a3DName("Visu3D");
     myViewer = new V3d_Viewer (myGraphicDriver, a3DName.ToExtString(),"", 1000.0, 
                              V3d_XposYnegZpos, Quantity_NOC_GRAY30,
-                             V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT, 
+                             V3d_ZBUFFER,V3d_GOURAUD, V3d_WAIT, 
                              Standard_True, Standard_False);
+#if 0
 	myViewer->Init();
 	myViewer->SetDefaultLights();
 	myViewer->SetLightOn();
+#else
+	myViewer->InitDefinedViews();
+	Handle(V3d_DirectionalLight) light = new V3d_DirectionalLight(myViewer, V3d_Zneg);
+	//light->Position(V3d_Coodinate(0, 0, 1000);
+	light->SetHeadlight(Standard_True);
+	myViewer->SetLightOn(light);
+#endif
+
+
 	myViewer->SetDefaultVisualization(V3d_ZBUFFER);
 	Standard_Integer aLayerId;
 	myViewer->AddZLayer(aLayerId);
@@ -118,6 +141,10 @@ bool OCCViewer::InitViewer(void* wnd)
     myAISContext->SetHilightColor(Quantity_NOC_YELLOW);
 	myAISContext->SelectionColor(Quantity_NOC_RED);
 
+	Handle(OpenGl_GraphicDriver) aDriver
+		= Handle(OpenGl_GraphicDriver)::DownCast(myViewer->Driver());
+	aDriver->ChangeOptions().vboDisable = Standard_False;
+		
 	// grid
 	{
 		gp_Pnt p(0, 0, 0);
@@ -150,7 +177,6 @@ bool OCCViewer::InitViewer(void* wnd)
 	initViewAppearance();
 	myView->Redraw();
 	myView->MustBeResized();
-
 	myAISContext->UpdateCurrentViewer();
 
 	mruby_init();
@@ -449,7 +475,11 @@ void OCCViewer::EraseObjects(void)
 	if (myAISContext.IsNull())
 		return;
 	for(myAISContext->InitCurrent();myAISContext->MoreCurrent();myAISContext->NextCurrent())
+#if 0
         myAISContext->Erase(myAISContext->Current(),Standard_True,Standard_False);
+#else
+        myAISContext->Erase(myAISContext->Current(),Standard_True);
+#endif
 	myAISContext->ClearCurrents();
 }
 
