@@ -47,7 +47,7 @@ bool OCCViewer::mruby_init()
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "box",      &OCCViewer::box,      MRB_ARGS_REQ(3) | MRB_ARGS_OPT(3));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "sphere",   &OCCViewer::sphere,   MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cylinder", &OCCViewer::cylinder, MRB_ARGS_REQ(8));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cone",     &OCCViewer::cone,     MRB_ARGS_REQ(10) | MRB_ARGS_OPT(1));
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cone",     &OCCViewer::cone,     MRB_ARGS_REQ(6));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "torus",    &OCCViewer::torus,    MRB_ARGS_REQ(11) | MRB_ARGS_OPT(1));
 	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "plane",    &OCCViewer::plane,    MRB_ARGS_REQ(6));
 
@@ -112,11 +112,7 @@ const char* OCCViewer::set(const TopoDS_Shape& shape, const char* name /* = NULL
 void OCCViewer::unset(const char* name)
 {
 	Handle(AIS_Shape) myShape = OCCViewer::get(name);
-#if 0
-	AISContext->Erase(myShape, Standard_True, Standard_False);
-#else
 	AISContext->Erase(myShape, Standard_True);
-#endif
 	if (::Map.find(std::string(name)) == ::Map.end())
 		return;
 	::Map.erase(std::string(name));
@@ -433,6 +429,14 @@ gp_Pnt* OCCViewer::ar2pnt(mrb_state* mrb, const mrb_value& ar)
 			z = _z.value.f;
 	
 	return new gp_Pnt((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
+}
+
+gp_Ax2* OCCViewer::ar2axis(mrb_state* mrb, const mrb_value& pos, const mrb_value& norm)
+{
+	gp_Pnt pnt =  *ar2pnt(mrb, pos);
+	gp_Pnt _dir = *ar2pnt(mrb, norm);
+	gp_Dir dir(_dir.X(), _dir.Y(), _dir.Z());
+	return new gp_Ax2(pnt, dir);
 }
 
 /**

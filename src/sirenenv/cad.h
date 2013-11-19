@@ -401,7 +401,7 @@ public:
 		if (myOCCViewer == NULL || myOCCViewer->myMirb == NULL)
 			return -1;
 
-		char cmd[256] = {0};
+		char cmd[1024] = {0};
 
 		for (int i=0; i<str->Length; i++) {
 			cmd[i] = (char)str->ToCharArray()[i];

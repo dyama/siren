@@ -151,7 +151,7 @@
 #pragma comment (lib, "TKShapeSchema.lib")
 #pragma comment (lib, "TKTopAlgo.lib")
 #pragma comment (lib, "TKV3d.lib")
-#pragma comment (lib, "TKXSBase.lib")e
+#pragma comment (lib, "TKXSBase.lib")
 
 // FIle I/O
 #pragma comment (lib, "TKIGES.lib")     // IGES
