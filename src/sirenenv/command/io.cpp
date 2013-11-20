@@ -51,8 +51,8 @@ mrbcmddef(loadbrep)
 	mrb_value result;
 
 	if (res) {
-		if(AISContext->HasOpenedContext())
-			AISContext->CloseLocalContext();
+		//if(AISContext->HasOpenedContext())
+		//	AISContext->CloseLocalContext();
 		const char* rname = OCCViewer::set(shape, mrb_string_p(name) ? RSTRING_PTR(name) : NULL);
 		result = mrb_str_new(mrb, rname, strlen(rname));
 	}

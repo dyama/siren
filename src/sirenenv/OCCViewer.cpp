@@ -25,16 +25,42 @@ OCCViewer::~OCCViewer(void)
 
 void OCCViewer::initViewAppearance()
 {
+	// Enable ray tracing mode
+	myView->SetRaytracingMode();
+	myView->SetRasterizationMode(); // OpenGL rasterize rennaring mode
+	myView->EnableGLLight(Standard_True);
+	myView->EnableRaytracedShadows();
+	myView->EnableRaytracedAntialiasing();
+	myView->EnableRaytracedReflections();
+	myView->EnableDepthTest(Standard_True);
 
-	// Show trihedron on 3d viewer
-    myView->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER);
+	//myView->SetShadingModel(V3d_GOURAUD);
+
+	//myView->DisableRaytracedAntialiasing();
+	//myView->DisableRaytracedReflections();
+	//myView->DisableRaytracedShadows();
 
 	// Background color
-	myView->SetBgGradientStyle(Aspect_GFM_VER);
-    Quantity_Color color1(0., 0.0, 0.25, Quantity_TOC_RGB);
-    Quantity_Color color2(0., 0.4, 0.60, Quantity_TOC_RGB);
-    // myView->SetBackgroundColor(Quantity_TOC_RGB, R, G, B);
-    myView->SetBgGradientColors(color1, color2);
+#if 1
+    Quantity_Color color_top(0.00, 0.40, 0.70, Quantity_TOC_RGB);
+    Quantity_Color color_btm(0.00, 0.03, 0.05, Quantity_TOC_RGB);
+#else
+    Quantity_Color color_top(0.05, 0.05, 0.05, Quantity_TOC_RGB);
+    Quantity_Color color_btm(0.40, 0.40, 0.40, Quantity_TOC_RGB);
+#endif
+    myView->SetBgGradientColors(color_top, color_btm, Aspect_GFM_VER, Standard_False);
+
+	// Show trihedron on 3d viewer
+    myView->TriedronDisplay(Aspect_TOTP_RIGHT_UPPER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER);
+	//myView->ZBufferTriedronSetup();
+
+	// 
+	myView->GraduatedTrihedronDisplay();
+
+	//myView->TriedronEcho(Aspect_TOTE_AXIS_X);
+
+	// !!!!
+	//myView->SetViewingVolume();
 
     // Depth-cueing (‹ó‹C‰“‹ß–@)‚Ì—LŒø‰»
  	//myView->SetZCueingOn();
@@ -75,20 +101,15 @@ void OCCViewer::initViewAppearance()
 	lay->End();
 #endif
 
-	//myView->SetTransparency();
-
-	// Enable ray tracing mode
-	myView->SetRaytracingMode();
-	myView->SetRasterizationMode(); // OpenGL rasterize rennaring mode
-	myView->EnableRaytracedShadows();
-	myView->EnableRaytracedAntialiasing();
-	myView->EnableRaytracedReflections();
-
-	//myView->Redraw();
 	//myView->SetAntialiasingOn();
+	//myView->SetClipPlanes();
+	//myView->SetFocale(50000);
+	//myView->SetTransparency(Standard_True);
+	//myView->Redraw();
+	//myView->FitAll();
 
-	myView->FitAll();
-    myView->Update();
+	myView->MustBeResized();
+	return;
 }
 
 bool OCCViewer::InitViewer(void* wnd)
@@ -104,10 +125,17 @@ bool OCCViewer::InitViewer(void* wnd)
 
 	// init viewer
     TCollection_ExtendedString a3DName("Visu3D");
-    myViewer = new V3d_Viewer (myGraphicDriver, a3DName.ToExtString(),"", 1000.0, 
-                             V3d_XposYnegZpos, Quantity_NOC_GRAY30,
-                             V3d_ZBUFFER,V3d_GOURAUD, V3d_WAIT, 
-                             Standard_True, Standard_False);
+    myViewer = new V3d_Viewer (myGraphicDriver, a3DName.ToExtString(), "", 1000.0, 
+                             V3d_XposYnegZpos, Quantity_NOC_BLACK);
+	// default attributes of viewer
+	//myViewer->SetDefaultVisualization(V3d_ZBUFFER);
+	// end of attributes
+
+	// vbo
+	Handle(OpenGl_GraphicDriver) aDriver
+		= Handle(OpenGl_GraphicDriver)::DownCast(myViewer->Driver());
+	aDriver->ChangeOptions().vboDisable = Standard_False;
+
 #if 0
 	myViewer->Init();
 	myViewer->SetDefaultLights();
@@ -116,18 +144,24 @@ bool OCCViewer::InitViewer(void* wnd)
 	myViewer->InitDefinedViews();
 	Handle(V3d_DirectionalLight) light = new V3d_DirectionalLight(myViewer, V3d_Zneg);
 	//light->Position(V3d_Coodinate(0, 0, 1000);
-	light->SetHeadlight(Standard_True);
+	light->SetHeadlight(Standard_False);
 	myViewer->SetLightOn(light);
+	//myViewer->SetDefaultTypeOfView(V3d_TypeOfView::V3d_ORTHOGRAPHIC);
+	//myViewer->SetPrivilegedPlane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
 #endif
 
+	// test for Z-Layer
+	//Standard_Integer aLayerId;
+	//myViewer->AddZLayer(aLayerId);
 
-	myViewer->SetDefaultVisualization(V3d_ZBUFFER);
-	Standard_Integer aLayerId;
-	myViewer->AddZLayer(aLayerId);
+	// Enable auto control Z buffer for clipping
 	myViewer->SetZBufferManagment(Standard_True);
 
 	// init AIS context and common appearances
 	myAISContext = new AIS_InteractiveContext(myViewer);
+	// highlight color, selection color
+    myAISContext->SetHilightColor(Quantity_NOC_YELLOW);
+	myAISContext->SelectionColor(Quantity_NOC_RED);
 
 	// trihedron at origin point
 	// Handle(Geom_Axis2Placement) aTrihedronAxis = new Geom_Axis2Placement(gp::XOY());
@@ -137,13 +171,19 @@ bool OCCViewer::InitViewer(void* wnd)
 	// myAISContext->Display(aTrihedron);
 	// myAISContext->Deactivate(aTrihedron);
 
-	// highlight color, selection color
-    myAISContext->SetHilightColor(Quantity_NOC_YELLOW);
-	myAISContext->SelectionColor(Quantity_NOC_RED);
+	// init current view
+#ifdef PARSEPECTIVE
+	myView = new V3d_PerspectiveView(myViewer);
+#else
+	myView = myViewer->CreateView();
+#endif
 
-	Handle(OpenGl_GraphicDriver) aDriver
-		= Handle(OpenGl_GraphicDriver)::DownCast(myViewer->Driver());
-	aDriver->ChangeOptions().vboDisable = Standard_False;
+	Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (wnd));
+	myView->SetWindow(aWNTWindow);
+	if (!aWNTWindow->IsMapped()) 
+		 aWNTWindow->Map();
+
+	initViewAppearance();
 		
 	// grid
 	{
@@ -164,19 +204,8 @@ bool OCCViewer::InitViewer(void* wnd)
 		myViewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
 	}
 
-	// init current view
-#ifdef PARSEPECTIVE
-	myView = new V3d_PerspectiveView(myViewer);
-#else
-	myView = myViewer->CreateView();
-#endif
-	Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (wnd));
-	myView->SetWindow(aWNTWindow);
-	if (!aWNTWindow->IsMapped()) 
-		 aWNTWindow->Map();
-	initViewAppearance();
-	myView->Redraw();
-	myView->MustBeResized();
+	//myView->Redraw();
+	//myViewer->Redraw();
 	myAISContext->UpdateCurrentViewer();
 
 	mruby_init();

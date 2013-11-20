@@ -62,6 +62,7 @@ bool OCCViewer::mruby_init()
 
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
+		"tri10=[10,10,10];"
 		"op=[0,0,0];"
 		"axx=[1,0,0];"
 		"axy=[0,1,0];"
