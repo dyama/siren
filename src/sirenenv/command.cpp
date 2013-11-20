@@ -17,44 +17,65 @@ bool OCCViewer::mruby_init()
 	myMirb = new Mirb();
 
 	// コマンドの登録
-	// mrb_define_method(ステータス, 登録先, コマンド名, 関数, コマンドが受け取る引数の情報);
 
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "erase",    &OCCViewer::erase,    MRB_ARGS_REQ(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "rename",   &OCCViewer::rename,   MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "copy",     &OCCViewer::copy,     MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "bndbox",   &OCCViewer::bndbox,   MRB_ARGS_REQ(1));
+	// General commands
+	regcmd("erase",     &erase,     1,0, "Erase specified object.",         "erase(obj) -> nil");
+	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
+	regcmd("rename",    &rename,    1,1, "Rename specified object.",        "rename(src, dest = auto) -> String");
+	regcmd("copy",      &copy,      1,1, "Copy specified object.",          "copy(src, dest = auto) -> String");
+	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(obj) -> String[min[X,Y,Z], max[X,Y,Z]]");
+	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound(obj[]) -> String");
 
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "compound", &OCCViewer::compound, MRB_ARGS_REQ(1));
+	// Transform commands
+	regcmd("translate", &translate, 4,0, "Translate specified object.",     "translate(obj, X, Y, Z) -> nil");
+	regcmd("rotate",    &rotate,    8,0, "Rotate specified object.",        "rotate(obj, CX, CY, CZ, DX, DY, DZ, angle) -> nil"); 
+	regcmd("scale",     &scale,     4,0, "Scale specified object.",         "scale(obj, CX, CY, CZ, scale) -> nil");
+	regcmd("mirror",    &mirror,    7,0, "Mirror copy specified object.",   "mirror(obj, CX, CY, CZ, DX, DY, DZ) -> nil");
 
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "translate",&OCCViewer::translate,MRB_ARGS_REQ(4));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "rotate",   &OCCViewer::rotate,   MRB_ARGS_REQ(8));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "scale",    &OCCViewer::scale,    MRB_ARGS_REQ(4));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "mirror",   &OCCViewer::mirror,   MRB_ARGS_REQ(7));
+	// Visualization commands
+	regcmd("display",   &display,   1,0, "Dislay object.",                  "display(obj) -> nil");
+	regcmd("fit",       &fit,       0,0, "Fit view to objects",             "fit(obj) -> nil");
+	regcmd("update",    &update,    0,0, "Update current viewer.",          "update() -> nil");
+	regcmd("color",     &color,     4,0, "Set color of object.",            "color(obj, R, G, B) -> nil");
 
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "display",  &OCCViewer::display,  MRB_ARGS_REQ(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "fit",      &OCCViewer::fit,      MRB_ARGS_NONE());
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "update",   &OCCViewer::update,   MRB_ARGS_NONE());
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "color",    &OCCViewer::color,    MRB_ARGS_REQ(4));
+	// Boolean operation commands
+	regcmd("common",    &common,    2,1, "Common boolean operation.",       "common(obj1, obj2) -> String");
+	regcmd("cut",       &cut,       2,1, "Cut boolean operation.",          "cut(obj1, obj2) -> String");
+	regcmd("fuse",      &fuse,      2,1, "Fuse boolean operation.",         "fuse(obj1, obj2) -> String");
+	regcmd("volume",    &volume,    1,0, "Get volume of object.",           "volume(obj) -> float");
+	regcmd("cog",       &cog,       1,0, "Get center position of gravity",  "cog(obj) -> float[X, Y, Z]");
 
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "common",   &OCCViewer::common,   MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cut",      &OCCViewer::cut,      MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "fuse",     &OCCViewer::fuse,     MRB_ARGS_REQ(2) | MRB_ARGS_OPT(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "volume",   &OCCViewer::volume,   MRB_ARGS_REQ(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cog",      &OCCViewer::cog,      MRB_ARGS_REQ(1));
+	// Make object commands
+	regcmd("vertex",    &vertex,    3,0, "Make a vertex.",                  "vertex(X, Y, Z) -> String");
+	regcmd("line",      &line,      2,0, "Make a line.",                    "line(sp[X, Y, Z], tp[X, Y, Z]) -> String");
+	regcmd("box",       &box,       1,1, "Make a box.",                     "box(size[X, Y, Z], pos[X, Y, Z] = [0, 0, 0]) -> String");
+	regcmd("sphere",    &sphere,    1,1, "Make a sphere.",                  "sphere(R, pos[X, Y, Z] = [0, 0, 0]) -> String");
+	regcmd("cylinder",  &cylinder,  8,0, "Make a cylinder.",                "cylinder(PX, PY, PZ, NX, NY, NZ, R, height, angle) -> String");
+	regcmd("cone",      &cone,      6,0, "Make a cone.",                    "cone(pos[X, Y, Z], normalp[X, Y, Z], R1, R2, height, angle) -> String");
+	regcmd("torus",     &torus,     7,0, "Make a torus.",                   "torus(pos[X, Y, Z], normal[X, Y, Z]], R1, R2, angle1, angle2, angle) -> String");
+	regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
 
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "vertex",   &OCCViewer::vertex,   MRB_ARGS_REQ(3));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "line",     &OCCViewer::line,     MRB_ARGS_REQ(2));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "box",      &OCCViewer::box,      MRB_ARGS_REQ(3) | MRB_ARGS_OPT(3));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "sphere",   &OCCViewer::sphere,   MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cylinder", &OCCViewer::cylinder, MRB_ARGS_REQ(8));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "cone",     &OCCViewer::cone,     MRB_ARGS_REQ(6));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "torus",    &OCCViewer::torus,    MRB_ARGS_REQ(11) | MRB_ARGS_OPT(1));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "plane",    &OCCViewer::plane,    MRB_ARGS_REQ(6));
-
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "save",     &OCCViewer::savebrep, MRB_ARGS_REQ(2));
-	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, "load",     &OCCViewer::loadbrep, MRB_ARGS_REQ(1) | MRB_ARGS_OPT(1));
+	// I/O commands
+	regcmd("save",      &savebrep,  2,0, "Save object to a file.",          "save(path, obj) -> nil");
+	regcmd("load",      &loadbrep,  1,1, "Load object from a file.",        "load(path) -> String");
 
 	return true;
+}
+
+/**
+ * \brief regist command with help string
+ */
+void OCCViewer::regcmd(const char* name, mrb_func_t func, int arg_req, int arg_opt, const char* desc, const char* usage)
+{
+	// mrb_define_method(ステータス, 登録先, コマンド名, 関数, コマンドが受け取る引数の情報);
+	mrb_define_method(myMirb->mrb, myMirb->mrb->kernel_module, name, func, MRB_ARGS_REQ(arg_req) | MRB_ARGS_OPT(arg_opt));
+
+	structHelp* myHelp = new structHelp;
+	myHelp->desc = new std::string(desc);
+	myHelp->usage = new std::string(usage);
+	Help[std::string(name)] = myHelp;
+
+	return;
 }
 
 bool OCCViewer::mruby_cleenup()
@@ -510,4 +531,32 @@ mrbcmddef(compound)
 
 	const char* rname = OCCViewer::set(comp, NULL);
 	return mrb_str_new(mrb, rname, strlen(rname));
+}
+
+mrbcmddef(help)
+{
+	mrb_value name;
+	int argc = mrb_get_args(mrb, "S", &name);
+
+	// prefixmatch
+	std::string ptn = std::string(RSTRING_PTR(name));
+	ptn = std::string("^") + ptn + std::string(".*");
+	std::tr1::regex re(ptn);
+
+	mrb_value ar = mrb_ary_new(mrb);
+
+	std::map<std::string, structHelp*>::iterator it = Help.begin();
+	for (; it != Help.end(); it++) {
+		if (std::tr1::regex_match(it->first, re)) {
+			mrb_value tar[3];
+			tar[0] = mrb_str_new(mrb, it->first.c_str(), strlen(it->first.c_str()));
+			tar[1] = mrb_str_new(mrb, it->second->desc->c_str(), strlen(it->second->desc->c_str()));
+			tar[2] = mrb_str_new(mrb, it->second->usage->c_str(), strlen(it->second->usage->c_str()));
+			mrb_ary_push(mrb, ar, mrb_ary_new_from_values(mrb, 3, tar));
+		}
+	}
+	if ((int)mrb_ary_len(mrb, ar))
+		return ar;
+	else
+		return mrb_nil_value();
 }

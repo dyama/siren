@@ -335,6 +335,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\help.h"
+			>
+		</File>
+		<File
 			RelativePath=".\OCCViewer.cpp"
 			>
 		</File>

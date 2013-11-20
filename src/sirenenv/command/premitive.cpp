@@ -123,12 +123,11 @@ mrbcmddef(cone)
  */
 mrbcmddef(torus)
 {
-	mrb_float px, py, pz, nx, ny, nz, r1, r2, a1, a2, ang;
-	int argc = mrb_get_args(mrb, "fffffffffff", &px, &py, &pz, &nx, &ny, &nz, &r1, &r2, &a1, &a2, &ang);
+	mrb_float r1, r2, a1, a2, ang;
+	mrb_value pos, norm;
+	int argc = mrb_get_args(mrb, "AAfffff", &pos, &norm, &r1, &r2, &a1, &a2, &ang);
 
-	gp_Pnt pnt((Standard_Real)px, (Standard_Real)py, (Standard_Real)pz);
-	gp_Dir dir((Standard_Real)nx, (Standard_Real)ny, (Standard_Real)nz);
-	gp_Ax2 ax(pnt, dir);
+	gp_Ax2 ax = *ar2axis(mrb, pos, norm);
 
 	BRepPrimAPI_MakeTorus prm(ax, (Standard_Real)r1, (Standard_Real)r2, (Standard_Real)a1, (Standard_Real)a2, (Standard_Real)ang);
     TopoDS_Shape shape = prm.Shape();

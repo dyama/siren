@@ -50,10 +50,12 @@ protected:
 	static gp_Pnt*   ar2pnt(mrb_state* mrb, const mrb_value& ar);
 	static gp_Ax2*	 ar2axis(mrb_state* mrb, const mrb_value& pos, const mrb_value& norm);
 	static mrb_value pnt2ar(mrb_state* mrb, const gp_Pnt& rPnt);
+	void regcmd(const char* name, mrb_func_t func, int arg_req, int arg_opt, const char* desc, const char* usage);
 
 public:
 
 	// Core
+	mrbcmddec(help);
 	mrbcmddec(erase);
     mrbcmddec(rename);
 	mrbcmddec(copy);
