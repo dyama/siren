@@ -47,10 +47,15 @@ protected:
 	static const char* set(const TopoDS_Shape& shape, const char* name = NULL);
 	static void unset(const char* name);
 	static Handle(AIS_Shape) get(const char* name);
-	static gp_Pnt*   ar2pnt(mrb_state* mrb, const mrb_value& ar);
-	static gp_Ax2*	 ar2axis(mrb_state* mrb, const mrb_value& pos, const mrb_value& norm);
 	static mrb_value pnt2ar(mrb_state* mrb, const gp_Pnt& rPnt);
 	void regcmd(const char* name, mrb_func_t func, int arg_req, int arg_opt, const char* desc, const char* usage);
+	static double  ar2double(mrb_state* mrb, mrb_value ary);
+    static gp_Pnt* ar2pnt(mrb_state* mrb, mrb_value& ary);
+    static gp_Vec* ar2vec(mrb_state* mrb, mrb_value& ary);
+    static gp_Dir* ar2dir(mrb_state* mrb, mrb_value& ary);
+    static gp_Ax1* ar2ax1(mrb_state* mrb, mrb_value& pos, mrb_value& dir);
+    static gp_Ax2* ar2ax2(mrb_state* mrb, mrb_value& pos, mrb_value& dir);
+    static gp_Ax3* ar2ax3(mrb_state* mrb, mrb_value& pos, mrb_value& dir);
 
 public:
 

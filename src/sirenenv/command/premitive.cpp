@@ -86,12 +86,11 @@ mrbcmddef(sphere)
  */
 mrbcmddef(cylinder)
 {
-    mrb_float px, py, pz, nx, ny, nz, r, h, a;
-	int argc = mrb_get_args(mrb, "fffffffff", &px, &py, &pz, &nx, &ny, &nz, &r, &h, &a);
+	mrb_value pos, norm;
+    mrb_float r, h, a;
+	int argc = mrb_get_args(mrb, "AAfff", &pos, &norm, &r, &h, &a);
 
-	gp_Pnt pnt((Standard_Real)px, (Standard_Real)py, (Standard_Real)pz);
-	gp_Dir dir((Standard_Real)nx, (Standard_Real)ny, (Standard_Real)nz);
-	gp_Ax2 ax(pnt, dir);
+	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
 
 	BRepPrimAPI_MakeCylinder cy(ax, (Standard_Real)r, (Standard_Real)h, (Standard_Real)a);
     TopoDS_Shape shape = cy.Shape();
@@ -109,7 +108,7 @@ mrbcmddef(cone)
 	mrb_float r1, r2, h, ang;
 	int argc = mrb_get_args(mrb, "AAffff", &pos, &norm, &r1, &r2, &h, &ang);
 
-	gp_Ax2 ax = *OCCViewer::ar2axis(mrb, pos, norm);
+	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
 
 	BRepPrimAPI_MakeCone prm(ax, (Standard_Real)r1, (Standard_Real)r2, (Standard_Real)h, (Standard_Real)ang);
     TopoDS_Shape shape = prm.Shape();
@@ -127,7 +126,7 @@ mrbcmddef(torus)
 	mrb_value pos, norm;
 	int argc = mrb_get_args(mrb, "AAfffff", &pos, &norm, &r1, &r2, &a1, &a2, &ang);
 
-	gp_Ax2 ax = *ar2axis(mrb, pos, norm);
+	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
 
 	BRepPrimAPI_MakeTorus prm(ax, (Standard_Real)r1, (Standard_Real)r2, (Standard_Real)a1, (Standard_Real)a2, (Standard_Real)ang);
     TopoDS_Shape shape = prm.Shape();

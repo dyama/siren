@@ -24,17 +24,17 @@ bool OCCViewer::mruby_init()
 	regcmd("rename",    &rename,    1,1, "Rename specified object.",        "rename(src, dest = auto) -> String");
 	regcmd("copy",      &copy,      1,1, "Copy specified object.",          "copy(src, dest = auto) -> String");
 	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(obj) -> String[min[X,Y,Z], max[X,Y,Z]]");
-	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound(obj[]) -> String");
+	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound(String[obj1, obj2, ...]) -> String");
 
 	// Transform commands
-	regcmd("translate", &translate, 4,0, "Translate specified object.",     "translate(obj, X, Y, Z) -> nil");
-	regcmd("rotate",    &rotate,    8,0, "Rotate specified object.",        "rotate(obj, CX, CY, CZ, DX, DY, DZ, angle) -> nil"); 
-	regcmd("scale",     &scale,     4,0, "Scale specified object.",         "scale(obj, CX, CY, CZ, scale) -> nil");
-	regcmd("mirror",    &mirror,    7,0, "Mirror copy specified object.",   "mirror(obj, CX, CY, CZ, DX, DY, DZ) -> nil");
+	regcmd("translate", &translate, 2,0, "Translate specified object.",     "translate(obj, vector[X, Y, Z]) -> nil");
+	regcmd("rotate",    &rotate,    4,0, "Rotate specified object.",        "rotate(obj, center[X, Y, Z], normal[X, Y, Z], angle) -> nil"); 
+	regcmd("scale",     &scale,     3,0, "Scale specified object.",         "scale(obj, scale, center[X, Y, Z] = [0, 0, 0]) -> nil");
+	regcmd("mirror",    &mirror,    3,0, "Mirror copy specified object.",   "mirror(obj, center[X, Y, Z], normal[X, Y, Z]) -> nil");
 
 	// Visualization commands
 	regcmd("display",   &display,   1,0, "Dislay object.",                  "display(obj) -> nil");
-	regcmd("fit",       &fit,       0,0, "Fit view to objects",             "fit(obj) -> nil");
+	regcmd("fit",       &fit,       0,0, "Fit view to objects",             "fit() -> nil");
 	regcmd("update",    &update,    0,0, "Update current viewer.",          "update() -> nil");
 	regcmd("color",     &color,     4,0, "Set color of object.",            "color(obj, R, G, B) -> nil");
 
@@ -50,7 +50,7 @@ bool OCCViewer::mruby_init()
 	regcmd("line",      &line,      2,0, "Make a line.",                    "line(sp[X, Y, Z], tp[X, Y, Z]) -> String");
 	regcmd("box",       &box,       1,1, "Make a box.",                     "box(size[X, Y, Z], pos[X, Y, Z] = [0, 0, 0]) -> String");
 	regcmd("sphere",    &sphere,    1,1, "Make a sphere.",                  "sphere(R, pos[X, Y, Z] = [0, 0, 0]) -> String");
-	regcmd("cylinder",  &cylinder,  8,0, "Make a cylinder.",                "cylinder(PX, PY, PZ, NX, NY, NZ, R, height, angle) -> String");
+	regcmd("cylinder",  &cylinder,  5,0, "Make a cylinder.",                "cylinder(pos[X, Y, Z, normal[X, Y, Z], R, height, angle) -> String");
 	regcmd("cone",      &cone,      6,0, "Make a cone.",                    "cone(pos[X, Y, Z], normalp[X, Y, Z], R1, R2, height, angle) -> String");
 	regcmd("torus",     &torus,     7,0, "Make a torus.",                   "torus(pos[X, Y, Z], normal[X, Y, Z]], R1, R2, angle1, angle2, angle) -> String");
 	regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
@@ -58,6 +58,18 @@ bool OCCViewer::mruby_init()
 	// I/O commands
 	regcmd("save",      &savebrep,  2,0, "Save object to a file.",          "save(path, obj) -> nil");
 	regcmd("load",      &loadbrep,  1,1, "Load object from a file.",        "load(path) -> String");
+
+
+	// デフォルトのグローバル変数定義
+	myMirb->user_exec(
+		"op=[0,0,0];"
+		"axx=[1,0,0];"
+		"axy=[0,1,0];"
+		"axz=[0,0,1];"
+		"anx=[-1,0,0];"
+		"any=[0,-1,0];"
+		"anz=[0,0,-1];"
+		);
 
 	return true;
 }
@@ -269,8 +281,11 @@ mrbcmddef(color)
 mrbcmddef(translate)
 {
     mrb_value name;
-	mrb_float vx, vy, vz;
-	int argc = mrb_get_args(mrb, "Sfff", &name, &vx, &vy, &vz);
+	mrb_value vec;
+	int argc = mrb_get_args(mrb, "SA", &name, &vec);
+
+	gp_Pnt pvec = *ar2pnt(mrb, vec);
+	gp_Vec myvec(pvec.X(), pvec.Y(), pvec.Z());
 
 	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
 	if (hashape.IsNull()) {
@@ -279,7 +294,7 @@ mrbcmddef(translate)
 	}
 
 	gp_Trsf T;
-    T.SetTranslation(gp_Vec((Standard_Real)vx, (Standard_Real)vy, (Standard_Real)vz));
+    T.SetTranslation(myvec);
 
     BRepBuilderAPI_Transform trf(T);
 	trf.Perform(hashape->Shape());
@@ -302,8 +317,9 @@ mrbcmddef(translate)
 mrbcmddef(rotate)
 {
     mrb_value name;
-	mrb_float x, y, z, vx, vy, vz, a;
-	int argc = mrb_get_args(mrb, "Sfffffff", &name, &x, &y, &z, &vx, &vy, &vz, &a);
+	mrb_float a;
+	mrb_value pos, norm;
+	int argc = mrb_get_args(mrb, "SAAf", &name, &pos, &norm, &a);
 
 	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
 	if (hashape.IsNull()) {
@@ -313,9 +329,8 @@ mrbcmddef(rotate)
 
 	gp_Trsf T;
 	Standard_Real ang = (double)a * (M_PI / 180.0);
-	gp_Pnt p((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
-	gp_Vec vec((Standard_Real)vx, (Standard_Real)vy, (Standard_Real)vz);
-	gp_Ax1 ax(p, vec);
+	gp_Ax1 ax = *ar2ax1(mrb, pos, norm);
+
     T.SetRotation(ax, ang);
 
     BRepBuilderAPI_Transform trf(T);
@@ -338,18 +353,25 @@ mrbcmddef(rotate)
 
 mrbcmddef(scale)
 {
-    mrb_value name;
-	mrb_float x, y, z, s;
-	int argc = mrb_get_args(mrb, "Sffff", &name, &x, &y, &z, &s);
-
+    mrb_value name, pos;
+	mrb_float s;
+	int argc = mrb_get_args(mrb, "SfA", &name, &s, &pos);
 	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
+	gp_Pnt p;
+	if (argc == 2) {
+		p = gp_Pnt(0, 0, 0);
+	}
+	else {
+		p = *ar2pnt(mrb, pos);
+	}
+
 	gp_Trsf T;
-	gp_Pnt p((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
     T.SetScale(p, (Standard_Real)s);
 
     BRepBuilderAPI_Transform trf(T);
@@ -372,9 +394,8 @@ mrbcmddef(scale)
 
 mrbcmddef(mirror)
 {
-    mrb_value name;
-	mrb_float x, y, z, vx, vy, vz;
-	int argc = mrb_get_args(mrb, "Sffffff", &name, &x, &y, &z, &vx, &vy, &vz);
+    mrb_value name, pos, norm;
+	int argc = mrb_get_args(mrb, "SAA", &name, &pos, &norm);
 
 	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
 	if (hashape.IsNull()) {
@@ -383,9 +404,8 @@ mrbcmddef(mirror)
 	}
 
 	gp_Trsf T;
-	gp_Pnt p((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
-	gp_Vec v((Standard_Real)vx, (Standard_Real)vy, (Standard_Real)vz);
-    T.SetMirror(gp_Ax2(p, v));
+	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
+    T.SetMirror(ax);
 
     BRepBuilderAPI_Transform trf(T);
 	trf.Perform(hashape->Shape());
@@ -405,59 +425,66 @@ mrbcmddef(mirror)
 	return result;
 }
 
-/**
- * \brief mrubyの配列オブジェクトをOCCのgp_Pntに変換する
- */
-gp_Pnt* OCCViewer::ar2pnt(mrb_state* mrb, const mrb_value& ar)
+gp_Pnt* OCCViewer::ar2pnt(mrb_state* mrb, mrb_value& ary)
 {
-	mrb_value _x = mrb_ary_shift(mrb, ar);
-	mrb_value _y = mrb_ary_shift(mrb, ar);
-	mrb_value _z = mrb_ary_shift(mrb, ar);
-
-	mrb_float x, y, z;
-
-	if (mrb_nil_p(_x))
-		throw "X value is nil.";
-	else
-		if (!mrb_float_p(_x)) {
-			if (!mrb_fixnum_p(_x))
-				throw "X value is not float type.";
-			x = mrb_fixnum(_x);
-		}
-		else 
-			x = _x.value.f;
-
-	if (mrb_nil_p(_y))
-		throw "Y value is nil.";
-	else
-		if (!mrb_float_p(_y)) {
-			if (!mrb_fixnum_p(_y))
-				throw "Y value is not float type.";
-			y = mrb_fixnum(_y);
-		}
-		else 
-			y = _y.value.f;
-
-	if (mrb_nil_p(_z))
-		throw "Z value is nil.";
-	else
-		if (!mrb_float_p(_z)) {
-			if (!mrb_fixnum_p(_z))
-				throw "Z value is not float type.";
-			z = mrb_fixnum(_z);
-		}
-		else 
-			z = _z.value.f;
-	
-	return new gp_Pnt((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
+	double x = ar2double(mrb, ary);
+	double y = ar2double(mrb, ary);
+	double z = ar2double(mrb, ary);
+	return new gp_Pnt(x, y, z);
 }
 
-gp_Ax2* OCCViewer::ar2axis(mrb_state* mrb, const mrb_value& pos, const mrb_value& norm)
+gp_Vec* OCCViewer::ar2vec(mrb_state* mrb, mrb_value& ary)
 {
-	gp_Pnt pnt =  *ar2pnt(mrb, pos);
-	gp_Pnt _dir = *ar2pnt(mrb, norm);
-	gp_Dir dir(_dir.X(), _dir.Y(), _dir.Z());
-	return new gp_Ax2(pnt, dir);
+	double x = ar2double(mrb, ary);
+	double y = ar2double(mrb, ary);
+	double z = ar2double(mrb, ary);
+	return new gp_Vec(x, y, z);
+}
+
+gp_Dir* OCCViewer::ar2dir(mrb_state* mrb, mrb_value& ary)
+{
+	double x = ar2double(mrb, ary);
+	double y = ar2double(mrb, ary);
+	double z = ar2double(mrb, ary);
+	return new gp_Dir(x, y, z);
+}
+
+gp_Ax1* OCCViewer::ar2ax1(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
+{
+	gp_Pnt gpnt = *ar2pnt(mrb, pos);
+	gp_Dir gdir = *ar2dir(mrb, dir);
+	return new gp_Ax1(gpnt, gdir);
+}
+
+gp_Ax2* OCCViewer::ar2ax2(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
+{
+	gp_Pnt gpnt = *ar2pnt(mrb, pos);
+	gp_Dir gdir = *ar2dir(mrb, dir);
+	return new gp_Ax2(gpnt, gdir);
+}
+
+gp_Ax3* OCCViewer::ar2ax3(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
+{
+	gp_Pnt gpnt = *ar2pnt(mrb, pos);
+	gp_Dir gdir = *ar2dir(mrb, dir);
+	return new gp_Ax3(gpnt, gdir);
+}
+
+double OCCViewer::ar2double(mrb_state* mrb, mrb_value ary)
+{
+	double res = 0.0;
+	mrb_value val = mrb_ary_shift(mrb, ary);
+
+	if (mrb_nil_p(val))
+		res = 0.0;
+	else if (mrb_float_p(val))
+		res = val.value.f;
+	else if (mrb_fixnum_p(val))
+		res = mrb_fixnum(val);
+	else
+		throw "value is not numric value.";
+
+	return res;
 }
 
 /**
@@ -539,8 +566,7 @@ mrbcmddef(help)
 	int argc = mrb_get_args(mrb, "S", &name);
 
 	// prefixmatch
-	std::string ptn = std::string(RSTRING_PTR(name));
-	ptn = std::string("^") + ptn + std::string(".*");
+	std::string ptn = std::string("^") + std::string(RSTRING_PTR(name)) + std::string(".*");
 	std::tr1::regex re(ptn);
 
 	mrb_value ar = mrb_ary_new(mrb);
