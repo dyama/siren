@@ -48,11 +48,11 @@ namespace siren
             // 
             // cont
             // 
+            this.cont.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.onMouseWheel);
             // 
             // cont.ContentPanel
             // 
             this.cont.ContentPanel.Size = new System.Drawing.Size(464, 297);
-            this.cont.ContentPanel.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.onMouseWheel);
             this.cont.ContentPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.ViewForm_Paint);
             this.cont.ContentPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.onMouseMove);
             this.cont.ContentPanel.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.onMouseDoubleClick);

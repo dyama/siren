@@ -53,7 +53,14 @@ namespace siren
             double factor = e.Delta * SystemInformation.MouseWheelScrollLines / 200;
             double scale = myViewer.Scale();
 
-            factor /= 1000;
+            if (scale > 0.01)
+            {
+              factor /= 100;
+            }
+            else
+            {
+              factor /= 1000;
+            }
 
             if (scale - factor < 0)
                 scale = 0.001;
