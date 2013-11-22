@@ -32,7 +32,7 @@ void OCCViewer::initViewAppearance()
 	myView->EnableRaytracedShadows();
 	myView->EnableRaytracedAntialiasing();
 	myView->EnableRaytracedReflections();
-	myView->EnableDepthTest(Standard_True);
+	//myView->EnableDepthTest(Standard_True);
 
 	//myView->SetShadingModel(V3d_GOURAUD);
 
@@ -55,7 +55,7 @@ void OCCViewer::initViewAppearance()
 	//myView->ZBufferTriedronSetup();
 
 	// 
-	myView->GraduatedTrihedronDisplay();
+	//myView->GraduatedTrihedronDisplay();
 
 	//myView->TriedronEcho(Aspect_TOTE_AXIS_X);
 
@@ -144,7 +144,8 @@ bool OCCViewer::InitViewer(void* wnd)
 	myViewer->InitDefinedViews();
 	Handle(V3d_DirectionalLight) light = new V3d_DirectionalLight(myViewer, V3d_Zneg);
 	//light->Position(V3d_Coodinate(0, 0, 1000);
-	light->SetHeadlight(Standard_False);
+	//light->SetHeadlight(Standard_False);
+	light->SetHeadlight(Standard_True);
 	myViewer->SetLightOn(light);
 	//myViewer->SetDefaultTypeOfView(V3d_TypeOfView::V3d_ORTHOGRAPHIC);
 	//myViewer->SetPrivilegedPlane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
