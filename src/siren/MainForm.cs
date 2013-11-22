@@ -38,6 +38,10 @@ namespace siren
                         break;
                 }
             }
+            Toolbox tool = new Toolbox(this);
+            tool.Show();
+            tool.TopMost = true;
+            tool.BringToFront();
         }
 
         void MainForm_DragEnter(object sender, DragEventArgs e)

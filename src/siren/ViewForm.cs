@@ -19,6 +19,10 @@ namespace siren
 	public partial class ViewForm : System.Windows.Forms.Form
 	{
         private term t;
+        public term getterm()
+        {
+            return t;
+        }
 
         /// <summary>
         /// コンストラクタ

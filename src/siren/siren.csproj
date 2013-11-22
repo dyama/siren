@@ -122,12 +122,16 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
@@ -165,6 +169,12 @@
     <Compile Include="term.Designer.cs">
       <DependentUpon>term.cs</DependentUpon>
     </Compile>
+    <Compile Include="Toolbox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Toolbox.Designer.cs">
+      <DependentUpon>Toolbox.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -200,6 +210,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="term.resx">
       <DependentUpon>term.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Toolbox.resx">
+      <DependentUpon>Toolbox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ViewForm.resx">
       <DependentUpon>ViewForm.cs</DependentUpon>

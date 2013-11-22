@@ -95,6 +95,13 @@ namespace siren
             return myViewer.mruby_isCodeBlockOpen() ? this.subprompt_string : this.prompt_string;
         }
 
+        public int execute(string cmd)
+        {
+            rtb.Text += cmd;
+            KeyDown_Enter(rtb);
+            return 0;
+        }
+
         private void KeyDown_Enter(RichTextBox rtb)
         {
             string cmd = getCurLine(rtb);
