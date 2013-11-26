@@ -56,9 +56,8 @@ bool OCCViewer::mruby_init()
 	regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
 
 	// I/O commands
-	regcmd("save",      &savebrep,  2,0, "Save object to a file.",          "save(path, obj) -> nil");
-	regcmd("load",      &loadbrep,  1,1, "Load object from a file.",        "load(path) -> String");
-
+	regcmd("bsave",     &savebrep,  2,0, "Save object to a file.",          "bsave(path, obj) -> nil");
+	regcmd("bload",     &loadbrep,  1,1, "Load object from a file.",        "bload(path) -> String");
 
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
