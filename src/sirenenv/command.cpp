@@ -136,7 +136,8 @@ const char* OCCViewer::set(const TopoDS_Shape& shape, const char* name /* = NULL
 		throw "No AIS Interactive Context.";
 	}
 	AISContext->Display(hashape);
-	AISContext->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_STONE);
+	AISContext->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
+	AISContext->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
 	AISContext->UpdateCurrentViewer();
 
 	return hasname ? name : aname;

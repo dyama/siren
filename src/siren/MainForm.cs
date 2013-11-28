@@ -6,9 +6,6 @@
  */
 
 using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
@@ -38,10 +35,6 @@ namespace siren
                         break;
                 }
             }
-            Toolbox tool = new Toolbox(this);
-            tool.Show();
-            tool.TopMost = true;
-            tool.BringToFront();
         }
 
         void MainForm_DragEnter(object sender, DragEventArgs e)
@@ -98,6 +91,9 @@ namespace siren
                 MessageBox.Show("ファイルの読み込みに失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
+
+            this.toolStripMain.Enabled = true;
+
             return true;
         }
 
@@ -168,68 +164,6 @@ namespace siren
             return SaveFile(d.FileName, Common.getFormatByExt(d.FileName));
         }
 
-		private void toolBar1_ButtonClick(object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e)
-		{
-
-			ViewForm curForm = (ViewForm) this.ActiveMdiChild;
-			switch(toolBarTool.Buttons.IndexOf(e.Button))
-			{
-				case 0:
-					this.Cursor=System.Windows.Forms.Cursors.WaitCursor;
-					this.NewFile();
-					break;
-				case 1:
-					AboutDialog myDlg = new AboutDialog();
-					myDlg.ShowDialog(this);
-					break;
-
-				case 2: //just separator
-					break;
-				case 3:
-					if (curForm == null)
-						return;
-                    curForm.currentDisplayMode = DisplayMode.WIREFRAME;
-					this.wireframe.Enabled=false;
-					this.shading.Enabled=true;
-					this.transparency.Enabled=false;
-					break;
-				case 4:
-					if (curForm == null)
-						return;
-                    curForm.currentDisplayMode = DisplayMode.SHADING;
-					this.shading.Enabled=false;
-					this.wireframe.Enabled=true;
-					this.transparency.Enabled=true;
-					break;
-				case 5:
-					if (curForm == null)
-						return;
-					curForm.ChangeColor(true);
-					break;
-				case 6:
-					if (curForm == null)
-						return;
-					MaterialDialog m = new MaterialDialog();
-					m.Viewer=curForm.Viewer;
-					m.ShowDialog(curForm);
-					break;
-				case 7:
-					if (curForm == null)
-						return;
-					siren.TransparencyDialog t = new TransparencyDialog();
-					t.Viewer=curForm.Viewer;
-					t.ShowDialog(curForm);
-					break;
-				case 8:
-					if (curForm == null)
-						return;
-					curForm.DeleteObjects();
-					break;
-				default:
-					break;
-			}
-		}
-
 		private void SaveFile_Click(object sender, System.EventArgs e)
 		{
             SaveFile();
@@ -239,34 +173,6 @@ namespace siren
 		{
 			AboutDialog myDlg = new AboutDialog();
 			myDlg.ShowDialog(this);
-		}
-
-		private void ViewerToolbar_Click(object sender, System.EventArgs e)
-		{
-			
-			if (this.ViewerToolbar.Checked)
-			{
-				if (this.MdiChildren.Length > 0)
-				{
-					this.New.Visible=false;
-					this.About.Visible=false;
-				}
-				else
-					this.toolBarTool.Hide();
-				this.ViewerToolbar.Checked=false;
-			}
-			else
-			{
-				if (this.MdiChildren.Length > 0)
-				{
-					this.New.Visible=true;
-					this.About.Visible=true;
-				} 
-				else
-					this.toolBarTool.Show();
-				this.ViewerToolbar.Checked=true;
-			}
-			
 		}
 
 		private void ViewerStatusBar_Click(object sender, System.EventArgs e)
@@ -294,13 +200,8 @@ namespace siren
 			newForm.InitViewer();
 			newForm.InitV3D();
 			this.miView.Visible=true;
-			this.wireframe.Visible=true;
-			this.shading.Visible=true;
-			this.color.Visible=true;
-			this.material.Visible=true;
-			this.transparency.Visible=true;
-			this.delete.Visible=true;
 			this.Cursor=System.Windows.Forms.Cursors.Default;
+            this.toolStripMain.Enabled = true;
 		}
 
 		private void miExit_Click(object sender, System.EventArgs e)
@@ -331,7 +232,7 @@ namespace siren
             newViewer.Show();
             newViewer.InitViewer();
             newViewer.SetContext(curForm.Viewer);
-            newViewer.Viewer.CreateNewView(newViewer.cont.ContentPanel.Handle);
+            newViewer.Viewer.CreateNewView(newViewer.Handle);
             {
                 string title = curForm.Text;
                 System.Text.StringBuilder bld= new System.Text.StringBuilder(title);
@@ -355,54 +256,6 @@ namespace siren
 			this.LayoutMdi(System.Windows.Forms.MdiLayout.TileVertical);
 		}
 
-		public void SelectionChanged()
-		{
-			if (this.MdiChildren.Length == 0 )
-				return;
-			siren.ViewForm curForm = (siren.ViewForm) this.ActiveMdiChild;
-			if ( curForm == null )
-				return;
-			switch (curForm.Viewer.DisplayMode())
-				{
-				case -1:
-					this.shading.Enabled=false;
-					this.wireframe.Enabled=false;
-					break;
-				case 0:
-					this.wireframe.Enabled=false;
-					this.shading.Enabled=true;
-					this.transparency.Enabled=false;
-					break;
-				case 1:
-					this.wireframe.Enabled=true;
-					this.shading.Enabled=false;
-					this.transparency.Enabled=true;
-					break;
-				case 10:
-					this.wireframe.Enabled=true;
-					this.shading.Enabled=true;
-					this.transparency.Enabled=true;
-					break;
-				default:
-					break;
-				}
-			bool IsSelected = curForm.Viewer.IsObjectSelected();
-			if (IsSelected)
-			{
-				this.color.Enabled=true;
-				this.material.Enabled=true;
-				this.delete.Enabled=true;
-			}
-			else
-			{
-				this.color.Enabled=false;
-				this.material.Enabled=false;
-				this.transparency.Enabled=false;
-				this.delete.Enabled=false;
-			}
-
-		}
-
 		public StatusStrip StatusBar
 		{
 			get
@@ -417,20 +270,8 @@ namespace siren
 			{
 				this.miFileClose.Enabled=false;
 				this.miView.Visible=false;
-				this.wireframe.Visible=false;
-				this.shading.Visible=false;
-				this.color.Visible=false;
-				this.material.Visible=false;
-				this.transparency.Visible=false;
-				this.delete.Visible=false;
+                this.toolStripMain.Enabled = false;
 			}
-		}
-
-
-		private void MainForm_Activated(object sender, System.EventArgs e)
-		{
-			//if (this.toolBarViewer.Visible)
-			//	this.SelectionChanged();
 		}
 
 		private void toolBarViewer_MouseHover(object sender, System.EventArgs e)
@@ -487,6 +328,128 @@ namespace siren
             if (curForm == null)
                 return;
             curForm.showTerminal();
+        }
+
+        private void tsbAbout_Click(object sender, EventArgs e)
+        {
+			AboutDialog myDlg = new AboutDialog();
+			myDlg.ShowDialog(this);
+        }
+
+        private void tsbDisplayMode_Click(object sender, EventArgs e)
+        {
+            ToolStripButton mybutton = (ToolStripButton)sender;
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+
+            if (!mybutton.Checked) {
+                curForm.currentDisplayMode = DisplayMode.SHADING;
+                mybutton.Checked = true;
+            }
+            else {
+                curForm.currentDisplayMode = DisplayMode.WIREFRAME;
+                mybutton.Checked = false;
+            }
+        }
+
+        private void tsbTransparency_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+			if (curForm == null)
+				return;
+			siren.TransparencyDialog t = new TransparencyDialog();
+			t.Viewer=curForm.Viewer;
+			t.ShowDialog(curForm);
+        }
+
+        private void tsbMaterial_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+            curForm.Viewer.SetMaterial(tsbMaterial.SelectedIndex);
+            curForm.Focus();
+        }
+
+        private void tsbFit_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+            curForm.Viewer.ZoomAllView();
+        }
+
+        private void tsbBox_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+            curForm.getterm().execute("a=box tri10");
+        }
+
+        private void tsbSphere_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+            curForm.getterm().execute("a=sphere 10");
+        }
+
+        private void tsbCylinder_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+            curForm.getterm().execute("a=cylinder op, [0, 0, 1], 10, 20, " + deg2rad(360).ToString());
+        }
+
+        private void tsbCone_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+            curForm.getterm().execute("a=cone op, [0, 0, 1], 10, 0, 20, " + deg2rad(360).ToString() );
+        }
+
+        private void tsbTorus_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+        }
+
+        private double deg2rad(double deg)
+        {
+            return (Math.PI / 180.0 * deg);
+        }
+
+        private void tsbColor_ButtonClick(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+
+            int r, g, b;
+            r = curForm.Viewer.GetObjColR();
+            g = curForm.Viewer.GetObjColG();
+            b = curForm.Viewer.GetObjColB();
+
+            System.Windows.Forms.ColorDialog ColDlg = new ColorDialog();
+            ColDlg.Color = System.Drawing.Color.FromArgb(r, g, b);
+            if (ColDlg.ShowDialog() == DialogResult.OK) {
+                System.Drawing.Color c = ColDlg.Color;
+                r = c.R;
+                g = c.G;
+                b = c.B;
+                curForm.Viewer.SetColor(r, g, b);
+            }
+            curForm.Viewer.UpdateCurrentViewer();
+        }
+
+        private void tsbMaterial_Paint(object sender, PaintEventArgs e)
+        {
+            tsbMaterial.SelectedItem = tsbMaterial.Items[tsbMaterial.Items.Count - 1];
         }
 
 	}

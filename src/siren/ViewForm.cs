@@ -23,6 +23,7 @@ namespace siren
         {
             return t;
         }
+        private InteractiveMenuContext m;
 
         /// <summary>
         /// コンストラクタ
@@ -33,8 +34,10 @@ namespace siren
 
 			myViewer = new Viewer();
             t = new term(myViewer);
-            this.cont.ContentPanel.Controls.Add(t);
             t.Visible = false;
+            this.Controls.Add(t);
+
+            m = new InteractiveMenuContext(this);
 
             initKeyEvent();
             initMouseEvent();
@@ -48,7 +51,7 @@ namespace siren
         /// </summary>
 		public void InitV3D()
 		{
-            IntPtr handle = this.cont.ContentPanel.Handle;
+            IntPtr handle = this.Handle;
             if (!myViewer.InitViewer(handle)) {
                 MessageBox.Show("グラフィックシステム初期化エラー", "Error!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -292,6 +295,7 @@ namespace siren
         }
 
         #endregion
+
 
     }
 

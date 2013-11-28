@@ -146,17 +146,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common.cs" />
+    <Compile Include="InteractiveMenuContext.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PreferenceForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PreferenceForm.Designer.cs">
-      <DependentUpon>PreferenceForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -169,16 +164,7 @@
     <Compile Include="term.Designer.cs">
       <DependentUpon>term.cs</DependentUpon>
     </Compile>
-    <Compile Include="Toolbox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Toolbox.Designer.cs">
-      <DependentUpon>Toolbox.cs</DependentUpon>
-    </Compile>
     <Compile Include="ViewForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MaterialDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TransparencyDialog.cs">
@@ -201,9 +187,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="PreferenceForm.resx">
-      <DependentUpon>PreferenceForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -211,15 +194,8 @@
     <EmbeddedResource Include="term.resx">
       <DependentUpon>term.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Toolbox.resx">
-      <DependentUpon>Toolbox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ViewForm.resx">
       <DependentUpon>ViewForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MaterialDialog.resx">
-      <DependentUpon>MaterialDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TransparencyDialog.resx">

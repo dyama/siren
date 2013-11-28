@@ -61,7 +61,6 @@ namespace siren
             case Keys.Right:
                 break;
             default:
-
                 break;
             }
         }
@@ -131,8 +130,8 @@ namespace siren
                 }
             }
             rtb.Text += "\n" + result + getPrompt();
-            rtb.Select(rtb.TextLength - getPrompt().Length, getPrompt().Length);
-            rtb.SelectionColor = Color.LightGreen;
+            //rtb.Select(rtb.TextLength - getPrompt().Length, getPrompt().Length);
+            //rtb.SelectionColor = Color.LightGreen;
         }
 
         /// <summary>

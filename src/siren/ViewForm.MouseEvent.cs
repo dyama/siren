@@ -267,7 +267,6 @@ namespace siren
 						myViewer.WindowFitAll(myXmin, myYmin, myXmax, myYmax);
 					this.Cursor = System.Windows.Forms.Cursors.Default;
 					siren.MainForm f = (siren.MainForm)this.ParentForm;
-					f.SelectionChanged();
 					myCurMode = CurAct3d.NOTHING;
 					break;
 
@@ -315,7 +314,6 @@ namespace siren
 			
 			this.Cursor = System.Windows.Forms.Cursors.Default;
 			siren.MainForm parent = (siren.MainForm)this.ParentForm;
-			parent.SelectionChanged();
 
             return;
 		}

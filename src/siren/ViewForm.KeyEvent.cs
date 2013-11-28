@@ -24,6 +24,8 @@ namespace siren
         /// </summary>
 		protected CurSpKey myCurSpKey;
 
+        protected bool isSpaceKeyDown = false;
+
         /// <summary>
         /// キー イベントのメソッド定義
         /// </summary>
@@ -45,12 +47,14 @@ namespace siren
 
             kemap.Add(Keys.F, myViewer.ZoomAllView);
             kemap.Add(Keys.H, toggleDisplayMode);
-            kemap.Add(Keys.Space, toggleWindowState);
+            //kemap.Add(Keys.Space, toggleWindowState);
             kemap.Add(Keys.D1, AxoView);
             kemap.Add(Keys.D2, BackView);
             kemap.Add(Keys.D3, TopView);
             kemap.Add(Keys.D4, RightView);
-            kemap.Add(Keys.Enter, showTerminal);            
+            kemap.Add(Keys.Enter, showTerminal);
+            kemap.Add(Keys.Space, showMenu);
+            kemap.Add(Keys.Delete, myViewer.EraseObjects);
         }
 
         /// <summary>
@@ -72,6 +76,22 @@ namespace siren
 		}
 
         /// <summary>
+        /// キー イベント: KeyUp
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+		private void onKeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+		{
+			myCurSpKey = CurSpKey.NOTHING;
+            if (isSpaceKeyDown) {
+                m.Visible = false;
+                isSpaceKeyDown = false;
+                this.Focus();
+            }
+            return;
+		}
+
+        /// <summary>
         /// Key Event: show mruby command terminal on view
         /// </summary>
         public void showTerminal()
@@ -83,15 +103,16 @@ namespace siren
         }
 
         /// <summary>
-        /// キー イベント: KeyUp
+        /// Key Event: show interactive menu on view
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-		private void onKeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
-		{
-			myCurSpKey = CurSpKey.NOTHING;
-            return;
-		}
+        public void showMenu()
+        {
+            if (!isSpaceKeyDown) {
+                m.Location = Parent.PointToClient(Cursor.Position);
+                m.Visible = true;
+                isSpaceKeyDown = true;
+            }
+        }
 
         /// <summary>
         /// ディスプレイ モード切り替え
