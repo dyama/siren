@@ -47,9 +47,6 @@ namespace siren
                 this.Visible = false;
                 this.Parent.Parent.Focus();
                 break;
-            case Keys.F5:
-                source("E:/test.rb");
-                break;
             case Keys.Up:
                 e.SuppressKeyPress = true;
                 break;
@@ -67,12 +64,8 @@ namespace siren
 
         private string getCurLine(RichTextBox rtb)
         {
-#if false
-            int line = rtb.GetLineFromCharIndex(rtb.SelectionStart);
-            string cmd = rtb.Lines[line];
-#else
             string cmd = rtb.Lines[rtb.Lines.ToArray().Length - 1];
-#endif
+
             if (cmd.IndexOf(this.prompt_string, 0) == 0) {
                 cmd = cmd.Replace(this.prompt_string, "");
             }
@@ -82,6 +75,10 @@ namespace siren
             return cmd;
         }
 
+        /// <summary>
+        /// Scroll RichTextBox to last line
+        /// </summary>
+        /// <param name="rtb"></param>
         private void Scroll2Last(RichTextBox rtb)
         {
             rtb.SelectionStart = rtb.TextLength;
@@ -89,11 +86,20 @@ namespace siren
             rtb.ScrollToCaret();
         }
 
+        /// <summary>
+        /// Return prompt string
+        /// </summary>
+        /// <returns></returns>
         private string getPrompt()
         {
             return myViewer.mruby_isCodeBlockOpen() ? this.subprompt_string : this.prompt_string;
         }
 
+        /// <summary>
+        /// Execute command interface for another instance
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <returns></returns>
         public int execute(string cmd)
         {
             rtb.Text += cmd;
@@ -111,17 +117,9 @@ namespace siren
             }
             int err = 0;
             string errmsg;
-#if false
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Reset(); sw.Start();
-#endif
             err = myViewer.mruby_exec(cmd, out errmsg);
-#if false
-            sw.Stop();
-            string result = "Time:" + sw.Elapsed.ToString() + "\n";
-#else
+
             string result = "";
-#endif
             if (!myViewer.mruby_isCodeBlockOpen()) {
                 if (err == 0) {
                     result += myViewer.mruby_p();
@@ -131,23 +129,7 @@ namespace siren
                 }
             }
             rtb.Text += "\n" + result + getPrompt();
-            //rtb.Select(rtb.TextLength - getPrompt().Length, getPrompt().Length);
-            //rtb.SelectionColor = Color.LightGreen;
-        }
-
-        /// <summary>
-        /// sourceコマンド(デバッグのための実装)
-        /// </summary>
-        /// <param name="path"></param>
-        private void source(string path)
-        {
-            System.IO.StreamReader cReader = ( new System.IO.StreamReader(path, System.Text.Encoding.Default) );
-            string stResult = string.Empty;
-            while (cReader.Peek() >= 0) {
-                rtb.Text += cReader.ReadLine();
-                KeyDown_Enter(rtb);
-            }
-            cReader.Close();
+            this.Scroll2Last(rtb);
         }
 
     }
