@@ -130,6 +130,9 @@
 #include <V3d_PositionalLight.hxx>
 #include <V3d_SpotLight.hxx>
 #include <OpenGl_GraphicDriver.hxx>
+#include <Graphic3d_ShaderProgram.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
 
 // マップコレクション
 // #include <TCollection_BasicMap.hxx>

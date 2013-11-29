@@ -121,7 +121,7 @@ int OCCViewer::mruby_exec(char* command, std::string& errmsg)
 
 int OCCViewer::set(const TopoDS_Shape& shape)
 {
-	return OCCViewer::set(shape, 0);
+	return OCCViewer::set(shape, 1);
 }
 
 int OCCViewer::set(const TopoDS_Shape& shape, int draw)
@@ -139,6 +139,10 @@ int OCCViewer::set(const TopoDS_Shape& shape, int draw)
 	AISContext->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
 	AISContext->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
 	AISContext->SetSelected(hashape, Standard_False);
+
+	Handle(Graphic3d_ShaderProgram) myShader;
+	myShader = new Graphic3d_ShaderProgram(Graphic3d_ShaderProgram::ShaderName_Phong);
+	hashape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram(myShader);
 
 	if (draw) {
 		AISContext->Display(hashape);
