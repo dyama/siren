@@ -19,12 +19,12 @@ bool OCCViewer::mruby_init()
 	// コマンドの登録
 
 	// General commands
-	regcmd("erase",     &erase,     1,0, "Erase specified object.",         "erase(obj) -> nil");
+	regcmd("erase",     &erase,     1,0, "Erase specified object.",         "erase(ObjID) -> nil");
 	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
-	regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(src, dest = auto) -> String");
-	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(obj) -> String[min[X,Y,Z], max[X,Y,Z]]");
-	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound(String[obj1, obj2, ...]) -> String");
-	regcmd("selected",  &selected,  0,0, "Get name of selected objects.",   "selected() -> Ary");
+	regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(ObjID) -> ObjID");
+	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(ObjID) -> Ary[min[X,Y,Z], max[X,Y,Z]]");
+	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound([ObjID, ObjID, ...]) -> ObjID");
+	regcmd("selected",  &selected,  0,0, "Get name of selected objects.",   "selected() -> Ary[ObjID, ...]");
 
 	// Transform commands
 	regcmd("translate", &translate, 2,0, "Translate specified object.",     "translate(obj, vector[X, Y, Z]) -> nil");
@@ -61,6 +61,7 @@ bool OCCViewer::mruby_init()
 
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
+		"DRAW=1;"
 		"tri10=[10,10,10];"
 		"op=[0,0,0];"
 		"axx=[1,0,0];"
@@ -120,6 +121,11 @@ int OCCViewer::mruby_exec(char* command, std::string& errmsg)
 
 int OCCViewer::set(const TopoDS_Shape& shape)
 {
+	return OCCViewer::set(shape, 0);
+}
+
+int OCCViewer::set(const TopoDS_Shape& shape, int draw)
+{
 	Handle(AIS_Shape) hashape = new AIS_Shape(shape);
 	// registration
 	int hashcode = shape.HashCode(INT_MAX);
@@ -129,11 +135,15 @@ int OCCViewer::set(const TopoDS_Shape& shape)
 	if (AISContext.IsNull()) {
 		throw "No AIS Interactive Context.";
 	}
-	AISContext->Display(hashape);
 	AISContext->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
 	AISContext->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
-	AISContext->UpdateCurrentViewer();
+	AISContext->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
+	AISContext->SetSelected(hashape, Standard_False);
 
+	if (draw) {
+		AISContext->Display(hashape);
+		AISContext->UpdateCurrentViewer();
+	}
 	return hashcode;
 }
 
@@ -268,9 +278,7 @@ mrbcmddef(translate)
 
 	mrb_value result;
 	if (trf.IsDone()){
-		//OCCViewer::unset(RSTRING_PTR(name));
-		//TopoDS_Shape shape = trf.Shape();
-		//OCCViewer::set(shape, RSTRING_PTR(name));
+		hashape->Set(trf.Shape());
 		result = mrb_nil_value();
 	}
 	else {
@@ -305,9 +313,7 @@ mrbcmddef(rotate)
 
 	mrb_value result;
 	if (trf.IsDone()){
-		//OCCViewer::unset(RSTRING_PTR(name));
-		//TopoDS_Shape shape = trf.Shape();
-		//OCCViewer::set(shape, RSTRING_PTR(name));
+		hashape->Set(trf.Shape());
 		result = mrb_nil_value();
 	}
 	else {
@@ -347,9 +353,7 @@ mrbcmddef(scale)
 
 	mrb_value result;
 	if (trf.IsDone()){
-		//OCCViewer::unset(RSTRING_PTR(name));
-		//TopoDS_Shape shape = trf.Shape();
-		//OCCViewer::set(shape, RSTRING_PTR(name));
+		hashape->Set(trf.Shape());
 		result = mrb_nil_value();
 	}
 	else {
@@ -381,9 +385,7 @@ mrbcmddef(mirror)
 
 	mrb_value result;
 	if (trf.IsDone()){
-		//OCCViewer::unset(RSTRING_PTR(name));
-		//TopoDS_Shape shape = trf.Shape();
-		//OCCViewer::set(shape, RSTRING_PTR(name));
+		hashape->Set(trf.Shape());
 		result = mrb_nil_value();
 	}
 	else {

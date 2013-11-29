@@ -165,18 +165,18 @@ namespace siren
 		public bool Export(string filename, ModelFormat format)
 		{
             switch (format) {
-            //case ModelFormat.BREP:
-            //    {
-            //        string errmsg;
-            //        filename = filename.Replace(@"\", @"\\"); // escape
-            //        int err = myViewer.mruby_exec("a=bload(\"" + filename + "\")", out errmsg);
-            //        if (err == 0) {
-            //            myViewer.mruby_exec("fit", out errmsg);
-            //            return true;
-            //        }
-            //        else
-            //            return false;
-            //    }
+            case ModelFormat.BREP:
+                //{
+                //    string errmsg;
+                //    filename = filename.Replace(@"\", @"\\"); // escape
+                //    int err = myViewer.mruby_exec("a=bsave(\"" + filename + "\")", out errmsg);
+                //    if (err == 0) {
+                //        myViewer.mruby_exec("fit", out errmsg);
+                //        return true;
+                //    }
+                //    else
+                //        return false;
+                //}
             case ModelFormat.CSFDB:
             case ModelFormat.IGES:
             case ModelFormat.STEP:

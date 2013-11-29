@@ -42,7 +42,6 @@ mrbcmddef(savebrep)
 mrbcmddef(loadbrep)
 {
     mrb_value path;
-
 	int argc = mrb_get_args(mrb, "S", &path);
 
 	TopoDS_Shape shape;

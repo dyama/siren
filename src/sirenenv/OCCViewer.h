@@ -46,6 +46,7 @@ protected:
 
 	// Set / Get
 	static int set(const TopoDS_Shape& shape);
+	static int set(const TopoDS_Shape& shape, int draw);
 	static void unset(int hashcode);
 	static Handle(AIS_Shape) get(int hashcode);
 	static mrb_value pnt2ar(mrb_state* mrb, const gp_Pnt& rPnt);
