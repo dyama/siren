@@ -57,7 +57,7 @@ mrbcmddef(loadbrep)
 		result = mrb_str_new(mrb, rname, strlen(rname));
 	}
 	else {
-		static const char m[] = "Failed to read BRep file.";
+		static const char m[] = "Failed to load BRep file.";
         result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 

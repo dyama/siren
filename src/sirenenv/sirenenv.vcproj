@@ -318,6 +318,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\command\common.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\command\io.cpp"
 				>
 			</File>

@@ -81,8 +81,15 @@ mrbcmddef(sphere)
 	gp_Pnt op
 		= (argc == 2) ? *ar2pnt(mrb, pos) : gp_Pnt(0.0, 0.0, 0.0);
 
-	BRepPrimAPI_MakeSphere sp(op, (Standard_Real)r); 
-    TopoDS_Shape shape = sp.Shape();
+	TopoDS_Shape shape;
+	try {
+		BRepPrimAPI_MakeSphere sp(op, (Standard_Real)r); 
+	    shape = sp.Shape();
+	}
+	catch (...) {
+		static const char m[] = "Failed to make a sphere.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
 	const char* rname = OCCViewer::set(shape, NULL);
 	return mrb_str_new(mrb, rname, strlen(rname));
@@ -99,8 +106,15 @@ mrbcmddef(cylinder)
 
 	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
 
-	BRepPrimAPI_MakeCylinder cy(ax, (Standard_Real)r, (Standard_Real)h, (Standard_Real)a);
-    TopoDS_Shape shape = cy.Shape();
+	TopoDS_Shape shape;
+	try {
+		BRepPrimAPI_MakeCylinder cy(ax, (Standard_Real)r, (Standard_Real)h, (Standard_Real)a);
+	    shape = cy.Shape();
+	}
+	catch (...) {
+		static const char m[] = "Failed to make a cylinder.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
 	const char* rname = OCCViewer::set(shape, NULL);
 	return mrb_str_new(mrb, rname, strlen(rname));
@@ -117,8 +131,15 @@ mrbcmddef(cone)
 
 	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
 
-	BRepPrimAPI_MakeCone prm(ax, (Standard_Real)r1, (Standard_Real)r2, (Standard_Real)h, (Standard_Real)ang);
-    TopoDS_Shape shape = prm.Shape();
+	TopoDS_Shape shape;
+	try {
+		BRepPrimAPI_MakeCone prm(ax, (Standard_Real)r1, (Standard_Real)r2, (Standard_Real)h, (Standard_Real)ang);
+	    shape = prm.Shape();
+	}
+	catch (...) {
+		static const char m[] = "Failed to make a cone.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
 	const char* rname = OCCViewer::set(shape, NULL);
 	return mrb_str_new(mrb, rname, strlen(rname));
@@ -135,8 +156,15 @@ mrbcmddef(torus)
 
 	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
 
-	BRepPrimAPI_MakeTorus prm(ax, (Standard_Real)r1, (Standard_Real)r2, (Standard_Real)a1, (Standard_Real)a2, (Standard_Real)ang);
-    TopoDS_Shape shape = prm.Shape();
+	TopoDS_Shape shape;
+	try {
+		BRepPrimAPI_MakeTorus prm(ax, (Standard_Real)r1, (Standard_Real)r2, (Standard_Real)a1, (Standard_Real)a2, (Standard_Real)ang);
+	    shape = prm.Shape();
+	}
+	catch (...) {
+		static const char m[] = "Failed to make a torus.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
 	const char* rname = OCCViewer::set(shape, NULL);
 	return mrb_str_new(mrb, rname, strlen(rname));
@@ -153,9 +181,15 @@ mrbcmddef(plane)
 	gp_Dir __dir(_dir.X(), _dir.Y(), _dir.Z());
 	gp_Pln _pln(_pos, __dir);
 
-	BRepBuilderAPI_MakeFace face(_pln, (Standard_Real)umin, (Standard_Real)umax, (Standard_Real)vmin, (Standard_Real)vmax);
-
-    TopoDS_Shape shape = face.Shape();
+	TopoDS_Shape shape;
+	try {
+		BRepBuilderAPI_MakeFace face(_pln, (Standard_Real)umin, (Standard_Real)umax, (Standard_Real)vmin, (Standard_Real)vmax);
+	    shape = face.Shape();
+	}
+	catch (...) {
+		static const char m[] = "Failed to make a plane.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
 	const char* rname = OCCViewer::set(shape, NULL);
 	return mrb_str_new(mrb, rname, strlen(rname));
