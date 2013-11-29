@@ -55,8 +55,15 @@ mrbcmddef(box)
 	gp_Pnt s = *ar2pnt(mrb, size);
 	gp_Pnt op = (argc == 2) ? *ar2pnt(mrb, pos) : gp_Pnt(0.0, 0.0, 0.0);
 
-	BRepPrimAPI_MakeBox box(op, s.X(), s.Y(), s.Z());
-    TopoDS_Shape shape = box.Shape();
+	TopoDS_Shape shape;
+	try {
+		BRepPrimAPI_MakeBox box(op, s.X(), s.Y(), s.Z());
+	    shape = box.Shape();
+	}
+	catch (...) {
+		static const char m[] = "Failed to make a box.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
 	const char* rname = OCCViewer::set(shape, NULL);
 	return mrb_str_new(mrb, rname, strlen(rname));

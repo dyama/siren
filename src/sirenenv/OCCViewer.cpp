@@ -25,6 +25,7 @@ OCCViewer::~OCCViewer(void)
 
 void OCCViewer::initViewAppearance()
 {
+#if 1
 	// Enable ray tracing mode
 	myView->SetRaytracingMode();
 	myView->SetRasterizationMode(); // OpenGL rasterize rennaring mode
@@ -33,7 +34,7 @@ void OCCViewer::initViewAppearance()
 	myView->EnableRaytracedAntialiasing();
 	myView->EnableRaytracedReflections();
 	//myView->EnableDepthTest(Standard_True);
-
+#endif
 	//myView->SetShadingModel(V3d_GOURAUD);
 
 	//myView->DisableRaytracedAntialiasing();

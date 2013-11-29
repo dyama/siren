@@ -396,7 +396,8 @@ public:
 
 	// mruby
 
-	int mruby_exec(System::String^ str) {
+	int mruby_exec(System::String^ str,[System::Runtime::InteropServices::Out] System::String^% errmsg)
+	{
 
 		if (myOCCViewer == NULL || myOCCViewer->myMirb == NULL)
 			return -1;
@@ -407,7 +408,12 @@ public:
 			cmd[i] = (char)str->ToCharArray()[i];
 		}
 
-		return myOCCViewer->mruby_exec(cmd);
+		std::string _errmsg;
+		int res = myOCCViewer->mruby_exec(cmd, _errmsg);
+
+		errmsg = gcnew System::String(_errmsg.c_str());
+
+		return res;
 	}
 
 	System::String^ mruby_p()

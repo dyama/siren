@@ -40,6 +40,7 @@ public:
 	bool  mruby_init();
 	bool  mruby_cleenup();
 	int   mruby_exec(char* cmd);
+	int   mruby_exec(char* command, std::string& errmsg);
 
 protected:
 

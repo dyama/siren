@@ -82,24 +82,41 @@ void Mirb::p(mrb_value obj, int prompt)
     putc('\n', stdout);
 }
 
-void Mirb::p(int prompt, std::string& result)
+void Mirb::p(int prompt, std::string& msg)
 {
-	result = std::string();
+	msg = std::string();
 	this->result = mrb_funcall(mrb, this->result, "inspect", 0);
     if (prompt) {
         if (!mrb->exc) {
-			result  += " => ";
+			msg  += " => ";
         }
         else {
 			this->result = mrb_funcall(mrb, mrb_obj_value(mrb->exc), "inspect", 0);
         }
     }
-	result += RSTRING_PTR(this->result);
-	result += "\n";
+	msg += RSTRING_PTR(this->result);
+	msg += "\n";
     //fwrite(RSTRING_PTR(obj), RSTRING_LEN(obj), 1, stdout);
     //putc('\n', stdout);
 }
 
+void Mirb::p(mrb_value obj, int prompt, std::string& msg)
+{
+	msg = std::string();
+	obj = mrb_funcall(mrb, obj, "inspect", 0);
+    if (prompt) {
+        if (!mrb->exc) {
+			msg  += " => ";
+        }
+        else {
+			obj = mrb_funcall(mrb, mrb_obj_value(mrb->exc), "inspect", 0);
+        }
+    }
+	msg += RSTRING_PTR(obj);
+	msg += "\n";
+    //fwrite(RSTRING_PTR(obj), RSTRING_LEN(obj), 1, stdout);
+    //putc('\n', stdout);
+}
 
 /* Guess if the user might want to enter more
  * or if he wants an evaluation of his code now */
@@ -210,12 +227,18 @@ mrb_bool Mirb::is_code_block_open(struct mrb_parser_state *parser)
     return code_block_open;
 }
 
+int Mirb::user_exec(char* last_code_line)
+{
+	std::string msg;
+	return user_exec(last_code_line, msg);
+}
+
 /**
  * user execution with ruby code string
  * \param last_code_line code line
  * \return true if success
  */
-int Mirb::user_exec(char *last_code_line)
+int Mirb::user_exec(char* last_code_line, std::string& errmsg)
 {
     struct mrb_parser_state *parser;
     int err = 0;
@@ -259,7 +282,7 @@ int Mirb::user_exec(char *last_code_line)
             /* syntax error */
             /* 構文エラー */
             //printf("line %d: %s\n", parser->error_buffer[0].lineno, parser->error_buffer[0].message);
-			//message = std::string(parser->error_buffer[0].message);
+			errmsg = std::string(parser->error_buffer[0].message);
             err = 1;
         }
         else {
@@ -279,9 +302,9 @@ int Mirb::user_exec(char *last_code_line)
             /* did an exception occur? */
             /* 例外が発生したか */
             if (mrb->exc) {
-                p(mrb_obj_value(mrb->exc), 0);
-                mrb->exc = 0;
+				p(mrb_obj_value(mrb->exc), 0, errmsg);
                 err = 2;
+                mrb->exc = 0;
             }
             else {
                 /* no */

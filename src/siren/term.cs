@@ -110,11 +110,12 @@ namespace siren
                 return;
             }
             int err = 0;
+            string errmsg;
 #if false
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Reset(); sw.Start();
 #endif
-            err = myViewer.mruby_exec(cmd);
+            err = myViewer.mruby_exec(cmd, out errmsg);
 #if false
             sw.Stop();
             string result = "Time:" + sw.Elapsed.ToString() + "\n";
@@ -126,7 +127,7 @@ namespace siren
                     result += myViewer.mruby_p();
                 }
                 else {
-                    result += "Error:" + err.ToString("X") + "\n";
+                    result += errmsg + "\n";
                 }
             }
             rtb.Text += "\n" + result + getPrompt();

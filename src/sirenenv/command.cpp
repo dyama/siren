@@ -99,6 +99,12 @@ bool OCCViewer::mruby_cleenup()
 
 int OCCViewer::mruby_exec(char* command)
 {
+	std::string errmsg;
+	return myMirb->user_exec(command, errmsg);
+}
+
+int OCCViewer::mruby_exec(char* command, std::string& errmsg)
+{
 	if (!myMirb)
 		return -1;
 
@@ -109,7 +115,7 @@ int OCCViewer::mruby_exec(char* command)
 	if (View.IsNull())
 		return -1;
 
-	return myMirb->user_exec(command);
+	return myMirb->user_exec(command, errmsg);
 }
 
 const char* OCCViewer::set(const TopoDS_Shape& shape, const char* name /* = NULL */)

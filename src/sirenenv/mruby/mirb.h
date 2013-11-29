@@ -43,10 +43,12 @@ private:
     int init(void);
     int cleenup(void);
     void p(mrb_value obj, int prompt);
+	void p(mrb_value obj, int prompt, std::string& msg);
     mrb_bool is_code_block_open(struct mrb_parser_state *parser);
 
 public:
 	int user_exec(char *last_code_line);
+	int user_exec(char *last_code_line, std::string& errmsg);
     void regist(char *name, mrb_func_t func, int args);
 	void p(int prompt, std::string& result);
 
