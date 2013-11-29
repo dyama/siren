@@ -15,16 +15,15 @@
  */
 mrbcmddef(common)
 {
-    mrb_value s1, s2, name;
+	mrb_int s1, s2;
+	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
 
-	int argc = mrb_get_args(mrb, "SS|S", &s1, &s2, &name);
-
-	Handle(AIS_Shape) haS1 = OCCViewer::get(RSTRING_PTR(s1));
+	Handle(AIS_Shape) haS1 = OCCViewer::get(s1);
 	if (haS1.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) haS2 = OCCViewer::get(RSTRING_PTR(s2));
+	Handle(AIS_Shape) haS2 = OCCViewer::get(s2);
 	if (haS2.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -38,8 +37,7 @@ mrbcmddef(common)
 
 	if (!bo.ErrorStatus()) {
 	    TopoDS_Shape shape = bo.Shape();
-		const char* rname = OCCViewer::set(shape, mrb_string_p(name) ? RSTRING_PTR(name) : NULL);
-		result = mrb_str_new(mrb, rname, strlen(rname));
+		result = mrb_fixnum_value(OCCViewer::set(shape));
 	}
 	else {
 		static const char m[] = "Failed to fuse operation of boolean.";
@@ -54,16 +52,15 @@ mrbcmddef(common)
  */
 mrbcmddef(cut)
 {
-    mrb_value s1, s2, name;
+    mrb_int s1, s2;
+	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
 
-	int argc = mrb_get_args(mrb, "SS|S", &s1, &s2, &name);
-
-	Handle(AIS_Shape) haS1 = OCCViewer::get(RSTRING_PTR(s1));
+	Handle(AIS_Shape) haS1 = OCCViewer::get(s1);
 	if (haS1.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) haS2 = OCCViewer::get(RSTRING_PTR(s2));
+	Handle(AIS_Shape) haS2 = OCCViewer::get(s2);
 	if (haS2.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -77,8 +74,7 @@ mrbcmddef(cut)
 
 	if (!bo.ErrorStatus()) {
 	    TopoDS_Shape shape = bo.Shape();
-		const char* rname = OCCViewer::set(shape, mrb_string_p(name) ? RSTRING_PTR(name) : NULL);
-		result = mrb_str_new(mrb, rname, strlen(rname));
+		result = mrb_fixnum_value(OCCViewer::set(shape));
 	}
 	else {
 		static const char m[] = "Failed to fuse operation of boolean.";
@@ -93,16 +89,15 @@ mrbcmddef(cut)
  */
 mrbcmddef(fuse)
 {
-    mrb_value s1, s2, name;
+    mrb_int s1, s2;
+	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
 
-	int argc = mrb_get_args(mrb, "SS|S", &s1, &s2, &name);
-
-	Handle(AIS_Shape) haS1 = OCCViewer::get(RSTRING_PTR(s1));
+	Handle(AIS_Shape) haS1 = OCCViewer::get(s1);
 	if (haS1.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) haS2 = OCCViewer::get(RSTRING_PTR(s2));
+	Handle(AIS_Shape) haS2 = OCCViewer::get(s2);
 	if (haS2.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -116,8 +111,7 @@ mrbcmddef(fuse)
 
 	if (!bo.ErrorStatus()) {
 	    TopoDS_Shape shape = bo.Shape();
-		const char* rname = OCCViewer::set(shape, mrb_string_p(name) ? RSTRING_PTR(name) : NULL);
-		result = mrb_str_new(mrb, rname, strlen(rname));
+		result = mrb_fixnum_value(OCCViewer::set(shape));
 	}
 	else {
 		static const char m[] = "Failed to fuse operation of boolean.";
@@ -132,10 +126,10 @@ mrbcmddef(fuse)
  */
 mrbcmddef(volume)
 {
-    mrb_value name;
-	int argc = mrb_get_args(mrb, "S", &name);
+    mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+	Handle(AIS_Shape) hashape = OCCViewer::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -153,10 +147,10 @@ mrbcmddef(volume)
  */
 mrbcmddef(cog)
 {
-    mrb_value name;
-	int argc = mrb_get_args(mrb, "S", &name);
+    mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+	Handle(AIS_Shape) hashape = OCCViewer::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);

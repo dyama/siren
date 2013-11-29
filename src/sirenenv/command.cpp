@@ -21,10 +21,10 @@ bool OCCViewer::mruby_init()
 	// General commands
 	regcmd("erase",     &erase,     1,0, "Erase specified object.",         "erase(obj) -> nil");
 	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
-	regcmd("rename",    &rename,    1,1, "Rename specified object.",        "rename(src, dest = auto) -> String");
-	regcmd("copy",      &copy,      1,1, "Copy specified object.",          "copy(src, dest = auto) -> String");
+	regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(src, dest = auto) -> String");
 	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(obj) -> String[min[X,Y,Z], max[X,Y,Z]]");
 	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound(String[obj1, obj2, ...]) -> String");
+	regcmd("selected",  &selected,  0,0, "Get name of selected objects.",   "selected() -> Ary");
 
 	// Transform commands
 	regcmd("translate", &translate, 2,0, "Translate specified object.",     "translate(obj, vector[X, Y, Z]) -> nil");
@@ -57,7 +57,7 @@ bool OCCViewer::mruby_init()
 
 	// I/O commands
 	regcmd("bsave",     &savebrep,  2,0, "Save object to a file.",          "bsave(path, obj) -> nil");
-	regcmd("bload",     &loadbrep,  1,1, "Load object from a file.",        "bload(path) -> String");
+	regcmd("bload",     &loadbrep,  1,0, "Load object from a file.",        "bload(path) -> String");
 
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
@@ -118,24 +118,12 @@ int OCCViewer::mruby_exec(char* command, std::string& errmsg)
 	return myMirb->user_exec(command, errmsg);
 }
 
-const char* OCCViewer::set(const TopoDS_Shape& shape, const char* name /* = NULL */)
+int OCCViewer::set(const TopoDS_Shape& shape)
 {
 	Handle(AIS_Shape) hashape = new AIS_Shape(shape);
 	// registration
-	bool hasname = (name != NULL && strlen(name) > 0);
-	char* aname = NULL;
-	if (hasname) {
-		::Map[std::string(name)] = hashape;
-	}
-	else {
-		// auto naming
-		char* __tmp = (char*)malloc(sizeof(char*)*16);
-		if (__tmp == NULL)
-			throw "memory allocation error.";
-		aname = __tmp;
-		sprintf(aname, "%X", shape.HashCode(INT_MAX));
-		::Map[std::string(aname)] = hashape;
-	}
+	int hashcode = shape.HashCode(INT_MAX);
+	::Map[hashcode] = hashape;
 
 	// display
 	if (AISContext.IsNull()) {
@@ -146,24 +134,24 @@ const char* OCCViewer::set(const TopoDS_Shape& shape, const char* name /* = NULL
 	AISContext->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
 	AISContext->UpdateCurrentViewer();
 
-	return hasname ? name : aname;
+	return hashcode;
 }
 
-void OCCViewer::unset(const char* name)
+void OCCViewer::unset(int hashcode)
 {
-	Handle(AIS_Shape) myShape = OCCViewer::get(name);
+	Handle(AIS_Shape) myShape = OCCViewer::get(hashcode);
 	AISContext->Erase(myShape, Standard_True);
-	if (::Map.find(std::string(name)) == ::Map.end())
+	if (::Map.find(hashcode) == ::Map.end())
 		return;
-	::Map.erase(std::string(name));
+	::Map.erase(hashcode);
 	return;
 }
 
-Handle(AIS_Shape) OCCViewer::get(const char* name)
+Handle(AIS_Shape) OCCViewer::get(int hashcode)
 {
-	if (::Map.find(std::string(name)) == ::Map.end())
+	if (::Map.find(hashcode) == ::Map.end())
 		return NULL;
-	return ::Map[name];
+	return ::Map[hashcode];
 }
 
 // --------------------------------------------------------------------------
@@ -172,22 +160,19 @@ Handle(AIS_Shape) OCCViewer::get(const char* name)
 
 mrbcmddef(erase)
 {
-    mrb_value name;
+    mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
 
-	int argc = mrb_get_args(mrb, "S", &name);
-
-	OCCViewer::unset(RSTRING_PTR(name));
-
+	OCCViewer::unset(target);
 	return mrb_nil_value();
 }
 
 mrbcmddef(copy)
 {
-	mrb_value src, dest;
+	mrb_int src;
+	int argc = mrb_get_args(mrb, "i", &src);
 
-	int argc = mrb_get_args(mrb, "S|S", &src, &dest);
-
-	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(src));
+	Handle(AIS_Shape) hashape = OCCViewer::get(src);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such specified object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -198,33 +183,8 @@ mrbcmddef(copy)
 	Builder.Perform(hashape->Shape());
 	TopoDS_Shape shape = Builder.Shape();
 
-	const char* rname = OCCViewer::set(shape, mrb_string_p(dest) ? RSTRING_PTR(dest) : NULL);
-	return mrb_str_new(mrb, rname, strlen(rname));
+	return mrb_fixnum_value(OCCViewer::set(shape));
 }
-
-mrbcmddef(rename)
-{
-	mrb_value src, dest;
-
-	int argc = mrb_get_args(mrb, "S|S", &src, &dest);
-
-	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(src));
-	if (hashape.IsNull()) {
-		static const char m[] = "No such specified object.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	// Deep copy
-	BRepBuilderAPI_Copy Builder;
-	Builder.Perform(hashape->Shape());
-	TopoDS_Shape shape = Builder.Shape();
-	const char* rname = OCCViewer::set(shape, mrb_string_p(dest) ? RSTRING_PTR(dest) : NULL);
-
-	OCCViewer::unset(RSTRING_PTR(src));
-
-	return mrb_str_new(mrb, rname, strlen(rname));
-}
-
 
 mrbcmddef(update)
 {
@@ -237,21 +197,17 @@ mrbcmddef(display)
 	if (AISContext.IsNull())
 		return mrb_nil_value();
 
-    mrb_value _name;
-	int argc = mrb_get_args(mrb, "S", &_name);
-	if (!mrb_string_p(_name))
-		return mrb_nil_value();
+    mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
 
-	char* name = RSTRING_PTR(_name);
+	Handle(AIS_Shape) hashape = OCCViewer::get(target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified argument.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
-	Handle(AIS_Shape) myShape = OCCViewer::get(name);
-
-	if (myShape.IsNull())
-		return mrb_nil_value();
-
-	AISContext->Display(myShape, Standard_False);
-
-	return mrb_str_new(mrb, name, strlen(name));
+	AISContext->Display(hashape, Standard_False);
+	return mrb_nil_value();
 }
 
 mrbcmddef(fit)
@@ -269,11 +225,11 @@ mrbcmddef(fit)
 
 mrbcmddef(color)
 {
-    mrb_value name;
+    mrb_int target; 
 	mrb_float _r, _g, _b;
-	int argc = mrb_get_args(mrb, "Sfff", &name, &_r, &_g, &_b);
+	int argc = mrb_get_args(mrb, "ifff", &target, &_r, &_g, &_b);
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+	Handle(AIS_Shape) hashape = OCCViewer::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -291,14 +247,14 @@ mrbcmddef(color)
 
 mrbcmddef(translate)
 {
-    mrb_value name;
+    mrb_int target;
 	mrb_value vec;
-	int argc = mrb_get_args(mrb, "SA", &name, &vec);
+	int argc = mrb_get_args(mrb, "iA", &target, &vec);
 
 	gp_Pnt pvec = *ar2pnt(mrb, vec);
 	gp_Vec myvec(pvec.X(), pvec.Y(), pvec.Z());
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+	Handle(AIS_Shape) hashape = OCCViewer::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -312,9 +268,9 @@ mrbcmddef(translate)
 
 	mrb_value result;
 	if (trf.IsDone()){
-		OCCViewer::unset(RSTRING_PTR(name));
-		TopoDS_Shape shape = trf.Shape();
-		OCCViewer::set(shape, RSTRING_PTR(name));
+		//OCCViewer::unset(RSTRING_PTR(name));
+		//TopoDS_Shape shape = trf.Shape();
+		//OCCViewer::set(shape, RSTRING_PTR(name));
 		result = mrb_nil_value();
 	}
 	else {
@@ -327,12 +283,12 @@ mrbcmddef(translate)
 
 mrbcmddef(rotate)
 {
-    mrb_value name;
+    mrb_int target;
 	mrb_float a;
 	mrb_value pos, norm;
-	int argc = mrb_get_args(mrb, "SAAf", &name, &pos, &norm, &a);
+	int argc = mrb_get_args(mrb, "iAAf", &target, &pos, &norm, &a);
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+	Handle(AIS_Shape) hashape = OCCViewer::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -349,9 +305,9 @@ mrbcmddef(rotate)
 
 	mrb_value result;
 	if (trf.IsDone()){
-		OCCViewer::unset(RSTRING_PTR(name));
-		TopoDS_Shape shape = trf.Shape();
-		OCCViewer::set(shape, RSTRING_PTR(name));
+		//OCCViewer::unset(RSTRING_PTR(name));
+		//TopoDS_Shape shape = trf.Shape();
+		//OCCViewer::set(shape, RSTRING_PTR(name));
 		result = mrb_nil_value();
 	}
 	else {
@@ -364,11 +320,12 @@ mrbcmddef(rotate)
 
 mrbcmddef(scale)
 {
-    mrb_value name, pos;
+    mrb_int target;
+	mrb_value pos;
 	mrb_float s;
-	int argc = mrb_get_args(mrb, "SfA", &name, &s, &pos);
-	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+	int argc = mrb_get_args(mrb, "ifA", &target, &s, &pos);
 
+	Handle(AIS_Shape) hashape = OCCViewer::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -390,9 +347,9 @@ mrbcmddef(scale)
 
 	mrb_value result;
 	if (trf.IsDone()){
-		OCCViewer::unset(RSTRING_PTR(name));
-		TopoDS_Shape shape = trf.Shape();
-		OCCViewer::set(shape, RSTRING_PTR(name));
+		//OCCViewer::unset(RSTRING_PTR(name));
+		//TopoDS_Shape shape = trf.Shape();
+		//OCCViewer::set(shape, RSTRING_PTR(name));
 		result = mrb_nil_value();
 	}
 	else {
@@ -405,10 +362,11 @@ mrbcmddef(scale)
 
 mrbcmddef(mirror)
 {
-    mrb_value name, pos, norm;
-	int argc = mrb_get_args(mrb, "SAA", &name, &pos, &norm);
+	mrb_int target;
+    mrb_value pos, norm;
+	int argc = mrb_get_args(mrb, "iAA", &target, &pos, &norm);
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+	Handle(AIS_Shape) hashape = OCCViewer::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -423,9 +381,9 @@ mrbcmddef(mirror)
 
 	mrb_value result;
 	if (trf.IsDone()){
-		OCCViewer::unset(RSTRING_PTR(name));
-		TopoDS_Shape shape = trf.Shape();
-		OCCViewer::set(shape, RSTRING_PTR(name));
+		//OCCViewer::unset(RSTRING_PTR(name));
+		//TopoDS_Shape shape = trf.Shape();
+		//OCCViewer::set(shape, RSTRING_PTR(name));
 		result = mrb_nil_value();
 	}
 	else {
@@ -444,10 +402,10 @@ mrbcmddef(mirror)
  */
 mrbcmddef(bndbox)
 {
-	mrb_value name;
-	int argc = mrb_get_args(mrb, "S", &name);
+	mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+	Handle(AIS_Shape) hashape = OCCViewer::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -481,10 +439,13 @@ mrbcmddef(compound)
 	B.MakeCompound(comp);
 
 	for (;;) {
-		mrb_value name = mrb_ary_shift(mrb, ar);
-		if (mrb_nil_p(name))
-			break;
-		Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+		mrb_value item = mrb_ary_shift(mrb, ar);
+		if (!mrb_fixnum_p(item)) {
+			static const char m[] = "Incorrect argument specified.";
+	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+		mrb_int target = mrb_fixnum(item);
+		Handle(AIS_Shape) hashape = OCCViewer::get(target);
 		if (hashape.IsNull()) {
 			static const char m[] = "No such object name of specified at first.";
 	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -492,9 +453,7 @@ mrbcmddef(compound)
 		TopoDS_Shape shape = hashape->Shape();
 		B.Add(comp, shape);
 	}
-
-	const char* rname = OCCViewer::set(comp, NULL);
-	return mrb_str_new(mrb, rname, strlen(rname));
+	return mrb_fixnum_value(OCCViewer::set(comp));
 }
 
 mrbcmddef(help)
@@ -518,6 +477,31 @@ mrbcmddef(help)
 			mrb_ary_push(mrb, ar, mrb_ary_new_from_values(mrb, 3, tar));
 		}
 	}
+	if ((int)mrb_ary_len(mrb, ar))
+		return ar;
+	else
+		return mrb_nil_value();
+}
+
+mrbcmddef(selected)
+{
+	mrb_value ar = mrb_ary_new(mrb);
+	char* aname = NULL;
+
+	for (AISContext->InitCurrent(); AISContext->MoreCurrent(); AISContext->NextCurrent()) {
+		Handle(AIS_InteractiveObject) anIO = AISContext->Current();
+		Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(anIO);
+		TopoDS_Shape shape = hashape->Shape();
+
+		char* __tmp = (char*)malloc(sizeof(char*)*16);
+		if (__tmp == NULL)
+			throw "memory allocation error.";
+		aname = __tmp;
+		sprintf(aname, "%X", shape.HashCode(INT_MAX));
+
+		mrb_ary_push(mrb, ar, mrb_str_new(mrb, aname, strlen(aname)));
+	}
+
 	if ((int)mrb_ary_len(mrb, ar))
 		return ar;
 	else

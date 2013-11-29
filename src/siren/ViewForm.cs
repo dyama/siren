@@ -33,9 +33,12 @@ namespace siren
 			InitializeComponent();
 
 			myViewer = new Viewer();
+
+            // Make terminal on background
             t = new term(myViewer);
             t.Visible = false;
             this.Controls.Add(t);
+            t.Location = new System.Drawing.Point(5, 5);
 
             m = new InteractiveMenuContext(this);
 
@@ -130,6 +133,17 @@ namespace siren
                 return false;
             switch (format) {
             case ModelFormat.BREP:
+                {
+                    string errmsg;
+                    filename = filename.Replace(@"\", @"\\"); // escape
+                    int err = myViewer.mruby_exec("a=bload(\"" + filename + "\")", out errmsg);
+                    if (err == 0) {
+                        myViewer.mruby_exec("fit", out errmsg);
+                        return true;
+                    }
+                    else
+                        return false;
+                }
             case ModelFormat.CSFDB:
             case ModelFormat.IGES:
             case ModelFormat.STEP:
@@ -151,7 +165,18 @@ namespace siren
 		public bool Export(string filename, ModelFormat format)
 		{
             switch (format) {
-            case ModelFormat.BREP:
+            //case ModelFormat.BREP:
+            //    {
+            //        string errmsg;
+            //        filename = filename.Replace(@"\", @"\\"); // escape
+            //        int err = myViewer.mruby_exec("a=bload(\"" + filename + "\")", out errmsg);
+            //        if (err == 0) {
+            //            myViewer.mruby_exec("fit", out errmsg);
+            //            return true;
+            //        }
+            //        else
+            //            return false;
+            //    }
             case ModelFormat.CSFDB:
             case ModelFormat.IGES:
             case ModelFormat.STEP:

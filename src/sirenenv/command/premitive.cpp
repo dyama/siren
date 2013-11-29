@@ -21,8 +21,7 @@ mrbcmddef(vertex)
 	gp_Pnt p((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
 	TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(p);
 
-	const char* rname = OCCViewer::set(v, NULL);
-	return mrb_str_new(mrb, rname, strlen(rname));
+	return mrb_fixnum_value(OCCViewer::set(v));
 }
 
 /**
@@ -39,8 +38,7 @@ mrbcmddef(line)
 	BRepBuilderAPI_MakeEdge line(_sp, _tp);
     TopoDS_Shape shape = line.Shape();
 
-	const char* rname = OCCViewer::set(shape, NULL);
-	return mrb_str_new(mrb, rname, strlen(rname));
+	return mrb_fixnum_value(OCCViewer::set(shape));
 }
 
 /**
@@ -65,8 +63,7 @@ mrbcmddef(box)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	const char* rname = OCCViewer::set(shape, NULL);
-	return mrb_str_new(mrb, rname, strlen(rname));
+	return mrb_fixnum_value(OCCViewer::set(shape));
 }
 
 /**
@@ -91,8 +88,7 @@ mrbcmddef(sphere)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	const char* rname = OCCViewer::set(shape, NULL);
-	return mrb_str_new(mrb, rname, strlen(rname));
+	return mrb_fixnum_value(OCCViewer::set(shape));
 }
 
 /**
@@ -116,8 +112,7 @@ mrbcmddef(cylinder)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	const char* rname = OCCViewer::set(shape, NULL);
-	return mrb_str_new(mrb, rname, strlen(rname));
+	return mrb_fixnum_value(OCCViewer::set(shape));
 }
 
 /**
@@ -141,8 +136,7 @@ mrbcmddef(cone)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	const char* rname = OCCViewer::set(shape, NULL);
-	return mrb_str_new(mrb, rname, strlen(rname));
+	return mrb_fixnum_value(OCCViewer::set(shape));
 }
 
 /**
@@ -166,8 +160,7 @@ mrbcmddef(torus)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	const char* rname = OCCViewer::set(shape, NULL);
-	return mrb_str_new(mrb, rname, strlen(rname));
+	return mrb_fixnum_value(OCCViewer::set(shape));
 }
 
 mrbcmddef(plane)
@@ -191,6 +184,5 @@ mrbcmddef(plane)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	const char* rname = OCCViewer::set(shape, NULL);
-	return mrb_str_new(mrb, rname, strlen(rname));
+	return mrb_fixnum_value(OCCViewer::set(shape));
 }

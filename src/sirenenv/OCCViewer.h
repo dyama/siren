@@ -15,7 +15,7 @@
 
 static Handle_AIS_InteractiveContext AISContext;
 static Handle_V3d_View               View;
-static std::map<std::string, Handle(AIS_Shape)> Map;
+static std::map<int, Handle(AIS_Shape)> Map;
 
 #define mrbcmddec(name) static mrb_value name(mrb_state* mrb, mrb_value self)
 #define mrbcmddef(name) mrb_value OCCViewer::##name(mrb_state* mrb, mrb_value self)
@@ -45,9 +45,9 @@ public:
 protected:
 
 	// Set / Get
-	static const char* set(const TopoDS_Shape& shape, const char* name = NULL);
-	static void unset(const char* name);
-	static Handle(AIS_Shape) get(const char* name);
+	static int set(const TopoDS_Shape& shape);
+	static void unset(int hashcode);
+	static Handle(AIS_Shape) get(int hashcode);
 	static mrb_value pnt2ar(mrb_state* mrb, const gp_Pnt& rPnt);
 	void regcmd(const char* name, mrb_func_t func, int arg_req, int arg_opt, const char* desc, const char* usage);
 	static double  ar2double(mrb_state* mrb, mrb_value ary);
@@ -63,10 +63,10 @@ public:
 	// Core
 	mrbcmddec(help);
 	mrbcmddec(erase);
-    mrbcmddec(rename);
 	mrbcmddec(copy);
 	mrbcmddec(bndbox);
 	mrbcmddec(compound);
+	mrbcmddec(selected);
 
 	mrbcmddec(translate);
 	mrbcmddec(rotate);
@@ -136,11 +136,9 @@ public:
 	void  SetMaterial(int theMaterial);
 	void  SetTransparency(int theTrans);
 	void  SetAntialiasing(bool isOn);
-	bool  ImportBRep (wchar_t* filename);
 	bool  ImportCsfdb(wchar_t* filename);
 	bool  ImportIges (wchar_t* filename);
 	bool  ImportStep (wchar_t* filename);
-	bool  ExportBRep (wchar_t* filename);
 	bool  ExportIges (wchar_t* filename);
 	bool  ExpotStep  (wchar_t* filename);
 	bool  ExportStl  (wchar_t* filename);

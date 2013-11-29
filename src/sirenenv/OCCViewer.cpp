@@ -532,26 +532,6 @@ void OCCViewer::SetTransparency(int theTrans)
 		myAISContext->SetTransparency(myAISContext->Current(), ((Standard_Real)theTrans) / 10.0);
 }
 
-bool OCCViewer::ImportBRep(wchar_t* filename)
-{
-    char fname[_MAX_PATH];
-	{
-		setlocale(LC_CTYPE, "");
-	    size_t len;
-	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
-	}
-	Standard_CString aFileName = (Standard_CString) fname;
-	TopoDS_Shape aShape;
-    BRep_Builder aBuilder;
-    Standard_Boolean result = BRepTools::Read(aShape,aFileName,aBuilder);
-	if (!result)
-		return false;
-	if(myAISContext->HasOpenedContext())
-		myAISContext->CloseLocalContext();
-	myAISContext->Display(new AIS_Shape(aShape));
-	return true;
-}
-
 bool OCCViewer::ImportCsfdb(wchar_t* filename)
 {
     char fname[_MAX_PATH];
@@ -652,23 +632,6 @@ bool OCCViewer::ImportStep(wchar_t* filename)
 		return false;
 	return true;
 }
-
-bool OCCViewer::ExportBRep(wchar_t* filename)
-{
-    char fname[_MAX_PATH];
-	{
-		setlocale(LC_CTYPE, "");
-	    size_t len;
-	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
-	}
-	myAISContext->InitCurrent();
-	if (!myAISContext->MoreCurrent())
-		return false;
-	Handle_AIS_InteractiveObject anIO = myAISContext->Current();
-	Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
-	return (bool)BRepTools::Write(anIS->Shape(), (Standard_CString)fname);
-}
-
 
 bool OCCViewer::ExportIges(wchar_t* filename)
 {

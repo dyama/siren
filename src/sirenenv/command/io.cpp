@@ -12,12 +12,13 @@
 
 mrbcmddef(savebrep)
 {
-    mrb_value path, name;
-	int argc = mrb_get_args(mrb, "SS", &path, &name);
+    mrb_value path;
+	mrb_int target; 
+	int argc = mrb_get_args(mrb, "Si", &path, &target);
 
 	mrb_value result;
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(RSTRING_PTR(name));
+	Handle(AIS_Shape) hashape = OCCViewer::get((int)target);
 
 	if (hashape.IsNull()) {
 		static const char m[] = "No such named object.";
@@ -40,9 +41,9 @@ mrbcmddef(savebrep)
 
 mrbcmddef(loadbrep)
 {
-    mrb_value path, name;
+    mrb_value path;
 
-	int argc = mrb_get_args(mrb, "S|S", &path, &name);
+	int argc = mrb_get_args(mrb, "S", &path);
 
 	TopoDS_Shape shape;
     BRep_Builder aBuilder;
@@ -53,8 +54,7 @@ mrbcmddef(loadbrep)
 	if (res) {
 		//if(AISContext->HasOpenedContext())
 		//	AISContext->CloseLocalContext();
-		const char* rname = OCCViewer::set(shape, mrb_string_p(name) ? RSTRING_PTR(name) : NULL);
-		result = mrb_str_new(mrb, rname, strlen(rname));
+		result = mrb_fixnum_value(OCCViewer::set(shape));
 	}
 	else {
 		static const char m[] = "Failed to load BRep file.";

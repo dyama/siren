@@ -27,22 +27,6 @@ public:
 			return false;
 	}
 
-	bool ImportBrep(System::String^ filename)
-	{
-		if (myOCCViewer == NULL)
-			return false;
-		int length = filename->Length;
-		wchar_t* fname = new wchar_t[length+1];
-		for(int i = 0; i<length; i++)
-			fname[i] = (wchar_t)filename->ToCharArray()[i];
-
-		fname[length] = '\0';
-
-		bool res = myOCCViewer->ImportBRep(fname);
-		delete [] fname;
-		return res;
-	}
-
 	void RedrawView(void)
 	{
 		if (myOCCViewer != NULL)
@@ -288,9 +272,6 @@ public:
 		{
 			switch(format)
 			{
-				case 0:
-					res=myOCCViewer->ImportBRep(fname);
-					break;
 				case 1:
 					res=myOCCViewer->ImportCsfdb(fname);
 					break;
@@ -307,9 +288,6 @@ public:
 		{
 			switch(format)
 			{
-				case 0:
-					res=myOCCViewer->ExportBRep(fname);
-					break;
 				case 2:
 					res=myOCCViewer->ExpotStep(fname);
 					break;
