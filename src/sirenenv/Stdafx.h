@@ -166,6 +166,12 @@
 #pragma comment (lib, "TKSTEPBase.lib") // 
 #pragma comment (lib, "TKSTL.lib")      // STL
 
+// curve
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColgp_HArray1OfVec.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
+#include <GeomAPI_Interpolate.hxx>
+
 // OpenGL
 #pragma comment (lib, "TKOpenGL.lib")
 

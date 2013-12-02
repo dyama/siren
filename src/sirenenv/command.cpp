@@ -48,6 +48,7 @@ bool OCCViewer::mruby_init()
 	// Make object commands
 	regcmd("vertex",    &vertex,    3,0, "Make a vertex.",                  "vertex(X, Y, Z) -> String");
 	regcmd("line",      &line,      2,0, "Make a line.",                    "line(sp[X, Y, Z], tp[X, Y, Z]) -> String");
+	regcmd("curve",     &curve,     1,1, "Make a curve.",                   "curve(pts[[X, Y, Z], ...], vecs[[X, Y, Z], ...]) -> String");
 	regcmd("box",       &box,       1,1, "Make a box.",                     "box(size[X, Y, Z], pos[X, Y, Z] = [0, 0, 0]) -> String");
 	regcmd("sphere",    &sphere,    1,1, "Make a sphere.",                  "sphere(R, pos[X, Y, Z] = [0, 0, 0]) -> String");
 	regcmd("cylinder",  &cylinder,  5,0, "Make a cylinder.",                "cylinder(pos[X, Y, Z], normal[X, Y, Z], R, height, angle) -> String");
@@ -58,6 +59,11 @@ bool OCCViewer::mruby_init()
 	// I/O commands
 	regcmd("bsave",     &savebrep,  2,0, "Save object to a file.",          "bsave(path, obj) -> nil");
 	regcmd("bload",     &loadbrep,  1,0, "Load object from a file.",        "bload(path) -> String");
+
+#ifdef _DEBUG
+	// for debug
+	regcmd("debug",     &debug,     0,0, "",                                "");
+#endif
 
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
@@ -513,3 +519,10 @@ mrbcmddef(selected)
 	else
 		return mrb_nil_value();
 }
+
+#ifdef _DEBUG
+mrbcmddef(debug)
+{
+	return mrb_nil_value();
+}
+#endif

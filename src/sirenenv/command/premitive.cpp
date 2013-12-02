@@ -42,6 +42,52 @@ mrbcmddef(line)
 }
 
 /**
+ * \brief make curve
+ */
+mrbcmddef(curve)
+{
+	mrb_value pts, vecs;
+	int argc = mrb_get_args(mrb, "A|A", &pts, &vecs);
+
+	int psize = mrb_ary_len(mrb, pts);
+    Handle(TColgp_HArray1OfPnt) pary = new TColgp_HArray1OfPnt(1, psize);
+	for (int i=0; i<psize; i++) {
+		mrb_value pt = mrb_ary_ref(mrb, pts, i);
+		gp_Pnt pnt = *ar2pnt(mrb, pt);
+		pary->SetValue(i+1, pnt);
+	}
+    GeomAPI_Interpolate intp(pary, Standard_False, 1.0e-7);
+
+	if (argc == 2) {
+		TColgp_Array1OfVec vec(1, psize);
+	    Handle(TColStd_HArray1OfBoolean) use = new TColStd_HArray1OfBoolean(1, psize);
+
+		for (int i=0; i<psize; i++) {
+			mrb_value avec = mrb_ary_ref(mrb, vecs, i);
+			if (mrb_nil_p(avec)) {
+				//vec.SetValue(i+1, gp_Dir(1, 0, 0)); // dummy
+				use->SetValue(i+1, Standard_False);	
+			}
+			else {
+				gp_Dir dir = *ar2dir(mrb, avec);
+				vec.SetValue(i+1, dir);
+				use->SetValue(i+1, Standard_True);	
+			}
+		}
+		intp.Load(vec, use, Standard_True);
+		delete(use);
+	}
+
+    intp.Perform();
+    Handle(Geom_BSplineCurve) geSpl = intp.Curve();
+    TopoDS_Edge e = BRepBuilderAPI_MakeEdge(geSpl);
+
+	delete(pary);
+
+	return mrb_fixnum_value(OCCViewer::set(e));
+}
+
+/**
  * \brief make box
  */
 mrbcmddef(box)

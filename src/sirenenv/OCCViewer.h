@@ -83,6 +83,7 @@ public:
 	// Premitive
 	mrbcmddec(vertex);
 	mrbcmddec(line);
+	mrbcmddec(curve);
 	mrbcmddec(box);
 	mrbcmddec(cylinder);
 	mrbcmddec(cone);
@@ -100,6 +101,11 @@ public:
 	// I/O
 	mrbcmddec(savebrep);
 	mrbcmddec(loadbrep);
+
+#ifdef _DEBUG
+	// for debug
+	mrbcmddec(debug);
+#endif
 
 public:
 	bool  InitViewer(void* wnd);
