@@ -55,6 +55,8 @@
 //topology
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Compound.hxx>
+//explorer
+#include <TopExp_Explorer.hxx>
 //brep tools
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
@@ -92,9 +94,12 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
+
 // BRep Builder API, Modify
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
+
 // for primitive
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -103,6 +108,7 @@
 #include <BRepPrimAPI_MakeTorus.hxx>
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
+
 
 #include <BRepAlgoAPI_Common.hxx>
 

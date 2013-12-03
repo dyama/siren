@@ -83,6 +83,7 @@ public:
 	// Premitive
 	mrbcmddec(vertex);
 	mrbcmddec(line);
+	mrbcmddec(polyline);
 	mrbcmddec(curve);
 	mrbcmddec(box);
 	mrbcmddec(cylinder);
