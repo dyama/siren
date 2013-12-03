@@ -66,13 +66,16 @@ public:
 	mrbcmddec(erase);
 	mrbcmddec(copy);
 	mrbcmddec(bndbox);
-	mrbcmddec(compound);
 	mrbcmddec(selected);
 
 	mrbcmddec(translate);
 	mrbcmddec(rotate);
 	mrbcmddec(scale);
 	mrbcmddec(mirror);
+
+	// Edit
+	mrbcmddec(compound);
+	mrbcmddec(sew);
 
 	// Visualization
 	mrbcmddec(fit);

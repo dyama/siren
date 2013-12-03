@@ -23,8 +23,11 @@ bool OCCViewer::mruby_init()
 	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
 	regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(ObjID) -> ObjID");
 	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(ObjID) -> Ary[min[X,Y,Z], max[X,Y,Z]]");
-	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound([ObjID, ObjID, ...]) -> ObjID");
 	regcmd("selected",  &selected,  0,0, "Get name of selected objects.",   "selected() -> Ary[ObjID, ...]");
+
+	// Edit object commands
+	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound([ObjID, ObjID, ...]) -> ObjID");
+	regcmd("sew",       &sew,       1,1, "Make shell model by objects.",    "sew([ObjID, ObjID, ...]) -> ObjID");
 
 	// Transform commands
 	regcmd("translate", &translate, 2,0, "Translate specified object.",     "translate(obj, vector[X, Y, Z]) -> nil");
@@ -470,8 +473,9 @@ mrbcmddef(compound)
 	BRep_Builder B;
 	B.MakeCompound(comp);
 
-	for (;;) {
-		mrb_value item = mrb_ary_shift(mrb, ar);
+	int psize = mrb_ary_len(mrb, ar);
+	for (int i=0; i<psize; i++) {
+		mrb_value item = mrb_ary_ref(mrb, ar, i);
 		if (!mrb_fixnum_p(item)) {
 			static const char m[] = "Incorrect argument specified.";
 	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -486,6 +490,47 @@ mrbcmddef(compound)
 		B.Add(comp, shape);
 	}
 	return mrb_fixnum_value(OCCViewer::set(comp));
+}
+
+mrbcmddef(sew)
+{
+	mrb_value ar;
+	mrb_float tol;
+	int argc = mrb_get_args(mrb, "A|f", &ar, &tol);
+
+	BRepBuilderAPI_Sewing sewer;
+	sewer.Init();
+	if (argc == 2 && tol >= 0)
+		sewer.SetTolerance(tol);
+
+	int psize = mrb_ary_len(mrb, ar);
+	for (int i=0; i<psize; i++) {
+		mrb_value item = mrb_ary_ref(mrb, ar, i);
+		if (!mrb_fixnum_p(item)) {
+			static const char m[] = "Incorrect argument specified.";
+	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+		mrb_int target = mrb_fixnum(item);
+		Handle(AIS_Shape) hashape = OCCViewer::get(target);
+		if (hashape.IsNull()) {
+			static const char m[] = "No such object name of specified at first.";
+	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+		TopoDS_Shape shape = hashape->Shape();
+		sewer.Add(shape);
+	}
+
+	TopoDS_Shape result;
+	try {
+		sewer.Perform();
+		result = sewer.SewedShape();
+	}
+	catch (...) {
+		static const char m[] = "Failed to sew objects.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	
+	return mrb_fixnum_value(OCCViewer::set(result));
 }
 
 mrbcmddef(help)

@@ -97,6 +97,7 @@
 // BRep Builder API, Modify
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
 
 // for primitive
 #include <BRepPrimAPI_MakeBox.hxx>
