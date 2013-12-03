@@ -162,3 +162,37 @@ mrbcmddef(cog)
 
 	return pnt2ar(mrb, cog);
 }
+
+/**
+ * \brief get intersection line of two objects.
+ */
+mrbcmddef(intersect)
+{
+    mrb_int s1, s2;
+	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
+
+	Handle(AIS_Shape) haS1 = OCCViewer::get(s1);
+	if (haS1.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	Handle(AIS_Shape) haS2 = OCCViewer::get(s2);
+	if (haS2.IsNull()) {
+		static const char m[] = "No such object name of specified at second.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	BRepAlgoAPI_Section	sect(haS1->Shape(), haS2->Shape(), Standard_False );
+	sect.ComputePCurveOn1(Standard_True);
+	sect.Approximation(Standard_True);
+	sect.Build();
+
+	if (!sect.IsDone()) {
+		static const char m[] = "Failed to intersection.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	TopoDS_Shape shape = sect.Shape();
+
+	return mrb_fixnum_value(OCCViewer::set(shape));
+}

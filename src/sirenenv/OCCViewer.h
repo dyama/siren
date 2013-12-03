@@ -104,6 +104,7 @@ public:
 	mrbcmddec(fuse);
 	mrbcmddec(volume);
 	mrbcmddec(cog);
+	mrbcmddec(intersect);
 
 	// I/O
 	mrbcmddec(savebrep);

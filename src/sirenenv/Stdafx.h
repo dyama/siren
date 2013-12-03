@@ -110,6 +110,7 @@
 
 #include <TopExp_Explorer.hxx>
 #include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Section.hxx>
 
 // 
 #include <V3d_PerspectiveView.hxx>
