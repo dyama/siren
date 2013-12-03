@@ -60,9 +60,15 @@ mrbcmddef(polyline)
 			poly.Add(pnt);
 		}
 		poly.Build();
-		shape = poly.Shape();
+		if ( poly.IsDone() ) 
+			shape = poly.Shape();
 
 	}	catch (...) {
+		static const char m[] = "Failed to make a polyline.";
+		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	if ( shape.IsNull() )
+	{
 		static const char m[] = "Failed to make a polyline.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
