@@ -55,8 +55,6 @@
 //topology
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Compound.hxx>
-//explorer
-#include <TopExp_Explorer.hxx>
 //brep tools
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
