@@ -50,18 +50,10 @@ namespace siren
 
         private void onMouseWheel(object sender, MouseEventArgs e)
         {
-            double factor = e.Delta * SystemInformation.MouseWheelScrollLines / 200;
+            double factor = 0.15;
             double scale = myViewer.Scale();
 
-            if (scale > 0.01)
-            {
-              factor /= 100;
-            }
-            else
-            {
-              factor /= 1000;
-            }
-
+            factor = e.Delta < 0 ? scale * factor : scale * -factor; 
             if (scale - factor < 0)
                 scale = 0.001;
             else

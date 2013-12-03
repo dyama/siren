@@ -42,6 +42,40 @@ mrbcmddef(line)
 }
 
 /**
+ * \brief make polyline
+ */
+mrbcmddef(polyline)
+{
+  mrb_value pts;
+  int argc = mrb_get_args(mrb, "A", &pts);
+	int psize = mrb_ary_len(mrb, pts);
+
+	TopoDS_Compound comp;
+	BRepBuilderAPI_MakePolygon poly;
+
+	try
+	{
+		for (int i=0; i<psize; i++) {
+			mrb_value pt = mrb_ary_ref(mrb, pts, i);
+			gp_Pnt pnt = *ar2pnt(mrb, pt);
+			poly.Add(pnt);
+		}
+		poly.Build();
+		TopExp_Explorer exp;
+		BRep_Builder build;
+		build.MakeCompound(comp);
+		for ( exp.Init( poly.Shape(), TopAbs_EDGE ); exp.More(); exp.Next() )
+		{
+			build.Add(comp, exp.Current());
+		}
+	}	catch (...) {
+		static const char m[] = "Failed to make a polyline.";
+		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	return mrb_fixnum_value(OCCViewer::set(comp));
+}
+
+/**
  * \brief make curve
  */
 mrbcmddef(curve)
