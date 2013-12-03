@@ -50,9 +50,8 @@ mrbcmddef(polyline)
   int argc = mrb_get_args(mrb, "A", &pts);
 	int psize = mrb_ary_len(mrb, pts);
 
-	TopoDS_Compound comp;
 	BRepBuilderAPI_MakePolygon poly;
-
+	TopoDS_Shape shape;
 	try
 	{
 		for (int i=0; i<psize; i++) {
@@ -61,18 +60,13 @@ mrbcmddef(polyline)
 			poly.Add(pnt);
 		}
 		poly.Build();
-		TopExp_Explorer exp;
-		BRep_Builder build;
-		build.MakeCompound(comp);
-		for ( exp.Init( poly.Shape(), TopAbs_EDGE ); exp.More(); exp.Next() )
-		{
-			build.Add(comp, exp.Current());
-		}
+		shape = poly.Shape();
+
 	}	catch (...) {
 		static const char m[] = "Failed to make a polyline.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	return mrb_fixnum_value(OCCViewer::set(comp));
+	return mrb_fixnum_value(OCCViewer::set(shape));
 }
 
 /**
