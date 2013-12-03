@@ -28,6 +28,7 @@ bool OCCViewer::mruby_init()
 	// Edit object commands
 	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound([ObjID, ObjID, ...]) -> ObjID");
 	regcmd("sew",       &sew,       1,1, "Make shell model by objects.",    "sew([ObjID, ObjID, ...]) -> ObjID");
+	regcmd("explode",   &explode,   2,0, "Explode object to children.",     "explode(type, ObjID) -> Ary");
 
 	// Transform commands
 	regcmd("translate", &translate, 2,0, "Translate specified object.",     "translate(obj, vector[X, Y, Z]) -> nil");
@@ -531,6 +532,36 @@ mrbcmddef(sew)
 	}
 	
 	return mrb_fixnum_value(OCCViewer::set(result));
+}
+
+mrbcmddef(explode)
+{
+	mrb_int type;
+	mrb_int target;
+	int argc = mrb_get_args(mrb, "ii", &type, &target);
+
+	if (type < 0 || type > (int)TopAbs_VERTEX) {
+		static const char m[] = "Incorrect type specified.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	TopAbs_ShapeEnum shapetype = (TopAbs_ShapeEnum)type;
+
+	Handle(AIS_Shape) hashape = OCCViewer::get(target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	mrb_value ar = mrb_ary_new(mrb);
+    TopExp_Explorer ex(hashape->Shape(), shapetype);
+
+    for (; ex.More(); ex.Next()) {
+        const TopoDS_Shape& Sx = ex.Current();
+		mrb_value hc = mrb_fixnum_value(OCCViewer::set(Sx));
+		mrb_ary_push(mrb, ar, hc);
+    }
+
+	return ar;
 }
 
 mrbcmddef(help)

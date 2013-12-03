@@ -76,6 +76,7 @@ public:
 	// Edit
 	mrbcmddec(compound);
 	mrbcmddec(sew);
+	mrbcmddec(explode);
 
 	// Visualization
 	mrbcmddec(fit);

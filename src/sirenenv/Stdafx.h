@@ -108,7 +108,7 @@
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
 
-
+#include <TopExp_Explorer.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 
 // 
