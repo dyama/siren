@@ -34,6 +34,7 @@ bool OCCViewer::mruby_init()
 
 	// Visualization commands
 	regcmd("display",   &display,   1,0, "Dislay object.",                  "display(obj) -> nil");
+	regcmd("hide",      &hide,      1,0, "Hide object.",                    "hide(obj) -> nil");
 	regcmd("fit",       &fit,       0,0, "Fit view to objects",             "fit() -> nil");
 	regcmd("update",    &update,    0,0, "Update current viewer.",          "update() -> nil");
 	regcmd("color",     &color,     4,0, "Set color of object.",            "color(obj, R, G, B) -> nil");
@@ -228,6 +229,24 @@ mrbcmddef(display)
 	}
 
 	AISContext->Display(hashape, Standard_False);
+	return mrb_nil_value();
+}
+
+mrbcmddef(hide)
+{
+	if (AISContext.IsNull())
+		return mrb_nil_value();
+
+    mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
+
+	Handle(AIS_Shape) hashape = OCCViewer::get(target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified argument.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	AISContext->Erase(hashape, Standard_False);
 	return mrb_nil_value();
 }
 

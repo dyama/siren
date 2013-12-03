@@ -78,6 +78,7 @@ public:
 	mrbcmddec(fit);
 	mrbcmddec(update);
 	mrbcmddec(display);
+	mrbcmddec(hide);
 	mrbcmddec(color);
 
 	// Premitive
