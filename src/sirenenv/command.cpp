@@ -42,6 +42,7 @@ bool OCCViewer::mruby_init()
 	regcmd("fit",       &fit,       0,0, "Fit view to objects",             "fit() -> nil");
 	regcmd("update",    &update,    0,0, "Update current viewer.",          "update() -> nil");
 	regcmd("color",     &color,     4,0, "Set color of object.",            "color(obj, R, G, B) -> nil");
+	regcmd("bgcolor",   &bgcolor,   3,3, "Set color of background.",        "bgcolor(topR, topG, topB, btmR, btmG, btmB) -> nil");
 
 	// Boolean operation commands
 	regcmd("common",    &common,    2,1, "Common boolean operation.",       "common(obj1, obj2) -> String");
@@ -270,8 +271,8 @@ mrbcmddef(fit)
 mrbcmddef(color)
 {
     mrb_int target; 
-	mrb_float _r, _g, _b;
-	int argc = mrb_get_args(mrb, "ifff", &target, &_r, &_g, &_b);
+	mrb_float r, g, b;
+	int argc = mrb_get_args(mrb, "ifff", &target, &r, &g, &b);
 
 	Handle(AIS_Shape) hashape = OCCViewer::get(target);
 	if (hashape.IsNull()) {
@@ -279,12 +280,31 @@ mrbcmddef(color)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	Standard_Real r = (Standard_Real)_r;
-	Standard_Real g = (Standard_Real)_g;
-	Standard_Real b = (Standard_Real)_b;
-
 	Quantity_Color col =  Quantity_Color(r/255., g/255., b/255., Quantity_TOC_RGB);
     AISContext->SetColor(hashape, col.Name());
+
+	return mrb_nil_value();
+}
+
+mrbcmddef(bgcolor)
+{
+	mrb_float tr, tg, tb, br, bg, bb;
+	int argc = mrb_get_args(mrb, "fff|fff", &tr, &tg, &tb, &br, &bg, &bb);
+
+	if (argc == 6) {
+	    Quantity_Color color_top(tr/255, tg/255, tb/255, Quantity_TOC_RGB);
+	    Quantity_Color color_btm(br/255, bg/255, bb/255, Quantity_TOC_RGB);
+	    View->SetBgGradientColors(color_top, color_btm, Aspect_GFM_VER, Standard_True);
+	}
+	else if (argc == 3) {
+	    Quantity_Color color(tr/255, tg/255, tb/255, Quantity_TOC_RGB);
+		View->SetBackgroundColor(color);
+		View->Redraw();
+	}
+	else {
+		static const char m[] = "Incorrect number of arguments.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
 
 	return mrb_nil_value();
 }
@@ -600,14 +620,7 @@ mrbcmddef(selected)
 		Handle(AIS_InteractiveObject) anIO = AISContext->Current();
 		Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(anIO);
 		TopoDS_Shape shape = hashape->Shape();
-
-		char* __tmp = (char*)malloc(sizeof(char*)*16);
-		if (__tmp == NULL)
-			throw "memory allocation error.";
-		aname = __tmp;
-		sprintf(aname, "%X", shape.HashCode(INT_MAX));
-
-		mrb_ary_push(mrb, ar, mrb_str_new(mrb, aname, strlen(aname)));
+		mrb_ary_push(mrb, ar, mrb_fixnum_value(shape.HashCode(INT_MAX)));
 	}
 
 	if ((int)mrb_ary_len(mrb, ar))

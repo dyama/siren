@@ -84,6 +84,7 @@ public:
 	mrbcmddec(display);
 	mrbcmddec(hide);
 	mrbcmddec(color);
+	mrbcmddec(bgcolor);
 
 	// Premitive
 	mrbcmddec(vertex);
