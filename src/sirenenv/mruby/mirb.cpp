@@ -309,7 +309,7 @@ int Mirb::user_exec(char* last_code_line, std::string& errmsg)
             else {
                 /* no */
                 /* してない */
-                if (!mrb_respond_to(mrb, result, mrb_intern2(mrb, "inspect", 7))) {
+		        if (!mrb_respond_to(mrb, result, mrb_intern_lit(mrb, "inspect"))){
                     result = mrb_any_to_s(mrb, result);
                 }
                 p(result, 1);
