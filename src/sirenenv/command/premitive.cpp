@@ -108,7 +108,7 @@ mrb_value curve(mrb_state* mrb, mrb_value self)
 			}
 		}
 		intp.Load(vec, use, Standard_True);
-		delete(use);
+		//delete(use);
 	}
 
     intp.Perform();
@@ -265,3 +265,58 @@ mrb_value plane(mrb_state* mrb, mrb_value self)
 
 	return mrb_fixnum_value(::set(shape));
 }
+
+
+
+mrb_value sweep(mrb_state* mrb, mrb_value self)
+{
+	mrb_int target;
+	mrb_value obj;
+	int argc = mrb_get_args(mrb, "io", &target, &obj);
+
+	Handle(AIS_Shape) base = ::get(target);
+	if (base.IsNull() ) {
+		static const char m[] = "No such first specified object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	TopoDS_Shape shape;
+	TopoDS_Shape bs, ps;
+	TopoDS_Wire pw;
+	bs = base->Shape();
+
+	try 
+	{
+		if ( mrb_array_p(obj) ) { //Vector
+			gp_Pnt _vec = *ar2pnt(mrb, obj);
+			gp_Pnt _pt = gp_Pnt(0.,0.,0.).Transformed(bs.Location());
+			TopoDS_Edge pe = BRepBuilderAPI_MakeEdge(_pt,_vec);
+			pw = BRepBuilderAPI_MakeWire(pe);
+		}	else if (mrb_fixnum_p(obj))	{ //profile
+			Handle(AIS_Shape) path = ::get(mrb_fixnum(obj) );
+			if (path.IsNull()) {
+				static const char m[] = "No such second specified object.";
+						return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+			}
+			ps = path->Shape();
+			if ( ps.ShapeType() == TopAbs_EDGE )
+				pw = BRepBuilderAPI_MakeWire( TopoDS::Edge(path->Shape()));
+			else
+				pw = TopoDS::Wire( path->Shape() );
+		}
+
+		BRepOffsetAPI_MakePipe mp( pw, bs );
+		mp.Build();
+		shape = mp.Shape();
+		if (shape.IsNull()) {
+			static const char m[] = "No such second specified object.";
+			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+	}
+	catch (...) {
+		static const char m[] = "Failed to make a sweep model.";
+			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	return mrb_fixnum_value(::set(shape));
+}
+
