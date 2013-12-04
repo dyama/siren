@@ -206,8 +206,6 @@ bool OCCViewer::InitViewer(void* wnd)
 		myViewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
 	}
 
-	//myView->Redraw();
-	//myViewer->Redraw();
 	myAISContext->UpdateCurrentViewer();
 
 	mruby_init();

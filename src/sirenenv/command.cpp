@@ -66,7 +66,9 @@ bool OCCViewer::mruby_init()
 
 	// I/O commands
 	regcmd("bsave",     &savebrep,  2,0, "Save object to a file.",          "bsave(path, obj) -> nil");
-	regcmd("bload",     &loadbrep,  1,0, "Load object from a file.",        "bload(path) -> String");
+	regcmd("bload",     &loadbrep,  1,0, "Load object from a file.",        "bload(path) -> ID");
+	regcmd("isave",     &saveiges,  2,0, "Save object to an IGES.",         "isave(path, obj) -> nil");
+	regcmd("iload",     &loadiges,  1,0, "Load object from an IGES.",       "iload(path) -> Ary");
 
 #ifdef _DEBUG
 	// for debug
@@ -76,6 +78,7 @@ bool OCCViewer::mruby_init()
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
 		"DRAW=1;"
+		//"class Stype;private_class_method :new;COMPOUND=0;COMPSOLID=1;SOLID=2;SHELL=3;FACE=4;WIRE=5;EDGE=6;VERTEX=7;SHAPE=8;end\n"
 		"tri10=[10,10,10];"
 		"op=[0,0,0];"
 		"axx=[1,0,0];"

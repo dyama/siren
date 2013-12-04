@@ -62,3 +62,13 @@ mrbcmddef(loadbrep)
 
 	return result;
 }
+
+mrbcmddef(saveiges)
+{
+    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+}
+
+mrbcmddef(loadiges)
+{
+    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+}

@@ -109,6 +109,8 @@ public:
 	// I/O
 	mrbcmddec(savebrep);
 	mrbcmddec(loadbrep);
+	mrbcmddec(saveiges);
+	mrbcmddec(loadiges);
 
 #ifdef _DEBUG
 	// for debug

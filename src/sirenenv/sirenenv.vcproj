@@ -193,10 +193,6 @@
 		<Filter
 			Name="TopoDS"
 			>
-			<File
-				RelativePath=".\TopoDS\ShapeEnum.h"
-				>
-			</File>
 			<Filter
 				Name="header"
 				>
@@ -279,18 +275,6 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="TopExp"
-			>
-			<File
-				RelativePath=".\TopoDS\Explorer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TopoDS\Explorer.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="mruby"
 			>
 			<File
@@ -330,14 +314,22 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\cad.h"
+		<Filter
+			Name="dotnet_if"
 			>
-		</File>
-		<File
-			RelativePath=".\colorname.h"
-			>
-		</File>
+			<File
+				RelativePath=".\cad.h"
+				>
+			</File>
+			<File
+				RelativePath=".\colorname.h"
+				>
+			</File>
+			<File
+				RelativePath=".\orientation.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\help.h"
 			>
@@ -351,19 +343,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\orientation.h"
-			>
-		</File>
-		<File
 			RelativePath=".\Stdafx.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\Stdafx.h"
-			>
-		</File>
-		<File
-			RelativePath=".\gp\Vec.h"
 			>
 		</File>
 	</Files>
