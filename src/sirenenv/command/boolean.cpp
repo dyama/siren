@@ -7,23 +7,22 @@
  * \author dyama <dyama@member.fsf.org>
  */
 
-#include "StdAfx.h"
-#include "OCCViewer.h"
+#include "Stdafx.h"
 
 /**
  * \brief get across area of s1 by s2
  */
-mrbcmddef(common)
+mrb_value common(mrb_state* mrb, mrb_value self)
 {
 	mrb_int s1, s2;
 	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
 
-	Handle(AIS_Shape) haS1 = OCCViewer::get(s1);
+	Handle(AIS_Shape) haS1 = ::get(s1);
 	if (haS1.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) haS2 = OCCViewer::get(s2);
+	Handle(AIS_Shape) haS2 = ::get(s2);
 	if (haS2.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -37,7 +36,7 @@ mrbcmddef(common)
 
 	if (!bo.ErrorStatus()) {
 	    TopoDS_Shape shape = bo.Shape();
-		result = mrb_fixnum_value(OCCViewer::set(shape));
+		result = mrb_fixnum_value(::set(shape));
 	}
 	else {
 		static const char m[] = "Failed to fuse operation of boolean.";
@@ -50,17 +49,17 @@ mrbcmddef(common)
 /**
  * \brief cut object (s1 by s2)
  */
-mrbcmddef(cut)
+mrb_value cut(mrb_state* mrb, mrb_value self)
 {
     mrb_int s1, s2;
 	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
 
-	Handle(AIS_Shape) haS1 = OCCViewer::get(s1);
+	Handle(AIS_Shape) haS1 = ::get(s1);
 	if (haS1.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) haS2 = OCCViewer::get(s2);
+	Handle(AIS_Shape) haS2 = ::get(s2);
 	if (haS2.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -74,7 +73,7 @@ mrbcmddef(cut)
 
 	if (!bo.ErrorStatus()) {
 	    TopoDS_Shape shape = bo.Shape();
-		result = mrb_fixnum_value(OCCViewer::set(shape));
+		result = mrb_fixnum_value(::set(shape));
 	}
 	else {
 		static const char m[] = "Failed to fuse operation of boolean.";
@@ -87,17 +86,17 @@ mrbcmddef(cut)
 /**
  * \brief add object
  */
-mrbcmddef(fuse)
+mrb_value fuse(mrb_state* mrb, mrb_value self)
 {
     mrb_int s1, s2;
 	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
 
-	Handle(AIS_Shape) haS1 = OCCViewer::get(s1);
+	Handle(AIS_Shape) haS1 = ::get(s1);
 	if (haS1.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) haS2 = OCCViewer::get(s2);
+	Handle(AIS_Shape) haS2 = ::get(s2);
 	if (haS2.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -111,7 +110,7 @@ mrbcmddef(fuse)
 
 	if (!bo.ErrorStatus()) {
 	    TopoDS_Shape shape = bo.Shape();
-		result = mrb_fixnum_value(OCCViewer::set(shape));
+		result = mrb_fixnum_value(::set(shape));
 	}
 	else {
 		static const char m[] = "Failed to fuse operation of boolean.";
@@ -124,12 +123,12 @@ mrbcmddef(fuse)
 /**
  * \brief get volume of solid object
  */
-mrbcmddef(volume)
+mrb_value volume(mrb_state* mrb, mrb_value self)
 {
     mrb_int target;
 	int argc = mrb_get_args(mrb, "i", &target);
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(target);
+	Handle(AIS_Shape) hashape = ::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -145,12 +144,12 @@ mrbcmddef(volume)
 /**
  * \brief get point of center of gravity
  */
-mrbcmddef(cog)
+mrb_value cog(mrb_state* mrb, mrb_value self)
 {
     mrb_int target;
 	int argc = mrb_get_args(mrb, "i", &target);
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(target);
+	Handle(AIS_Shape) hashape = ::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -164,19 +163,19 @@ mrbcmddef(cog)
 }
 
 /**
- * \brief get intersection line of two objects.
+ * \brief 2つのオブジェクトの交線を求め、作成する
  */
-mrbcmddef(intersect)
+mrb_value intersect(mrb_state* mrb, mrb_value self)
 {
     mrb_int s1, s2;
 	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
 
-	Handle(AIS_Shape) haS1 = OCCViewer::get(s1);
+	Handle(AIS_Shape) haS1 = ::get(s1);
 	if (haS1.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) haS2 = OCCViewer::get(s2);
+	Handle(AIS_Shape) haS2 = ::get(s2);
 	if (haS2.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -194,5 +193,5 @@ mrbcmddef(intersect)
 
 	TopoDS_Shape shape = sect.Shape();
 
-	return mrb_fixnum_value(OCCViewer::set(shape));
+	return mrb_fixnum_value(::set(shape));
 }

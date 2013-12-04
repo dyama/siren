@@ -7,13 +7,12 @@
  * \author dyama <dyama@member.fsf.org>
  */
 
-#include "StdAfx.h"
-#include "OCCViewer.h"
+#include "Stdafx.h"
 
 /**
  * \brief make vertex
  */
-mrbcmddef(vertex)
+mrb_value vertex(mrb_state* mrb, mrb_value self)
 {
 	mrb_float x, y, z;
 	int argc = mrb_get_args(mrb, "fff", &x, &y, &z);
@@ -21,13 +20,13 @@ mrbcmddef(vertex)
 	gp_Pnt p((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
 	TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(p);
 
-	return mrb_fixnum_value(OCCViewer::set(v));
+	return mrb_fixnum_value(::set(v));
 }
 
 /**
  * \brief make line
  */
-mrbcmddef(line)
+mrb_value line(mrb_state* mrb, mrb_value self)
 {
     mrb_value sp, tp;
     int argc = mrb_get_args(mrb, "AA", &sp, &tp);
@@ -38,13 +37,13 @@ mrbcmddef(line)
 	BRepBuilderAPI_MakeEdge line(_sp, _tp);
     TopoDS_Shape shape = line.Shape();
 
-	return mrb_fixnum_value(OCCViewer::set(shape));
+	return mrb_fixnum_value(::set(shape));
 }
 
 /**
  * \brief make polyline
  */
-mrbcmddef(polyline)
+mrb_value polyline(mrb_state* mrb, mrb_value self)
 {
   mrb_value pts;
   int argc = mrb_get_args(mrb, "A", &pts);
@@ -72,13 +71,13 @@ mrbcmddef(polyline)
 		static const char m[] = "Failed to make a polyline.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	return mrb_fixnum_value(OCCViewer::set(shape));
+	return mrb_fixnum_value(::set(shape));
 }
 
 /**
  * \brief make curve
  */
-mrbcmddef(curve)
+mrb_value curve(mrb_state* mrb, mrb_value self)
 {
 	mrb_value pts, vecs;
 	int argc = mrb_get_args(mrb, "A|A", &pts, &vecs);
@@ -118,13 +117,13 @@ mrbcmddef(curve)
 
 	delete(pary);
 
-	return mrb_fixnum_value(OCCViewer::set(e));
+	return mrb_fixnum_value(::set(e));
 }
 
 /**
  * \brief make box
  */
-mrbcmddef(box)
+mrb_value box(mrb_state* mrb, mrb_value self)
 {
     mrb_value size;
     mrb_value pos;
@@ -143,13 +142,13 @@ mrbcmddef(box)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(OCCViewer::set(shape));
+	return mrb_fixnum_value(::set(shape));
 }
 
 /**
  * \brief make sphere
  */
-mrbcmddef(sphere)
+mrb_value sphere(mrb_state* mrb, mrb_value self)
 {
     mrb_float r;
 	mrb_value pos;
@@ -168,13 +167,13 @@ mrbcmddef(sphere)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(OCCViewer::set(shape));
+	return mrb_fixnum_value(::set(shape));
 }
 
 /**
  * \brief make cylinder
  */
-mrbcmddef(cylinder)
+mrb_value cylinder(mrb_state* mrb, mrb_value self)
 {
 	mrb_value pos, norm;
     mrb_float r, h, a;
@@ -192,13 +191,13 @@ mrbcmddef(cylinder)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(OCCViewer::set(shape));
+	return mrb_fixnum_value(::set(shape));
 }
 
 /**
  * \brief make cone
  */
-mrbcmddef(cone)
+mrb_value cone(mrb_state* mrb, mrb_value self)
 {
 	mrb_value pos, norm;
 	mrb_float r1, r2, h, ang;
@@ -216,13 +215,13 @@ mrbcmddef(cone)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(OCCViewer::set(shape));
+	return mrb_fixnum_value(::set(shape));
 }
 
 /**
  * \brief make torus
  */
-mrbcmddef(torus)
+mrb_value torus(mrb_state* mrb, mrb_value self)
 {
 	mrb_float r1, r2, a1, a2, ang;
 	mrb_value pos, norm;
@@ -240,10 +239,10 @@ mrbcmddef(torus)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(OCCViewer::set(shape));
+	return mrb_fixnum_value(::set(shape));
 }
 
-mrbcmddef(plane)
+mrb_value plane(mrb_state* mrb, mrb_value self)
 {
 	mrb_value pos, dir;
 	mrb_float umin, umax, vmin, vmax;
@@ -264,5 +263,5 @@ mrbcmddef(plane)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(OCCViewer::set(shape));
+	return mrb_fixnum_value(::set(shape));
 }

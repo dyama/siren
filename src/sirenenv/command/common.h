@@ -5,18 +5,24 @@
  * AUTHOR: dyama <dyama@member.fsf.org>
  */
 
-// コマンドを便利に実装するための共通関数群
+// コマンドを実装するための共通関数群
 
 #pragma once
 
-#include "StdAfx.h"
+#include "Stdafx.h"
 #include "mirb.h"
 
-double ar2double(mrb_state* mrb, mrb_value ary);
-gp_Pnt* ar2pnt(mrb_state* mrb, mrb_value& ary);
-gp_Vec* ar2vec(mrb_state* mrb, mrb_value& ary);
-gp_Dir* ar2dir(mrb_state* mrb, mrb_value& ary);
-gp_Ax1* ar2ax1(mrb_state* mrb, mrb_value& pos, mrb_value& dir);
-gp_Ax2* ar2ax2(mrb_state* mrb, mrb_value& pos, mrb_value& dir);
-gp_Ax3* ar2ax3(mrb_state* mrb, mrb_value& pos, mrb_value& dir);
-mrb_value pnt2ar(mrb_state* mrb, const gp_Pnt& rPnt);
+double    ar2double (mrb_state* mrb, mrb_value ary);
+gp_Pnt*   ar2pnt    (mrb_state* mrb, mrb_value& ary);
+gp_Vec*   ar2vec    (mrb_state* mrb, mrb_value& ary);
+gp_Dir*   ar2dir    (mrb_state* mrb, mrb_value& ary);
+gp_Ax1*   ar2ax1    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
+gp_Ax2*   ar2ax2    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
+gp_Ax3*   ar2ax3    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
+mrb_value pnt2ar    (mrb_state* mrb, const gp_Pnt& rPnt);
+
+
+int set(const TopoDS_Shape& shape);
+int set(const TopoDS_Shape& shape, int draw);
+void unset(int hashcode);
+Handle(AIS_Shape) get(int hashcode);

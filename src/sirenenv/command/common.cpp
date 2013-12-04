@@ -10,6 +10,10 @@
 #include "Stdafx.h"
 #include "common.h"
 
+
+/**
+ * \brief 
+ */
 double ar2double(mrb_state* mrb, mrb_value ary)
 {
 	double res = 0.0;
@@ -27,6 +31,9 @@ double ar2double(mrb_state* mrb, mrb_value ary)
 	return res;
 }
 
+/**
+ * \brief 
+ */
 gp_Pnt* ar2pnt(mrb_state* mrb, mrb_value& ary)
 {
 	double x = ar2double(mrb, ary);
@@ -35,6 +42,9 @@ gp_Pnt* ar2pnt(mrb_state* mrb, mrb_value& ary)
 	return new gp_Pnt(x, y, z);
 }
 
+/**
+ * \brief 
+ */
 gp_Vec* ar2vec(mrb_state* mrb, mrb_value& ary)
 {
 	double x = ar2double(mrb, ary);
@@ -43,6 +53,9 @@ gp_Vec* ar2vec(mrb_state* mrb, mrb_value& ary)
 	return new gp_Vec(x, y, z);
 }
 
+/**
+ * \brief 
+ */
 gp_Dir* ar2dir(mrb_state* mrb, mrb_value& ary)
 {
 	double x = ar2double(mrb, ary);
@@ -51,6 +64,9 @@ gp_Dir* ar2dir(mrb_state* mrb, mrb_value& ary)
 	return new gp_Dir(x, y, z);
 }
 
+/**
+ * \brief 
+ */
 gp_Ax1* ar2ax1(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
 {
 	gp_Pnt gpnt = *ar2pnt(mrb, pos);
@@ -58,19 +74,25 @@ gp_Ax1* ar2ax1(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
 	return new gp_Ax1(gpnt, gdir);
 }
 
+/**
+ * \brief 
+ */
 gp_Ax2* ar2ax2(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
 {
 	gp_Pnt gpnt = *ar2pnt(mrb, pos);
 	gp_Dir gdir = *ar2dir(mrb, dir);
 	return new gp_Ax2(gpnt, gdir);
 }
+
+/**
+ * \brief 
+ */
 gp_Ax3* ar2ax3(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
 {
 	gp_Pnt gpnt = *ar2pnt(mrb, pos);
 	gp_Dir gdir = *ar2dir(mrb, dir);
 	return new gp_Ax3(gpnt, gdir);
 }
-
 
 /**
  * \brief OCCのgp_Pntをmrubyの配列オブジェクトに変換する
@@ -83,4 +105,3 @@ mrb_value pnt2ar(mrb_state* mrb, const gp_Pnt& rPnt)
 	res[2] = mrb_float_value(mrb, rPnt.Z());
 	return mrb_ary_new_from_values(mrb, 3, res);
 }
-

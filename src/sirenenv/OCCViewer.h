@@ -6,20 +6,10 @@
  */
 
 #pragma once
-#include "stdafx.h"
-#include "mirb.h"
-#include "common.h"
+#ifndef _OCCVIEWER_H_
+#define _OCCVIEWER_H_
 
-#ifndef _MAX_PATH
-#define _MAX_PATH 1024
-#endif
-
-static Handle_AIS_InteractiveContext AISContext;
-static Handle_V3d_View               View;
-static std::map<int, Handle(AIS_Shape)> Map;
-
-#define mrbcmddec(name) static mrb_value name(mrb_state* mrb, mrb_value self)
-#define mrbcmddef(name) mrb_value OCCViewer::##name(mrb_state* mrb, mrb_value self)
+#include "Stdafx.h"
 
 class OCCViewer
 {
@@ -29,7 +19,6 @@ public:
 
 private:
 	void initViewAppearance(void);
-
 	Handle_AIS_InteractiveContext myAISContext;
 	Handle_V3d_Viewer myViewer;
 	Handle_V3d_View myView;
@@ -37,79 +26,11 @@ private:
 
 public:
 	Mirb* myMirb;
-
 	bool  mruby_init();
 	bool  mruby_cleenup();
 	int   mruby_exec(char* cmd);
 	int   mruby_exec(char* command, std::string& errmsg);
-
-protected:
-
-	// Set / Get
-	static int set(const TopoDS_Shape& shape);
-	static int set(const TopoDS_Shape& shape, int draw);
-	static void unset(int hashcode);
-	static Handle(AIS_Shape) get(int hashcode);
-	void regcmd(const char* name, mrb_func_t func, int arg_req, int arg_opt, const char* desc, const char* usage);
-
-public:
-
-	// Core
-	mrbcmddec(help);
-	mrbcmddec(erase);
-	mrbcmddec(copy);
-	mrbcmddec(bndbox);
-	mrbcmddec(selected);
-	mrbcmddec(type);
-
-	mrbcmddec(translate);
-	mrbcmddec(rotate);
-	mrbcmddec(scale);
-	mrbcmddec(mirror);
-
-	// Edit
-	mrbcmddec(compound);
-	mrbcmddec(sew);
-	mrbcmddec(explode);
-
-	// Visualization
-	mrbcmddec(fit);
-	mrbcmddec(update);
-	mrbcmddec(display);
-	mrbcmddec(hide);
-	mrbcmddec(color);
-	mrbcmddec(bgcolor);
-
-	// Premitive
-	mrbcmddec(vertex);
-	mrbcmddec(line);
-	mrbcmddec(polyline);
-	mrbcmddec(curve);
-	mrbcmddec(box);
-	mrbcmddec(cylinder);
-	mrbcmddec(cone);
-	mrbcmddec(sphere);
-	mrbcmddec(torus);
-	mrbcmddec(plane);
-
-	// Boolean
-	mrbcmddec(common);
-	mrbcmddec(cut);
-	mrbcmddec(fuse);
-	mrbcmddec(volume);
-	mrbcmddec(cog);
-	mrbcmddec(intersect);
-
-	// I/O
-	mrbcmddec(savebrep);
-	mrbcmddec(loadbrep);
-	mrbcmddec(saveiges);
-	mrbcmddec(loadiges);
-
-#ifdef _DEBUG
-	// for debug
-	mrbcmddec(debug);
-#endif
+	void  regcmd(const char* name, mrb_func_t func, int arg_req, int arg_opt, const char* desc, const char* usage);
 
 public:
 	bool  InitViewer(void* wnd);
@@ -130,9 +51,7 @@ public:
 	void  ShiftSelect(void);
 	void  BackgroundColor(int& r, int& g, int& b);
 	void  UpdateCurrentViewer(void);
-
 	void  setProjection(V3d_TypeOfOrientation dir);
-
 	void  ZoomAllView(void);
 	float Scale(void);
 	void  setScale(double f);
@@ -165,3 +84,5 @@ public:
 	void  SetSelectionColor(Quantity_NameOfColor color);
 
 };
+
+#endif // _OCCVIEWER_H_

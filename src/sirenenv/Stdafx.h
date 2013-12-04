@@ -19,8 +19,6 @@
 // Windows Header Files:
 #include <windows.h>
 
-//#include <limits.h>
-
 //standard OCC types
 #pragma warning( disable : 4311 )
 #pragma warning( disable : 4312 )
@@ -29,29 +27,39 @@
 #include <Standard_CString.hxx>
 #include <Standard_Version.hxx>
 #include <Standard_Persistent.hxx>
+#include <Quantity_NameOfColor.hxx>
+#include <Aspect_TypeOfLayer.hxx>
+
 //collections
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
 #include <PTColStd_PersistentTransientMap.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColgp_HArray1OfVec.hxx>
+
 //for OCC graphic
 #include <Aspect_DisplayConnection.hxx>
 #include <WNT_Window.hxx>
-#include <Quantity_NameOfColor.hxx>
 #include <Graphic3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
+
 //for object display
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
-#include <AIS_InteractiveContext.hxx>
-#include <AIS_Shape.hxx>
-#include <AIS_Trihedron.hxx>
-#include <AIS_DisplayMode.hxx>
+#include <V3d_PerspectiveView.hxx>
 #include <V3d_TypeOfOrientation.hxx>
 #include <V3d_TypeOfVisualization.hxx>
 #include <V3d_TypeOfShadingModel.hxx>
 #include <V3d_TypeOfUpdate.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_Shape.hxx>
+#include <AIS_Trihedron.hxx>
+#include <AIS_DisplayMode.hxx>
+#include <Visual3d_Layer.hxx>
+#include <Handle_Visual3d_Layer.hxx>
 //topology
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
@@ -72,6 +80,7 @@
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
 #include <Geom_Axis2Placement.hxx>
+#include <GeomAPI_Interpolate.hxx>
 //csfdb I/E
 #include <Message_ProgressIndicator.hxx>
 #include <FSD_File.hxx>
@@ -101,7 +110,6 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
-
 // BRep Builder API, Modify
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
@@ -117,15 +125,10 @@
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
 
 #include <TopExp_Explorer.hxx>
+
+// BRep Algo API
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Section.hxx>
-
-// 
-#include <V3d_PerspectiveView.hxx>
-
-#include <Aspect_TypeOfLayer.hxx>
-#include <Visual3d_Layer.hxx>
-#include <Handle_Visual3d_Layer.hxx>
 
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
@@ -148,10 +151,7 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 
-// マップコレクション
-// #include <TCollection_BasicMap.hxx>
-//#include <Draw_VMap.hxx>
-
+// libraries
 #pragma comment (lib, "TKernel.lib")
 #pragma comment (lib, "PTKernel.lib")
 #pragma comment (lib, "TKBO.lib")
@@ -170,7 +170,6 @@
 #pragma comment (lib, "TKTopAlgo.lib")
 #pragma comment (lib, "TKV3d.lib")
 #pragma comment (lib, "TKXSBase.lib")
-
 // FIle I/O
 #pragma comment (lib, "TKIGES.lib")     // IGES
 #pragma comment (lib, "TKVRML.lib")     // VRML
@@ -179,24 +178,28 @@
 #pragma comment (lib, "TKSTEPAttr.lib") // 
 #pragma comment (lib, "TKSTEPBase.lib") // 
 #pragma comment (lib, "TKSTL.lib")      // STL
-
-// curve
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_HArray1OfVec.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
-#include <GeomAPI_Interpolate.hxx>
-
 // OpenGL
 #pragma comment (lib, "TKOpenGL.lib")
-
-//#pragma comment (lib, "TKDraw.lib")     // DRAW
-
 // mruby
 #pragma comment (lib, "libmruby.lib")
 
+// definitions
+#ifndef _MAX_PATH
+#define _MAX_PATH 1024
+#endif
+
 // local
-#include "help.h"
 #include "colorname.h"
 #include "orientation.h"
+#include "help.h"
+#include "mirb.h"
+#include "common.h"
+#include "command.h"
+
+// Global/Static varibles
+static std::map<std::string, structHelp*> Help;
+static Handle_AIS_InteractiveContext      AISContext;
+static Handle_V3d_View                    View;
+static std::map<int, Handle(AIS_Shape)>   Map;
 
 #endif

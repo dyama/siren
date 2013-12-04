@@ -238,6 +238,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\command\command.h"
+				>
+			</File>
+			<File
 				RelativePath=".\command\common.cpp"
 				>
 			</File>
@@ -246,11 +250,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\command\edit.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\command\general.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\command\group.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\command\info.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\command\io.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\command\premitive.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\command\transform.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\command\visual.cpp"
 				>
 			</File>
 		</Filter>

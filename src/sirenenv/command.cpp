@@ -4,13 +4,15 @@
  * ---------------------------------------------------------
  * AUTHOR: dyama <dyama@member.fsf.org>
  */
+// stdafx.h で定義されている static な AISContext, Viewer, Map に直接
+// アクセスするメソッドは、この中に実装しなければアクセスできない。今のところ。
 
-// OCCViewer.h で定義されている static な AISContext, Viewer, Map に直接
-// アクセスするメソッドは、暫定的にこの中に実装しなければならない。
-
-#include "StdAfx.h"
+#include "Stdafx.h"
 #include "OCCViewer.h"
 
+/**
+ * \brief 
+ */
 bool OCCViewer::mruby_init()
 {
 	// init mruby interpretor
@@ -19,14 +21,19 @@ bool OCCViewer::mruby_init()
 	// コマンドの登録
 
 	// General commands
-	regcmd("erase",     &erase,     1,0, "Erase specified object.",         "erase(ObjID) -> nil");
 	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
-	regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(ObjID) -> ObjID");
+	regcmd("version",   &version,   0,0, "",                                "version() -> String");
+
+	// Infomation/Status commands
 	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(ObjID) -> Ary[min[X,Y,Z], max[X,Y,Z]]");
 	regcmd("selected",  &selected,  0,0, "Get name of selected objects.",   "selected() -> Ary[ObjID, ...]");
 	regcmd("type",      &type,      1,0, "Get type of object.",             "type(ObjID) -> Type");
 
 	// Edit object commands
+	regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(ObjID) -> ObjID");
+	regcmd("erase",     &erase,     1,0, "Erase specified object.",         "erase(ObjID) -> nil");
+
+	// Group commands
 	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound([ObjID, ObjID, ...]) -> ObjID");
 	regcmd("sew",       &sew,       1,1, "Make shell model by objects.",    "sew([ObjID, ObjID, ...]) -> ObjID");
 	regcmd("explode",   &explode,   2,0, "Explode object to children.",     "explode(type, ObjID) -> Ary");
@@ -71,11 +78,6 @@ bool OCCViewer::mruby_init()
 	regcmd("isave",     &saveiges,  2,0, "Save object to an IGES.",         "isave(path, obj) -> nil");
 	regcmd("iload",     &loadiges,  1,0, "Load object from an IGES.",       "iload(path) -> Ary");
 
-#ifdef _DEBUG
-	// for debug
-	regcmd("debug",     &debug,     0,0, "",                                "");
-#endif
-
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
 		"DRAW=1;"
@@ -110,6 +112,9 @@ void OCCViewer::regcmd(const char* name, mrb_func_t func, int arg_req, int arg_o
 	return;
 }
 
+/**
+ * \brief 
+ */
 bool OCCViewer::mruby_cleenup()
 {
 	if (myMirb)
@@ -117,12 +122,18 @@ bool OCCViewer::mruby_cleenup()
 	return true;
 }
 
+/**
+ * \brief 
+ */
 int OCCViewer::mruby_exec(char* command)
 {
 	std::string errmsg;
 	return myMirb->user_exec(command, errmsg);
 }
 
+/**
+ * \brief 
+ */
 int OCCViewer::mruby_exec(char* command, std::string& errmsg)
 {
 	if (!myMirb)
@@ -138,12 +149,18 @@ int OCCViewer::mruby_exec(char* command, std::string& errmsg)
 	return myMirb->user_exec(command, errmsg);
 }
 
-int OCCViewer::set(const TopoDS_Shape& shape)
+/**
+ * \brief 
+ */
+int set(const TopoDS_Shape& shape)
 {
-	return OCCViewer::set(shape, 1);
+	return ::set(shape, 1);
 }
 
-int OCCViewer::set(const TopoDS_Shape& shape, int draw)
+/**
+ * \brief 
+ */
+int set(const TopoDS_Shape& shape, int draw)
 {
 	Handle(AIS_Shape) hashape = new AIS_Shape(shape);
 	// registration
@@ -170,9 +187,12 @@ int OCCViewer::set(const TopoDS_Shape& shape, int draw)
 	return hashcode;
 }
 
-void OCCViewer::unset(int hashcode)
+/**
+ * \brief 
+ */
+void unset(int hashcode)
 {
-	Handle(AIS_Shape) myShape = OCCViewer::get(hashcode);
+	Handle(AIS_Shape) myShape = ::get(hashcode);
 	AISContext->Erase(myShape, Standard_True);
 	if (::Map.find(hashcode) == ::Map.end())
 		return;
@@ -180,52 +200,31 @@ void OCCViewer::unset(int hashcode)
 	return;
 }
 
-Handle(AIS_Shape) OCCViewer::get(int hashcode)
+/**
+ * \brief 
+ */
+Handle(AIS_Shape) get(int hashcode)
 {
 	if (::Map.find(hashcode) == ::Map.end())
 		return NULL;
 	return ::Map[hashcode];
 }
 
-// --------------------------------------------------------------------------
-// --------------------------------------------------------------------------
-// --------------------------------------------------------------------------
+// ------
 
-mrbcmddef(erase)
-{
-    mrb_int target;
-	int argc = mrb_get_args(mrb, "i", &target);
-
-	OCCViewer::unset(target);
-	return mrb_nil_value();
-}
-
-mrbcmddef(copy)
-{
-	mrb_int src;
-	int argc = mrb_get_args(mrb, "i", &src);
-
-	Handle(AIS_Shape) hashape = OCCViewer::get(src);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such specified object.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	// Deep copy
-	BRepBuilderAPI_Copy Builder;
-	Builder.Perform(hashape->Shape());
-	TopoDS_Shape shape = Builder.Shape();
-
-	return mrb_fixnum_value(OCCViewer::set(shape));
-}
-
-mrbcmddef(update)
+/**
+ * \brief 
+ */
+mrb_value update(mrb_state* mrb, mrb_value self)
 {
 	AISContext->UpdateCurrentViewer();
 	return mrb_nil_value();
 }
 
-mrbcmddef(display)
+/**
+ * \brief 
+ */
+mrb_value display(mrb_state* mrb, mrb_value self)
 {
 	if (AISContext.IsNull())
 		return mrb_nil_value();
@@ -233,7 +232,7 @@ mrbcmddef(display)
     mrb_int target;
 	int argc = mrb_get_args(mrb, "i", &target);
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(target);
+	Handle(AIS_Shape) hashape = ::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified argument.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -243,7 +242,10 @@ mrbcmddef(display)
 	return mrb_nil_value();
 }
 
-mrbcmddef(hide)
+/**
+ * \brief 
+ */
+mrb_value hide(mrb_state* mrb, mrb_value self)
 {
 	if (AISContext.IsNull())
 		return mrb_nil_value();
@@ -251,7 +253,7 @@ mrbcmddef(hide)
     mrb_int target;
 	int argc = mrb_get_args(mrb, "i", &target);
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(target);
+	Handle(AIS_Shape) hashape = ::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified argument.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -261,7 +263,10 @@ mrbcmddef(hide)
 	return mrb_nil_value();
 }
 
-mrbcmddef(fit)
+/**
+ * \brief 
+ */
+mrb_value fit(mrb_state* mrb, mrb_value self)
 {
 	if (!View.IsNull()) {
 		View->FitAll();
@@ -274,13 +279,16 @@ mrbcmddef(fit)
 	return mrb_nil_value();
 }
 
-mrbcmddef(color)
+/**
+ * \brief 
+ */
+mrb_value color(mrb_state* mrb, mrb_value self)
 {
     mrb_int target; 
 	mrb_float r, g, b;
 	int argc = mrb_get_args(mrb, "ifff", &target, &r, &g, &b);
 
-	Handle(AIS_Shape) hashape = OCCViewer::get(target);
+	Handle(AIS_Shape) hashape = ::get(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -292,7 +300,10 @@ mrbcmddef(color)
 	return mrb_nil_value();
 }
 
-mrbcmddef(bgcolor)
+/**
+ * \brief 
+ */
+mrb_value bgcolor(mrb_state* mrb, mrb_value self)
 {
 	mrb_float tr, tg, tb, br, bg, bb;
 	int argc = mrb_get_args(mrb, "fff|fff", &tr, &tg, &tb, &br, &bg, &bb);
@@ -315,345 +326,4 @@ mrbcmddef(bgcolor)
 	return mrb_nil_value();
 }
 
-mrbcmddef(translate)
-{
-    mrb_int target;
-	mrb_value vec;
-	int argc = mrb_get_args(mrb, "iA", &target, &vec);
-
-	gp_Pnt pvec = *ar2pnt(mrb, vec);
-	gp_Vec myvec(pvec.X(), pvec.Y(), pvec.Z());
-
-	Handle(AIS_Shape) hashape = OCCViewer::get(target);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such object name of specified at first.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	gp_Trsf T;
-    T.SetTranslation(myvec);
-
-    BRepBuilderAPI_Transform trf(T);
-	trf.Perform(hashape->Shape());
-
-	mrb_value result;
-	if (trf.IsDone()){
-		hashape->Set(trf.Shape());
-		result = mrb_nil_value();
-	}
-	else {
-		static const char m[] = "Failed to translate object.";
-        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	return result;
-}
-
-mrbcmddef(rotate)
-{
-    mrb_int target;
-	mrb_float a;
-	mrb_value pos, norm;
-	int argc = mrb_get_args(mrb, "iAAf", &target, &pos, &norm, &a);
-
-	Handle(AIS_Shape) hashape = OCCViewer::get(target);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such object name of specified at first.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	gp_Trsf T;
-	Standard_Real ang = (double)a * (M_PI / 180.0);
-	gp_Ax1 ax = *ar2ax1(mrb, pos, norm);
-
-    T.SetRotation(ax, ang);
-
-    BRepBuilderAPI_Transform trf(T);
-	trf.Perform(hashape->Shape());
-
-	mrb_value result;
-	if (trf.IsDone()){
-		hashape->Set(trf.Shape());
-		result = mrb_nil_value();
-	}
-	else {
-		static const char m[] = "Failed to rotate object.";
-        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	return result;
-}
-
-mrbcmddef(scale)
-{
-    mrb_int target;
-	mrb_value pos;
-	mrb_float s;
-	int argc = mrb_get_args(mrb, "ifA", &target, &s, &pos);
-
-	Handle(AIS_Shape) hashape = OCCViewer::get(target);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such object name of specified at first.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	gp_Pnt p;
-	if (argc == 2) {
-		p = gp_Pnt(0, 0, 0);
-	}
-	else {
-		p = *ar2pnt(mrb, pos);
-	}
-
-	gp_Trsf T;
-    T.SetScale(p, (Standard_Real)s);
-
-    BRepBuilderAPI_Transform trf(T);
-	trf.Perform(hashape->Shape());
-
-	mrb_value result;
-	if (trf.IsDone()){
-		hashape->Set(trf.Shape());
-		result = mrb_nil_value();
-	}
-	else {
-		static const char m[] = "Failed to scale object.";
-        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	return result;
-}
-
-mrbcmddef(mirror)
-{
-	mrb_int target;
-    mrb_value pos, norm;
-	int argc = mrb_get_args(mrb, "iAA", &target, &pos, &norm);
-
-	Handle(AIS_Shape) hashape = OCCViewer::get(target);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such object name of specified at first.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	gp_Trsf T;
-	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
-    T.SetMirror(ax);
-
-    BRepBuilderAPI_Transform trf(T);
-	trf.Perform(hashape->Shape());
-
-	mrb_value result;
-	if (trf.IsDone()){
-		hashape->Set(trf.Shape());
-		result = mrb_nil_value();
-	}
-	else {
-		static const char m[] = "Failed to mirror object.";
-        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	return result;
-}
-
-/**
- * \brief オブジェクトが存在しているエリアを取得する
- * 
- * \note グローバル座標系において、オブジェクトが存在しているエリアを
- *       X軸、Y軸、Z軸に対してそれぞれ最小値、最大値で取得する。
- */
-mrbcmddef(bndbox)
-{
-	mrb_int target;
-	int argc = mrb_get_args(mrb, "i", &target);
-
-	Handle(AIS_Shape) hashape = OCCViewer::get(target);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such object name of specified at first.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	TopoDS_Shape shape = hashape->Shape();
-	
-    Bnd_Box box;
-    BRepBndLib::Add(shape, box);
-    Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
-    box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-
-	mrb_value rmin = ::pnt2ar(mrb, gp_Pnt(xmin, ymin, zmin));
-	mrb_value rmax = ::pnt2ar(mrb, gp_Pnt(xmax, ymax, zmax));
-	
-	mrb_value res[2];
-	res[0] = rmin;
-	res[1] = rmax;	
-
-	return mrb_ary_new_from_values(mrb, 2, res);
-}
-
-
-mrbcmddef(compound)
-{
-	mrb_value ar;
-	int argc = mrb_get_args(mrb, "A", &ar);
-
-	TopoDS_Compound	comp;
-	BRep_Builder B;
-	B.MakeCompound(comp);
-
-	int psize = mrb_ary_len(mrb, ar);
-	for (int i=0; i<psize; i++) {
-		mrb_value item = mrb_ary_ref(mrb, ar, i);
-		if (!mrb_fixnum_p(item)) {
-			static const char m[] = "Incorrect argument specified.";
-	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-		}
-		mrb_int target = mrb_fixnum(item);
-		Handle(AIS_Shape) hashape = OCCViewer::get(target);
-		if (hashape.IsNull()) {
-			static const char m[] = "No such object name of specified at first.";
-	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-		}
-		TopoDS_Shape shape = hashape->Shape();
-		B.Add(comp, shape);
-	}
-	return mrb_fixnum_value(OCCViewer::set(comp));
-}
-
-mrbcmddef(sew)
-{
-	mrb_value ar;
-	mrb_float tol;
-	int argc = mrb_get_args(mrb, "A|f", &ar, &tol);
-
-	BRepBuilderAPI_Sewing sewer;
-	sewer.Init();
-	if (argc == 2 && tol >= 0)
-		sewer.SetTolerance(tol);
-
-	int psize = mrb_ary_len(mrb, ar);
-	for (int i=0; i<psize; i++) {
-		mrb_value item = mrb_ary_ref(mrb, ar, i);
-		if (!mrb_fixnum_p(item)) {
-			static const char m[] = "Incorrect argument specified.";
-	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-		}
-		mrb_int target = mrb_fixnum(item);
-		Handle(AIS_Shape) hashape = OCCViewer::get(target);
-		if (hashape.IsNull()) {
-			static const char m[] = "No such object name of specified at first.";
-	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-		}
-		TopoDS_Shape shape = hashape->Shape();
-		sewer.Add(shape);
-	}
-
-	TopoDS_Shape result;
-	try {
-		sewer.Perform();
-		result = sewer.SewedShape();
-	}
-	catch (...) {
-		static const char m[] = "Failed to sew objects.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-	
-	return mrb_fixnum_value(OCCViewer::set(result));
-}
-
-mrbcmddef(explode)
-{
-	mrb_int type;
-	mrb_int target;
-	int argc = mrb_get_args(mrb, "ii", &type, &target);
-
-	if (type < 0 || type > (int)TopAbs_VERTEX) {
-		static const char m[] = "Incorrect type specified.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-	TopAbs_ShapeEnum shapetype = (TopAbs_ShapeEnum)type;
-
-	Handle(AIS_Shape) hashape = OCCViewer::get(target);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such object name of specified at first.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	mrb_value ar = mrb_ary_new(mrb);
-    TopExp_Explorer ex(hashape->Shape(), shapetype);
-
-    for (; ex.More(); ex.Next()) {
-        const TopoDS_Shape& Sx = ex.Current();
-		mrb_value hc = mrb_fixnum_value(OCCViewer::set(Sx));
-		mrb_ary_push(mrb, ar, hc);
-    }
-
-	return ar;
-}
-
-mrbcmddef(help)
-{
-	mrb_value name;
-	int argc = mrb_get_args(mrb, "S", &name);
-
-	// prefixmatch
-	std::string ptn = std::string("^") + std::string(RSTRING_PTR(name)) + std::string(".*");
-	std::tr1::regex re(ptn);
-
-	mrb_value ar = mrb_ary_new(mrb);
-
-	std::map<std::string, structHelp*>::iterator it = Help.begin();
-	for (; it != Help.end(); it++) {
-		if (std::tr1::regex_match(it->first, re)) {
-			mrb_value tar[3];
-			tar[0] = mrb_str_new(mrb, it->first.c_str(), strlen(it->first.c_str()));
-			tar[1] = mrb_str_new(mrb, it->second->desc->c_str(), strlen(it->second->desc->c_str()));
-			tar[2] = mrb_str_new(mrb, it->second->usage->c_str(), strlen(it->second->usage->c_str()));
-			mrb_ary_push(mrb, ar, mrb_ary_new_from_values(mrb, 3, tar));
-		}
-	}
-	if ((int)mrb_ary_len(mrb, ar))
-		return ar;
-	else
-		return mrb_nil_value();
-}
-
-mrbcmddef(selected)
-{
-	mrb_value ar = mrb_ary_new(mrb);
-	char* aname = NULL;
-
-	for (AISContext->InitCurrent(); AISContext->MoreCurrent(); AISContext->NextCurrent()) {
-		Handle(AIS_InteractiveObject) anIO = AISContext->Current();
-		Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(anIO);
-		TopoDS_Shape shape = hashape->Shape();
-		mrb_ary_push(mrb, ar, mrb_fixnum_value(shape.HashCode(INT_MAX)));
-	}
-
-	if ((int)mrb_ary_len(mrb, ar))
-		return ar;
-	else
-		return mrb_nil_value();
-}
-
-mrbcmddef(type)
-{
-	mrb_int target;
-	int argc = mrb_get_args(mrb, "i", &target);
-
-	Handle(AIS_Shape) hashape = OCCViewer::get(target);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such object name of specified at first.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
-	int type = (int)hashape->Shape().ShapeType();
-
-	return mrb_fixnum_value(type);
-}
-
-#ifdef _DEBUG
-mrbcmddef(debug)
-{
-	return mrb_nil_value();
-}
-#endif
+// ------

@@ -7,10 +7,12 @@
  * \author dyama <dyama@member.fsf.org>
  */
 
-#include "StdAfx.h"
-#include "OCCViewer.h"
+#include "Stdafx.h"
 
-mrbcmddef(savebrep)
+/**
+ * \brief Save object to BRep file
+ */
+mrb_value savebrep(mrb_state* mrb, mrb_value self)
 {
     mrb_value path;
 	mrb_int target; 
@@ -18,7 +20,7 @@ mrbcmddef(savebrep)
 
 	mrb_value result;
 
-	Handle(AIS_Shape) hashape = OCCViewer::get((int)target);
+	Handle(AIS_Shape) hashape = ::get((int)target);
 
 	if (hashape.IsNull()) {
 		static const char m[] = "No such named object.";
@@ -39,7 +41,10 @@ mrbcmddef(savebrep)
 	return result;
 }
 
-mrbcmddef(loadbrep)
+/**
+ * \brief Load object from BRep file
+ */
+mrb_value loadbrep(mrb_state* mrb, mrb_value self)
 {
     mrb_value path;
 	int argc = mrb_get_args(mrb, "S", &path);
@@ -53,7 +58,7 @@ mrbcmddef(loadbrep)
 	if (res) {
 		//if(AISContext->HasOpenedContext())
 		//	AISContext->CloseLocalContext();
-		result = mrb_fixnum_value(OCCViewer::set(shape));
+		result = mrb_fixnum_value(::set(shape));
 	}
 	else {
 		static const char m[] = "Failed to load BRep file.";
@@ -63,12 +68,18 @@ mrbcmddef(loadbrep)
 	return result;
 }
 
-mrbcmddef(saveiges)
+/**
+ * \brief Save object to IGES file
+ */
+mrb_value saveiges(mrb_state* mrb, mrb_value self)
 {
     return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
 }
 
-mrbcmddef(loadiges)
+/**
+ * \brief Load object from IGES file
+ */
+mrb_value loadiges(mrb_state* mrb, mrb_value self)
 {
     return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
 }
