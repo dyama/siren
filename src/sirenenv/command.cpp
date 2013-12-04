@@ -24,6 +24,7 @@ bool OCCViewer::mruby_init()
 	regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(ObjID) -> ObjID");
 	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(ObjID) -> Ary[min[X,Y,Z], max[X,Y,Z]]");
 	regcmd("selected",  &selected,  0,0, "Get name of selected objects.",   "selected() -> Ary[ObjID, ...]");
+	regcmd("type",      &type,      1,0, "Get type of object.",             "type(ObjID) -> Type");
 
 	// Edit object commands
 	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound([ObjID, ObjID, ...]) -> ObjID");
@@ -78,7 +79,6 @@ bool OCCViewer::mruby_init()
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
 		"DRAW=1;"
-		//"class Stype;private_class_method :new;COMPOUND=0;COMPSOLID=1;SOLID=2;SHELL=3;FACE=4;WIRE=5;EDGE=6;VERTEX=7;SHAPE=8;end\n"
 		"tri10=[10,10,10];"
 		"op=[0,0,0];"
 		"axx=[1,0,0];"
@@ -88,6 +88,8 @@ bool OCCViewer::mruby_init()
 		"any=[0,-1,0];"
 		"anz=[0,0,-1];"
 		);
+	//myMirb->user_exec("class Stype;private_class_method :new;COMPOUND=0;COMPSOLID=1;SOLID=2;SHELL=3;FACE=4;WIRE=5;EDGE=6;VERTEX=7;SHAPE=8;end\n");
+	myMirb->user_exec("class Stype;COMPOUND=0;COMPSOLID=1;SOLID=2;SHELL=3;FACE=4;WIRE=5;EDGE=6;VERTEX=7;SHAPE=8;end\n");
 
 	return true;
 }
@@ -631,6 +633,22 @@ mrbcmddef(selected)
 		return ar;
 	else
 		return mrb_nil_value();
+}
+
+mrbcmddef(type)
+{
+	mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
+
+	Handle(AIS_Shape) hashape = OCCViewer::get(target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	int type = (int)hashape->Shape().ShapeType();
+
+	return mrb_fixnum_value(type);
 }
 
 #ifdef _DEBUG

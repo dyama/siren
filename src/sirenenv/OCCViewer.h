@@ -67,6 +67,7 @@ public:
 	mrbcmddec(copy);
 	mrbcmddec(bndbox);
 	mrbcmddec(selected);
+	mrbcmddec(type);
 
 	mrbcmddec(translate);
 	mrbcmddec(rotate);
