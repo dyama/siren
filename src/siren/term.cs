@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
-using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace siren
@@ -21,58 +21,13 @@ namespace siren
             InitializeComponent();
 
             myViewer = Viewer;
-            rtb.Text = prompt_string;
             Scroll2Last(rtb);
-            rtb.Focus();
+            tb.Focus();
         }
 
         public void setFocus()
         {
-            rtb.Focus();
-        }
-
-        private void rtb_KeyDown(object sender, KeyEventArgs e)
-        {
-            switch (e.KeyCode) {
-            case Keys.Enter:
-                KeyDown_Enter((RichTextBox)sender);
-                e.SuppressKeyPress = true;
-                Scroll2Last(rtb);
-                break;
-            case Keys.Back:
-                if (getCurLine(rtb).Length == 0)
-                    e.SuppressKeyPress = true;
-                break;
-            case Keys.Escape:
-                this.Visible = false;
-                this.Parent.Parent.Focus();
-                break;
-            case Keys.Up:
-                e.SuppressKeyPress = true;
-                break;
-            case Keys.Down:
-                e.SuppressKeyPress = true;
-                break;
-            case Keys.Left:
-                break;
-            case Keys.Right:
-                break;
-            default:
-                break;
-            }
-        }
-
-        private string getCurLine(RichTextBox rtb)
-        {
-            string cmd = rtb.Lines[rtb.Lines.ToArray().Length - 1];
-
-            if (cmd.IndexOf(this.prompt_string, 0) == 0) {
-                cmd = cmd.Replace(this.prompt_string, "");
-            }
-            if (cmd.IndexOf(this.subprompt_string, 0) == 0) {
-                cmd = cmd.Replace(this.subprompt_string, "");
-            }
-            return cmd;
+            tb.Focus();
         }
 
         /// <summary>
@@ -86,40 +41,15 @@ namespace siren
             rtb.ScrollToCaret();
         }
 
-        /// <summary>
-        /// Return prompt string
-        /// </summary>
-        /// <returns></returns>
-        private string getPrompt()
+        public void execute(string cmd)
         {
-            return myViewer.mruby_isCodeBlockOpen() ? this.subprompt_string : this.prompt_string;
-        }
-
-        /// <summary>
-        /// Execute command interface for another instance
-        /// </summary>
-        /// <param name="cmd"></param>
-        /// <returns></returns>
-        public int execute(string cmd)
-        {
-            rtb.Text += cmd;
-            KeyDown_Enter(rtb);
-            return 0;
-        }
-
-        private void KeyDown_Enter(RichTextBox rtb)
-        {
-            string cmd = getCurLine(rtb);
-            if (cmd.Length == 0 || cmd == "\n") {
-                rtb.Text += "\n" + getPrompt();
-                Scroll2Last(rtb);
+            if (System.Text.RegularExpressions.Regex.IsMatch(cmd, @"^\s*$"))
                 return;
-            }
             int err = 0;
             string errmsg;
             err = myViewer.mruby_exec(cmd, out errmsg);
-
             string result = "";
+            string prompt = "$ ";
             if (!myViewer.mruby_isCodeBlockOpen()) {
                 if (err == 0) {
                     result += myViewer.mruby_p();
@@ -128,8 +58,44 @@ namespace siren
                     result += errmsg + "\n";
                 }
             }
-            rtb.Text += "\n" + result + getPrompt();
+            else {
+                prompt = "* ";
+            }
+            rtb.Text += prompt + cmd + "\n" + result;
             this.Scroll2Last(rtb);
+            tb.Focus();
+        }
+
+        private void tb_KeyDown(object sender, KeyEventArgs e)
+        {
+            // rtb
+            if (sender.Equals(rtb)) {
+                if (e.KeyCode == Keys.Escape) {
+                    this.Visible = false;
+                    this.Parent.Parent.Focus();
+                }
+            }
+            // tb
+            switch (e.KeyCode) {
+            case Keys.Enter:
+                foreach (string line in Regex.Split(tb.Text, @"\n", RegexOptions.Multiline))
+                    this.execute(line);
+                tb.Text = "";
+                e.SuppressKeyPress = true;
+                break;
+            case Keys.Escape:
+                this.Visible = false;
+                this.Parent.Parent.Focus();
+                break;
+            case Keys.Up:
+                e.SuppressKeyPress = true;
+                break;
+            case Keys.Down:
+                e.SuppressKeyPress = true;
+                break;
+            default:
+                break;
+            }
         }
 
     }
