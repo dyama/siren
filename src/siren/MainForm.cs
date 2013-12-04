@@ -29,11 +29,14 @@ namespace siren
             List<string> args = new List<string>(System.Environment.GetCommandLineArgs());
             // コマンドライン引数から開く
             args.RemoveAt(0); // 自身の呼び出しパス
-            if (args != null) {
+            if (args != null && args.Count > 0) {
                 foreach (string file in args) {
                     if (!OpenFile(file, Common.getFormatByExt(file)))
                         break;
                 }
+            }
+            else {
+                NewFile();
             }
         }
 
