@@ -16,6 +16,7 @@
 #include <regex>
 
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+
 // Windows Header Files:
 #include <windows.h>
 
@@ -126,12 +127,11 @@
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
 
-#include <TopExp_Explorer.hxx>
-
 // BRep Algo API
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 
+#include <TopExp_Explorer.hxx>
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 
@@ -200,9 +200,9 @@
 #include "command.h"
 
 // Global/Static varibles
-static std::map<std::string, structHelp*> Help;
-static Handle_AIS_InteractiveContext      AISContext;
-static Handle_V3d_View                    View;
-static std::map<int, Handle(AIS_Shape)>   Map;
+static std::map<std::string, structHelp*> Help;       // Help string map
+static Handle_AIS_InteractiveContext      AISContext; // Visualization manager
+static Handle_V3d_View                    View;       // 3D-View
+static std::map<int, Handle(AIS_Shape)>   Map;        // Object manager
 
 #endif

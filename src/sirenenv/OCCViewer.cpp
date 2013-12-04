@@ -9,6 +9,10 @@
 #include "OCCViewer.h"
 
 #pragma warning(disable : 4800)
+
+/**
+ * \brief コンストラクタ
+ */
 OCCViewer::OCCViewer(void)
 {
 	myGraphicDriver = NULL;
@@ -17,12 +21,18 @@ OCCViewer::OCCViewer(void)
 	myAISContext = NULL;
 }
 
+/**
+ * \brief デストラクタ
+ */
 OCCViewer::~OCCViewer(void)
 {
 	myView->Remove();
 	mruby_cleenup();
 }
 
+/**
+ * \brief ビューの初期化
+ */
 void OCCViewer::initViewAppearance()
 {
 #if 1
@@ -113,6 +123,9 @@ void OCCViewer::initViewAppearance()
 	return;
 }
 
+/**
+ * \brief ビューアの初期化
+ */
 bool OCCViewer::InitViewer(void* wnd)
 {
 	// init graphic driver
@@ -300,20 +313,6 @@ void OCCViewer::Select(int x1, int y1, int x2, int y2)
 {
 	if (!myAISContext.IsNull()) {
 		myAISContext->Select(x1, y1, x2, y2, myView);
-#ifdef _DEBUG
-		myAISContext->InitCurrent();
-		for (;myAISContext->MoreCurrent ();myAISContext->NextCurrent ()) {
-			Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
-			if (!hashape.IsNull()) {
-				TopoDS_Shape shape = hashape->Shape();	
-				if (!shape.IsNull()) {
-					int t = shape.ShapeType();
-					int h = shape.HashCode(INT_MAX);
-					printf("hash=%X type=%d\n", h, t);
-				}
-			}
-		}
-#endif
 	}
 
 }
@@ -322,20 +321,6 @@ void OCCViewer::Select(void)
 {
 	if (!myAISContext.IsNull()) {
 		myAISContext->Select();
-#ifdef _DEBUG
-		myAISContext->InitCurrent();
-		for (;myAISContext->MoreCurrent ();myAISContext->NextCurrent ()) {
-			Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
-			if (!hashape.IsNull()) {
-				TopoDS_Shape shape = hashape->Shape();	
-				if (!shape.IsNull()) {
-					int t = shape.ShapeType();
-					int h = shape.HashCode(INT_MAX);
-					printf("hash=%X type=%d\n", h, t);
-				}
-			}
-		}
-#endif
 	}
 }
 
@@ -349,20 +334,6 @@ void OCCViewer::ShiftSelect(int x1, int y1, int x2, int y2)
 {
 	if ((!myAISContext.IsNull()) && (!myView.IsNull())) {
 		myAISContext->ShiftSelect(x1, y1, x2, y2, myView);
-#ifdef _DEBUG
-		myAISContext->InitCurrent();
-		for (;myAISContext->MoreCurrent ();myAISContext->NextCurrent ()) {
-			Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
-			if (!hashape.IsNull()) {
-				TopoDS_Shape shape = hashape->Shape();	
-				if (!shape.IsNull()) {
-					int t = shape.ShapeType();
-					int h = shape.HashCode(INT_MAX);
-					printf("hash=%X type=%d\n", h, t);
-				}
-			}
-		}
-#endif
 	}
 }
 
@@ -370,20 +341,6 @@ void OCCViewer::ShiftSelect(void)
 {
 	if (!myAISContext.IsNull()) {
 		myAISContext->ShiftSelect();
-#ifdef _DEBUG
-		myAISContext->InitCurrent();
-		for (;myAISContext->MoreCurrent ();myAISContext->NextCurrent ()) {
-			Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
-			if (!hashape.IsNull()) {
-				TopoDS_Shape shape = hashape->Shape();	
-				if (!shape.IsNull()) {
-					int t = shape.ShapeType();
-					int h = shape.HashCode(INT_MAX);
-					printf("hash=%X type=%d\n", h, t);
-				}
-			}
-		}
-#endif
 	}
 }
 
@@ -414,8 +371,7 @@ void OCCViewer::setProjection(V3d_TypeOfOrientation dir)
 
 void OCCViewer::ZoomAllView(void)
 {
-	if (!myView.IsNull())
-	{
+	if (!myView.IsNull()) {
 		myView->FitAll();
 		myView->ZFitAll();
 	}

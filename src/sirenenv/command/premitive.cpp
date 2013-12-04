@@ -75,6 +75,14 @@ mrb_value polyline(mrb_state* mrb, mrb_value self)
 }
 
 /**
+ * \brief make arc
+ */
+mrb_value arc(mrb_state* mrb, mrb_value self)
+{
+    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+}
+
+/**
  * \brief make curve
  */
 mrb_value curve(mrb_state* mrb, mrb_value self)
@@ -108,7 +116,6 @@ mrb_value curve(mrb_state* mrb, mrb_value self)
 			}
 		}
 		intp.Load(vec, use, Standard_True);
-		//delete(use);
 	}
 
     intp.Perform();
@@ -242,6 +249,9 @@ mrb_value torus(mrb_state* mrb, mrb_value self)
 	return mrb_fixnum_value(::set(shape));
 }
 
+/**
+ * \brief make rectangle plane
+ */
 mrb_value plane(mrb_state* mrb, mrb_value self)
 {
 	mrb_value pos, dir;
@@ -267,7 +277,9 @@ mrb_value plane(mrb_state* mrb, mrb_value self)
 }
 
 
-
+/**
+ * \brief make surface by profile-wire and path-wire
+ */
 mrb_value sweep(mrb_state* mrb, mrb_value self)
 {
 	mrb_int target;

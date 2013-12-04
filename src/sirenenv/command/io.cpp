@@ -83,3 +83,19 @@ mrb_value loadiges(mrb_state* mrb, mrb_value self)
 {
     return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
 }
+
+/**
+ * \brief Save object to STEP file
+ */
+mrb_value savestep(mrb_state* mrb, mrb_value self)
+{
+    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+}
+
+/**
+ * \brief Load object from STEP file
+ */
+mrb_value loadstep(mrb_state* mrb, mrb_value self)
+{
+    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+}
