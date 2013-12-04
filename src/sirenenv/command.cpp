@@ -480,8 +480,8 @@ mrbcmddef(bndbox)
     Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
     box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
-	mrb_value rmin = pnt2ar(mrb, gp_Pnt(xmin, ymin, zmin));
-	mrb_value rmax = pnt2ar(mrb, gp_Pnt(xmax, ymax, zmax));
+	mrb_value rmin = ::pnt2ar(mrb, gp_Pnt(xmin, ymin, zmin));
+	mrb_value rmax = ::pnt2ar(mrb, gp_Pnt(xmax, ymax, zmax));
 	
 	mrb_value res[2];
 	res[0] = rmin;

@@ -160,7 +160,7 @@ mrbcmddef(cog)
 	BRepGProp::VolumeProperties(hashape->Shape(), gprops);
 	gp_Pnt cog = gprops.CentreOfMass();
 
-	return pnt2ar(mrb, cog);
+	return ::pnt2ar(mrb, cog);
 }
 
 /**

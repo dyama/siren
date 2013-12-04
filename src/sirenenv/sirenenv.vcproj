@@ -242,6 +242,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\command\common.h"
+				>
+			</File>
+			<File
 				RelativePath=".\command\io.cpp"
 				>
 			</File>
