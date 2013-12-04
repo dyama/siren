@@ -70,6 +70,30 @@ namespace siren
             OpenFile();
         }
 
+        /// <summary>
+        /// ツールバー状態の切り替え
+        /// </summary>
+        public void onSelectObject()
+        {
+            tsbTranslate.Enabled = true;
+            tsbRotate.Enabled = true;
+            tsbScale.Enabled = true;
+            tsbDisplayMode.Enabled = true;
+            tsbTransparency.Enabled = true;
+            tsbColor.Enabled = true;
+            tsbMaterial.Enabled = true;
+        }
+        public void onUnselectObject()
+        {
+            tsbTranslate.Enabled = false;
+            tsbRotate.Enabled = false;
+            tsbScale.Enabled = false;
+            tsbDisplayMode.Enabled = false;
+            tsbTransparency.Enabled = false;
+            tsbColor.Enabled = false;
+            tsbMaterial.Enabled = false;
+        }
+
         #endregion // イベント
 
         private bool OpenFile(string filename, ModelFormat theformat)
@@ -363,15 +387,6 @@ namespace siren
 			t.ShowDialog(curForm);
         }
 
-        private void tsbMaterial_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
-                return;
-            curForm.Viewer.SetMaterial(tsbMaterial.SelectedIndex);
-            curForm.Focus();
-        }
-
         private void tsbFit_Click(object sender, EventArgs e)
         {
             ViewForm curForm = (ViewForm)this.ActiveMdiChild;
@@ -445,11 +460,6 @@ namespace siren
                 curForm.Viewer.SetColor(r, g, b);
             }
             curForm.Viewer.UpdateCurrentViewer();
-        }
-
-        private void tsbMaterial_Paint(object sender, PaintEventArgs e)
-        {
-            tsbMaterial.SelectedItem = tsbMaterial.Items[tsbMaterial.Items.Count - 1];
         }
 
 	}

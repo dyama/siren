@@ -170,7 +170,6 @@ namespace siren
             this.紫ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.黄ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.黒ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsbMaterial = new System.Windows.Forms.ToolStripComboBox();
             this.tsbFit = new System.Windows.Forms.ToolStripButton();
             this.tsbBookmark = new System.Windows.Forms.ToolStripSplitButton();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -185,6 +184,31 @@ namespace siren
             this.tsbResetView = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbHlr = new System.Windows.Forms.ToolStripButton();
+            this.tsbMaterial = new System.Windows.Forms.ToolStripSplitButton();
+            this.miIrons = new System.Windows.Forms.ToolStripMenuItem();
+            this.真鍮ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.アルミToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ブロンズToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.銅ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.金ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.スズToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.銀ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.スチールToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.miStones = new System.Windows.Forms.ToolStripMenuItem();
+            this.miStone = new System.Windows.Forms.ToolStripMenuItem();
+            this.石膏ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.黒曜石ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.メタリックToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.翡翠ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.miArtifacts = new System.Windows.Forms.ToolStripMenuItem();
+            this.miPlastic = new System.Windows.Forms.ToolStripMenuItem();
+            this.miPlastic2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.miSateen = new System.Windows.Forms.ToolStripMenuItem();
+            this.miNeons = new System.Windows.Forms.ToolStripMenuItem();
+            this.miPHC = new System.Windows.Forms.ToolStripMenuItem();
+            this.miGNC = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
+            this.miDefault = new System.Windows.Forms.ToolStripMenuItem();
             this.menu.SuspendLayout();
             this.myStatusBar.SuspendLayout();
             this.toolStripPanel2.SuspendLayout();
@@ -728,7 +752,7 @@ namespace siren
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(875, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(635, 17);
             this.toolStripStatusLabel1.Spring = true;
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -751,7 +775,7 @@ namespace siren
             this.toolStripPanel2.Name = "toolStripPanel2";
             this.toolStripPanel2.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.toolStripPanel2.RowMargin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.toolStripPanel2.Size = new System.Drawing.Size(784, 26);
+            this.toolStripPanel2.Size = new System.Drawing.Size(784, 25);
             // 
             // toolStripMain
             // 
@@ -783,7 +807,7 @@ namespace siren
             this.tsbHlr});
             this.toolStripMain.Location = new System.Drawing.Point(3, 0);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(566, 26);
+            this.toolStripMain.Size = new System.Drawing.Size(506, 25);
             this.toolStripMain.TabIndex = 14;
             // 
             // tsbBox
@@ -792,7 +816,7 @@ namespace siren
             this.tsbBox.Image = ((System.Drawing.Image)(resources.GetObject("tsbBox.Image")));
             this.tsbBox.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbBox.Name = "tsbBox";
-            this.tsbBox.Size = new System.Drawing.Size(23, 23);
+            this.tsbBox.Size = new System.Drawing.Size(23, 22);
             this.tsbBox.Text = "toolStripButton1";
             this.tsbBox.ToolTipText = "ボックス";
             this.tsbBox.Click += new System.EventHandler(this.tsbBox_Click);
@@ -803,7 +827,7 @@ namespace siren
             this.tsbSphere.Image = ((System.Drawing.Image)(resources.GetObject("tsbSphere.Image")));
             this.tsbSphere.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSphere.Name = "tsbSphere";
-            this.tsbSphere.Size = new System.Drawing.Size(23, 23);
+            this.tsbSphere.Size = new System.Drawing.Size(23, 22);
             this.tsbSphere.Text = "toolStripButton2";
             this.tsbSphere.ToolTipText = "スフィア";
             this.tsbSphere.Click += new System.EventHandler(this.tsbSphere_Click);
@@ -814,7 +838,7 @@ namespace siren
             this.tsbCylinder.Image = ((System.Drawing.Image)(resources.GetObject("tsbCylinder.Image")));
             this.tsbCylinder.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCylinder.Name = "tsbCylinder";
-            this.tsbCylinder.Size = new System.Drawing.Size(23, 23);
+            this.tsbCylinder.Size = new System.Drawing.Size(23, 22);
             this.tsbCylinder.Text = "toolStripButton3";
             this.tsbCylinder.ToolTipText = "シリンダー";
             this.tsbCylinder.Click += new System.EventHandler(this.tsbCylinder_Click);
@@ -825,7 +849,7 @@ namespace siren
             this.tsbCone.Image = ((System.Drawing.Image)(resources.GetObject("tsbCone.Image")));
             this.tsbCone.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCone.Name = "tsbCone";
-            this.tsbCone.Size = new System.Drawing.Size(23, 23);
+            this.tsbCone.Size = new System.Drawing.Size(23, 22);
             this.tsbCone.Text = "toolStripButton4";
             this.tsbCone.ToolTipText = "コーン";
             this.tsbCone.Click += new System.EventHandler(this.tsbCone_Click);
@@ -836,7 +860,7 @@ namespace siren
             this.tsbTorus.Image = ((System.Drawing.Image)(resources.GetObject("tsbTorus.Image")));
             this.tsbTorus.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbTorus.Name = "tsbTorus";
-            this.tsbTorus.Size = new System.Drawing.Size(23, 23);
+            this.tsbTorus.Size = new System.Drawing.Size(23, 22);
             this.tsbTorus.Text = "toolStripButton5";
             this.tsbTorus.ToolTipText = "トーラス";
             this.tsbTorus.Click += new System.EventHandler(this.tsbTorus_Click);
@@ -844,7 +868,7 @@ namespace siren
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(6, 26);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbTranslate
             // 
@@ -853,7 +877,7 @@ namespace siren
             this.tsbTranslate.Image = ((System.Drawing.Image)(resources.GetObject("tsbTranslate.Image")));
             this.tsbTranslate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbTranslate.Name = "tsbTranslate";
-            this.tsbTranslate.Size = new System.Drawing.Size(23, 23);
+            this.tsbTranslate.Size = new System.Drawing.Size(23, 22);
             this.tsbTranslate.ToolTipText = "移動";
             // 
             // tsbRotate
@@ -863,7 +887,7 @@ namespace siren
             this.tsbRotate.Image = ((System.Drawing.Image)(resources.GetObject("tsbRotate.Image")));
             this.tsbRotate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbRotate.Name = "tsbRotate";
-            this.tsbRotate.Size = new System.Drawing.Size(23, 23);
+            this.tsbRotate.Size = new System.Drawing.Size(23, 22);
             this.tsbRotate.ToolTipText = "回転";
             // 
             // tsbScale
@@ -873,13 +897,13 @@ namespace siren
             this.tsbScale.Image = ((System.Drawing.Image)(resources.GetObject("tsbScale.Image")));
             this.tsbScale.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbScale.Name = "tsbScale";
-            this.tsbScale.Size = new System.Drawing.Size(23, 23);
+            this.tsbScale.Size = new System.Drawing.Size(23, 22);
             this.tsbScale.ToolTipText = "スケール";
             // 
             // toolStripButton6
             // 
             this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(6, 26);
+            this.toolStripButton6.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbDisplayMode
             // 
@@ -888,7 +912,7 @@ namespace siren
             this.tsbDisplayMode.Image = ((System.Drawing.Image)(resources.GetObject("tsbDisplayMode.Image")));
             this.tsbDisplayMode.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbDisplayMode.Name = "tsbDisplayMode";
-            this.tsbDisplayMode.Size = new System.Drawing.Size(23, 23);
+            this.tsbDisplayMode.Size = new System.Drawing.Size(23, 22);
             this.tsbDisplayMode.Text = "toolStripButton1";
             this.tsbDisplayMode.ToolTipText = "シェーディング";
             // 
@@ -898,14 +922,14 @@ namespace siren
             this.tsbTransparency.Image = ((System.Drawing.Image)(resources.GetObject("tsbTransparency.Image")));
             this.tsbTransparency.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbTransparency.Name = "tsbTransparency";
-            this.tsbTransparency.Size = new System.Drawing.Size(23, 23);
+            this.tsbTransparency.Size = new System.Drawing.Size(23, 22);
             this.tsbTransparency.ToolTipText = "不透明度";
             this.tsbTransparency.Click += new System.EventHandler(this.tsbTransparency_Click);
             // 
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(6, 26);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbColor
             // 
@@ -921,7 +945,7 @@ namespace siren
             this.黒ToolStripMenuItem});
             this.tsbColor.Image = ((System.Drawing.Image)(resources.GetObject("tsbColor.Image")));
             this.tsbColor.Name = "tsbColor";
-            this.tsbColor.Size = new System.Drawing.Size(32, 23);
+            this.tsbColor.Size = new System.Drawing.Size(32, 22);
             this.tsbColor.ButtonClick += new System.EventHandler(this.tsbColor_ButtonClick);
             // 
             // toolStripMenuItem4
@@ -978,42 +1002,13 @@ namespace siren
             this.黒ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.黒ToolStripMenuItem.Text = "黒";
             // 
-            // tsbMaterial
-            // 
-            this.tsbMaterial.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.tsbMaterial.Items.AddRange(new object[] {
-            "真鍮",
-            "ブロンズ",
-            "銅",
-            "金",
-            "スズ",
-            "石膏",
-            "プラスチック",
-            "銀",
-            "スチール",
-            "石",
-            "プラスチック(光沢)",
-            "サテン",
-            "メタリック",
-            "ネオンGNC",
-            "クロム",
-            "アルミ",
-            "黒曜石",
-            "ネオンPHC",
-            "翡翠",
-            "デフォルト"});
-            this.tsbMaterial.Name = "tsbMaterial";
-            this.tsbMaterial.Size = new System.Drawing.Size(121, 26);
-            this.tsbMaterial.Paint += new System.Windows.Forms.PaintEventHandler(this.tsbMaterial_Paint);
-            this.tsbMaterial.SelectedIndexChanged += new System.EventHandler(this.tsbMaterial_SelectedIndexChanged);
-            // 
             // tsbFit
             // 
             this.tsbFit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbFit.Image = ((System.Drawing.Image)(resources.GetObject("tsbFit.Image")));
             this.tsbFit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbFit.Name = "tsbFit";
-            this.tsbFit.Size = new System.Drawing.Size(23, 23);
+            this.tsbFit.Size = new System.Drawing.Size(23, 22);
             this.tsbFit.Text = "フィット";
             this.tsbFit.Click += new System.EventHandler(this.tsbFit_Click);
             // 
@@ -1024,14 +1019,14 @@ namespace siren
             this.tsbBookmark.Image = ((System.Drawing.Image)(resources.GetObject("tsbBookmark.Image")));
             this.tsbBookmark.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbBookmark.Name = "tsbBookmark";
-            this.tsbBookmark.Size = new System.Drawing.Size(32, 23);
+            this.tsbBookmark.Size = new System.Drawing.Size(32, 22);
             this.tsbBookmark.Text = "toolStripButton11";
             this.tsbBookmark.ToolTipText = "ブックマーク";
             // 
             // toolStripSeparator12
             // 
             this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(6, 26);
+            this.toolStripSeparator12.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbAxoView
             // 
@@ -1046,7 +1041,7 @@ namespace siren
             this.tsbAxoView.Image = ((System.Drawing.Image)(resources.GetObject("tsbAxoView.Image")));
             this.tsbAxoView.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAxoView.Name = "tsbAxoView";
-            this.tsbAxoView.Size = new System.Drawing.Size(32, 23);
+            this.tsbAxoView.Size = new System.Drawing.Size(32, 22);
             this.tsbAxoView.Text = "toolStripButton10";
             this.tsbAxoView.ToolTipText = "視点";
             // 
@@ -1095,7 +1090,7 @@ namespace siren
             // toolStripSeparator13
             // 
             this.toolStripSeparator13.Name = "toolStripSeparator13";
-            this.toolStripSeparator13.Size = new System.Drawing.Size(6, 26);
+            this.toolStripSeparator13.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbResetView
             // 
@@ -1103,13 +1098,13 @@ namespace siren
             this.tsbResetView.Image = ((System.Drawing.Image)(resources.GetObject("tsbResetView.Image")));
             this.tsbResetView.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbResetView.Name = "tsbResetView";
-            this.tsbResetView.Size = new System.Drawing.Size(23, 23);
+            this.tsbResetView.Size = new System.Drawing.Size(23, 22);
             this.tsbResetView.Text = "ビューをリセット";
             // 
             // toolStripSeparator14
             // 
             this.toolStripSeparator14.Name = "toolStripSeparator14";
-            this.toolStripSeparator14.Size = new System.Drawing.Size(6, 26);
+            this.toolStripSeparator14.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbHlr
             // 
@@ -1118,8 +1113,186 @@ namespace siren
             this.tsbHlr.Image = ((System.Drawing.Image)(resources.GetObject("tsbHlr.Image")));
             this.tsbHlr.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbHlr.Name = "tsbHlr";
-            this.tsbHlr.Size = new System.Drawing.Size(23, 23);
+            this.tsbHlr.Size = new System.Drawing.Size(23, 22);
             this.tsbHlr.ToolTipText = "隠面消去";
+            // 
+            // tsbMaterial
+            // 
+            this.tsbMaterial.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miIrons,
+            this.miStones,
+            this.miArtifacts,
+            this.miNeons,
+            this.toolStripMenuItem7,
+            this.miDefault});
+            this.tsbMaterial.Image = ((System.Drawing.Image)(resources.GetObject("tsbMaterial.Image")));
+            this.tsbMaterial.Name = "tsbMaterial";
+            this.tsbMaterial.Size = new System.Drawing.Size(32, 22);
+            // 
+            // miIrons
+            // 
+            this.miIrons.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.真鍮ToolStripMenuItem,
+            this.スチールToolStripMenuItem,
+            this.銀ToolStripMenuItem,
+            this.スズToolStripMenuItem,
+            this.金ToolStripMenuItem,
+            this.銅ToolStripMenuItem,
+            this.ブロンズToolStripMenuItem,
+            this.アルミToolStripMenuItem,
+            this.メタリックToolStripMenuItem});
+            this.miIrons.Name = "miIrons";
+            this.miIrons.Size = new System.Drawing.Size(155, 22);
+            this.miIrons.Text = "金属(&I)";
+            // 
+            // 真鍮ToolStripMenuItem
+            // 
+            this.真鍮ToolStripMenuItem.Name = "真鍮ToolStripMenuItem";
+            this.真鍮ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.真鍮ToolStripMenuItem.Text = "真鍮";
+            // 
+            // アルミToolStripMenuItem
+            // 
+            this.アルミToolStripMenuItem.Name = "アルミToolStripMenuItem";
+            this.アルミToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.アルミToolStripMenuItem.Text = "アルミ";
+            // 
+            // ブロンズToolStripMenuItem
+            // 
+            this.ブロンズToolStripMenuItem.Name = "ブロンズToolStripMenuItem";
+            this.ブロンズToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ブロンズToolStripMenuItem.Text = "ブロンズ";
+            // 
+            // 銅ToolStripMenuItem
+            // 
+            this.銅ToolStripMenuItem.Name = "銅ToolStripMenuItem";
+            this.銅ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.銅ToolStripMenuItem.Text = "銅";
+            // 
+            // 金ToolStripMenuItem
+            // 
+            this.金ToolStripMenuItem.Name = "金ToolStripMenuItem";
+            this.金ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.金ToolStripMenuItem.Text = "金";
+            // 
+            // スズToolStripMenuItem
+            // 
+            this.スズToolStripMenuItem.Name = "スズToolStripMenuItem";
+            this.スズToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.スズToolStripMenuItem.Text = "スズ";
+            // 
+            // 銀ToolStripMenuItem
+            // 
+            this.銀ToolStripMenuItem.Name = "銀ToolStripMenuItem";
+            this.銀ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.銀ToolStripMenuItem.Text = "銀";
+            // 
+            // スチールToolStripMenuItem
+            // 
+            this.スチールToolStripMenuItem.Name = "スチールToolStripMenuItem";
+            this.スチールToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.スチールToolStripMenuItem.Text = "スチール";
+            // 
+            // miStones
+            // 
+            this.miStones.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miStone,
+            this.石膏ToolStripMenuItem,
+            this.黒曜石ToolStripMenuItem,
+            this.翡翠ToolStripMenuItem});
+            this.miStones.Name = "miStones";
+            this.miStones.Size = new System.Drawing.Size(155, 22);
+            this.miStones.Text = "石(&S)";
+            // 
+            // miStone
+            // 
+            this.miStone.Name = "miStone";
+            this.miStone.Size = new System.Drawing.Size(152, 22);
+            this.miStone.Text = "石";
+            // 
+            // 石膏ToolStripMenuItem
+            // 
+            this.石膏ToolStripMenuItem.Name = "石膏ToolStripMenuItem";
+            this.石膏ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.石膏ToolStripMenuItem.Text = "石膏";
+            // 
+            // 黒曜石ToolStripMenuItem
+            // 
+            this.黒曜石ToolStripMenuItem.Name = "黒曜石ToolStripMenuItem";
+            this.黒曜石ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.黒曜石ToolStripMenuItem.Text = "黒曜石";
+            // 
+            // メタリックToolStripMenuItem
+            // 
+            this.メタリックToolStripMenuItem.Name = "メタリックToolStripMenuItem";
+            this.メタリックToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.メタリックToolStripMenuItem.Text = "メタリック";
+            // 
+            // 翡翠ToolStripMenuItem
+            // 
+            this.翡翠ToolStripMenuItem.Name = "翡翠ToolStripMenuItem";
+            this.翡翠ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.翡翠ToolStripMenuItem.Text = "翡翠";
+            // 
+            // miArtifacts
+            // 
+            this.miArtifacts.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miPlastic,
+            this.miPlastic2,
+            this.miSateen});
+            this.miArtifacts.Name = "miArtifacts";
+            this.miArtifacts.Size = new System.Drawing.Size(155, 22);
+            this.miArtifacts.Text = "人工物(&A)";
+            // 
+            // miPlastic
+            // 
+            this.miPlastic.Name = "miPlastic";
+            this.miPlastic.Size = new System.Drawing.Size(182, 22);
+            this.miPlastic.Text = "プラスチック";
+            // 
+            // miPlastic2
+            // 
+            this.miPlastic2.Name = "miPlastic2";
+            this.miPlastic2.Size = new System.Drawing.Size(182, 22);
+            this.miPlastic2.Text = "プラスチック(光沢)";
+            // 
+            // miSateen
+            // 
+            this.miSateen.Name = "miSateen";
+            this.miSateen.Size = new System.Drawing.Size(182, 22);
+            this.miSateen.Text = "サテン";
+            // 
+            // miNeons
+            // 
+            this.miNeons.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miPHC,
+            this.miGNC});
+            this.miNeons.Name = "miNeons";
+            this.miNeons.Size = new System.Drawing.Size(155, 22);
+            this.miNeons.Text = "ネオン(&N)";
+            // 
+            // miPHC
+            // 
+            this.miPHC.Name = "miPHC";
+            this.miPHC.Size = new System.Drawing.Size(152, 22);
+            this.miPHC.Text = "ネオンPHC";
+            // 
+            // miGNC
+            // 
+            this.miGNC.Name = "miGNC";
+            this.miGNC.Size = new System.Drawing.Size(152, 22);
+            this.miGNC.Text = "ネオンGNC";
+            // 
+            // toolStripMenuItem7
+            // 
+            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(152, 6);
+            // 
+            // miDefault
+            // 
+            this.miDefault.Name = "miDefault";
+            this.miDefault.Size = new System.Drawing.Size(155, 22);
+            this.miDefault.Text = "デフォルト(&D)";
             // 
             // MainForm
             // 
@@ -1180,7 +1353,6 @@ namespace siren
         private ToolStripPanel toolStripPanel2;
         private ToolStripButton tsbDisplayMode;
         private ToolStripSeparator toolStripSeparator10;
-        private ToolStripComboBox tsbMaterial;
         private ToolStripButton tsbTransparency;
         private ToolStrip toolStripMain;
         private ToolStripButton tsbBox;
@@ -1217,6 +1389,31 @@ namespace siren
         private ToolStripMenuItem 紫ToolStripMenuItem;
         private ToolStripMenuItem 黄ToolStripMenuItem;
         private ToolStripMenuItem 黒ToolStripMenuItem;
+        private ToolStripSplitButton tsbMaterial;
+        private ToolStripMenuItem miIrons;
+        private ToolStripMenuItem 真鍮ToolStripMenuItem;
+        private ToolStripMenuItem スチールToolStripMenuItem;
+        private ToolStripMenuItem 銀ToolStripMenuItem;
+        private ToolStripMenuItem スズToolStripMenuItem;
+        private ToolStripMenuItem 金ToolStripMenuItem;
+        private ToolStripMenuItem 銅ToolStripMenuItem;
+        private ToolStripMenuItem ブロンズToolStripMenuItem;
+        private ToolStripMenuItem アルミToolStripMenuItem;
+        private ToolStripMenuItem miStones;
+        private ToolStripMenuItem miStone;
+        private ToolStripMenuItem 石膏ToolStripMenuItem;
+        private ToolStripMenuItem 黒曜石ToolStripMenuItem;
+        private ToolStripMenuItem メタリックToolStripMenuItem;
+        private ToolStripMenuItem 翡翠ToolStripMenuItem;
+        private ToolStripMenuItem miArtifacts;
+        private ToolStripMenuItem miPlastic;
+        private ToolStripMenuItem miPlastic2;
+        private ToolStripMenuItem miSateen;
+        private ToolStripMenuItem miNeons;
+        private ToolStripMenuItem miPHC;
+        private ToolStripMenuItem miGNC;
+        private ToolStripSeparator toolStripMenuItem7;
+        private ToolStripMenuItem miDefault;
 
     }
 }
