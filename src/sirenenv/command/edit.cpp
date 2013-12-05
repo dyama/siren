@@ -10,7 +10,7 @@
 #include "Stdafx.h"
 
 /**
- * \brief 
+ * \brief Erase object
  */
 mrb_value erase(mrb_state* mrb, mrb_value self)
 {
@@ -22,7 +22,7 @@ mrb_value erase(mrb_state* mrb, mrb_value self)
 }
 
 /**
- * \brief 
+ * \brief copy object
  */
 mrb_value copy(mrb_state* mrb, mrb_value self)
 {
@@ -42,3 +42,4 @@ mrb_value copy(mrb_state* mrb, mrb_value self)
 
 	return mrb_fixnum_value(::set(shape));
 }
+

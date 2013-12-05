@@ -10,7 +10,7 @@
 #include "Stdafx.h"
 
 /**
- * \brief 
+ * \brief help for commands
  */
 mrb_value help(mrb_state* mrb, mrb_value self)
 {
@@ -40,7 +40,7 @@ mrb_value help(mrb_state* mrb, mrb_value self)
 }
 
 /**
- * \brief 
+ * \brief version information
  */
 mrb_value version(mrb_state* mrb, mrb_value self)
 {

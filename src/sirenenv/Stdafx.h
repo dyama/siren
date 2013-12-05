@@ -16,6 +16,7 @@
 #include <regex>
 
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+
 // Windows Header Files:
 #include <windows.h>
 
@@ -108,13 +109,15 @@
 // BRep Builder API, Make
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 // BRep Builder API, Modify
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
-
+// BRep Offset API
+#include <BRepOffsetAPI_MakePipe.hxx>
 // for primitive
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -124,12 +127,11 @@
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
 
-#include <TopExp_Explorer.hxx>
-
 // BRep Algo API
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 
+#include <TopExp_Explorer.hxx>
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 
@@ -170,6 +172,7 @@
 #pragma comment (lib, "TKTopAlgo.lib")
 #pragma comment (lib, "TKV3d.lib")
 #pragma comment (lib, "TKXSBase.lib")
+#pragma comment (lib, "TKOffset.lib")  //sweep
 // FIle I/O
 #pragma comment (lib, "TKIGES.lib")     // IGES
 #pragma comment (lib, "TKVRML.lib")     // VRML
@@ -197,9 +200,9 @@
 #include "command.h"
 
 // Global/Static varibles
-static std::map<std::string, structHelp*> Help;
-static Handle_AIS_InteractiveContext      AISContext;
-static Handle_V3d_View                    View;
-static std::map<int, Handle(AIS_Shape)>   Map;
+static std::map<std::string, structHelp*> Help;       // Help string map
+static Handle_AIS_InteractiveContext      AISContext; // Visualization manager
+static Handle_V3d_View                    View;       // 3D-View
+static std::map<int, Handle(AIS_Shape)>   Map;        // Object manager
 
 #endif

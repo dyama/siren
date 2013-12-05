@@ -12,49 +12,31 @@ makes your some useful and quickly operations.
 
 Building Equipment:
 
-* Open CASCADE 6.6.0
+* Open CASCADE 6.7.0
 * Microsoft Visual Studio 2008
 
 1. Clone by git the repository of siren follows:
 
     git clone https//:github.com/dyama/siren.git
 
-2. Setup the BAT script for your enviromnent.
-
-    editor tool/occenv.bat
-    
-    SET "OCCBASE=E:\\occ" # Change this variable!
-    
-Example, Open CASCADE 6.6.0 installed on C:\opencascade\660;
-    
-    SET "OCCBASE=C:\\opencascade"
-    
-The path add the version string "660" automaticaly by script.
-If your enviroment no matches this case, please link to
-install path with symbolic link.
-
-In the same way as;
-
-    editor tool/mruby-vs9-occ660.bat
-
-    SET "MRUBYROOT=%SCRIPTPATH%\..\..\mruby_w32"
-
-Set MRUBYROOT to the path of mruby installed directory.
+2. Setup the BAT script in tool directory for your enviromnent.
+Set env-variable of OCCT and MRUBY installed path.
 
 3. Run the BAT script file.
 
-    start tool/mruby-vs9-occ660.bat
+    start tool/mruby-vs9-occ670.bat
 
 If you build siren on another environment, you can change
 the script calling.
 
-4. Build sirenenv.dll and siren.exe.
+4. Build sirenenv.dll and siren.exe with Visual Studio.
 
  Overviews
 ------------------------------------------------------------
 
 * View a 3D model with mouse operation.
-* Save to another 3D CAD file format.
+* Command line based shape modifier.
+* Load and save some format of 3D CAD file.
 
  Usage
 ------------------------------------------------------------

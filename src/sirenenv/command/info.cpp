@@ -11,7 +11,15 @@
 #include "OCCViewer.h"
 
 /**
- * \brief 
+ * \brief Check existed
+ */
+mrb_value exist(mrb_state* mrb, mrb_value self)
+{
+    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+}
+
+/**
+ * \brief Get selected object
  */
 mrb_value selected(mrb_state* mrb, mrb_value self)
 {
@@ -32,7 +40,7 @@ mrb_value selected(mrb_state* mrb, mrb_value self)
 }
 
 /**
- * \brief 
+ * \brief Get type of object
  */
 mrb_value type(mrb_state* mrb, mrb_value self)
 {
