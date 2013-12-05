@@ -28,6 +28,7 @@ bool OCCViewer::mruby_init()
 	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(ObjID) -> Ary[min[X,Y,Z], max[X,Y,Z]]");
 	regcmd("selected",  &selected,  0,0, "Get name of selected objects.",   "selected() -> Ary[ObjID, ...]");
 	regcmd("type",      &type,      1,0, "Get type of object.",             "type(ObjID) -> Type");
+	regcmd("exist",     &exist,     1,0, "Check exist.",                    "exist(ObjID) -> Boolean");
 
 	// Edit object commands
 	regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(ObjID) -> ObjID");
@@ -210,6 +211,14 @@ Handle(AIS_Shape) get(int hashcode)
 	if (::Map.find(hashcode) == ::Map.end())
 		return NULL;
 	return ::Map[hashcode];
+}
+
+/**
+ * \brief 
+ */
+bool has_object(int hashcode)
+{
+	return ::Map.find(hashcode) != ::Map.end();
 }
 
 // ------

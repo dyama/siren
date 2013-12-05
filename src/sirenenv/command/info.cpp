@@ -15,7 +15,10 @@
  */
 mrb_value exist(mrb_state* mrb, mrb_value self)
 {
-    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+	mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
+
+	return has_object(target) ? mrb_true_value() : mrb_false_value();
 }
 
 /**
