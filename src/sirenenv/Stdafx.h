@@ -142,6 +142,13 @@
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
 
+//Shape fix
+#include <ShapeFix_ShapeTolerance.hxx>
+#include <ShapeFix_Wire.hxx>
+
+// for wire
+#include <ShapeExtend_WireData.hxx>
+
 // new 
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>
