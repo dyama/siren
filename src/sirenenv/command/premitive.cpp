@@ -288,7 +288,7 @@ mrb_value sweep(mrb_state* mrb, mrb_value self)
 
 	Handle(AIS_Shape) base = ::get(target);
 	if (base.IsNull() ) {
-		static const char m[] = "No such first specified object.";
+		static const char m[] = "No such profile object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
@@ -307,7 +307,7 @@ mrb_value sweep(mrb_state* mrb, mrb_value self)
 		}	else if (mrb_fixnum_p(obj))	{ //profile
 			Handle(AIS_Shape) path = ::get(mrb_fixnum(obj) );
 			if (path.IsNull()) {
-				static const char m[] = "No such second specified object.";
+				static const char m[] = "No such path object.";
 						return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 			}
 			ps = path->Shape();
@@ -332,3 +332,57 @@ mrb_value sweep(mrb_state* mrb, mrb_value self)
 	return mrb_fixnum_value(::set(shape));
 }
 
+/**
+ * \brief make wire by Edge, Wire, Compound object
+ */
+mrb_value wire(mrb_state* mrb, mrb_value self)
+{
+	mrb_value objs;
+	int argc = mrb_get_args(mrb, "A", &objs);
+	int osize = mrb_ary_len(mrb, objs);
+	
+	Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;
+	Handle( ShapeExtend_WireData ) wd = new ShapeExtend_WireData;
+	BRepBuilderAPI_MakeWire mw;
+	TopoDS_Shape shape;
+	Standard_Real tol = 0.01;
+	ShapeFix_ShapeTolerance FTol;
+	try
+	{
+		for ( int i = 0; i < osize ; i++ )
+		{
+			mrb_value id = mrb_ary_ref(mrb, objs, i);
+			Handle(AIS_Shape) ais = ::get(mrb_fixnum(id));
+			TopoDS_Shape s = ais->Shape();
+			if ( s.IsNull() ) continue;
+			TopAbs_ShapeEnum se = s.ShapeType();
+			if ( se != TopAbs_COMPOUND && se != TopAbs_EDGE && se != TopAbs_WIRE ) continue;
+			for (TopExp_Explorer exp(s, TopAbs_EDGE); exp.More(); exp.Next())
+			{
+				if ( !exp.Current().IsNull() ) wd->Add(TopoDS::Edge(exp.Current()));
+			}
+		}
+		sfw->Load( wd );
+		sfw->Perform();
+		for (int i = 1; i <= sfw->NbEdges(); i ++)
+		{
+			TopoDS_Edge e = sfw->WireData()->Edge(i);
+			FTol.SetTolerance(e, tol, TopAbs_VERTEX);
+			mw.Add(e);
+		}
+		shape = mw.Shape();
+		if (shape.IsNull()) {
+			delete(sfw);
+			delete(wd);
+			static const char m[] = "Failed to make a wire.";
+			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+	}	catch (...) {
+		delete(sfw);
+		delete(wd);
+		static const char m[] = "Failed to make a wire.";
+		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	return mrb_fixnum_value(::set(shape));
+
+}
