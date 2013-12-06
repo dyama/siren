@@ -414,6 +414,27 @@ public:
 
 		return myOCCViewer->myMirb->isCodeBlockOpen();
 	}
+
+	bool xy2xyz(int Xs, int Ys,
+		[System::Runtime::InteropServices::Out] System::Double% X,
+		[System::Runtime::InteropServices::Out] System::Double% Y,
+		[System::Runtime::InteropServices::Out] System::Double% Z,
+		bool usePrecision)
+	{
+		if (!myOCCViewer)
+			return false;
+
+		double xx, yy, zz;
+
+		bool res = myOCCViewer->xy2xyz(Xs, Ys, xx, yy, zz, usePrecision);
+		if (res) {
+			X = xx; Y = yy; Z = zz;
+			return true;
+		}
+		else 
+			return false;
+	}
+
 };
 
 }

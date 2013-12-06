@@ -82,7 +82,7 @@ public:
 	int   CharToInt(char symbol);
 	void  SetHighlightColor(Quantity_NameOfColor color);
 	void  SetSelectionColor(Quantity_NameOfColor color);
-
+	bool  xy2xyz(int Xs, int Ys, double& X, double& Y, double& Z, bool usePrecision);
 };
 
 #endif // _OCCVIEWER_H_

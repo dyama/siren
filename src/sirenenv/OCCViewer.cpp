@@ -775,3 +775,35 @@ int OCCViewer::CharToInt(char symbol)
 	TCollection_AsciiString msg = symbol;
 	return msg.IntegerValue();
 }
+
+bool OCCViewer::xy2xyz(int Xs, int Ys, double& X, double& Y, double& Z, bool usePrecision)
+{
+	Standard_Real myPrecision = 1.0;
+    Standard_Real Xp = Xs, Yp = Ys;
+    Standard_Real Xv, Yv, Zv;
+    Standard_Real Vx, Vy, Vz;
+
+    gp_Pln aPlane(myView->Viewer()->PrivilegedPlane());
+    myView->Convert((Standard_Integer)Xp, (Standard_Integer)Yp, Xv, Yv, Zv);
+    myView->Proj(Vx, Vy, Vz);
+    gp_Lin aLine(gp_Pnt(Xv, Yv, Zv), gp_Dir(Vx, Vy, Vz));
+    IntAna_IntConicQuad intersec(aLine, aPlane, Precision::Angular());
+
+    if (!intersec.IsDone())
+		return false;
+    if (intersec.IsParallel() || !intersec.NbPoints())
+		return false;
+
+    gp_Pnt p(intersec.Point(1));
+    X = p.X();
+    Y = p.Y();
+    Z = p.Z();
+
+    if (usePrecision) {
+         X = (X < 0. ? -1 : (X > 0. ? 1 : 0.)) * floor((abs(X)) / myPrecision) * myPrecision;
+         Y = (Y < 0. ? -1 : (Y > 0. ? 1 : 0.)) * floor((abs(Y)) / myPrecision) * myPrecision;
+         Z = (Z < 0. ? -1 : (Z > 0. ? 1 : 0.)) * floor((abs(Z)) / myPrecision) * myPrecision;
+    }
+
+    return true;
+}
