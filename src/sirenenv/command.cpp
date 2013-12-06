@@ -33,6 +33,7 @@ bool OCCViewer::mruby_init()
 	// Edit object commands
 	regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(ObjID) -> ObjID");
 	regcmd("erase",     &erase,     1,0, "Erase specified object.",         "erase(ObjID) -> nil");
+	regcmd("close",			&close,			1,0, "Close a wire.",										"close( ObjID ) -> ObjID");
 
 	// Group commands
 	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound([ObjID, ObjID, ...]) -> ObjID");

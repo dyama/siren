@@ -30,6 +30,7 @@ mrb_value explode   (mrb_state*, mrb_value);
 // Edit
 mrb_value erase     (mrb_state*, mrb_value);
 mrb_value copy      (mrb_state*, mrb_value);
+mrb_value close     (mrb_state*, mrb_value);
 
 // Transform
 mrb_value translate (mrb_state*, mrb_value);
