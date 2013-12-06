@@ -134,6 +134,8 @@
 #include <TopExp_Explorer.hxx>
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
+#include <GCPnts_UniformDeflection.hxx> // wire2pts
+#include <BRepAdaptor_Curve.hxx>        // wire2pts
 
 // for volume
 #include <GProp_GProps.hxx>
@@ -162,6 +164,7 @@
 #pragma comment (lib, "TKG2d.lib")
 #pragma comment (lib, "TKG3d.lib")
 #pragma comment (lib, "TKGeomAlgo.lib")
+#pragma comment (lib, "TKGeomBase.lib") // for GCPnts_UniformDeflection
 #pragma comment (lib, "TKHLR.lib")
 #pragma comment (lib, "TKMath.lib")
 #pragma comment (lib, "TKPShape.lib")

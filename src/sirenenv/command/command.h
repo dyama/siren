@@ -60,6 +60,9 @@ mrb_value plane     (mrb_state*, mrb_value);
 
 mrb_value sweep     (mrb_state*, mrb_value);
 
+// Convertion
+mrb_value wire2pts  (mrb_state*, mrb_value);
+
 // I/O
 mrb_value savebrep  (mrb_state*, mrb_value);
 mrb_value loadbrep  (mrb_state*, mrb_value);
