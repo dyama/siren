@@ -179,7 +179,7 @@ int set(const TopoDS_Shape& shape, int draw)
 	if (AISContext.IsNull()) {
 		throw "No AIS Interactive Context.";
 	}
-	AISContext->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
+	//AISContext->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
 	AISContext->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
 	AISContext->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
 	AISContext->SetSelected(hashape, Standard_False);
