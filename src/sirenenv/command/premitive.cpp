@@ -341,7 +341,7 @@ mrb_value wire(mrb_state* mrb, mrb_value self)
 	int argc = mrb_get_args(mrb, "A", &objs);
 	int osize = mrb_ary_len(mrb, objs);
 	
-	Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;
+	ShapeFix_Wire sfw;
 	Handle( ShapeExtend_WireData ) wd = new ShapeExtend_WireData;
 	BRepBuilderAPI_MakeWire mw;
 	TopoDS_Shape shape;
@@ -362,23 +362,21 @@ mrb_value wire(mrb_state* mrb, mrb_value self)
 				if ( !exp.Current().IsNull() ) wd->Add(TopoDS::Edge(exp.Current()));
 			}
 		}
-		sfw->Load( wd );
-		sfw->Perform();
-		for (int i = 1; i <= sfw->NbEdges(); i ++)
+		sfw.Load( wd );
+		sfw.Perform();
+		for (int i = 1; i <= sfw.NbEdges(); i ++)
 		{
-			TopoDS_Edge e = sfw->WireData()->Edge(i);
+			TopoDS_Edge e = sfw.WireData()->Edge(i);
 			FTol.SetTolerance(e, tol, TopAbs_VERTEX);
 			mw.Add(e);
 		}
 		shape = mw.Shape();
 		if (shape.IsNull()) {
-			delete(sfw);
 			delete(wd);
 			static const char m[] = "Failed to make a wire.";
 			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 		}
 	}	catch (...) {
-		delete(sfw);
 		delete(wd);
 		static const char m[] = "Failed to make a wire.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
