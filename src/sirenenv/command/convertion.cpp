@@ -62,3 +62,45 @@ mrb_value wire2pts(mrb_state* mrb, mrb_value self)
 
     return result;
 }
+
+/**
+ * \brief wire to plane
+ */
+mrb_value wire2plane(mrb_state* mrb, mrb_value self)
+{
+	//!!Curve‚ðŠÜ‚ñ‚¾Wire‚É‚Í–¢‘Î‰ž!!
+	mrb_int src;
+	int argc = mrb_get_args(mrb, "i", &src);
+
+	Handle(AIS_Shape) hashape = ::get(src);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such specified object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	if ( hashape->Shape().ShapeType() != TopAbs_WIRE ) {
+		static const char m[] = "Failed to make a plane.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	
+	TopoDS_Shape shape;
+	try {
+		TopoDS_Wire w = TopoDS::Wire( hashape->Shape() );
+		BRepBuilderAPI_MakeFace mf( w, Standard_True );
+		mf.Build();
+		if (  !mf.IsDone() ) {
+			static const char m[] = "Failed to make a plane.";
+			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+		shape = mf.Shape();
+		//TopAbs_ShapeEnum se = shape.ShapeType();
+		if ( shape.IsNull() )
+		{
+			static const char m[] = "Failed to make a plane.";
+			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+	}	catch (...) {
+		static const char m[] = "Failed to make a plane.";
+		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	return mrb_fixnum_value(::set(shape));
+}

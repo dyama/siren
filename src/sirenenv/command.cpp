@@ -78,6 +78,7 @@ bool OCCViewer::mruby_init()
 
 	// Convertion commands
 	regcmd("wire2pts",  &wire2pts,  1,1, "Convert wire to points.",         "wire2pts(ObjID) -> Ary[[X, Y, Z], ...]");
+	regcmd("wire2plane",&wire2plane,1,0, "Make a plane.",                   "wire2plane( Close wire ObjID ) -> String");
 
 	// I/O commands
 	regcmd("bsave",     &savebrep,  2,0, "Save object to a file.",          "bsave(path, obj) -> nil");
