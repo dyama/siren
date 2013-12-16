@@ -376,3 +376,23 @@ mrb_value help(mrb_state* mrb, mrb_value self)
 
 // ------
 
+/**
+ * \brief Get selected object
+ */
+mrb_value selected(mrb_state* mrb, mrb_value self)
+{
+	mrb_value ar = mrb_ary_new(mrb);
+	char* aname = NULL;
+
+	for (AISContext->InitCurrent(); AISContext->MoreCurrent(); AISContext->NextCurrent()) {
+		Handle(AIS_InteractiveObject) anIO = AISContext->Current();
+		Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(anIO);
+		TopoDS_Shape shape = hashape->Shape();
+		mrb_ary_push(mrb, ar, mrb_fixnum_value(shape.HashCode(INT_MAX)));
+	}
+
+	if ((int)mrb_ary_len(mrb, ar))
+		return ar;
+	else
+		return mrb_nil_value();
+}

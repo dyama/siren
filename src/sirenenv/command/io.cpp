@@ -81,7 +81,23 @@ mrb_value saveiges(mrb_state* mrb, mrb_value self)
  */
 mrb_value loadiges(mrb_state* mrb, mrb_value self)
 {
-    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+    mrb_value path;
+	int argc = mrb_get_args(mrb, "S", &path);
+
+    IGESControl_Reader iges_reader;
+    int stat = iges_reader.ReadFile((Standard_CString)RSTRING_PTR(path));
+	mrb_value result;
+
+    if (stat == IFSelect_RetDone) {
+	    iges_reader.TransferRoots();
+	    TopoDS_Shape shape = iges_reader.OneShape();
+		result = mrb_fixnum_value(::set(shape));
+	}
+	else {
+		static const char m[] = "Failed to load BRep file.";
+        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+    return result;
 }
 
 /**
