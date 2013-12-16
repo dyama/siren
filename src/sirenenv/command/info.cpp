@@ -21,7 +21,6 @@ mrb_value exist(mrb_state* mrb, mrb_value self)
 	return has_object(target) ? mrb_true_value() : mrb_false_value();
 }
 
-
 /**
  * \brief Get type of object
  */

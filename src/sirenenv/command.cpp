@@ -367,6 +367,7 @@ mrb_value help(mrb_state* mrb, mrb_value self)
 	mrb_value name;
 	int argc = mrb_get_args(mrb, "S", &name);
 
+#ifdef _REGEX_
 	// prefixmatch
 	std::string ptn = std::string("^") + std::string(RSTRING_PTR(name)) + std::string(".*");
 	std::tr1::regex re(ptn);
@@ -383,6 +384,35 @@ mrb_value help(mrb_state* mrb, mrb_value self)
 			mrb_ary_push(mrb, ar, mrb_ary_new_from_values(mrb, 3, tar));
 		}
 	}
+#else
+	mrb_value ar = mrb_ary_new(mrb);
+
+	std::map<std::string, structHelp*>::iterator it = Help.begin();
+
+	char* target = RSTRING_PTR(name);
+	for (; it != Help.end(); it++) {
+		// ‘O•ûˆê’vŒŸõ
+		const char* current = it->first.c_str();
+		if (strlen(target) > strlen(current))
+			continue;
+		bool is_match = true;
+		for (int i = 0; i<strlen(target); i++) {
+			if (current[i] != target[i]) {
+				is_match = false;
+				break;
+			}
+		}
+		// ˆê’v‚µ‚Ä‚¢‚½ê‡
+		if (is_match) {
+			mrb_value tar[3];
+			tar[0] = mrb_str_new(mrb, it->first.c_str(), strlen(it->first.c_str()));
+			tar[1] = mrb_str_new(mrb, it->second->desc->c_str(), strlen(it->second->desc->c_str()));
+			tar[2] = mrb_str_new(mrb, it->second->usage->c_str(), strlen(it->second->usage->c_str()));
+			mrb_ary_push(mrb, ar, mrb_ary_new_from_values(mrb, 3, tar));
+		}
+	}
+
+#endif
 	if ((int)mrb_ary_len(mrb, ar))
 		return ar;
 	else
@@ -390,6 +420,7 @@ mrb_value help(mrb_state* mrb, mrb_value self)
 }
 
 // ------
+
 
 /**
  * \brief Get selected object
@@ -399,7 +430,8 @@ mrb_value selected(mrb_state* mrb, mrb_value self)
 	mrb_value ar = mrb_ary_new(mrb);
 	char* aname = NULL;
 
-	for (cur->aiscxt->InitCurrent(); cur->aiscxt->MoreCurrent(); cur->aiscxt->NextCurrent()) {
+	cur->aiscxt->InitCurrent();
+	for (; cur->aiscxt->MoreCurrent(); cur->aiscxt->NextCurrent()) {
 		Handle(AIS_InteractiveObject) anIO = cur->aiscxt->Current();
 		Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(anIO);
 		TopoDS_Shape shape = hashape->Shape();
