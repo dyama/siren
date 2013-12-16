@@ -16,9 +16,9 @@
 OCCViewer::OCCViewer(void)
 {
 	myGraphicDriver = NULL;
-	myViewer = NULL;
-	myView = NULL;
-	myAISContext = NULL;
+	viewer = NULL;
+	view = NULL;
+	aiscxt = NULL;
 }
 
 /**
@@ -26,7 +26,7 @@ OCCViewer::OCCViewer(void)
  */
 OCCViewer::~OCCViewer(void)
 {
-	myView->Remove();
+	view->Remove();
 	mruby_cleenup();
 }
 
@@ -37,19 +37,19 @@ void OCCViewer::initViewAppearance()
 {
 #if 1
 	// Enable ray tracing mode
-	myView->SetRaytracingMode();
-	myView->SetRasterizationMode(); // OpenGL rasterize rennaring mode
-	myView->EnableGLLight(Standard_True);
-	myView->EnableRaytracedShadows();
-	myView->EnableRaytracedAntialiasing();
-	myView->EnableRaytracedReflections();
-	//myView->EnableDepthTest(Standard_True);
+	view->SetRaytracingMode();
+	view->SetRasterizationMode(); // OpenGL rasterize rennaring mode
+	view->EnableGLLight(Standard_True);
+	view->EnableRaytracedShadows();
+	view->EnableRaytracedAntialiasing();
+	view->EnableRaytracedReflections();
+	//view->EnableDepthTest(Standard_True);
 #endif
-	//myView->SetShadingModel(V3d_GOURAUD);
+	//view->SetShadingModel(V3d_GOURAUD);
 
-	//myView->DisableRaytracedAntialiasing();
-	//myView->DisableRaytracedReflections();
-	//myView->DisableRaytracedShadows();
+	//view->DisableRaytracedAntialiasing();
+	//view->DisableRaytracedReflections();
+	//view->DisableRaytracedShadows();
 
 	// Background color
 #if 1
@@ -59,34 +59,34 @@ void OCCViewer::initViewAppearance()
     Quantity_Color color_top(0.05, 0.05, 0.05, Quantity_TOC_RGB);
     Quantity_Color color_btm(0.40, 0.40, 0.40, Quantity_TOC_RGB);
 #endif
-    myView->SetBgGradientColors(color_top, color_btm, Aspect_GFM_VER, Standard_False);
+    view->SetBgGradientColors(color_top, color_btm, Aspect_GFM_VER, Standard_False);
 
 	// Show trihedron on 3d viewer
-    myView->TriedronDisplay(Aspect_TOTP_RIGHT_UPPER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER);
-	//myView->ZBufferTriedronSetup();
+    view->TriedronDisplay(Aspect_TOTP_RIGHT_UPPER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER);
+	//view->ZBufferTriedronSetup();
 
 	// 
-	//myView->GraduatedTrihedronDisplay();
+	//view->GraduatedTrihedronDisplay();
 
-	//myView->TriedronEcho(Aspect_TOTE_AXIS_X);
+	//view->TriedronEcho(Aspect_TOTE_AXIS_X);
 
 	// !!!!
-	//myView->SetViewingVolume();
+	//view->SetViewingVolume();
 
     // Depth-cueing (‹ó‹C‰“‹ß–@)‚Ì—LŒø‰»
- 	//myView->SetZCueingOn();
+ 	//view->SetZCueingOn();
 
 	// Viewpoint control
-	myView->SetAt(0.0, 0.0, 0.0);
-	myView->SetEye(-1, -1, 1);
-	myView->SetScale(5.0);
-	myView->SetUp(0.0, 0.0, 1.0);
-	myView->SetCenter(0.0, 0.0);
+	view->SetAt(0.0, 0.0, 0.0);
+	view->SetEye(-1, -1, 1);
+	view->SetScale(5.0);
+	view->SetUp(0.0, 0.0, 1.0);
+	view->SetCenter(0.0, 0.0);
 
 #if 0
 	// test for layer
 	Handle(Visual3d_Layer) lay
-		= new Visual3d_Layer(myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_False);
+		= new Visual3d_Layer(viewer->Viewer(), Aspect_TOL_OVERLAY, Standard_False);
 	lay->Clear();
 	lay->Begin();
 		lay->SetViewport(800, 600);
@@ -112,14 +112,14 @@ void OCCViewer::initViewAppearance()
 	lay->End();
 #endif
 
-	//myView->SetAntialiasingOn();
-	//myView->SetClipPlanes();
-	//myView->SetFocale(50000);
-	//myView->SetTransparency(Standard_True);
-	//myView->Redraw();
-	//myView->FitAll();
+	//view->SetAntialiasingOn();
+	//view->SetClipPlanes();
+	//view->SetFocale(50000);
+	//view->SetTransparency(Standard_True);
+	//view->Redraw();
+	//view->FitAll();
 
-	myView->MustBeResized();
+	view->MustBeResized();
 	return;
 }
 
@@ -139,62 +139,62 @@ bool OCCViewer::InitViewer(void* wnd)
 
 	// init viewer
     TCollection_ExtendedString a3DName("Visu3D");
-    myViewer = new V3d_Viewer (myGraphicDriver, a3DName.ToExtString(), "", 1000.0, 
+    viewer = new V3d_Viewer (myGraphicDriver, a3DName.ToExtString(), "", 1000.0, 
                              V3d_XposYnegZpos, Quantity_NOC_BLACK);
 	// default attributes of viewer
-	//myViewer->SetDefaultVisualization(V3d_ZBUFFER);
+	//viewer->SetDefaultVisualization(V3d_ZBUFFER);
 	// end of attributes
 
 	// vbo
 	Handle(OpenGl_GraphicDriver) aDriver
-		= Handle(OpenGl_GraphicDriver)::DownCast(myViewer->Driver());
+		= Handle(OpenGl_GraphicDriver)::DownCast(viewer->Driver());
 	aDriver->ChangeOptions().vboDisable = Standard_False;
 
 #if 0
-	myViewer->Init();
-	myViewer->SetDefaultLights();
-	myViewer->SetLightOn();
+	viewer->Init();
+	viewer->SetDefaultLights();
+	viewer->SetLightOn();
 #else
-	myViewer->InitDefinedViews();
-	Handle(V3d_DirectionalLight) light = new V3d_DirectionalLight(myViewer, V3d_Zneg);
+	viewer->InitDefinedViews();
+	Handle(V3d_DirectionalLight) light = new V3d_DirectionalLight(viewer, V3d_Zneg);
 	//light->Position(V3d_Coodinate(0, 0, 1000);
 	//light->SetHeadlight(Standard_False);
 	light->SetHeadlight(Standard_True);
-	myViewer->SetLightOn(light);
-	//myViewer->SetDefaultTypeOfView(V3d_TypeOfView::V3d_ORTHOGRAPHIC);
-	//myViewer->SetPrivilegedPlane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+	viewer->SetLightOn(light);
+	//viewer->SetDefaultTypeOfView(V3d_TypeOfView::V3d_ORTHOGRAPHIC);
+	//viewer->SetPrivilegedPlane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
 #endif
 
 	// test for Z-Layer
 	//Standard_Integer aLayerId;
-	//myViewer->AddZLayer(aLayerId);
+	//viewer->AddZLayer(aLayerId);
 
 	// Enable auto control Z buffer for clipping
-	myViewer->SetZBufferManagment(Standard_True);
+	viewer->SetZBufferManagment(Standard_True);
 
 	// init AIS context and common appearances
-	myAISContext = new AIS_InteractiveContext(myViewer);
+	aiscxt = new AIS_InteractiveContext(viewer);
 	// highlight color, selection color
-    myAISContext->SetHilightColor(Quantity_NOC_YELLOW);
-	myAISContext->SelectionColor(Quantity_NOC_RED);
+    aiscxt->SetHilightColor(Quantity_NOC_YELLOW);
+	aiscxt->SelectionColor(Quantity_NOC_RED);
 
 	// trihedron at origin point
 	// Handle(Geom_Axis2Placement) aTrihedronAxis = new Geom_Axis2Placement(gp::XOY());
 	// Handle(AIS_Trihedron) aTrihedron = new AIS_Trihedron(aTrihedronAxis);
 	// aTrihedron->SetSize(0.5 * 1000);
-	// //myAISContext->Display(aTrihedron, 0, -1, Standard_False, Standard_False); 
-	// myAISContext->Display(aTrihedron);
-	// myAISContext->Deactivate(aTrihedron);
+	// //aiscxt->Display(aTrihedron, 0, -1, Standard_False, Standard_False); 
+	// aiscxt->Display(aTrihedron);
+	// aiscxt->Deactivate(aTrihedron);
 
 	// init current view
 #ifdef PARSEPECTIVE
-	myView = new V3d_PerspectiveView(myViewer);
+	view = new V3d_PerspectiveView(viewer);
 #else
-	myView = myViewer->CreateView();
+	view = viewer->CreateView();
 #endif
 
 	Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (wnd));
-	myView->SetWindow(aWNTWindow);
+	view->SetWindow(aWNTWindow);
 	if (!aWNTWindow->IsMapped()) 
 		 aWNTWindow->Map();
 
@@ -213,13 +213,13 @@ bool OCCViewer::InitViewer(void* wnd)
 		Quantity_Length XSize = XStep * 10 + 1.0e-7;
 		Quantity_Length YSize = YStep * 10 + 1.0e-7;
 		Quantity_Length Offset = 0;
-		myViewer->SetPrivilegedPlane(ax);
-		myViewer->SetRectangularGridValues(XOrigin, YOrigin, XStep, YStep, Rotation);
-		myViewer->SetRectangularGridGraphicValues(XSize, YSize, Offset);
-		myViewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
+		viewer->SetPrivilegedPlane(ax);
+		viewer->SetRectangularGridValues(XOrigin, YOrigin, XStep, YStep, Rotation);
+		viewer->SetRectangularGridGraphicValues(XSize, YSize, Offset);
+		viewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
 	}
 
-	myAISContext->UpdateCurrentViewer();
+	aiscxt->UpdateCurrentViewer();
 
 	mruby_init();
 
@@ -228,119 +228,119 @@ bool OCCViewer::InitViewer(void* wnd)
 
 void OCCViewer::SetHighlightColor(Quantity_NameOfColor color)
 {
-	myAISContext->SetHilightColor(color);
+	aiscxt->SetHilightColor(color);
 	return;
 }
 
 void OCCViewer::SetSelectionColor(Quantity_NameOfColor color)
 {
-	myAISContext->SelectionColor(color);
+	aiscxt->SelectionColor(color);
 	return;
 }
 
 void OCCViewer::UpdateView(void)
 {
-	if (!myView.IsNull())
-		myView->MustBeResized();
+	if (!view.IsNull())
+		view->MustBeResized();
 }
 
 void OCCViewer::RedrawView(void)
 {
-	if (!myView.IsNull())
-		myView->Redraw();
+	if (!view.IsNull())
+		view->Redraw();
 }
 
 void OCCViewer::SetAntialiasing(bool isOn)
 {
-	if (!myView.IsNull()) {
+	if (!view.IsNull()) {
 		if (isOn)
-		    myView->SetAntialiasingOn();
+		    view->SetAntialiasingOn();
 		else
-		    myView->SetAntialiasingOff();
+		    view->SetAntialiasingOff();
 	}
 }
 
 void OCCViewer::SetDegenerateModeOn(void)
 {
-	if (!myView.IsNull())
-		myView->SetComputedMode (Standard_False);
+	if (!view.IsNull())
+		view->SetComputedMode (Standard_False);
 }
 
 void OCCViewer::SetDegenerateModeOff(void)
 {
-	if (!myView.IsNull())
-		myView->SetComputedMode (Standard_True);
+	if (!view.IsNull())
+		view->SetComputedMode (Standard_True);
 }
 
 void OCCViewer::WindowFitAll(int Xmin, int Ymin, int Xmax, int Ymax)
 {
-	if (!myView.IsNull())
-		myView->WindowFitAll(Xmin, Ymin, Xmax, Ymax);
+	if (!view.IsNull())
+		view->WindowFitAll(Xmin, Ymin, Xmax, Ymax);
 }
 
 void OCCViewer::Place(int x, int y, float zoomFactor)
 {
 	Quantity_Factor aZoomFactor = zoomFactor;
-	if (!myView.IsNull())
-		myView->Place(x, y, aZoomFactor);
+	if (!view.IsNull())
+		view->Place(x, y, aZoomFactor);
 }
 
 void OCCViewer::Zoom(int x1, int y1, int x2, int y2)
 {
-	if (!myView.IsNull())
-		myView->Zoom(x1, y1, x2, y2);
+	if (!view.IsNull())
+		view->Zoom(x1, y1, x2, y2);
 }
 
 void OCCViewer::Pan(int x, int y)
 {
-	if (!myView.IsNull())
-		myView->Pan(x, y);
+	if (!view.IsNull())
+		view->Pan(x, y);
 }
 
 void OCCViewer::Rotation(int x, int y)
 {
-	if (!myView.IsNull())
-		myView->Rotation(x, y);
+	if (!view.IsNull())
+		view->Rotation(x, y);
 }
 
 void OCCViewer::StartRotation(int x, int y)
 {
-	if (!myView.IsNull())
-		myView->StartRotation(x, y);
+	if (!view.IsNull())
+		view->StartRotation(x, y);
 }
 
 void OCCViewer::Select(int x1, int y1, int x2, int y2)
 {
-	if (!myAISContext.IsNull()) {
-		myAISContext->Select(x1, y1, x2, y2, myView);
+	if (!aiscxt.IsNull()) {
+		aiscxt->Select(x1, y1, x2, y2, view);
 	}
 
 }
 
 void OCCViewer::Select(void)
 {
-	if (!myAISContext.IsNull()) {
-		myAISContext->Select();
+	if (!aiscxt.IsNull()) {
+		aiscxt->Select();
 	}
 }
 
 void OCCViewer::MoveTo(int x, int y)
 {
-	if ((!myAISContext.IsNull()) && (!myView.IsNull()))
-		myAISContext->MoveTo(x, y, myView);
+	if ((!aiscxt.IsNull()) && (!view.IsNull()))
+		aiscxt->MoveTo(x, y, view);
 }
 
 void OCCViewer::ShiftSelect(int x1, int y1, int x2, int y2)
 {
-	if ((!myAISContext.IsNull()) && (!myView.IsNull())) {
-		myAISContext->ShiftSelect(x1, y1, x2, y2, myView);
+	if ((!aiscxt.IsNull()) && (!view.IsNull())) {
+		aiscxt->ShiftSelect(x1, y1, x2, y2, view);
 	}
 }
 
 void OCCViewer::ShiftSelect(void)
 {
-	if (!myAISContext.IsNull()) {
-		myAISContext->ShiftSelect();
+	if (!aiscxt.IsNull()) {
+		aiscxt->ShiftSelect();
 	}
 }
 
@@ -349,8 +349,8 @@ void OCCViewer::BackgroundColor(int& r, int& g, int& b)
 	Standard_Real R1;
 	Standard_Real G1;
 	Standard_Real B1;
-	if (!myView.IsNull())
-		myView->BackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
+	if (!view.IsNull())
+		view->BackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
 	r = (int)R1*255;
 	g = (int)G1*255;
 	b = (int)B1*255;
@@ -358,89 +358,89 @@ void OCCViewer::BackgroundColor(int& r, int& g, int& b)
 
 void OCCViewer::UpdateCurrentViewer(void)
 {
-	if (!myAISContext.IsNull())
-		myAISContext->UpdateCurrentViewer();
+	if (!aiscxt.IsNull())
+		aiscxt->UpdateCurrentViewer();
 }
 
 void OCCViewer::setProjection(V3d_TypeOfOrientation dir)
 {
-	if (!myView.IsNull()) {	
-		myView->SetProj(dir); 
+	if (!view.IsNull()) {	
+		view->SetProj(dir); 
 	}
 }
 
 void OCCViewer::ZoomAllView(void)
 {
-	if (!myView.IsNull()) {
-		myView->FitAll();
-		myView->ZFitAll();
+	if (!view.IsNull()) {
+		view->FitAll();
+		view->ZFitAll();
 	}
 }
 
 float OCCViewer::Scale(void)
 {
-	if (myView.IsNull())
+	if (view.IsNull())
 		return -1;
 	else
-		return (float)myView->Scale();
+		return (float)view->Scale();
 }
 
 void OCCViewer::setScale(double f)
 {
-	if (!myView.IsNull())
-		myView->SetScale((Quantity_Factor)f);
+	if (!view.IsNull())
+		view->SetScale((Quantity_Factor)f);
 }
 
 void OCCViewer::ResetView(void)
 {
-	if (!myView.IsNull())
-		myView->Reset();
+	if (!view.IsNull())
+		view->Reset();
 }
 
 void OCCViewer::SetDisplayMode(int aMode)
 {
-	if (myAISContext.IsNull())
+	if (aiscxt.IsNull())
 		return;
 	AIS_DisplayMode CurrentMode;
 	if (aMode == 0) 
 		CurrentMode=AIS_WireFrame;
 	else
 		CurrentMode=AIS_Shaded;
-    if(myAISContext->NbCurrents()==0 || myAISContext->NbSelected()==0)
-       myAISContext->SetDisplayMode(CurrentMode);
+    if(aiscxt->NbCurrents()==0 || aiscxt->NbSelected()==0)
+       aiscxt->SetDisplayMode(CurrentMode);
     else 
 	{
-       for(myAISContext->InitCurrent();myAISContext->MoreCurrent();myAISContext->NextCurrent())
-	           myAISContext->SetDisplayMode(myAISContext->Current(),aMode,Standard_False);
+       for(aiscxt->InitCurrent();aiscxt->MoreCurrent();aiscxt->NextCurrent())
+	           aiscxt->SetDisplayMode(aiscxt->Current(),aMode,Standard_False);
 	         
 	}
-	 myAISContext->UpdateCurrentViewer();
+	 aiscxt->UpdateCurrentViewer();
 }
 
 void OCCViewer::SetColor(int r, int g, int b)
 {
-	if (myAISContext.IsNull())
+	if (aiscxt.IsNull())
 		return;
 	Quantity_Color col =  Quantity_Color(r/255.,g/255.,b/255.,Quantity_TOC_RGB);
-	for (;myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-	          myAISContext->SetColor (myAISContext->Current(),col.Name());
+	for (;aiscxt->MoreCurrent ();aiscxt->NextCurrent ())
+	          aiscxt->SetColor (aiscxt->Current(),col.Name());
 }
 
 void OCCViewer::ObjectColor(int& r, int& g, int& b)
 {
-	if (myAISContext.IsNull())
+	if (aiscxt.IsNull())
 		return;
 	r = 255;
 	g = 255;
 	b = 255;
 	Handle_AIS_InteractiveObject Current ;
 	Quantity_Color ObjCol;
-	myAISContext->InitCurrent();
-	if (!myAISContext->MoreCurrent())
+	aiscxt->InitCurrent();
+	if (!aiscxt->MoreCurrent())
 		return;
-    Current = myAISContext->Current();
+    Current = aiscxt->Current();
 	if (Current->HasColor()) {
-      ObjCol = myAISContext->Color(myAISContext->Current());
+      ObjCol = aiscxt->Color(aiscxt->Current());
 	  Quantity_Parameter r1, r2, r3;
 	  ObjCol.Values(r1, r2, r3, Quantity_TOC_RGB);
 		r = (int)r1*255;
@@ -451,17 +451,17 @@ void OCCViewer::ObjectColor(int& r, int& g, int& b)
 
 void OCCViewer::SetBackgroundColor(int r, int g, int b)
 {
-	if (!myView.IsNull())
-		myView->SetBackgroundColor(Quantity_TOC_RGB,r/255.,g/255.,b/255.);
+	if (!view.IsNull())
+		view->SetBackgroundColor(Quantity_TOC_RGB,r/255.,g/255.,b/255.);
 }
 
 void OCCViewer::EraseObjects(void)
 {
-	if (myAISContext.IsNull())
+	if (aiscxt.IsNull())
 		return;
-	for(myAISContext->InitCurrent();myAISContext->MoreCurrent();myAISContext->NextCurrent())
-        myAISContext->Erase(myAISContext->Current(),Standard_True);
-	myAISContext->ClearCurrents();
+	for(aiscxt->InitCurrent();aiscxt->MoreCurrent();aiscxt->NextCurrent())
+        aiscxt->Erase(aiscxt->Current(),Standard_True);
+	aiscxt->ClearCurrents();
 }
 
 float OCCViewer::GetVersion(void)
@@ -471,19 +471,19 @@ float OCCViewer::GetVersion(void)
 
 void OCCViewer::SetMaterial(int theMaterial)
 {
-	if (myAISContext.IsNull())
+	if (aiscxt.IsNull())
 		return;
-    for (myAISContext->InitCurrent(); myAISContext->MoreCurrent (); myAISContext->NextCurrent ())
-        myAISContext->SetMaterial(myAISContext->Current(), (Graphic3d_NameOfMaterial)theMaterial);
-	myAISContext->UpdateCurrentViewer();
+    for (aiscxt->InitCurrent(); aiscxt->MoreCurrent (); aiscxt->NextCurrent ())
+        aiscxt->SetMaterial(aiscxt->Current(), (Graphic3d_NameOfMaterial)theMaterial);
+	aiscxt->UpdateCurrentViewer();
 }
 
 void OCCViewer::SetTransparency(int theTrans)
 {
-	if (myAISContext.IsNull())
+	if (aiscxt.IsNull())
 		return;
-	for(myAISContext->InitCurrent(); myAISContext->MoreCurrent(); myAISContext->NextSelected())
-		myAISContext->SetTransparency(myAISContext->Current(), ((Standard_Real)theTrans) / 10.0);
+	for(aiscxt->InitCurrent(); aiscxt->MoreCurrent(); aiscxt->NextSelected())
+		aiscxt->SetTransparency(aiscxt->Current(), ((Standard_Real)theTrans) / 10.0);
 }
 
 bool OCCViewer::ImportCsfdb(wchar_t* filename)
@@ -521,7 +521,7 @@ bool OCCViewer::ImportCsfdb(wchar_t* filename)
 	        PTColStd_PersistentTransientMap aMap;
 	        TopoDS_Shape aTShape;
             MgtBRep::Translate(aPShape, aMap, aTShape, MgtBRep_WithTriangle);
-			myAISContext->Display(new AIS_Shape(aTShape));
+			aiscxt->Display(new AIS_Shape(aTShape));
         }
     }
 
@@ -544,10 +544,10 @@ bool OCCViewer::ImportIges(wchar_t* filename)
     {
         Reader.TransferRoots();
         TopoDS_Shape aShape = Reader.OneShape();
-        myAISContext->Display(new AIS_Shape(aShape));
+        aiscxt->Display(new AIS_Shape(aShape));
     } else
 		return false;
-	myAISContext->UpdateCurrentViewer();
+	aiscxt->UpdateCurrentViewer();
 	return true;
 }
 
@@ -578,7 +578,7 @@ bool OCCViewer::ImportStep(wchar_t* filename)
 	            for (int i = 1; i <= nbs; i++)
                 {
 		            TopoDS_Shape shape = aReader.Shape(i);
-		            myAISContext->Display(new AIS_Shape(shape));
+		            aiscxt->Display(new AIS_Shape(shape));
 	            }
             }
         }
@@ -599,9 +599,9 @@ bool OCCViewer::ExportIges(wchar_t* filename)
 	IGESControl_Writer writer(Interface_Static::CVal("XSTEP.iges.unit"),
                                Interface_Static::IVal("XSTEP.iges.writebrep.mode"));
  
-	for (myAISContext->InitCurrent(); myAISContext->MoreCurrent(); myAISContext->NextCurrent())
+	for (aiscxt->InitCurrent(); aiscxt->MoreCurrent(); aiscxt->NextCurrent())
 	{
-		Handle_AIS_InteractiveObject anIO = myAISContext->Current();
+		Handle_AIS_InteractiveObject anIO = aiscxt->Current();
 		Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
 		TopoDS_Shape shape = anIS->Shape();
 		writer.AddShape (shape);
@@ -621,9 +621,9 @@ bool OCCViewer::ExpotStep(wchar_t* filename)
     STEPControl_StepModelType type = STEPControl_AsIs;
     IFSelect_ReturnStatus status;
     STEPControl_Writer writer;
-	for (myAISContext->InitCurrent(); myAISContext->MoreCurrent(); myAISContext->NextCurrent())
+	for (aiscxt->InitCurrent(); aiscxt->MoreCurrent(); aiscxt->NextCurrent())
     {
-		Handle_AIS_InteractiveObject anIO = myAISContext->Current();
+		Handle_AIS_InteractiveObject anIO = aiscxt->Current();
 		Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
 		TopoDS_Shape shape = anIS->Shape();
 		status = writer.Transfer(shape , type);
@@ -649,9 +649,9 @@ bool OCCViewer::ExportStl(wchar_t* filename)
 	BRep_Builder builder;
 	builder.MakeCompound(comp);
 
-	for (myAISContext->InitCurrent(); myAISContext->MoreCurrent(); myAISContext->NextCurrent())
+	for (aiscxt->InitCurrent(); aiscxt->MoreCurrent(); aiscxt->NextCurrent())
 	{
-		Handle_AIS_InteractiveObject anIO = myAISContext->Current();
+		Handle_AIS_InteractiveObject anIO = aiscxt->Current();
 		Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
 		TopoDS_Shape shape = anIS->Shape();
 		if (shape.IsNull()) 
@@ -676,9 +676,9 @@ bool OCCViewer::ExportVrml(wchar_t* filename)
 	BRep_Builder builder;
 	builder.MakeCompound(res);
 
-	for (myAISContext->InitCurrent(); myAISContext->MoreCurrent(); myAISContext->NextCurrent())
+	for (aiscxt->InitCurrent(); aiscxt->MoreCurrent(); aiscxt->NextCurrent())
 	{
-		Handle_AIS_InteractiveObject anIO = myAISContext->Current();
+		Handle_AIS_InteractiveObject anIO = aiscxt->Current();
 		Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
 		TopoDS_Shape shape = anIS->Shape();
 		if (shape.IsNull())
@@ -701,32 +701,32 @@ bool OCCViewer::Dump(wchar_t* filename)
 	    size_t len;
 	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
 	}
-	if (myView.IsNull())
+	if (view.IsNull())
 		return false;
-	myView->Redraw();
-    return (bool)myView->Dump((Standard_CString)fname);
+	view->Redraw();
+    return (bool)view->Dump((Standard_CString)fname);
 }
 
 bool OCCViewer::IsObjectSelected(void)
 {
-	if (myAISContext.IsNull())
+	if (aiscxt.IsNull())
 		return false;
-	myAISContext->InitCurrent();
-	return (bool)myAISContext->MoreCurrent();
+	aiscxt->InitCurrent();
+	return (bool)aiscxt->MoreCurrent();
 }
 
 int OCCViewer::DisplayMode(void)
 {
-	if (myAISContext.IsNull())
+	if (aiscxt.IsNull())
 		return -1;
 	int mode = -1;
 	bool OneOrMoreInShading=false;
 	bool OneOrMoreInWireframe=false;
-	for (myAISContext->InitCurrent(); myAISContext->MoreCurrent(); myAISContext->NextCurrent())
+	for (aiscxt->InitCurrent(); aiscxt->MoreCurrent(); aiscxt->NextCurrent())
 	{
-		if (myAISContext->IsDisplayed(myAISContext->Current(), 1))
+		if (aiscxt->IsDisplayed(aiscxt->Current(), 1))
              OneOrMoreInShading = true;
-        if (myAISContext->IsDisplayed(myAISContext->Current(), 0))
+        if (aiscxt->IsDisplayed(aiscxt->Current(), 0))
              OneOrMoreInWireframe = true;
 	}
 	if (OneOrMoreInShading&&OneOrMoreInWireframe)
@@ -740,16 +740,16 @@ int OCCViewer::DisplayMode(void)
 
 void OCCViewer::CreateNewView(void* wnd)
 {
-	if (myAISContext.IsNull())
+	if (aiscxt.IsNull())
 		return;
-	myView = myAISContext->CurrentViewer()->CreateView();
+	view = aiscxt->CurrentViewer()->CreateView();
 	if (myGraphicDriver.IsNull())
     {
       Handle(Aspect_DisplayConnection) aDisplayConnection;
       myGraphicDriver = Graphic3d::InitGraphicDriver(aDisplayConnection);
     }
 	Handle(WNT_Window) aWNTWindow = new WNT_Window(reinterpret_cast<HWND> (wnd));
-	myView->SetWindow(aWNTWindow);
+	view->SetWindow(aWNTWindow);
 	Standard_Integer w = 100, h = 100;
 	aWNTWindow->Size(w,h);
 	if (!aWNTWindow->IsMapped()) 
@@ -759,15 +759,15 @@ void OCCViewer::CreateNewView(void* wnd)
 
 bool OCCViewer::SetAISContext(OCCViewer* Viewer)
 {
-	myAISContext = Viewer->GetAISContext();
-	if (myAISContext.IsNull())
+	aiscxt = Viewer->GetAISContext();
+	if (aiscxt.IsNull())
 		return false;
 	return true;
 }
 
 Handle_AIS_InteractiveContext OCCViewer::GetAISContext(void)
 {
-	return myAISContext;
+	return aiscxt;
 }
 
 int OCCViewer::CharToInt(char symbol)
@@ -783,9 +783,9 @@ bool OCCViewer::xy2xyz(int Xs, int Ys, double& X, double& Y, double& Z, bool use
     Standard_Real Xv, Yv, Zv;
     Standard_Real Vx, Vy, Vz;
 
-    gp_Pln aPlane(myView->Viewer()->PrivilegedPlane());
-    myView->Convert((Standard_Integer)Xp, (Standard_Integer)Yp, Xv, Yv, Zv);
-    myView->Proj(Vx, Vy, Vz);
+    gp_Pln aPlane(view->Viewer()->PrivilegedPlane());
+    view->Convert((Standard_Integer)Xp, (Standard_Integer)Yp, Xv, Yv, Zv);
+    view->Proj(Vx, Vy, Vz);
     gp_Lin aLine(gp_Pnt(Xv, Yv, Zv), gp_Dir(Vx, Vy, Vz));
     IntAna_IntConicQuad intersec(aLine, aPlane, Precision::Angular());
 

@@ -4,8 +4,6 @@
  * ---------------------------------------------------------
  * AUTHOR: dyama <dyama@member.fsf.org>
  */
-// stdafx.h で定義されている static な AISContext, Viewer, Map に直接
-// アクセスするメソッドは、この中に実装しなければアクセスできない。今のところ。
 
 #include "Stdafx.h"
 #include "OCCViewer.h"
@@ -147,11 +145,15 @@ int OCCViewer::mruby_exec(char* command, std::string& errmsg)
 	if (!myMirb)
 		return -1;
 
-	AISContext = myAISContext;
-	if (AISContext.IsNull())
+	cur = this;
+	if (cur == NULL)
 		return -1;
-	View = myView;
-	if (View.IsNull())
+
+	cur->aiscxt = aiscxt;
+	if (cur->aiscxt.IsNull())
+		return -1;
+	cur->view = view;
+	if (cur->view.IsNull())
 		return -1;
 
 	return myMirb->user_exec(command, errmsg);
@@ -170,29 +172,54 @@ int set(const TopoDS_Shape& shape)
  */
 int set(const TopoDS_Shape& shape, int draw)
 {
-	Handle(AIS_Shape) hashape = new AIS_Shape(shape);
-	// registration
-	int hashcode = shape.HashCode(INT_MAX);
-	::Map[hashcode] = hashape;
-
-	// display
-	if (AISContext.IsNull()) {
+	if (cur->aiscxt.IsNull()) {
 		throw "No AIS Interactive Context.";
 	}
-	//AISContext->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
-	AISContext->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
-	AISContext->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
-	AISContext->SetSelected(hashape, Standard_False);
+	Handle(AIS_Shape) hashape = new AIS_Shape(shape);
+	cur->aiscxt->Display(hashape);
+
+	cur->aiscxt->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
+	cur->aiscxt->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
+	cur->aiscxt->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
+	cur->aiscxt->SetSelected(hashape, Standard_False);
 
 	Handle(Graphic3d_ShaderProgram) myShader;
 	myShader = new Graphic3d_ShaderProgram(Graphic3d_ShaderProgram::ShaderName_Phong);
 	hashape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram(myShader);
 
-	if (draw) {
-		AISContext->Display(hashape);
-		AISContext->UpdateCurrentViewer();
+	cur->aiscxt->UpdateCurrentViewer();
+
+	return shape.HashCode(INT_MAX);
+}
+
+/**
+ * \brief 
+ */
+Handle(AIS_Shape) get(int hashcode)
+{
+#if 0
+	// これだと選択されたものから探すので
+    cur->aiscxt->InitCurrent();
+    for (; cur->aiscxt->MoreCurrent(); cur->aiscxt->NextCurrent()) {
+		Handle(AIS_InteractiveObject) aisobj = cur->aiscxt->Current();
+		Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(aisobj);
+        if (hashcode == hashape->Shape().HashCode(INT_MAX))
+            return hashape;
+    }
+    return NULL;
+#else
+	// こっちが正解
+	AIS_ListOfInteractive ar;
+	cur->aiscxt->ObjectsInside(ar);
+	AIS_ListIteratorOfListOfInteractive it(ar);
+	for (; it.More(); it.Next()) {
+		Handle(AIS_InteractiveObject) aisobj = it.Value();
+		Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(aisobj);
+        if (hashcode == hashape->Shape().HashCode(INT_MAX))
+            return hashape;
 	}
-	return hashcode;
+	return NULL;
+#endif
 }
 
 /**
@@ -201,21 +228,8 @@ int set(const TopoDS_Shape& shape, int draw)
 void unset(int hashcode)
 {
 	Handle(AIS_Shape) myShape = ::get(hashcode);
-	AISContext->Erase(myShape, Standard_True);
-	if (::Map.find(hashcode) == ::Map.end())
-		return;
-	::Map.erase(hashcode);
+	cur->aiscxt->Erase(myShape, Standard_True);
 	return;
-}
-
-/**
- * \brief 
- */
-Handle(AIS_Shape) get(int hashcode)
-{
-	if (::Map.find(hashcode) == ::Map.end())
-		return NULL;
-	return ::Map[hashcode];
 }
 
 /**
@@ -223,7 +237,8 @@ Handle(AIS_Shape) get(int hashcode)
  */
 bool has_object(int hashcode)
 {
-	return ::Map.find(hashcode) != ::Map.end();
+	Handle(AIS_Shape) hashape = get(hashcode);
+	return !hashape.IsNull();
 }
 
 // ------
@@ -233,7 +248,7 @@ bool has_object(int hashcode)
  */
 mrb_value update(mrb_state* mrb, mrb_value self)
 {
-	AISContext->UpdateCurrentViewer();
+	cur->aiscxt->UpdateCurrentViewer();
 	return mrb_nil_value();
 }
 
@@ -242,7 +257,7 @@ mrb_value update(mrb_state* mrb, mrb_value self)
  */
 mrb_value display(mrb_state* mrb, mrb_value self)
 {
-	if (AISContext.IsNull())
+	if (cur->aiscxt.IsNull())
 		return mrb_nil_value();
 
     mrb_int target;
@@ -254,7 +269,7 @@ mrb_value display(mrb_state* mrb, mrb_value self)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	AISContext->Display(hashape, Standard_False);
+	cur->aiscxt->Display(hashape, Standard_False);
 	return mrb_nil_value();
 }
 
@@ -263,7 +278,7 @@ mrb_value display(mrb_state* mrb, mrb_value self)
  */
 mrb_value hide(mrb_state* mrb, mrb_value self)
 {
-	if (AISContext.IsNull())
+	if (cur->aiscxt.IsNull())
 		return mrb_nil_value();
 
     mrb_int target;
@@ -275,7 +290,7 @@ mrb_value hide(mrb_state* mrb, mrb_value self)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	AISContext->Erase(hashape, Standard_False);
+	cur->aiscxt->Erase(hashape, Standard_False);
 	return mrb_nil_value();
 }
 
@@ -284,12 +299,12 @@ mrb_value hide(mrb_state* mrb, mrb_value self)
  */
 mrb_value fit(mrb_state* mrb, mrb_value self)
 {
-	if (!View.IsNull()) {
-		View->FitAll();
-		View->ZFitAll();
+	if (!cur->view.IsNull()) {
+		cur->view->FitAll();
+		cur->view->ZFitAll();
 	}
 	else {
-		static const char m[] = "View is NULL object.";
+		static const char m[] = "cur->view is NULL object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 	return mrb_nil_value();
@@ -311,7 +326,7 @@ mrb_value color(mrb_state* mrb, mrb_value self)
 	}
 
 	Quantity_Color col =  Quantity_Color(r/255., g/255., b/255., Quantity_TOC_RGB);
-    AISContext->SetColor(hashape, col.Name());
+    cur->aiscxt->SetColor(hashape, col.Name());
 
 	return mrb_nil_value();
 }
@@ -327,12 +342,12 @@ mrb_value bgcolor(mrb_state* mrb, mrb_value self)
 	if (argc == 6) {
 	    Quantity_Color color_top(tr/255, tg/255, tb/255, Quantity_TOC_RGB);
 	    Quantity_Color color_btm(br/255, bg/255, bb/255, Quantity_TOC_RGB);
-	    View->SetBgGradientColors(color_top, color_btm, Aspect_GFM_VER, Standard_True);
+	    cur->view->SetBgGradientColors(color_top, color_btm, Aspect_GFM_VER, Standard_True);
 	}
 	else if (argc == 3) {
 	    Quantity_Color color(tr/255, tg/255, tb/255, Quantity_TOC_RGB);
-		View->SetBackgroundColor(color);
-		View->Redraw();
+		cur->view->SetBackgroundColor(color);
+		cur->view->Redraw();
 	}
 	else {
 		static const char m[] = "Incorrect number of arguments.";
@@ -384,8 +399,8 @@ mrb_value selected(mrb_state* mrb, mrb_value self)
 	mrb_value ar = mrb_ary_new(mrb);
 	char* aname = NULL;
 
-	for (AISContext->InitCurrent(); AISContext->MoreCurrent(); AISContext->NextCurrent()) {
-		Handle(AIS_InteractiveObject) anIO = AISContext->Current();
+	for (cur->aiscxt->InitCurrent(); cur->aiscxt->MoreCurrent(); cur->aiscxt->NextCurrent()) {
+		Handle(AIS_InteractiveObject) anIO = cur->aiscxt->Current();
 		Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(anIO);
 		TopoDS_Shape shape = hashape->Shape();
 		mrb_ary_push(mrb, ar, mrb_fixnum_value(shape.HashCode(INT_MAX)));

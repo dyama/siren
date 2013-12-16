@@ -17,12 +17,12 @@ public:
 	OCCViewer(void);
 	~OCCViewer(void);
 
-private:
+public:
 	void initViewAppearance(void);
-	Handle_AIS_InteractiveContext myAISContext;
-	Handle_V3d_Viewer myViewer;
-	Handle_V3d_View myView;
-	Handle_Graphic3d_GraphicDriver myGraphicDriver;
+	Handle(AIS_InteractiveContext)  aiscxt;
+	Handle(V3d_Viewer)              viewer;
+	Handle(V3d_View)                view;
+	Handle(Graphic3d_GraphicDriver) myGraphicDriver;
 
 public:
 	Mirb* myMirb;

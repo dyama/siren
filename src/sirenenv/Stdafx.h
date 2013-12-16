@@ -59,6 +59,8 @@
 #include <AIS_Shape.hxx>
 #include <AIS_Trihedron.hxx>
 #include <AIS_DisplayMode.hxx>
+#include <AIS_ListOfInteractive.hxx>
+#include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <Visual3d_Layer.hxx>
 #include <Handle_Visual3d_Layer.hxx>
 //topology
@@ -210,10 +212,12 @@
 #include "common.h"
 #include "command.h"
 
+#include "OCCViewer.h"
+
 // Global/Static varibles
 static std::map<std::string, structHelp*> Help;       // Help string map
-static Handle_AIS_InteractiveContext      AISContext; // Visualization manager
-static Handle_V3d_View                    View;       // 3D-View
-static std::map<int, Handle(AIS_Shape)>   Map;        // Object manager
+//static Handle(AIS_InteractiveContext)     AISContext; // Visualization manager
+//static Handle(V3d_View)                   View;       // 3D-View
+static OCCViewer* cur;
 
 #endif
