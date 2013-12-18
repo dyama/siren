@@ -79,7 +79,7 @@ void OCCViewer::initViewAppearance()
 	// Viewpoint control
 	view->SetAt(0.0, 0.0, 0.0);
 	view->SetEye(-1, -1, 1);
-	view->SetScale(5.0);
+	view->SetScale(5.0); // 15.0 for perspective view
 	view->SetUp(0.0, 0.0, 1.0);
 	view->SetCenter(0.0, 0.0);
 
@@ -186,12 +186,9 @@ bool OCCViewer::InitViewer(void* wnd)
 	// aiscxt->Display(aTrihedron);
 	// aiscxt->Deactivate(aTrihedron);
 
-	// init current view
-#ifdef PARSEPECTIVE
-	view = new V3d_PerspectiveView(viewer);
-#else
+	// ƒrƒ…[‚Ì‰Šú‰»
+	//view = new V3d_PerspectiveView(viewer);
 	view = viewer->CreateView();
-#endif
 
 	Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (wnd));
 	view->SetWindow(aWNTWindow);

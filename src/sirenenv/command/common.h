@@ -28,3 +28,4 @@ int set(const TopoDS_Shape& shape, int draw);
 void unset(int hashcode);
 Handle(AIS_Shape) get(int hashcode);
 bool has_object(int hashcode);
+void redisplay(const Handle(AIS_Shape)& hashape);

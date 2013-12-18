@@ -156,7 +156,9 @@ int OCCViewer::mruby_exec(char* command, std::string& errmsg)
 	if (cur->view.IsNull())
 		return -1;
 
-	return myMirb->user_exec(command, errmsg);
+	int res = myMirb->user_exec(command, errmsg);
+
+	return res;
 }
 
 /**
@@ -176,16 +178,18 @@ int set(const TopoDS_Shape& shape, int draw)
 		throw "No AIS Interactive Context.";
 	}
 	Handle(AIS_Shape) hashape = new AIS_Shape(shape);
-	cur->aiscxt->Display(hashape);
-
-	cur->aiscxt->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
-	cur->aiscxt->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
-	cur->aiscxt->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
-	cur->aiscxt->SetSelected(hashape, Standard_False);
 
 	Handle(Graphic3d_ShaderProgram) myShader;
 	myShader = new Graphic3d_ShaderProgram(Graphic3d_ShaderProgram::ShaderName_Phong);
 	hashape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram(myShader);
+
+	cur->aiscxt->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
+	cur->aiscxt->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
+	cur->aiscxt->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
+
+	cur->aiscxt->Display(hashape);
+
+	cur->aiscxt->SetSelected(hashape, Standard_False);
 
 	cur->aiscxt->UpdateCurrentViewer();
 
@@ -239,6 +243,14 @@ bool has_object(int hashcode)
 {
 	Handle(AIS_Shape) hashape = get(hashcode);
 	return !hashape.IsNull();
+}
+
+/**
+ * \brief 
+ */
+void redisplay(const Handle(AIS_Shape)& hashape)
+{
+	cur->aiscxt->Redisplay(hashape, Standard_True);
 }
 
 // ------
@@ -325,8 +337,13 @@ mrb_value color(mrb_state* mrb, mrb_value self)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	Quantity_Color col =  Quantity_Color(r/255., g/255., b/255., Quantity_TOC_RGB);
-    cur->aiscxt->SetColor(hashape, col.Name());
+	Quantity_Color col =  Quantity_Color((Standard_Real)r/255., (Standard_Real)g/255., (Standard_Real)b/255., Quantity_TOC_RGB);
+
+	//cur->aiscxt->SetColor(hashape, col, Standard_True);
+	//cur->aiscxt->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
+	//cur->aiscxt->SetColor(hashape, Quantity_NOC_RED, Standard_True);
+	Quantity_NameOfColor colname = col.Name();
+	cur->aiscxt->SetColor(hashape, colname, Standard_True);
 
 	return mrb_nil_value();
 }
@@ -396,7 +413,7 @@ mrb_value help(mrb_state* mrb, mrb_value self)
 		if (strlen(target) > strlen(current))
 			continue;
 		bool is_match = true;
-		for (int i = 0; i<strlen(target); i++) {
+		for (int i = 0; i<(signed int)strlen(target); i++) {
 			if (current[i] != target[i]) {
 				is_match = false;
 				break;

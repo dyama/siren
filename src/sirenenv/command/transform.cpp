@@ -36,6 +36,7 @@ mrb_value translate(mrb_state* mrb, mrb_value self)
 	mrb_value result;
 	if (trf.IsDone()){
 		hashape->Set(trf.Shape());
+		redisplay(hashape);
 		result = mrb_nil_value();
 	}
 	else {
@@ -74,6 +75,7 @@ mrb_value rotate(mrb_state* mrb, mrb_value self)
 	mrb_value result;
 	if (trf.IsDone()){
 		hashape->Set(trf.Shape());
+		redisplay(hashape);
 		result = mrb_nil_value();
 	}
 	else {
@@ -117,6 +119,7 @@ mrb_value scale(mrb_state* mrb, mrb_value self)
 	mrb_value result;
 	if (trf.IsDone()){
 		hashape->Set(trf.Shape());
+		redisplay(hashape);
 		result = mrb_nil_value();
 	}
 	else {
@@ -152,6 +155,7 @@ mrb_value mirror(mrb_state* mrb, mrb_value self)
 	mrb_value result;
 	if (trf.IsDone()){
 		hashape->Set(trf.Shape());
+		redisplay(hashape);
 		result = mrb_nil_value();
 	}
 	else {
