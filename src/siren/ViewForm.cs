@@ -208,7 +208,6 @@ namespace siren
 		private void onClosed(object sender, System.EventArgs e)
 		{
 			siren.MainForm parent = (siren.MainForm) this.ParentForm;
-			parent.OnFileClose();
 		}
 
 		public CurAct3d CurMode

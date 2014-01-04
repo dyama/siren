@@ -58,8 +58,6 @@ namespace siren
 
         private void miNewViewer_Click(object sender, System.EventArgs e)
 		{
-			this.Cursor=System.Windows.Forms.Cursors.WaitCursor;
-			this.NewFile();
 		}
 
 		private void miClose_Click(object sender, System.EventArgs e)
@@ -118,8 +116,6 @@ namespace siren
                 MessageBox.Show("ファイルの読み込みに失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-
-            this.toolStripMain.Enabled = true;
 
             return true;
         }
@@ -196,26 +192,6 @@ namespace siren
             SaveFile();
 		}
 
-		private void HelpAbout_Click(object sender, System.EventArgs e)
-		{
-			AboutDialog myDlg = new AboutDialog();
-			myDlg.ShowDialog(this);
-		}
-
-		private void ViewerStatusBar_Click(object sender, System.EventArgs e)
-		{
-			if (this.ViewerStatusBar.Checked)
-			{
-				this.myStatusBar.Hide(); 
-				this.ViewerStatusBar.Checked=false;
-			}
-			else
-			{
-				this.myStatusBar.Show();
-				this.ViewerStatusBar.Checked=true;
-			}
-		}
-
 		public void NewFile()
 		{
 			ViewForm newForm = new ViewForm();
@@ -226,159 +202,8 @@ namespace siren
 			newForm.Show();
 			newForm.InitViewer();
 			newForm.InitV3D();
-			this.miView.Visible=true;
 			this.Cursor=System.Windows.Forms.Cursors.Default;
-            this.toolStripMain.Enabled = true;
 		}
-
-		private void miExit_Click(object sender, System.EventArgs e)
-		{
-			this.Close();
-            return;
-		}
-
-		private void File_Popup(object sender, System.EventArgs e)
-		{
-			if (this.MdiChildren.Length > 0 )
-				this.miFileClose.Enabled=true;
-			else 
-				this.miFileClose.Enabled=false;
-            
-            siren.ViewForm curForm = (siren.ViewForm)this.ActiveMdiChild;
-            if (curForm != null)
-                this.miSaveFile.Enabled = curForm.Viewer.IsObjectSelected();
-
-            return;
-		}
-
-		private void menuItem4_Click(object sender, System.EventArgs e)
-        {
-            siren.ViewForm curForm = (siren.ViewForm)this.ActiveMdiChild;
-            siren.ViewForm newViewer = new ViewForm();
-            newViewer.MdiParent = this;
-            newViewer.Show();
-            newViewer.InitViewer();
-            newViewer.SetContext(curForm.Viewer);
-            newViewer.Viewer.CreateNewView(newViewer.Handle);
-            {
-                string title = curForm.Text;
-                System.Text.StringBuilder bld= new System.Text.StringBuilder(title);
-                char c = bld[title.Length - 1];
-                string s=c.ToString();
-                int NbOfViewer = newViewer.Viewer.CharToInt(s);
-                NbOfViewer++;
-                bld.Remove(title.Length - 1, 1);
-                bld.Append(NbOfViewer);
-                newViewer.Text = bld.ToString();
-            }
-        }
-
-		private void WindowCascade_Click(object sender, System.EventArgs e)
-		{
-			this.LayoutMdi(System.Windows.Forms.MdiLayout.Cascade);
-		}
-
-		private void WindowTile_Click(object sender, System.EventArgs e)
-		{
-			this.LayoutMdi(System.Windows.Forms.MdiLayout.TileVertical);
-		}
-
-		public StatusStrip StatusBar
-		{
-			get
-			{
-				return this.myStatusBar;
-			}
-		}
-
-		public void OnFileClose()
-		{
-			if ( this.MdiChildren.Length <=  1)
-			{
-				this.miFileClose.Enabled=false;
-				this.miView.Visible=false;
-                this.toolStripMain.Enabled = false;
-			}
-		}
-
-		private void toolBarViewer_MouseHover(object sender, System.EventArgs e)
-		{
-			this.myStatusBar.Text="Viewer toolbar";
-		}
-
-		private void toolBarViewer_MouseLeave(object sender, System.EventArgs e)
-		{
-			this.myStatusBar.Text="";
-		}
-
-        private void miScreenShot_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog d = new SaveFileDialog();
-            d.RestoreDirectory = true;
-
-            string filter = "";
-			filter += "画像ファイル(*.bmp *.gif *.xwd)| *.bmp; *.gif; *.xwd";
-			filter += "|BMP ファイル(*.bmp)|*.bmp";
-			filter += "|GIF ファイル(*.gif)|*.gif";
-			filter += "|XWD ファイル(*.xwd)|*.xwd";
-			d.Filter = filter;
-
-            d.Title = "スクリーンショットの保存";
-
-            if (d.ShowDialog() != DialogResult.OK)
-                return;
-
-            SaveFile(d.FileName, ModelFormat.IMAGE);
-        }
-
-        private void miView_Paint(object sender, PaintEventArgs e)
-        {
-			siren.ViewForm curForm = (siren.ViewForm) this.ActiveMdiChild;
-            miScreenShot.Enabled = (curForm != null);
-        }
-
-        private void miFile_Paint(object sender, PaintEventArgs e)
-        {
-			siren.ViewForm curForm = (siren.ViewForm) this.ActiveMdiChild;
-            if (curForm != null && curForm.Viewer.IsObjectSelected()) {
-                miSaveFile.Enabled = true;
-            }
-            else {
-                miSaveFile.Enabled = false;
-            }
-            return;
-        }
-
-        private void miDebug_Click(object sender, EventArgs e)
-        {
-			siren.ViewForm curForm = (siren.ViewForm) this.ActiveMdiChild;
-            if (curForm == null)
-                return;
-            curForm.showTerminal();
-        }
-
-        private void tsbAbout_Click(object sender, EventArgs e)
-        {
-			AboutDialog myDlg = new AboutDialog();
-			myDlg.ShowDialog(this);
-        }
-
-        private void tsbDisplayMode_Click(object sender, EventArgs e)
-        {
-            ToolStripButton mybutton = (ToolStripButton)sender;
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
-                return;
-
-            if (!mybutton.Checked) {
-                curForm.currentDisplayMode = DisplayMode.SHADING;
-                mybutton.Checked = true;
-            }
-            else {
-                curForm.currentDisplayMode = DisplayMode.WIREFRAME;
-                mybutton.Checked = false;
-            }
-        }
 
         private void tsbTransparency_Click(object sender, EventArgs e)
         {
@@ -463,6 +288,112 @@ namespace siren
                 curForm.Viewer.SetColor(r, g, b);
             }
             curForm.Viewer.UpdateCurrentViewer();
+        }
+
+        private void tsbExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            return;
+        }
+
+        private void tsbSave_Click(object sender, EventArgs e)
+        {
+            this.SaveFile();
+        }
+
+        private void tsbOpen_Click(object sender, EventArgs e)
+        {
+            this.OpenFile();
+        }
+
+        private void tsbNew_Click(object sender, EventArgs e)
+        {
+            this.NewFile();
+        }
+
+        private void tsbNewView_Click(object sender, EventArgs e)
+        {
+			this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+            
+            siren.ViewForm curForm = (siren.ViewForm)this.ActiveMdiChild;
+            siren.ViewForm newViewer = new ViewForm();
+            newViewer.MdiParent = this;
+            newViewer.Show();
+            newViewer.InitViewer();
+            newViewer.SetContext(curForm.Viewer);
+            newViewer.Viewer.CreateNewView(newViewer.Handle);
+            {
+                string title = curForm.Text;
+                System.Text.StringBuilder bld= new System.Text.StringBuilder(title);
+                char c = bld[title.Length - 1];
+                string s=c.ToString();
+                int NbOfViewer = newViewer.Viewer.CharToInt(s);
+                NbOfViewer++;
+                bld.Remove(title.Length - 1, 1);
+                bld.Append(NbOfViewer);
+                newViewer.Text = bld.ToString();
+            }
+            this.Cursor = System.Windows.Forms.Cursors.Default;
+        }
+
+        private void tsbCascade_Click(object sender, EventArgs e)
+        {
+			this.LayoutMdi(System.Windows.Forms.MdiLayout.Cascade);
+        }
+
+        private void tsbTile_Click(object sender, EventArgs e)
+        {
+			this.LayoutMdi(System.Windows.Forms.MdiLayout.TileVertical);
+        }
+
+        private void tsbDump_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog d = new SaveFileDialog();
+            d.RestoreDirectory = true;
+
+            string filter = "";
+			filter += "画像ファイル(*.bmp *.gif *.xwd)| *.bmp; *.gif; *.xwd";
+			filter += "|BMP ファイル(*.bmp)|*.bmp";
+			filter += "|GIF ファイル(*.gif)|*.gif";
+			filter += "|XWD ファイル(*.xwd)|*.xwd";
+			d.Filter = filter;
+
+            d.Title = "スクリーンショットの保存";
+
+            if (d.ShowDialog() != DialogResult.OK)
+                return;
+
+            SaveFile(d.FileName, ModelFormat.IMAGE);
+        }
+
+        private void tsbClose_Click(object sender, EventArgs e)
+        {
+		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.Close();
+        }
+
+        private void tsbDisplayMode_Click(object sender, EventArgs e)
+        {
+		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.toggleDisplayMode(); 
+        }
+
+        private void tsbDelete_Click(object sender, EventArgs e)
+        {
+		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.Viewer.EraseObjects();
+        }
+
+        private void tsbCopy_Click(object sender, EventArgs e)
+        {
+		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
+            if (curForm != null)
+            {
+                curForm.getterm().execute("a = []; selected.each { |obj| a.push(copy(obj)) }");
+            }
         }
 
 	}
