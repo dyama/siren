@@ -69,7 +69,7 @@ bool OCCViewer::mruby_init()
 	regcmd("sphere",    &sphere,    1,1, "Make a sphere.",                  "sphere(R, pos[X, Y, Z] = [0, 0, 0]) -> String");
 	regcmd("cylinder",  &cylinder,  5,0, "Make a cylinder.",                "cylinder(pos[X, Y, Z], normal[X, Y, Z], R, height, angle) -> String");
 	regcmd("cone",      &cone,      6,0, "Make a cone.",                    "cone(pos[X, Y, Z], normal[X, Y, Z], R1, R2, height, angle) -> String");
-	regcmd("torus",     &torus,     7,0, "Make a torus.",                   "torus(pos[X, Y, Z], normal[X, Y, Z]], R1, R2, angle1, angle2, angle) -> String");
+	regcmd("torus",     &torus,     7,0, "Make a torus.",                   "torus(pos[X, Y, Z], normal[X, Y, Z], R1, R2, angle) -> String");
 	regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
 	regcmd("wire",			&wire,			1,0, "Make a wire.",										"wire( Ary[edge or wire or comp obj] ) -> String");
 	regcmd("sweep",     &sweep,			2,0, "Make a sweep model.",             "sweep( profile obj, vec[X, Y, Z] ) -> String | sweep( profile obj, path obj ) -> String");

@@ -42,10 +42,10 @@ namespace siren
         /// 
         /// </summary>
         /// <param name="cmd"></param>
-        public void execute(string cmd)
+        public int execute(string cmd)
         {
             if (System.Text.RegularExpressions.Regex.IsMatch(cmd, @"^\s*$"))
-                return;
+                return -1;
 
             string errmsg;
             string result = "";
@@ -61,6 +61,8 @@ namespace siren
             rtb.Text += prompt + cmd + "\n" + result;
             this.Scroll2Last(rtb);
             tb.Focus();
+
+            return err;
         }
 
         private void tb_KeyDown(object sender, KeyEventArgs e)

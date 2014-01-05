@@ -56,21 +56,6 @@ namespace siren
             }
         }
 
-        private void miNewViewer_Click(object sender, System.EventArgs e)
-		{
-		}
-
-		private void miClose_Click(object sender, System.EventArgs e)
-		{
-			if ( this.MdiChildren.Length > 0 )
-				this.ActiveMdiChild.Close();
-		}
-
-        private void miOpen_Click(object sender, System.EventArgs e)
-        {
-            OpenFile();
-        }
-
         /// <summary>
         /// ツールバー状態の切り替え
         /// </summary>
@@ -99,7 +84,11 @@ namespace siren
 
         private bool OpenFile(string filename, ModelFormat theformat)
         {
-            if (theformat == ModelFormat.UNKNOWN) {
+            switch (theformat) {
+            case ModelFormat.IMAGE:
+            case ModelFormat.STL:
+            case ModelFormat.VRML:
+            case ModelFormat.UNKNOWN:
                 MessageBox.Show("サポートされていないファイル形式です。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -144,7 +133,9 @@ namespace siren
 
         private bool SaveFile(string filename, ModelFormat format)
         {
-            if (format == ModelFormat.UNKNOWN) {
+            switch (format) {
+            case ModelFormat.UNKNOWN:
+            case ModelFormat.CSFDB:
                 MessageBox.Show("サポートされていないファイル形式です。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -155,7 +146,7 @@ namespace siren
             if (curForm == null)
                 return false;
 
-            bool result = curForm.Export(filename, Common.getFormatByExt(filename));
+            bool result = curForm.Export(filename, format);
 
 			this.Cursor=System.Windows.Forms.Cursors.Default;
 
@@ -172,12 +163,12 @@ namespace siren
 			System.Windows.Forms.SaveFileDialog  d = new SaveFileDialog();
 			string filter="";
 			filter += "BREP ファイル(*.brep *.brp *.rle)|*.brep; *.brp; *.rle";
-			filter += "|CSFDB ファイル(*.csfdb)|*.csfdb";
+			//filter += "|CSFDB ファイル(*.csfdb)|*.csfdb";
 			filter += "|STEP ファイル(*.stp *.step)|*.step; *.stp";
 			filter += "|IGES ファイル(*.igs *.iges)| *.iges; *.igs";
 			filter += "|VRML ファイル(*.vrml)|*.vrml";
 			filter += "|STL ファイル(*.stl)|*.stl";
-			filter += "|WebGL JavaScript ファイル(*.js)|*.js";
+			//filter += "|WebGL JavaScript ファイル(*.js)|*.js";
 			filter += "|画像ファイル(*.bmp *.gif *.xwd)| *.bmp; *.gif; *.xwd";
 			d.Filter = filter;
 
@@ -260,34 +251,13 @@ namespace siren
             ViewForm curForm = (ViewForm)this.ActiveMdiChild;
             if (curForm == null)
                 return;
+            string a = deg2rad(360).ToString();
+            curForm.getterm().execute("a=torus([0,0,0], [0,0,1], 7, 3, "+a+")");
         }
 
         private double deg2rad(double deg)
         {
             return (Math.PI / 180.0 * deg);
-        }
-
-        private void tsbColor_ButtonClick(object sender, EventArgs e)
-        {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
-                return;
-
-            int r, g, b;
-            r = curForm.Viewer.GetObjColR();
-            g = curForm.Viewer.GetObjColG();
-            b = curForm.Viewer.GetObjColB();
-
-            System.Windows.Forms.ColorDialog ColDlg = new ColorDialog();
-            ColDlg.Color = System.Drawing.Color.FromArgb(r, g, b);
-            if (ColDlg.ShowDialog() == DialogResult.OK) {
-                System.Drawing.Color c = ColDlg.Color;
-                r = c.R;
-                g = c.G;
-                b = c.B;
-                curForm.Viewer.SetColor(r, g, b);
-            }
-            curForm.Viewer.UpdateCurrentViewer();
         }
 
         private void tsbExit_Click(object sender, EventArgs e)
@@ -390,12 +360,83 @@ namespace siren
         private void tsbCopy_Click(object sender, EventArgs e)
         {
 		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
-            if (curForm != null)
-            {
+            if (curForm != null) {
                 curForm.getterm().execute("a = []; selected.each { |obj| a.push(copy(obj)) }");
             }
         }
 
-	}
+        private void tsbColor_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+
+            int r, g, b;
+            r = curForm.Viewer.GetObjColR();
+            g = curForm.Viewer.GetObjColG();
+            b = curForm.Viewer.GetObjColB();
+
+            System.Windows.Forms.ColorDialog ColDlg = new ColorDialog();
+            ColDlg.Color = System.Drawing.Color.FromArgb(r, g, b);
+            if (ColDlg.ShowDialog() == DialogResult.OK) {
+                System.Drawing.Color c = ColDlg.Color;
+                r = c.R;
+                g = c.G;
+                b = c.B;
+                curForm.Viewer.SetColor(r, g, b);
+            }
+            curForm.Viewer.UpdateCurrentViewer();
+        }
+
+        private void tsbHlr_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+            curForm.myDegenerateModeIsOn = !curForm.myDegenerateModeIsOn;
+            curForm.Viewer.UpdateCurrentViewer();
+        }
+
+        #region Materialize
+        private void tsbMaterial_ButtonClick(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.DEFAULT); } 
+        private void miGold_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.GOLD); } 
+        private void miSilver_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.SILVER); } 
+        private void miCopper_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.COPPER); } 
+        private void miBronze_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.BRONZE); } 
+        private void miPewter_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.PEWTER); } 
+        private void miBrass_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.BRASS); } 
+        private void miSteel_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.STEEL); } 
+        private void miAluminium_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.ALUMINIUM); } 
+        private void miMetalized_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.METALIZED); } 
+        private void miStone_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.STONE); } 
+        private void miPlaster_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.PLASTER); } 
+        private void miObsidian_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.OBSIDIAN); } 
+        private void miJade_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.JADE); } 
+        private void miPlastic_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.PLASTIC); } 
+        private void miPlastic2_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.SHINY_PLASTIC); }
+        private void miSatin_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.SATIN); } 
+        private void miGNC_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.NEON_GNC); } 
+        private void miPHC_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.NEON_PHC); }
+        #endregion
+
+        #region ViewDirection
+        private void tsbAxoView_ButtonClick(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.AxoView(); } 
+        private void miFront_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.FrontView(); } 
+        private void miBack_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.BackView(); } 
+        private void miLeft_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.LeftView(); } 
+        private void miRight_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.RightView(); } 
+        private void miTop_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.TopView(); } 
+        private void miBottom_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.BottomView(); }
+        #endregion
+
+        private void tsbResetView_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+            curForm.Viewer.Reset();
+            curForm.Viewer.ZoomAllView();
+        }
+    }
 
 }

@@ -22,7 +22,7 @@ namespace siren
     {
         protected CurAct3d myCurMode;
 		protected float myCurZoom;// ~ Quantity_Factor
-		protected bool myDegenerateModeIsOn;
+		public bool myDegenerateModeIsOn;
 		protected int myXmin;
 		protected int myYmin;
 		protected int myXmax;
@@ -60,9 +60,6 @@ namespace siren
                 scale = scale - factor;
 
             myViewer.SetScale(scale);
-#if DEBUG
-            Console.WriteLine(scale + ", " + factor);
-#endif
         }  
 
         void onMouseDoubleClick(object sender, MouseEventArgs e)

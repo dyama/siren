@@ -207,6 +207,7 @@
 // local
 #include "colorname.h"
 #include "orientation.h"
+#include "material.h"
 #include "help.h"
 #include "mirb.h"
 #include "common.h"
