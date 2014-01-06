@@ -9,9 +9,12 @@ using System.Windows.Forms;
 
 namespace siren
 {
+    public delegate void change_state_func();
+
     public partial class term : UserControl
     {
         protected sirenenv.Viewer myViewer;
+        protected change_state_func _func;
 
         public term(sirenenv.Viewer Viewer)
         {
@@ -66,7 +69,19 @@ namespace siren
             this.Scroll2Last(rtb);
             tb.Focus();
 
+            if (_func != null)
+                _func();
+
             return err;
+        }
+
+        /// <summary>
+        /// 状態変更用コールバック関数を定義
+        /// </summary>
+        /// <param name="func"></param>
+        public void setChangeStateFunc(change_state_func func)
+        {
+            this._func = func;
         }
 
         private void tb_KeyDown(object sender, KeyEventArgs e)

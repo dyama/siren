@@ -193,6 +193,8 @@ namespace siren
 			newForm.Show();
 			newForm.InitViewer();
 			newForm.InitV3D();
+            setToolBarButtonState();
+            newForm.getterm().setChangeStateFunc(setToolBarButtonState);
 			this.Cursor=System.Windows.Forms.Cursors.Default;
 		}
 
@@ -286,6 +288,10 @@ namespace siren
 			this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             
             siren.ViewForm curForm = (siren.ViewForm)this.ActiveMdiChild;
+            if (curForm == null) {
+                return;
+            }
+
             siren.ViewForm newViewer = new ViewForm();
             newViewer.MdiParent = this;
             newViewer.Show();
@@ -303,6 +309,8 @@ namespace siren
                 bld.Append(NbOfViewer);
                 newViewer.Text = bld.ToString();
             }
+            setToolBarButtonState();
+            newViewer.getterm().setChangeStateFunc(setToolBarButtonState);
             this.Cursor = System.Windows.Forms.Cursors.Default;
         }
 
@@ -334,27 +342,34 @@ namespace siren
                 return;
 
             SaveFile(d.FileName, ModelFormat.IMAGE);
+            setToolBarButtonState();
         }
 
         private void tsbClose_Click(object sender, EventArgs e)
         {
 		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
-            if (curForm != null)
+            if (curForm != null) {
                 curForm.Close();
+                setToolBarButtonState();
+            }
         }
 
         private void tsbDisplayMode_Click(object sender, EventArgs e)
         {
 		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
-            if (curForm != null)
-                curForm.toggleDisplayMode(); 
+            if (curForm != null) {
+                curForm.toggleDisplayMode();
+                setToolBarButtonState();
+            }
         }
 
         private void tsbDelete_Click(object sender, EventArgs e)
         {
 		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
-            if (curForm != null)
+            if (curForm != null) {
                 curForm.Viewer.EraseObjects();
+                setToolBarButtonState();
+            }
         }
 
         private void tsbCopy_Click(object sender, EventArgs e)
@@ -362,6 +377,7 @@ namespace siren
 		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
             if (curForm != null) {
                 curForm.getterm().execute("a = []; selected.each { |obj| a.push(copy(obj)) }");
+                setToolBarButtonState();
             }
         }
 
@@ -436,6 +452,89 @@ namespace siren
                 return;
             curForm.Viewer.Reset();
             curForm.Viewer.ZoomAllView();
+        }
+
+        /// <summary>
+        /// ツールバーのボタンの状態を適切な状態に変更する
+        /// </summary>
+        public void setToolBarButtonState()
+        {
+            toolStripMain.SuspendLayout();
+            toolStripMain.Enabled = false;
+
+            // 一旦全て無効にする
+            foreach (ToolStripItem item in toolStripMain.Items) {
+                item.Enabled = false;
+            }
+
+            // 常に有効
+            tsbNew.Enabled = true;
+            tsbOpen.Enabled = true;
+            tsbExit.Enabled = true;
+
+            // ビューアーが存在する場合のみ有効
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null) {
+                // ----
+                tsbNewView.Enabled = true;
+                tsbClose.Enabled = true;
+                tsbCascade.Enabled = true;
+                tsbTile.Enabled = true;
+                tsbDump.Enabled = true;
+                // ----
+                tsbBox.Enabled = true;
+                tsbSphere.Enabled = true;
+                tsbCylinder.Enabled = true;
+                tsbCone.Enabled = true;
+                tsbTorus.Enabled = true;
+                // ----
+                tsbFit.Enabled = true;
+                tsbAxoView.Enabled = true;
+                miFront.Enabled = true;
+                miBack.Enabled = true;
+                miLeft.Enabled = true;
+                miRight.Enabled = true;
+                miTop.Enabled = true;
+                miBottom.Enabled = true;
+                tsbResetView.Enabled = true;
+                // ----
+                tsbHlr.Enabled = true;
+                
+                // ビューアーが存在して、かつ
+                // オブジェクトが選択されている場合のみ有効
+                if (curForm.Viewer.IsObjectSelected()) {
+                    tsbSave.Enabled = true;
+                    tsbCopy.Enabled = true;
+                    tsbDelete.Enabled = true;
+                    // ----
+                    tsbDisplayMode.Enabled = true;
+                    tsbTransparency.Enabled = true;
+                    tsbColor.Enabled = true;
+                    // ----
+                    tsbMaterial.Enabled = true;
+                    miBrass.Enabled = true;
+                    miBronze.Enabled = true;
+                    miCopper.Enabled = true;
+                    miGold.Enabled = true;
+                    miPewter.Enabled = true;
+                    miPlaster.Enabled = true;
+                    miPlastic.Enabled = true;
+                    miSilver.Enabled = true;
+                    miSteel.Enabled = true;
+                    miStone.Enabled = true;
+                    miPlastic2.Enabled = true;
+                    miSatin.Enabled = true;
+                    miMetalized.Enabled = true;
+                    miGNC.Enabled = true;
+                    miChrome.Enabled = true;
+                    miAluminium.Enabled = true;
+                    miObsidian.Enabled = true;
+                    miPHC.Enabled = true;
+                    miJade.Enabled = true;
+                }
+            }
+            toolStripMain.Enabled = true;
+            toolStripMain.ResumeLayout(true);
         }
     }
 

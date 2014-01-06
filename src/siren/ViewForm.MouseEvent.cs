@@ -119,30 +119,27 @@ namespace siren
 			case MouseButtons.Left:
 				myXmin=e.X;	myYmin=e.Y;
 				myXmax=e.X;	myYmax=e.Y;
-                if (myCurSpKey == CurSpKey.CTRL)
-                {
+                if (myCurSpKey == CurSpKey.CTRL) {
                     // start the dinamic zooming....
                     this.Cursor = System.Windows.Forms.Cursors.SizeWE;
                     myCurMode = CurAct3d.ZOOM;
                 }
-                else
-                {
-                    switch (myCurMode)
-                    {
-                        case CurAct3d.NOTHING:
-                            DragEvent(myXmax, myYmax, MouseState.DOWN);
-                            break;
-                        case CurAct3d.ROTATE:
-                            if (!myDegenerateModeIsOn)
-                                myViewer.SetDegenerateModeOn();
-                            //start the rotation
-                            myViewer.StartRotation(e.X, e.Y);
-                            break;
-                        case siren.CurAct3d.WINZOOM:
-                            this.Cursor = System.Windows.Forms.Cursors.Hand;
-                            break;
-                        default:
-                            break;
+                else {
+                    switch (myCurMode) {
+                    case CurAct3d.NOTHING:
+                        DragEvent(myXmax, myYmax, MouseState.DOWN);
+                        break;
+                    case CurAct3d.ROTATE:
+                        if (!myDegenerateModeIsOn)
+                            myViewer.SetDegenerateModeOn();
+                        //start the rotation
+                        myViewer.StartRotation(e.X, e.Y);
+                        break;
+                    case siren.CurAct3d.WINZOOM:
+                        this.Cursor = System.Windows.Forms.Cursors.Hand;
+                        break;
+                    default:
+                        break;
                     }
                 }
 #if DEBUG
@@ -162,10 +159,10 @@ namespace siren
             case MouseButtons.Middle:
                 this.Cursor = System.Windows.Forms.Cursors.NoMove2D;
                 break;
+
 			default:
 				break;
 			}
-
 		}
 
 		private void onMouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -211,7 +208,7 @@ namespace siren
 				myXmax=e.X; myYmax=e.Y;
 			}
 			else if	(e.Button==MouseButtons.Right) {
-					myViewer.Rotation(e.X, e.Y);
+				myViewer.Rotation(e.X, e.Y);
 			}
 			else {
 				myXmax=e.X; myYmax=e.Y;
@@ -225,13 +222,11 @@ namespace siren
 			switch(e.Button)
 			{
 			case MouseButtons.Left:
-                if (myCurSpKey == CurSpKey.CTRL)
-                {
+                if (myCurSpKey == CurSpKey.CTRL) {
                     this.Cursor = System.Windows.Forms.Cursors.Default;
                     return;
                 }
-				switch(myCurMode)
-				{
+				switch(myCurMode) {
 				case CurAct3d.NOTHING:
 					if(e.X == myXmin && e.Y == myYmin) {
 						myXmax = e.X;
@@ -307,7 +302,9 @@ namespace siren
 			}
 			
 			this.Cursor = System.Windows.Forms.Cursors.Default;
+
 			siren.MainForm parent = (siren.MainForm)this.ParentForm;
+            parent.setToolBarButtonState();
 
             return;
 		}

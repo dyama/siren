@@ -207,11 +207,6 @@ namespace siren
 			this.myViewer.SetAISContext(Viewer);
 		}
 
-		private void onClosed(object sender, System.EventArgs e)
-		{
-			siren.MainForm parent = (siren.MainForm) this.ParentForm;
-		}
-
 		public CurAct3d CurMode
 		{
 			get { return this.myCurMode; }
@@ -322,6 +317,11 @@ namespace siren
 
         #endregion
 
+        private void onClosed(object sender, EventArgs e)
+        {
+			siren.MainForm parent = (siren.MainForm) this.ParentForm;
+            parent.setToolBarButtonState();
+        }
 
     }
 

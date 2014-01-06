@@ -33,19 +33,19 @@ namespace siren
             this.Name = "ViewForm";
             this.Text = "ビューア";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.ViewForm_Paint);
-            this.Closed += new System.EventHandler(this.onClosed);
-            this.ResumeLayout(false);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.ViewForm_Paint);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.onMouseMove);
-            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.onMouseDoubleClick);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.onMouseDown);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.onMouseUp);
-            this.SizeChanged += new System.EventHandler(this.ViewForm_SizeChanged);
-            this.MouseEnter += new System.EventHandler(this.onMouseEnter);
             this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.onMouseWheel);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.onMouseUp);
+            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.onMouseDoubleClick);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.ViewForm_Paint);
+            this.SizeChanged += new System.EventHandler(this.ViewForm_SizeChanged);
+            this.Closed += new System.EventHandler(this.onClosed);
+            this.MouseEnter += new System.EventHandler(this.onMouseEnter);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.onMouseDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.onKeyUp);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.onMouseMove);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.onKeyDown);
+            this.ResumeLayout(false);
+
 		}
 
 		#endregion

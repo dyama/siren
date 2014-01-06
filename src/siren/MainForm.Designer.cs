@@ -109,6 +109,7 @@ namespace siren
             this.tsbResetView = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbHlr = new System.Windows.Forms.ToolStripButton();
+            this.miChrome = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripPanel2.SuspendLayout();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -171,7 +172,7 @@ namespace siren
             this.tsbHlr});
             this.toolStripMain.Location = new System.Drawing.Point(3, 0);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(734, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(736, 25);
             this.toolStripMain.TabIndex = 14;
             // 
             // tsbNew
@@ -449,6 +450,7 @@ namespace siren
             this.miSteel,
             this.miAluminium,
             this.miMetalized,
+            this.miChrome,
             this.toolStripSeparator6,
             this.miStone,
             this.miPlaster,
@@ -471,146 +473,146 @@ namespace siren
             // miGold
             // 
             this.miGold.Name = "miGold";
-            this.miGold.Size = new System.Drawing.Size(148, 22);
+            this.miGold.Size = new System.Drawing.Size(172, 22);
             this.miGold.Text = "金";
             this.miGold.Click += new System.EventHandler(this.miGold_Click);
             // 
             // miSilver
             // 
             this.miSilver.Name = "miSilver";
-            this.miSilver.Size = new System.Drawing.Size(148, 22);
+            this.miSilver.Size = new System.Drawing.Size(172, 22);
             this.miSilver.Text = "銀";
             this.miSilver.Click += new System.EventHandler(this.miSilver_Click);
             // 
             // miCopper
             // 
             this.miCopper.Name = "miCopper";
-            this.miCopper.Size = new System.Drawing.Size(148, 22);
+            this.miCopper.Size = new System.Drawing.Size(172, 22);
             this.miCopper.Text = "銅";
             this.miCopper.Click += new System.EventHandler(this.miCopper_Click);
             // 
             // miBronze
             // 
             this.miBronze.Name = "miBronze";
-            this.miBronze.Size = new System.Drawing.Size(148, 22);
+            this.miBronze.Size = new System.Drawing.Size(172, 22);
             this.miBronze.Text = "青銅";
             this.miBronze.Click += new System.EventHandler(this.miBronze_Click);
             // 
             // miPewter
             // 
             this.miPewter.Name = "miPewter";
-            this.miPewter.Size = new System.Drawing.Size(148, 22);
+            this.miPewter.Size = new System.Drawing.Size(172, 22);
             this.miPewter.Text = "スズ";
             this.miPewter.Click += new System.EventHandler(this.miPewter_Click);
             // 
             // miBrass
             // 
             this.miBrass.Name = "miBrass";
-            this.miBrass.Size = new System.Drawing.Size(148, 22);
+            this.miBrass.Size = new System.Drawing.Size(172, 22);
             this.miBrass.Text = "真ちゅう";
             this.miBrass.Click += new System.EventHandler(this.miBrass_Click);
             // 
             // miSteel
             // 
             this.miSteel.Name = "miSteel";
-            this.miSteel.Size = new System.Drawing.Size(148, 22);
+            this.miSteel.Size = new System.Drawing.Size(172, 22);
             this.miSteel.Text = "スチール";
             this.miSteel.Click += new System.EventHandler(this.miSteel_Click);
             // 
             // miAluminium
             // 
             this.miAluminium.Name = "miAluminium";
-            this.miAluminium.Size = new System.Drawing.Size(148, 22);
+            this.miAluminium.Size = new System.Drawing.Size(172, 22);
             this.miAluminium.Text = "アルミ";
             this.miAluminium.Click += new System.EventHandler(this.miAluminium_Click);
             // 
             // miMetalized
             // 
             this.miMetalized.Name = "miMetalized";
-            this.miMetalized.Size = new System.Drawing.Size(148, 22);
-            this.miMetalized.Text = "メタリック";
+            this.miMetalized.Size = new System.Drawing.Size(172, 22);
+            this.miMetalized.Text = "メタライズ";
             this.miMetalized.Click += new System.EventHandler(this.miMetalized_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(145, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(169, 6);
             // 
             // miStone
             // 
             this.miStone.Name = "miStone";
-            this.miStone.Size = new System.Drawing.Size(148, 22);
+            this.miStone.Size = new System.Drawing.Size(172, 22);
             this.miStone.Text = "石";
             this.miStone.Click += new System.EventHandler(this.miStone_Click);
             // 
             // miPlaster
             // 
             this.miPlaster.Name = "miPlaster";
-            this.miPlaster.Size = new System.Drawing.Size(148, 22);
+            this.miPlaster.Size = new System.Drawing.Size(172, 22);
             this.miPlaster.Text = "石こう";
             this.miPlaster.Click += new System.EventHandler(this.miPlaster_Click);
             // 
             // miObsidian
             // 
             this.miObsidian.Name = "miObsidian";
-            this.miObsidian.Size = new System.Drawing.Size(148, 22);
+            this.miObsidian.Size = new System.Drawing.Size(172, 22);
             this.miObsidian.Text = "黒曜石";
             this.miObsidian.Click += new System.EventHandler(this.miObsidian_Click);
             // 
             // miJade
             // 
             this.miJade.Name = "miJade";
-            this.miJade.Size = new System.Drawing.Size(148, 22);
+            this.miJade.Size = new System.Drawing.Size(172, 22);
             this.miJade.Text = "ヒスイ";
             this.miJade.Click += new System.EventHandler(this.miJade_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(145, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(169, 6);
             // 
             // miPlastic
             // 
             this.miPlastic.Name = "miPlastic";
-            this.miPlastic.Size = new System.Drawing.Size(148, 22);
+            this.miPlastic.Size = new System.Drawing.Size(172, 22);
             this.miPlastic.Text = "プラスチック";
             this.miPlastic.Click += new System.EventHandler(this.miPlastic_Click);
             // 
             // miPlastic2
             // 
             this.miPlastic2.Name = "miPlastic2";
-            this.miPlastic2.Size = new System.Drawing.Size(148, 22);
+            this.miPlastic2.Size = new System.Drawing.Size(172, 22);
             this.miPlastic2.Text = "光沢プラスチック";
             this.miPlastic2.Click += new System.EventHandler(this.miPlastic2_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(145, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(169, 6);
             // 
             // miSatin
             // 
             this.miSatin.Name = "miSatin";
-            this.miSatin.Size = new System.Drawing.Size(148, 22);
+            this.miSatin.Size = new System.Drawing.Size(172, 22);
             this.miSatin.Text = "サテン";
             this.miSatin.Click += new System.EventHandler(this.miSatin_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(145, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(169, 6);
             // 
             // miGNC
             // 
             this.miGNC.Name = "miGNC";
-            this.miGNC.Size = new System.Drawing.Size(148, 22);
+            this.miGNC.Size = new System.Drawing.Size(172, 22);
             this.miGNC.Text = "ネオンGNC";
             this.miGNC.Click += new System.EventHandler(this.miGNC_Click);
             // 
             // miPHC
             // 
             this.miPHC.Name = "miPHC";
-            this.miPHC.Size = new System.Drawing.Size(148, 22);
+            this.miPHC.Size = new System.Drawing.Size(172, 22);
             this.miPHC.Text = "ネオンPHC";
             this.miPHC.Click += new System.EventHandler(this.miPHC_Click);
             // 
@@ -651,7 +653,7 @@ namespace siren
             // 
             this.miFront.Image = ((System.Drawing.Image)(resources.GetObject("miFront.Image")));
             this.miFront.Name = "miFront";
-            this.miFront.Size = new System.Drawing.Size(110, 22);
+            this.miFront.Size = new System.Drawing.Size(112, 22);
             this.miFront.Text = "正面";
             this.miFront.Click += new System.EventHandler(this.miFront_Click);
             // 
@@ -659,7 +661,7 @@ namespace siren
             // 
             this.miBack.Image = ((System.Drawing.Image)(resources.GetObject("miBack.Image")));
             this.miBack.Name = "miBack";
-            this.miBack.Size = new System.Drawing.Size(110, 22);
+            this.miBack.Size = new System.Drawing.Size(112, 22);
             this.miBack.Text = "背面";
             this.miBack.Click += new System.EventHandler(this.miBack_Click);
             // 
@@ -667,7 +669,7 @@ namespace siren
             // 
             this.miLeft.Image = ((System.Drawing.Image)(resources.GetObject("miLeft.Image")));
             this.miLeft.Name = "miLeft";
-            this.miLeft.Size = new System.Drawing.Size(110, 22);
+            this.miLeft.Size = new System.Drawing.Size(112, 22);
             this.miLeft.Text = "左側面";
             this.miLeft.Click += new System.EventHandler(this.miLeft_Click);
             // 
@@ -675,7 +677,7 @@ namespace siren
             // 
             this.miRight.Image = ((System.Drawing.Image)(resources.GetObject("miRight.Image")));
             this.miRight.Name = "miRight";
-            this.miRight.Size = new System.Drawing.Size(110, 22);
+            this.miRight.Size = new System.Drawing.Size(112, 22);
             this.miRight.Text = "右側面";
             this.miRight.Click += new System.EventHandler(this.miRight_Click);
             // 
@@ -683,7 +685,7 @@ namespace siren
             // 
             this.miTop.Image = ((System.Drawing.Image)(resources.GetObject("miTop.Image")));
             this.miTop.Name = "miTop";
-            this.miTop.Size = new System.Drawing.Size(110, 22);
+            this.miTop.Size = new System.Drawing.Size(112, 22);
             this.miTop.Text = "上面";
             this.miTop.Click += new System.EventHandler(this.miTop_Click);
             // 
@@ -691,7 +693,7 @@ namespace siren
             // 
             this.miBottom.Image = ((System.Drawing.Image)(resources.GetObject("miBottom.Image")));
             this.miBottom.Name = "miBottom";
-            this.miBottom.Size = new System.Drawing.Size(110, 22);
+            this.miBottom.Size = new System.Drawing.Size(112, 22);
             this.miBottom.Text = "下面";
             this.miBottom.Click += new System.EventHandler(this.miBottom_Click);
             // 
@@ -725,6 +727,12 @@ namespace siren
             this.tsbHlr.Text = "陰面消去";
             this.tsbHlr.ToolTipText = "隠面消去";
             this.tsbHlr.Click += new System.EventHandler(this.tsbHlr_Click);
+            // 
+            // miChrome
+            // 
+            this.miChrome.Name = "miChrome";
+            this.miChrome.Size = new System.Drawing.Size(172, 22);
+            this.miChrome.Text = "クロム";
             // 
             // MainForm
             // 
@@ -815,6 +823,7 @@ namespace siren
         private ToolStripMenuItem miGNC;
         private ToolStripMenuItem miPHC;
         private ToolStripSeparator toolStripSeparator7;
+        private ToolStripMenuItem miChrome;
 
     }
 }
