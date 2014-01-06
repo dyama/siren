@@ -31,7 +31,7 @@ bool OCCViewer::mruby_init()
 	// Edit object commands
 	regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(ObjID) -> ObjID");
 	regcmd("erase",     &erase,     1,0, "Erase specified object.",         "erase(ObjID) -> nil");
-	regcmd("close",			&close,			1,0, "Close a wire.",										"close( ObjID ) -> ObjID");
+	regcmd("close",		&close,		1,0, "Close a wire.",                   "close( ObjID ) -> ObjID");
 
 	// Group commands
 	regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound([ObjID, ObjID, ...]) -> ObjID");
@@ -71,8 +71,8 @@ bool OCCViewer::mruby_init()
 	regcmd("cone",      &cone,      6,0, "Make a cone.",                    "cone(pos[X, Y, Z], normal[X, Y, Z], R1, R2, height, angle) -> String");
 	regcmd("torus",     &torus,     7,0, "Make a torus.",                   "torus(pos[X, Y, Z], normal[X, Y, Z]], R1, R2, angle1, angle2, angle) -> String");
 	regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
-	regcmd("wire",			&wire,			1,0, "Make a wire.",										"wire( Ary[edge or wire or comp obj] ) -> String");
-	regcmd("sweep",     &sweep,			2,0, "Make a sweep model.",             "sweep( profile obj, vec[X, Y, Z] ) -> String | sweep( profile obj, path obj ) -> String");
+	regcmd("wire",		&wire,		1,0, "Make a wire.",					"wire( Ary[edge or wire or comp obj] ) -> String");
+	regcmd("sweep",     &sweep,		2,0, "Make a sweep model.",             "sweep( profile obj, vec[X, Y, Z] ) -> String | sweep( profile obj, path obj ) -> String");
 
 	// Convertion commands
 	regcmd("wire2pts",  &wire2pts,  1,1, "Convert wire to points.",         "wire2pts(ObjID) -> Ary[[X, Y, Z], ...]");

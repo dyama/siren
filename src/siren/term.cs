@@ -51,6 +51,10 @@ namespace siren
             string result = "";
             string prompt = "$ ";
 
+            // Selected object(s)
+            cmd = cmd.Replace("??", "selected");
+            cmd = cmd.Replace("?", "selected[0]");
+
             int err = myViewer.mruby_exec(cmd, out errmsg);
 
             if (!myViewer.mruby_isCodeBlockOpen())
