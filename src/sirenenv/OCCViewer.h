@@ -70,7 +70,7 @@ public:
 	bool  ImportIges (wchar_t* filename);
 	bool  ImportStep (wchar_t* filename);
 	bool  ExportIges (wchar_t* filename);
-	bool  ExpotStep  (wchar_t* filename);
+	bool  ExportStep  (wchar_t* filename);
 	bool  ExportStl  (wchar_t* filename);
 	bool  ExportVrml (wchar_t* filename);
 	bool  Dump       (wchar_t* filename);

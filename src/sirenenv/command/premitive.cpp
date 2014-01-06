@@ -230,15 +230,15 @@ mrb_value cone(mrb_state* mrb, mrb_value self)
  */
 mrb_value torus(mrb_state* mrb, mrb_value self)
 {
-	mrb_float r1, r2, a1, a2, ang;
+	mrb_float r1, r2, ang;
 	mrb_value pos, norm;
-	int argc = mrb_get_args(mrb, "AAfffff", &pos, &norm, &r1, &r2, &a1, &a2, &ang);
+	int argc = mrb_get_args(mrb, "AAfff", &pos, &norm, &r1, &r2, &ang);
 
 	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
 
 	TopoDS_Shape shape;
 	try {
-		BRepPrimAPI_MakeTorus prm(ax, (Standard_Real)r1, (Standard_Real)r2, (Standard_Real)a1, (Standard_Real)a2, (Standard_Real)ang);
+		BRepPrimAPI_MakeTorus prm(ax, (Standard_Real)r1, (Standard_Real)r2, (Standard_Real)ang);
 	    shape = prm.Shape();
 	}
 	catch (...) {

@@ -138,33 +138,13 @@ namespace siren
             return;
         }
 
-        private void AxoView()
-        {
-            myViewer.setProjection(TypeOfOrientation.XposYnegZpos);
-        }
-        private void FrontView()
-        {
-            myViewer.setProjection(TypeOfOrientation.Xpos);
-        }
-        private void BackView()
-        {
-            myViewer.setProjection(TypeOfOrientation.Xneg);
-        }
-        private void LeftView()
-        {
-            myViewer.setProjection(TypeOfOrientation.Ypos);
-        }
-        private void RightView()
-        {
-            myViewer.setProjection(TypeOfOrientation.Yneg);
-        }
-        private void TopView()
-        {
-            myViewer.setProjection(TypeOfOrientation.Zpos);
-        }
-        private void BottomView()
-        {
-            myViewer.setProjection(TypeOfOrientation.Zneg);
-        }
+        public void AxoView() { myViewer.setProjection(TypeOfOrientation.XposYnegZpos); }
+        public void FrontView() { myViewer.setProjection(TypeOfOrientation.Xpos); }
+        public void BackView() { myViewer.setProjection(TypeOfOrientation.Xneg); }
+        public void LeftView() { myViewer.setProjection(TypeOfOrientation.Ypos); }
+        public void RightView() { myViewer.setProjection(TypeOfOrientation.Yneg); }
+        public void TopView() { myViewer.setProjection(TypeOfOrientation.Zpos); }
+        public void BottomView() { myViewer.setProjection(TypeOfOrientation.Zneg); }
+
     }
 }

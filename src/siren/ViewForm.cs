@@ -82,7 +82,7 @@ namespace siren
             set
             {
                 myViewer.SetDisplayMode((int)value);
-                _currentDisplayMode = value;            
+                _currentDisplayMode = value;
             }
             get { return _currentDisplayMode; }
         }
@@ -134,18 +134,27 @@ namespace siren
             switch (format) {
             case ModelFormat.BREP:
                 {
-                    string errmsg;
                     filename = filename.Replace(@"\", @"\\"); // escape
-                    int err = myViewer.mruby_exec("a=bload(\"" + filename + "\")", out errmsg);
+                    int err = getterm().execute("a = bload(\"" + filename + "\")");
                     if (err == 0) {
-                        myViewer.mruby_exec("fit", out errmsg);
+                        getterm().execute("fit");
+                        return true;
+                    }
+                    else
+                        return false;
+                }
+            case ModelFormat.IGES:
+                {
+                    filename = filename.Replace(@"\", @"\\"); // escape
+                    int err = getterm().execute("a = iload(\"" + filename + "\")");
+                    if (err == 0) {
+                        getterm().execute("fit");
                         return true;
                     }
                     else
                         return false;
                 }
             case ModelFormat.CSFDB:
-            case ModelFormat.IGES:
             case ModelFormat.STEP:
                 bool result = myViewer.TranslateModel(filename, (int)format, true) ;
                 if (result)
@@ -166,18 +175,11 @@ namespace siren
 		{
             switch (format) {
             case ModelFormat.BREP:
-                //{
-                //    string errmsg;
-                //    filename = filename.Replace(@"\", @"\\"); // escape
-                //    int err = myViewer.mruby_exec("a=bsave(\"" + filename + "\")", out errmsg);
-                //    if (err == 0) {
-                //        myViewer.mruby_exec("fit", out errmsg);
-                //        return true;
-                //    }
-                //    else
-                //        return false;
-                //}
-            case ModelFormat.CSFDB:
+                {
+                    filename = filename.Replace(@"\", @"\\"); // escape
+                    return (getterm().execute("bsave(\"" + filename + "\", selected[0])") == 0);
+                }
+            //case ModelFormat.CSFDB:
             case ModelFormat.IGES:
             case ModelFormat.STEP:
             case ModelFormat.STL:
@@ -208,7 +210,6 @@ namespace siren
 		private void onClosed(object sender, System.EventArgs e)
 		{
 			siren.MainForm parent = (siren.MainForm) this.ParentForm;
-			parent.OnFileClose();
 		}
 
 		public CurAct3d CurMode

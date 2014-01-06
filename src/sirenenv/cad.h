@@ -289,7 +289,7 @@ public:
 			switch(format)
 			{
 				case 2:
-					res=myOCCViewer->ExpotStep(fname);
+					res=myOCCViewer->ExportStep(fname);
 					break;
 				case 3:
 					res=myOCCViewer->ExportIges(fname);

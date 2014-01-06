@@ -607,7 +607,7 @@ bool OCCViewer::ExportIges(wchar_t* filename)
 	return (bool)writer.Write((Standard_CString)fname);
 }
 
-bool OCCViewer::ExpotStep(wchar_t* filename)
+bool OCCViewer::ExportStep(wchar_t* filename)
 {
     char fname[_MAX_PATH];
 	{
