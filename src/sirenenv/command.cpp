@@ -27,6 +27,7 @@ bool OCCViewer::mruby_init()
 	regcmd("selected",  &selected,  0,0, "Get name of selected objects.",   "selected() -> Ary[ObjID, ...]");
 	regcmd("type",      &type,      1,0, "Get type of object.",             "type(ObjID) -> Type");
 	regcmd("exist",     &exist,     1,0, "Check exist.",                    "exist(ObjID) -> Boolean");
+	regcmd("location",  &location,  1,0, "Get location of shape in WCS.",   "location(ObjID) -> Ary[X,Y,Z]");
 
 	// Edit object commands
 	regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(ObjID) -> ObjID");

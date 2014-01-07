@@ -18,6 +18,7 @@ mrb_value version   (mrb_state*, mrb_value);
 
 // Information/Status
 mrb_value exist     (mrb_state*, mrb_value);
+mrb_value location  (mrb_state*, mrb_value);
 mrb_value type      (mrb_state*, mrb_value);
 mrb_value bndbox    (mrb_state*, mrb_value);
 mrb_value selected  (mrb_state*, mrb_value);

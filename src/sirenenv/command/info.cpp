@@ -22,6 +22,26 @@ mrb_value exist(mrb_state* mrb, mrb_value self)
 }
 
 /**
+ * \brief Get location of shape in WCS
+ */
+mrb_value location(mrb_state* mrb, mrb_value self)
+{
+	mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
+
+	Handle(AIS_Shape) hashape = ::get(target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    TopoDS_Shape shape = hashape->Shape();
+    gp_XYZ pos = shape.Location().Transformation().TranslationPart();
+
+    return pnt2ar(mrb, gp_Pnt(pos.X(), pos.Y(), pos.Z()));
+}
+
+/**
  * \brief Get type of object
  */
 mrb_value type(mrb_state* mrb, mrb_value self)
