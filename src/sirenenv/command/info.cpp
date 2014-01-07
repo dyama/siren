@@ -27,7 +27,8 @@ mrb_value exist(mrb_state* mrb, mrb_value self)
 mrb_value location(mrb_state* mrb, mrb_value self)
 {
 	mrb_int target;
-	int argc = mrb_get_args(mrb, "i", &target);
+    mrb_value location;
+	int argc = mrb_get_args(mrb, "i|A", &target, &location);
 
 	Handle(AIS_Shape) hashape = ::get(target);
 	if (hashape.IsNull()) {
@@ -36,9 +37,21 @@ mrb_value location(mrb_state* mrb, mrb_value self)
 	}
 
     TopoDS_Shape shape = hashape->Shape();
-    gp_XYZ pos = shape.Location().Transformation().TranslationPart();
 
-    return pnt2ar(mrb, gp_Pnt(pos.X(), pos.Y(), pos.Z()));
+    if (argc == 2) {
+        gp_Pnt p = *ar2pnt(mrb, location);
+        gp_Trsf tr;
+        tr.SetTranslation(gp_Vec(p.X(), p.Y(), p.Z()));
+        shape.Location(TopLoc_Location(tr) * shape.Location());
+        hashape->Set(shape);
+        //hashape->Redisplay();
+        redisplay(hashape);
+        return mrb_nil_value();
+    }
+    else {
+        gp_XYZ pos = shape.Location().Transformation().TranslationPart();
+        return pnt2ar(mrb, gp_Pnt(pos.X(), pos.Y(), pos.Z()));
+    }
 }
 
 /**
