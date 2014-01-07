@@ -176,7 +176,7 @@ namespace siren
             if (!Viewer.IsObjectSelected())
                 return;
             if (myCurSpKey == CurSpKey.CTRL)
-                getterm().execute("a = copy ?");
+                getterm().execute("a = []; selected.each { |obj| a.push(copy obj) }");
             else
                 getterm().execute("selected.each { |obj| translate obj, [0, -10, 0] }");
         }
