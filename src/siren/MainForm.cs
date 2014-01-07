@@ -109,7 +109,6 @@ namespace siren
             return true;
         }
 
-
 		private bool OpenFile()
 		{
 			OpenFileDialog d = new OpenFileDialog();
@@ -221,7 +220,7 @@ namespace siren
             ViewForm curForm = (ViewForm)this.ActiveMdiChild;
             if (curForm == null)
                 return;
-            curForm.getterm().execute("a=box tri10");
+            curForm.getterm().execute("a = box [10,10,10]");
         }
 
         private void tsbSphere_Click(object sender, EventArgs e)
@@ -229,7 +228,7 @@ namespace siren
             ViewForm curForm = (ViewForm)this.ActiveMdiChild;
             if (curForm == null)
                 return;
-            curForm.getterm().execute("a=sphere 10");
+            curForm.getterm().execute("a = sphere 10");
         }
 
         private void tsbCylinder_Click(object sender, EventArgs e)
@@ -237,7 +236,7 @@ namespace siren
             ViewForm curForm = (ViewForm)this.ActiveMdiChild;
             if (curForm == null)
                 return;
-            curForm.getterm().execute("a=cylinder op, [0, 0, 1], 10, 20, " + deg2rad(360).ToString());
+            curForm.getterm().execute("a = cylinder op, [0, 0, 1], 10, 20, " + deg2rad(360).ToString());
         }
 
         private void tsbCone_Click(object sender, EventArgs e)
@@ -245,7 +244,7 @@ namespace siren
             ViewForm curForm = (ViewForm)this.ActiveMdiChild;
             if (curForm == null)
                 return;
-            curForm.getterm().execute("a=cone op, [0, 0, 1], 10, 0, 20, " + deg2rad(360).ToString() );
+            curForm.getterm().execute("a = cone op, [0, 0, 1], 10, 0, 20, " + deg2rad(360).ToString() );
         }
 
         private void tsbTorus_Click(object sender, EventArgs e)
@@ -254,7 +253,7 @@ namespace siren
             if (curForm == null)
                 return;
             string a = deg2rad(360).ToString();
-            curForm.getterm().execute("a=torus([0,0,0], [0,0,1], 7, 3, "+a+")");
+            curForm.getterm().execute("a = torus([0,0,0], [0,0,1], 7, 3, "+a+")");
         }
 
         private double deg2rad(double deg)
@@ -499,6 +498,8 @@ namespace siren
                 tsbResetView.Enabled = true;
                 // ----
                 tsbHlr.Enabled = true;
+                // ----
+                tsbTerminal.Enabled = true;
                 
                 // ビューアーが存在して、かつ
                 // オブジェクトが選択されている場合のみ有効
@@ -506,6 +507,9 @@ namespace siren
                     tsbSave.Enabled = true;
                     tsbCopy.Enabled = true;
                     tsbDelete.Enabled = true;
+                    // ----
+                    tsbCompound.Enabled = true;
+                    tsbExplode.Enabled = true;
                     // ----
                     tsbTranslate.Enabled = true;
                     //tsbRotate.Enabled = true;
@@ -544,12 +548,32 @@ namespace siren
         private void tsbTranslate_Click(object sender, EventArgs e)
         {
             ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null) {
-                if (curForm.Viewer.IsObjectSelected()) {
-                    curForm.isDirectTranslateMode = true;
-                }
+            if (curForm != null && curForm.Viewer.IsObjectSelected())
+                curForm.isDirectTranslateMode = true;
+        }
+
+        private void tsbCompound_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null && curForm.Viewer.NbSelected() > 1)
+                curForm.getterm().execute("a = compound selected");
+        }
+
+        private void tsbExplode_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null && curForm.Viewer.IsObjectSelected()) {
+                curForm.getterm().execute("a = []; selected.each { |obj| a.push(explode Stype::SOLID, obj) }");
             }
         }
+
+        private void tsbTerminal_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.showTerminal();
+        }
+
     }
 
 }

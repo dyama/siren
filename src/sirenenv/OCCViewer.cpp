@@ -712,6 +712,13 @@ bool OCCViewer::IsObjectSelected(void)
 	return (bool)aiscxt->MoreCurrent();
 }
 
+int OCCViewer::NbSelected(void)
+{
+	if (aiscxt.IsNull())
+		return false;
+    return (int)aiscxt->NbSelected();
+}
+
 int OCCViewer::DisplayMode(void)
 {
 	if (aiscxt.IsNull())

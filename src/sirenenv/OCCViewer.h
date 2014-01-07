@@ -75,6 +75,7 @@ public:
 	bool  ExportVrml (wchar_t* filename);
 	bool  Dump       (wchar_t* filename);
 	bool  IsObjectSelected(void);
+    int   NbSelected(void);
 	int   DisplayMode(void);
 	void  CreateNewView(void* wnd);
 	bool  SetAISContext(OCCViewer* Viewer);

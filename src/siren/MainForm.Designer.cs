@@ -64,7 +64,10 @@ namespace siren
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbCopy = new System.Windows.Forms.ToolStripButton();
             this.tsbDelete = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbCompound = new System.Windows.Forms.ToolStripButton();
+            this.tsbExplode = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbTranslate = new System.Windows.Forms.ToolStripButton();
             this.tsbRotate = new System.Windows.Forms.ToolStripButton();
             this.tsbScale = new System.Windows.Forms.ToolStripButton();
@@ -110,6 +113,8 @@ namespace siren
             this.tsbResetView = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbHlr = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbTerminal = new System.Windows.Forms.ToolStripButton();
             this.toolStripPanel2.SuspendLayout();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -128,7 +133,7 @@ namespace siren
             this.toolStripPanel2.Name = "toolStripPanel2";
             this.toolStripPanel2.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.toolStripPanel2.RowMargin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.toolStripPanel2.Size = new System.Drawing.Size(784, 25);
+            this.toolStripPanel2.Size = new System.Drawing.Size(1008, 25);
             // 
             // toolStripMain
             // 
@@ -153,7 +158,10 @@ namespace siren
             this.toolStripSeparator8,
             this.tsbCopy,
             this.tsbDelete,
-            this.toolStripSeparator3,
+            this.toolStripSeparator9,
+            this.tsbCompound,
+            this.tsbExplode,
+            this.toolStripSeparator11,
             this.tsbTranslate,
             this.tsbRotate,
             this.tsbScale,
@@ -169,10 +177,12 @@ namespace siren
             this.toolStripSeparator13,
             this.tsbResetView,
             this.toolStripSeparator14,
-            this.tsbHlr});
+            this.tsbHlr,
+            this.toolStripSeparator3,
+            this.tsbTerminal});
             this.toolStripMain.Location = new System.Drawing.Point(3, 0);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(736, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(786, 25);
             this.toolStripMain.TabIndex = 14;
             // 
             // tsbNew
@@ -355,10 +365,37 @@ namespace siren
             this.tsbDelete.Text = "削除";
             this.tsbDelete.Click += new System.EventHandler(this.tsbDelete_Click);
             // 
-            // toolStripSeparator3
+            // toolStripSeparator9
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(6, 25);
+            // 
+            // tsbCompound
+            // 
+            this.tsbCompound.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbCompound.Image = ((System.Drawing.Image)(resources.GetObject("tsbCompound.Image")));
+            this.tsbCompound.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbCompound.Name = "tsbCompound";
+            this.tsbCompound.Size = new System.Drawing.Size(23, 22);
+            this.tsbCompound.Text = "グループ化";
+            this.tsbCompound.ToolTipText = "グループ化";
+            this.tsbCompound.Click += new System.EventHandler(this.tsbCompound_Click);
+            // 
+            // tsbExplode
+            // 
+            this.tsbExplode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbExplode.Image = ((System.Drawing.Image)(resources.GetObject("tsbExplode.Image")));
+            this.tsbExplode.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbExplode.Name = "tsbExplode";
+            this.tsbExplode.Size = new System.Drawing.Size(23, 22);
+            this.tsbExplode.Text = "グループ解除";
+            this.tsbExplode.ToolTipText = "グループ解除";
+            this.tsbExplode.Click += new System.EventHandler(this.tsbExplode_Click);
+            // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbTranslate
             // 
@@ -733,16 +770,32 @@ namespace siren
             this.tsbHlr.ToolTipText = "隠面消去";
             this.tsbHlr.Click += new System.EventHandler(this.tsbHlr_Click);
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
+            // tsbTerminal
+            // 
+            this.tsbTerminal.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbTerminal.Image = ((System.Drawing.Image)(resources.GetObject("tsbTerminal.Image")));
+            this.tsbTerminal.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbTerminal.Name = "tsbTerminal";
+            this.tsbTerminal.Size = new System.Drawing.Size(23, 22);
+            this.tsbTerminal.Text = "Rubyターミナル";
+            this.tsbTerminal.Click += new System.EventHandler(this.tsbTerminal_Click);
+            // 
             // MainForm
             // 
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.Application;
             this.AllowDrop = true;
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-            this.ClientSize = new System.Drawing.Size(784, 562);
+            this.ClientSize = new System.Drawing.Size(1008, 602);
             this.Controls.Add(this.toolStripPanel2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "siren";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
@@ -798,7 +851,6 @@ namespace siren
         private ToolStripButton tsbClose;
         private ToolStripButton tsbCopy;
         private ToolStripButton tsbDelete;
-        private ToolStripSeparator toolStripSeparator3;
         private ToolStripButton tsbColor;
         private ToolStripMenuItem miPewter;
         private ToolStripMenuItem miGold;
@@ -823,6 +875,12 @@ namespace siren
         private ToolStripMenuItem miPHC;
         private ToolStripSeparator toolStripSeparator7;
         private ToolStripMenuItem miChrome;
+        private ToolStripSeparator toolStripSeparator9;
+        private ToolStripButton tsbCompound;
+        private ToolStripButton tsbExplode;
+        private ToolStripSeparator toolStripSeparator11;
+        private ToolStripSeparator toolStripSeparator3;
+        private ToolStripButton tsbTerminal;
 
     }
 }

@@ -42,10 +42,8 @@ mrb_value location(mrb_state* mrb, mrb_value self)
         gp_Pnt p = *ar2pnt(mrb, location);
         gp_Trsf tr;
         tr.SetTranslation(gp_Vec(p.X(), p.Y(), p.Z()));
-        //shape.Location(TopLoc_Location(tr) * shape.Location());
         shape.Location(TopLoc_Location(tr));
         hashape->Set(shape);
-        //hashape->Redisplay();
         redisplay(hashape);
         return mrb_nil_value();
     }

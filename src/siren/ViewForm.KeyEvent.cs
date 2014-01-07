@@ -63,6 +63,8 @@ namespace siren
             kemap.Add(Keys.A, move_to_left);
             kemap.Add(Keys.E, move_to_top);
             kemap.Add(Keys.Q, move_to_bottom);
+
+            kemap.Add(Keys.G, group);
         }
 
         /// <summary>
@@ -79,6 +81,9 @@ namespace siren
 
             if (kemap != null && kemap.ContainsKey(e.KeyCode))
                 kemap[e.KeyCode]();
+
+			siren.MainForm parent = (siren.MainForm) this.ParentForm;
+            parent.setToolBarButtonState();
             
             return;
 		}
@@ -154,12 +159,54 @@ namespace siren
         public void TopView() { myViewer.setProjection(TypeOfOrientation.Zpos); }
         public void BottomView() { myViewer.setProjection(TypeOfOrientation.Zneg); }
 
-        private void move_to_front() { getterm().execute("translate ?,[10,0,0]"); }
-        private void move_to_back() { getterm().execute("translate ?,[-10,0,0]"); }
-        private void move_to_right() { getterm().execute("translate ?,[0,-10,0]"); }
-        private void move_to_left() { getterm().execute("translate ?,[0,10,0]"); }
-        private void move_to_top() { getterm().execute("translate ?,[0,0,10]"); }
-        private void move_to_bottom() { getterm().execute("translate ?,[0,0,-10]"); }
+        private void move_to_front()
+        {
+            if (!Viewer.IsObjectSelected())
+                return;
+            getterm().execute("selected.each { |obj| translate obj, [10, 0, 0] }");
+        }
+        private void move_to_back()
+        {
+            if (!Viewer.IsObjectSelected())
+                return;
+            getterm().execute("selected.each { |obj| translate obj, [-10, 0, 0] }");
+        }
+        private void move_to_right()
+        {
+            if (!Viewer.IsObjectSelected())
+                return;
+            if (myCurSpKey == CurSpKey.CTRL)
+                getterm().execute("a = copy ?");
+            else
+                getterm().execute("selected.each { |obj| translate obj, [0, -10, 0] }");
+        }
+        private void move_to_left()
+        {
+            if (!Viewer.IsObjectSelected())
+                return;
+            getterm().execute("selected.each { |obj| translate obj, [0, 10, 0] }");
+        }
+        private void move_to_top()
+        {
+            if (!Viewer.IsObjectSelected())
+                return;
+            getterm().execute("selected.each { |obj| translate obj, [0, 0, 10] }");
+        }
+        private void move_to_bottom()
+        {
+            if (!Viewer.IsObjectSelected())
+                return;
+            getterm().execute("selected.each { |obj| translate obj, [0, 0, -10] }");
+        }
+
+        private void group()
+        {
+            if (myCurSpKey == CurSpKey.CTRL) {
+                if (Viewer.NbSelected() > 1) {
+                    getterm().execute("a = compound selected");
+                }
+            }
+        }
 
     }
 }

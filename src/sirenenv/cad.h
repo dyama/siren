@@ -319,6 +319,14 @@ public:
 			return false;
 	}
 
+    int NbSelected(void)
+    {
+		if (myOCCViewer != NULL)
+			return myOCCViewer->NbSelected();
+		else
+			return false;
+    }
+
 	int DisplayMode(void)
 	{
 		if (myOCCViewer != NULL)
