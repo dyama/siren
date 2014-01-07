@@ -83,6 +83,7 @@ namespace siren
             this.miSteel = new System.Windows.Forms.ToolStripMenuItem();
             this.miAluminium = new System.Windows.Forms.ToolStripMenuItem();
             this.miMetalized = new System.Windows.Forms.ToolStripMenuItem();
+            this.miChrome = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.miStone = new System.Windows.Forms.ToolStripMenuItem();
             this.miPlaster = new System.Windows.Forms.ToolStripMenuItem();
@@ -109,7 +110,6 @@ namespace siren
             this.tsbResetView = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbHlr = new System.Windows.Forms.ToolStripButton();
-            this.miChrome = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripPanel2.SuspendLayout();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -362,15 +362,14 @@ namespace siren
             // 
             // tsbTranslate
             // 
-            this.tsbTranslate.CheckOnClick = true;
             this.tsbTranslate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbTranslate.Enabled = false;
             this.tsbTranslate.Image = ((System.Drawing.Image)(resources.GetObject("tsbTranslate.Image")));
             this.tsbTranslate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbTranslate.Name = "tsbTranslate";
             this.tsbTranslate.Size = new System.Drawing.Size(23, 22);
             this.tsbTranslate.Text = "移動";
             this.tsbTranslate.ToolTipText = "移動";
+            this.tsbTranslate.Click += new System.EventHandler(this.tsbTranslate_Click);
             // 
             // tsbRotate
             // 
@@ -532,6 +531,12 @@ namespace siren
             this.miMetalized.Size = new System.Drawing.Size(172, 22);
             this.miMetalized.Text = "メタライズ";
             this.miMetalized.Click += new System.EventHandler(this.miMetalized_Click);
+            // 
+            // miChrome
+            // 
+            this.miChrome.Name = "miChrome";
+            this.miChrome.Size = new System.Drawing.Size(172, 22);
+            this.miChrome.Text = "クロム";
             // 
             // toolStripSeparator6
             // 
@@ -727,12 +732,6 @@ namespace siren
             this.tsbHlr.Text = "陰面消去";
             this.tsbHlr.ToolTipText = "隠面消去";
             this.tsbHlr.Click += new System.EventHandler(this.tsbHlr_Click);
-            // 
-            // miChrome
-            // 
-            this.miChrome.Name = "miChrome";
-            this.miChrome.Size = new System.Drawing.Size(172, 22);
-            this.miChrome.Text = "クロム";
             // 
             // MainForm
             // 

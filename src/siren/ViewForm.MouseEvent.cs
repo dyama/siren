@@ -112,6 +112,21 @@ namespace siren
 			this.theRectDownY = Math.Max(this.myYmin, this.myYmax);
 		}
 
+        public bool isDirectTranslateMode = false;
+        private void ViewForm_Click(object sender, EventArgs e)
+        {
+            if (isDirectTranslateMode) {
+                MouseEventArgs mea = (MouseEventArgs)e;
+                if (mea.Button == MouseButtons.Left) {
+                    double x, y, z;
+                    this.Viewer.xy2xyz(mea.X, mea.Y, out x, out y, out z, true);
+                    string pos = "[" + x.ToString() + "," + y.ToString() + "," + z.ToString() + "]";
+                    this.getterm().execute("location ?, " + pos);
+                }
+                isDirectTranslateMode = false;
+            }
+        }
+
 		private void onMouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
 			switch (e.Button) 
@@ -144,7 +159,7 @@ namespace siren
                 }
 #if DEBUG
                 double xx, yy, zz;
-                myViewer.xy2xyz(e.X, e.Y, out xx, out yy, out zz, false);
+                myViewer.xy2xyz(e.X, e.Y, out xx, out yy, out zz, true);
                 System.Diagnostics.Debug.Print(xx.ToString() + ", " + yy.ToString() + ", " + zz.ToString());
 #endif
 				break;

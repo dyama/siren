@@ -507,6 +507,10 @@ namespace siren
                     tsbCopy.Enabled = true;
                     tsbDelete.Enabled = true;
                     // ----
+                    tsbTranslate.Enabled = true;
+                    //tsbRotate.Enabled = true;
+                    //tsbScale.Enabled = true;
+                    // ----
                     tsbDisplayMode.Enabled = true;
                     tsbTransparency.Enabled = true;
                     tsbColor.Enabled = true;
@@ -535,6 +539,16 @@ namespace siren
             }
             toolStripMain.Enabled = true;
             toolStripMain.ResumeLayout(true);
+        }
+
+        private void tsbTranslate_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null) {
+                if (curForm.Viewer.IsObjectSelected()) {
+                    curForm.isDirectTranslateMode = true;
+                }
+            }
         }
     }
 

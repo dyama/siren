@@ -40,6 +40,7 @@ namespace siren
             this.SizeChanged += new System.EventHandler(this.ViewForm_SizeChanged);
             this.Closed += new System.EventHandler(this.onClosed);
             this.MouseEnter += new System.EventHandler(this.onMouseEnter);
+            this.Click += new System.EventHandler(this.ViewForm_Click);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.onMouseDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.onKeyUp);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.onMouseMove);

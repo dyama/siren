@@ -55,6 +55,14 @@ namespace siren
             kemap.Add(Keys.Enter, showTerminal);
             kemap.Add(Keys.Space, showMenu);
             kemap.Add(Keys.Delete, myViewer.EraseObjects);
+
+            // funny move
+            kemap.Add(Keys.W, move_to_front);
+            kemap.Add(Keys.S, move_to_back);
+            kemap.Add(Keys.D, move_to_right);
+            kemap.Add(Keys.A, move_to_left);
+            kemap.Add(Keys.E, move_to_top);
+            kemap.Add(Keys.Q, move_to_bottom);
         }
 
         /// <summary>
@@ -145,6 +153,13 @@ namespace siren
         public void RightView() { myViewer.setProjection(TypeOfOrientation.Yneg); }
         public void TopView() { myViewer.setProjection(TypeOfOrientation.Zpos); }
         public void BottomView() { myViewer.setProjection(TypeOfOrientation.Zneg); }
+
+        private void move_to_front() { getterm().execute("translate ?,[10,0,0]"); }
+        private void move_to_back() { getterm().execute("translate ?,[-10,0,0]"); }
+        private void move_to_right() { getterm().execute("translate ?,[0,-10,0]"); }
+        private void move_to_left() { getterm().execute("translate ?,[0,10,0]"); }
+        private void move_to_top() { getterm().execute("translate ?,[0,0,10]"); }
+        private void move_to_bottom() { getterm().execute("translate ?,[0,0,-10]"); }
 
     }
 }
