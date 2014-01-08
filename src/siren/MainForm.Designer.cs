@@ -75,6 +75,12 @@ namespace siren
             this.tsbFuse = new System.Windows.Forms.ToolStripButton();
             this.tsbCut = new System.Windows.Forms.ToolStripButton();
             this.tsbCommon = new System.Windows.Forms.ToolStripButton();
+            this.tsbIntersect = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbInfo = new System.Windows.Forms.ToolStripSplitButton();
+            this.miVolume = new System.Windows.Forms.ToolStripMenuItem();
+            this.miCog = new System.Windows.Forms.ToolStripMenuItem();
+            this.miBndbox = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbDisplayMode = new System.Windows.Forms.ToolStripButton();
             this.tsbTransparency = new System.Windows.Forms.ToolStripButton();
@@ -173,6 +179,9 @@ namespace siren
             this.tsbFuse,
             this.tsbCut,
             this.tsbCommon,
+            this.tsbIntersect,
+            this.toolStripSeparator16,
+            this.tsbInfo,
             this.toolStripSeparator15,
             this.tsbDisplayMode,
             this.tsbTransparency,
@@ -190,7 +199,7 @@ namespace siren
             this.tsbTerminal});
             this.toolStripMain.Location = new System.Drawing.Point(3, 0);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(892, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(953, 25);
             this.toolStripMain.TabIndex = 14;
             // 
             // tsbNew
@@ -301,7 +310,7 @@ namespace siren
             this.tsbBox.Name = "tsbBox";
             this.tsbBox.Size = new System.Drawing.Size(23, 22);
             this.tsbBox.Text = "ボックス(箱)";
-            this.tsbBox.ToolTipText = "ボックス";
+            this.tsbBox.ToolTipText = "ボックス(箱)";
             this.tsbBox.Click += new System.EventHandler(this.tsbBox_Click);
             // 
             // tsbSphere
@@ -312,7 +321,7 @@ namespace siren
             this.tsbSphere.Name = "tsbSphere";
             this.tsbSphere.Size = new System.Drawing.Size(23, 22);
             this.tsbSphere.Text = "スフィア(球)";
-            this.tsbSphere.ToolTipText = "スフィア";
+            this.tsbSphere.ToolTipText = "スフィア(球)";
             this.tsbSphere.Click += new System.EventHandler(this.tsbSphere_Click);
             // 
             // tsbCylinder
@@ -323,7 +332,7 @@ namespace siren
             this.tsbCylinder.Name = "tsbCylinder";
             this.tsbCylinder.Size = new System.Drawing.Size(23, 22);
             this.tsbCylinder.Text = "シリンダー(円筒)";
-            this.tsbCylinder.ToolTipText = "シリンダー";
+            this.tsbCylinder.ToolTipText = "シリンダー(円筒)";
             this.tsbCylinder.Click += new System.EventHandler(this.tsbCylinder_Click);
             // 
             // tsbCone
@@ -334,7 +343,7 @@ namespace siren
             this.tsbCone.Name = "tsbCone";
             this.tsbCone.Size = new System.Drawing.Size(23, 22);
             this.tsbCone.Text = "コーン(円錐)";
-            this.tsbCone.ToolTipText = "コーン";
+            this.tsbCone.ToolTipText = "コーン(円錐)";
             this.tsbCone.Click += new System.EventHandler(this.tsbCone_Click);
             // 
             // tsbTorus
@@ -345,7 +354,7 @@ namespace siren
             this.tsbTorus.Name = "tsbTorus";
             this.tsbTorus.Size = new System.Drawing.Size(23, 22);
             this.tsbTorus.Text = "トーラス(輪)";
-            this.tsbTorus.ToolTipText = "トーラス";
+            this.tsbTorus.ToolTipText = "トーラス(輪)";
             this.tsbTorus.Click += new System.EventHandler(this.tsbTorus_Click);
             // 
             // toolStripSeparator8
@@ -474,6 +483,55 @@ namespace siren
             this.tsbCommon.Size = new System.Drawing.Size(23, 22);
             this.tsbCommon.Text = "コモン";
             this.tsbCommon.Click += new System.EventHandler(this.tsbCommon_Click);
+            // 
+            // tsbIntersect
+            // 
+            this.tsbIntersect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbIntersect.Image = ((System.Drawing.Image)(resources.GetObject("tsbIntersect.Image")));
+            this.tsbIntersect.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbIntersect.Name = "tsbIntersect";
+            this.tsbIntersect.Size = new System.Drawing.Size(23, 22);
+            this.tsbIntersect.Text = "インターセクション";
+            this.tsbIntersect.Click += new System.EventHandler(this.tsbIntersect_Click);
+            // 
+            // toolStripSeparator16
+            // 
+            this.toolStripSeparator16.Name = "toolStripSeparator16";
+            this.toolStripSeparator16.Size = new System.Drawing.Size(6, 25);
+            // 
+            // tsbInfo
+            // 
+            this.tsbInfo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbInfo.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miVolume,
+            this.miCog,
+            this.miBndbox});
+            this.tsbInfo.Image = ((System.Drawing.Image)(resources.GetObject("tsbInfo.Image")));
+            this.tsbInfo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbInfo.Name = "tsbInfo";
+            this.tsbInfo.Size = new System.Drawing.Size(32, 22);
+            this.tsbInfo.Text = "toolStripSplitButton1";
+            // 
+            // miVolume
+            // 
+            this.miVolume.Name = "miVolume";
+            this.miVolume.Size = new System.Drawing.Size(154, 22);
+            this.miVolume.Text = "ボリューム(&V)";
+            this.miVolume.Click += new System.EventHandler(this.miVolume_Click);
+            // 
+            // miCog
+            // 
+            this.miCog.Name = "miCog";
+            this.miCog.Size = new System.Drawing.Size(154, 22);
+            this.miCog.Text = "重心位置(&G)";
+            this.miCog.Click += new System.EventHandler(this.miCog_Click);
+            // 
+            // miBndbox
+            // 
+            this.miBndbox.Name = "miBndbox";
+            this.miBndbox.Size = new System.Drawing.Size(154, 22);
+            this.miBndbox.Text = "範囲(&B)";
+            this.miBndbox.Click += new System.EventHandler(this.miBndbox_Click);
             // 
             // toolStripSeparator15
             // 
@@ -928,6 +986,12 @@ namespace siren
         private ToolStripButton tsbCut;
         private ToolStripButton tsbCommon;
         private ToolStripSeparator toolStripSeparator15;
+        private ToolStripButton tsbIntersect;
+        private ToolStripSeparator toolStripSeparator16;
+        private ToolStripSplitButton tsbInfo;
+        private ToolStripMenuItem miVolume;
+        private ToolStripMenuItem miCog;
+        private ToolStripMenuItem miBndbox;
 
     }
 }

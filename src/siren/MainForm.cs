@@ -502,8 +502,6 @@ namespace siren
                 tsbTerminal.Enabled = true;
 
                 int nb_selected = curForm.Viewer.NbSelected();
-                
-                // ビューアーが存在して、かつ
                 // オブジェクトが選択されている場合のみ有効
                 if (nb_selected > 0) {
                     tsbSave.Enabled = true;
@@ -545,16 +543,27 @@ namespace siren
                 if (nb_selected > 1) {
                     tsbCompound.Enabled = true;
                 }
+                // オブジェクトが1個選択されている場合のみ有効
+                if (nb_selected == 1) {
+                    // とりあえず1個のみ対応
+                    tsbInfo.Enabled = true;
+                    miVolume.Enabled = true;
+                    miCog.Enabled = true;
+                    miBndbox.Enabled = true;
+                }
                 // オブジェクトが2個選択されている場合のみ有効
                 if (nb_selected == 2) {
                     tsbFuse.Enabled = true;
                     tsbCut.Enabled = true;
                     tsbCommon.Enabled = true;
+                    tsbIntersect.Enabled = true;
                 }
             }
             toolStripMain.Enabled = true;
             toolStripMain.ResumeLayout(true);
         }
+
+        #region "Transform commands"
 
         private void tsbTranslate_Click(object sender, EventArgs e)
         {
@@ -562,6 +571,8 @@ namespace siren
             if (curForm != null && curForm.Viewer.IsObjectSelected())
                 curForm.isDirectTranslateMode = true;
         }
+
+        #endregion
 
         #region "Grouping"
 
@@ -581,15 +592,6 @@ namespace siren
         }
 
         #endregion
-
-
-
-        private void tsbTerminal_Click(object sender, EventArgs e)
-        {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null)
-                curForm.showTerminal();
-        }
 
         #region "Boolean Operations"
 
@@ -614,8 +616,46 @@ namespace siren
                 curForm.getterm().execute("a = common ??[0], ??[1]");
         }
 
+        private void tsbIntersect_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("a = intersect ??[0], ??[1]");
+        }
+
         #endregion
 
+        #region "Information"
+
+        private void miVolume_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("volume ?", "ボリューム: ");
+        }
+
+        private void miCog_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("cog ?", "重心位置: ");
+        }
+
+        private void miBndbox_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("bndbox ?", "範囲(最小位置, 最大位置): ");
+        }
+
+        #endregion
+
+        private void tsbTerminal_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.showTerminal();
+        }
     }
 
 }

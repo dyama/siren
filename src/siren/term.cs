@@ -16,10 +16,13 @@ namespace siren
         protected sirenenv.Viewer myViewer;
         protected change_state_func _func;
 
+        public string result_string;
+
         public term(sirenenv.Viewer Viewer)
         {
             InitializeComponent();
-
+            result_string = string.Empty;
+            _func = null;
             myViewer = Viewer;
             Scroll2Last(rtb);
             tb.Focus();
@@ -65,6 +68,8 @@ namespace siren
             else
                 prompt = "* ";
 
+            result_string = result;
+
             rtb.Text += prompt + cmd + "\n" + result;
             this.Scroll2Last(rtb);
             tb.Focus();
@@ -72,6 +77,22 @@ namespace siren
             if (_func != null)
                 _func();
 
+            return err;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <param name="dialog_message"></param>
+        /// <returns></returns>
+        public int execute(string cmd, string dialog_message)
+        {
+            int err = execute(cmd);
+            if (err == 0)
+                MessageBox.Show(dialog_message + result_string, "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                MessageBox.Show(dialog_message + result_string, "失敗", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             return err;
         }
 
