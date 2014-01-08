@@ -500,15 +500,16 @@ namespace siren
                 tsbHlr.Enabled = true;
                 // ----
                 tsbTerminal.Enabled = true;
+
+                int nb_selected = curForm.Viewer.NbSelected();
                 
                 // ビューアーが存在して、かつ
                 // オブジェクトが選択されている場合のみ有効
-                if (curForm.Viewer.IsObjectSelected()) {
+                if (nb_selected > 0) {
                     tsbSave.Enabled = true;
                     tsbCopy.Enabled = true;
                     tsbDelete.Enabled = true;
                     // ----
-                    tsbCompound.Enabled = true;
                     tsbExplode.Enabled = true;
                     // ----
                     tsbTranslate.Enabled = true;
@@ -540,6 +541,16 @@ namespace siren
                     miPHC.Enabled = true;
                     miJade.Enabled = true;
                 }
+                // オブジェクトが複数個選択されている場合のみ有効
+                if (nb_selected > 1) {
+                    tsbCompound.Enabled = true;
+                }
+                // オブジェクトが2個選択されている場合のみ有効
+                if (nb_selected == 2) {
+                    tsbFuse.Enabled = true;
+                    tsbCut.Enabled = true;
+                    tsbCommon.Enabled = true;
+                }
             }
             toolStripMain.Enabled = true;
             toolStripMain.ResumeLayout(true);
@@ -551,6 +562,8 @@ namespace siren
             if (curForm != null && curForm.Viewer.IsObjectSelected())
                 curForm.isDirectTranslateMode = true;
         }
+
+        #region "Grouping"
 
         private void tsbCompound_Click(object sender, EventArgs e)
         {
@@ -567,12 +580,41 @@ namespace siren
             }
         }
 
+        #endregion
+
+
+
         private void tsbTerminal_Click(object sender, EventArgs e)
         {
             ViewForm curForm = (ViewForm)this.ActiveMdiChild;
             if (curForm != null)
                 curForm.showTerminal();
         }
+
+        #region "Boolean Operations"
+
+        private void tsbFuse_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("a = fuse ??[0], ??[1]");
+        }
+
+        private void tsbCut_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("a = cut ??[0], ??[1]");
+        }
+
+        private void tsbCommon_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("a = common ??[0], ??[1]");
+        }
+
+        #endregion
 
     }
 

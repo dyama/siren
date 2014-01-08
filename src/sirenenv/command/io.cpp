@@ -94,7 +94,7 @@ mrb_value loadiges(mrb_state* mrb, mrb_value self)
 		result = mrb_fixnum_value(::set(shape));
 	}
 	else {
-		static const char m[] = "Failed to load BRep file.";
+		static const char m[] = "Failed to load IGES file.";
         result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
     return result;

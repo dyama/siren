@@ -151,7 +151,7 @@ namespace siren
             return;
         }
 
-        public void AxoView() { myViewer.setProjection(TypeOfOrientation.XposYnegZpos); }
+        public void AxoView() { myViewer.setProjection(TypeOfOrientation.XnegYnegZpos); }
         public void FrontView() { myViewer.setProjection(TypeOfOrientation.Xpos); }
         public void BackView() { myViewer.setProjection(TypeOfOrientation.Xneg); }
         public void LeftView() { myViewer.setProjection(TypeOfOrientation.Ypos); }

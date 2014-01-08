@@ -72,6 +72,10 @@ namespace siren
             this.tsbRotate = new System.Windows.Forms.ToolStripButton();
             this.tsbScale = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbFuse = new System.Windows.Forms.ToolStripButton();
+            this.tsbCut = new System.Windows.Forms.ToolStripButton();
+            this.tsbCommon = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbDisplayMode = new System.Windows.Forms.ToolStripButton();
             this.tsbTransparency = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -166,6 +170,10 @@ namespace siren
             this.tsbRotate,
             this.tsbScale,
             this.toolStripButton6,
+            this.tsbFuse,
+            this.tsbCut,
+            this.tsbCommon,
+            this.toolStripSeparator15,
             this.tsbDisplayMode,
             this.tsbTransparency,
             this.toolStripSeparator10,
@@ -182,7 +190,7 @@ namespace siren
             this.tsbTerminal});
             this.toolStripMain.Location = new System.Drawing.Point(3, 0);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(786, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(892, 25);
             this.toolStripMain.TabIndex = 14;
             // 
             // tsbNew
@@ -436,6 +444,41 @@ namespace siren
             // 
             this.toolStripButton6.Name = "toolStripButton6";
             this.toolStripButton6.Size = new System.Drawing.Size(6, 25);
+            // 
+            // tsbFuse
+            // 
+            this.tsbFuse.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbFuse.Image = ((System.Drawing.Image)(resources.GetObject("tsbFuse.Image")));
+            this.tsbFuse.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbFuse.Name = "tsbFuse";
+            this.tsbFuse.Size = new System.Drawing.Size(23, 22);
+            this.tsbFuse.Text = "フューズ";
+            this.tsbFuse.Click += new System.EventHandler(this.tsbFuse_Click);
+            // 
+            // tsbCut
+            // 
+            this.tsbCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbCut.Image = ((System.Drawing.Image)(resources.GetObject("tsbCut.Image")));
+            this.tsbCut.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbCut.Name = "tsbCut";
+            this.tsbCut.Size = new System.Drawing.Size(23, 22);
+            this.tsbCut.Text = "カット";
+            this.tsbCut.Click += new System.EventHandler(this.tsbCut_Click);
+            // 
+            // tsbCommon
+            // 
+            this.tsbCommon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbCommon.Image = ((System.Drawing.Image)(resources.GetObject("tsbCommon.Image")));
+            this.tsbCommon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbCommon.Name = "tsbCommon";
+            this.tsbCommon.Size = new System.Drawing.Size(23, 22);
+            this.tsbCommon.Text = "コモン";
+            this.tsbCommon.Click += new System.EventHandler(this.tsbCommon_Click);
+            // 
+            // toolStripSeparator15
+            // 
+            this.toolStripSeparator15.Name = "toolStripSeparator15";
+            this.toolStripSeparator15.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbDisplayMode
             // 
@@ -881,6 +924,10 @@ namespace siren
         private ToolStripSeparator toolStripSeparator11;
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripButton tsbTerminal;
+        private ToolStripButton tsbFuse;
+        private ToolStripButton tsbCut;
+        private ToolStripButton tsbCommon;
+        private ToolStripSeparator toolStripSeparator15;
 
     }
 }
