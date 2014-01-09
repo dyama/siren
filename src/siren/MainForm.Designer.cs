@@ -521,6 +521,7 @@ namespace siren
             // 
             // miCog
             // 
+            this.miCog.Image = ((System.Drawing.Image)(resources.GetObject("miCog.Image")));
             this.miCog.Name = "miCog";
             this.miCog.Size = new System.Drawing.Size(154, 22);
             this.miCog.Text = "重心位置(&G)";
@@ -528,6 +529,7 @@ namespace siren
             // 
             // miBndbox
             // 
+            this.miBndbox.Image = ((System.Drawing.Image)(resources.GetObject("miBndbox.Image")));
             this.miBndbox.Name = "miBndbox";
             this.miBndbox.Size = new System.Drawing.Size(154, 22);
             this.miBndbox.Text = "範囲(&B)";
