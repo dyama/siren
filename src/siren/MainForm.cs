@@ -215,6 +215,16 @@ namespace siren
             curForm.Viewer.ZoomAllView();
         }
 
+        #region "Make premitive"
+
+        private void tsbPlane_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+            curForm.getterm().execute("a = plane [0, 0, 0], [0, 0, 1], -10, 10, -10, 10");
+        }
+
         private void tsbBox_Click(object sender, EventArgs e)
         {
             ViewForm curForm = (ViewForm)this.ActiveMdiChild;
@@ -260,6 +270,8 @@ namespace siren
         {
             return (Math.PI / 180.0 * deg);
         }
+
+        #endregion
 
         private void tsbExit_Click(object sender, EventArgs e)
         {
@@ -481,6 +493,7 @@ namespace siren
                 tsbTile.Enabled = true;
                 tsbDump.Enabled = true;
                 // ----
+                tsbPlane.Enabled = true;
                 tsbBox.Enabled = true;
                 tsbSphere.Enabled = true;
                 tsbCylinder.Enabled = true;
@@ -656,6 +669,7 @@ namespace siren
             if (curForm != null)
                 curForm.showTerminal();
         }
+
     }
 
 }

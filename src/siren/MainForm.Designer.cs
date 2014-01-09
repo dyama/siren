@@ -125,6 +125,7 @@ namespace siren
             this.tsbHlr = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbTerminal = new System.Windows.Forms.ToolStripButton();
+            this.tsbPlane = new System.Windows.Forms.ToolStripButton();
             this.toolStripPanel2.SuspendLayout();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -160,6 +161,7 @@ namespace siren
             this.tsbTile,
             this.tsbDump,
             this.toolStripSeparator1,
+            this.tsbPlane,
             this.tsbBox,
             this.tsbSphere,
             this.tsbCylinder,
@@ -199,7 +201,7 @@ namespace siren
             this.tsbTerminal});
             this.toolStripMain.Location = new System.Drawing.Point(3, 0);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(953, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(976, 25);
             this.toolStripMain.TabIndex = 14;
             // 
             // tsbNew
@@ -888,6 +890,17 @@ namespace siren
             this.tsbTerminal.Text = "Rubyターミナル";
             this.tsbTerminal.Click += new System.EventHandler(this.tsbTerminal_Click);
             // 
+            // tsbPlane
+            // 
+            this.tsbPlane.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPlane.Image = ((System.Drawing.Image)(resources.GetObject("tsbPlane.Image")));
+            this.tsbPlane.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPlane.Name = "tsbPlane";
+            this.tsbPlane.Size = new System.Drawing.Size(23, 22);
+            this.tsbPlane.Text = "プレーン(面)";
+            this.tsbPlane.ToolTipText = "プレーン(面)";
+            this.tsbPlane.Click += new System.EventHandler(this.tsbPlane_Click);
+            // 
             // MainForm
             // 
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.Application;
@@ -994,6 +1007,7 @@ namespace siren
         private ToolStripMenuItem miVolume;
         private ToolStripMenuItem miCog;
         private ToolStripMenuItem miBndbox;
+        private ToolStripButton tsbPlane;
 
     }
 }
