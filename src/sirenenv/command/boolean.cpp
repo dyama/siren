@@ -195,3 +195,55 @@ mrb_value intersect(mrb_state* mrb, mrb_value self)
 
 	return mrb_fixnum_value(::set(shape));
 }
+
+/**
+ * \brief •ªŠ„‚·‚é
+ */
+mrb_value split(mrb_state* mrb, mrb_value self)
+{
+    mrb_int s1, s2;
+	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
+
+	Handle(AIS_Shape) haS1 = ::get(s1);
+	if (haS1.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	Handle(AIS_Shape) haS2 = ::get(s2);
+	if (haS2.IsNull()) {
+		static const char m[] = "No such object name of specified at second.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    // Intersection
+    BRepAlgoAPI_Section asect(haS1->Shape(), haS2->Shape(), FALSE);
+    asect.ComputePCurveOn1(TRUE);
+    asect.Approximation(TRUE);
+    asect.Build();
+    if(!asect.IsDone())
+        return mrb_nil_value();
+    TopoDS_Shape curve = asect.Shape();
+
+    BRepFeat_SplitShape splitter(haS1->Shape());
+    TopExp_Explorer exp(curve, TopAbs_EDGE);
+
+    for (; exp.More(); exp.Next()) {
+        TopoDS_Shape e = exp.Current();     
+        TopoDS_Shape f;
+        if (asect.HasAncestorFaceOn1(e, f)) {
+             TopoDS_Edge ee = TopoDS::Edge(e);
+             TopoDS_Face ff = TopoDS::Face(f);
+             splitter.Add(ee, ff);
+        }
+    }
+    splitter.Build();
+
+	if (!splitter.IsDone()) {
+		static const char m[] = "Failed to intersection.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	TopoDS_Shape shape = splitter.Shape();
+
+	return mrb_fixnum_value(::set(shape));
+}

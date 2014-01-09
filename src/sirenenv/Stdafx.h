@@ -133,6 +133,9 @@
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 
+// BRep Feat
+#include <BRepFeat_SplitShape.hxx>
+
 #include <TopExp_Explorer.hxx>
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
@@ -186,6 +189,7 @@
 #pragma comment (lib, "TKV3d.lib")
 #pragma comment (lib, "TKXSBase.lib")
 #pragma comment (lib, "TKOffset.lib")  //sweep
+#pragma comment (lib, "TKFeat.lib")  //sweep
 // FIle I/O
 #pragma comment (lib, "TKIGES.lib")     // IGES
 #pragma comment (lib, "TKVRML.lib")     // VRML

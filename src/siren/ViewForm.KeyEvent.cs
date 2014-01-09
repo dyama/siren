@@ -163,40 +163,110 @@ namespace siren
         {
             if (!Viewer.IsObjectSelected())
                 return;
-            getterm().execute("selected.each { |obj| translate obj, [10, 0, 0] }");
+            switch (myCurSpKey) {
+            case CurSpKey.CTRL:
+                break;
+            case CurSpKey.META:
+                break;
+            case CurSpKey.SHIFT:
+                getterm().execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], 15 }");
+                break;
+            case CurSpKey.NOTHING:
+            default:
+                getterm().execute("selected.each { |obj| translate obj, [10, 0, 0] }");
+                break;
+            }
         }
         private void move_to_back()
         {
             if (!Viewer.IsObjectSelected())
                 return;
-            getterm().execute("selected.each { |obj| translate obj, [-10, 0, 0] }");
+            switch (myCurSpKey) {
+            case CurSpKey.CTRL:
+                break;
+            case CurSpKey.META:
+                break;
+            case CurSpKey.SHIFT:
+                getterm().execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], -15 }");
+                break;
+            case CurSpKey.NOTHING:
+            default:
+                getterm().execute("selected.each { |obj| translate obj, [-10, 0, 0] }");
+                break;
+            }
         }
         private void move_to_right()
         {
             if (!Viewer.IsObjectSelected())
                 return;
-            if (myCurSpKey == CurSpKey.CTRL)
+            switch (myCurSpKey) {
+            case CurSpKey.CTRL:
                 getterm().execute("a = []; selected.each { |obj| a.push(copy obj) }");
-            else
+                break;
+            case CurSpKey.META:
+                break;
+            case CurSpKey.SHIFT:
+                getterm().execute("selected.each { |obj| rotate obj, (location obj), [1, 0, 0], 15 }");
+                break;
+            case CurSpKey.NOTHING:
+            default:
                 getterm().execute("selected.each { |obj| translate obj, [0, -10, 0] }");
+                break;
+            }
         }
         private void move_to_left()
         {
             if (!Viewer.IsObjectSelected())
                 return;
-            getterm().execute("selected.each { |obj| translate obj, [0, 10, 0] }");
+            switch (myCurSpKey) {
+            case CurSpKey.CTRL:
+                break;
+            case CurSpKey.META:
+                break;
+            case CurSpKey.SHIFT:
+                getterm().execute("selected.each { |obj| rotate obj, (location obj), [1, 0, 0], -15 }");
+                break;
+            case CurSpKey.NOTHING:
+            default:
+                getterm().execute("selected.each { |obj| translate obj, [0, 10, 0] }");
+                break;
+            }
         }
         private void move_to_top()
         {
             if (!Viewer.IsObjectSelected())
                 return;
-            getterm().execute("selected.each { |obj| translate obj, [0, 0, 10] }");
+            switch (myCurSpKey) {
+            case CurSpKey.CTRL:
+                break;
+            case CurSpKey.META:
+                break;
+            case CurSpKey.SHIFT:
+                getterm().execute("selected.each { |obj| rotate obj, (location obj), [0, 0, 1], 15 }");
+                break;
+            case CurSpKey.NOTHING:
+            default:
+                getterm().execute("selected.each { |obj| translate obj, [0, 0, 10] }");
+                break;
+            }
         }
         private void move_to_bottom()
         {
             if (!Viewer.IsObjectSelected())
                 return;
-            getterm().execute("selected.each { |obj| translate obj, [0, 0, -10] }");
+            switch (myCurSpKey) {
+            case CurSpKey.CTRL:
+                break;
+            case CurSpKey.META:
+                break;
+            case CurSpKey.SHIFT:
+                getterm().execute("selected.each { |obj| rotate obj, (location obj), [0, 0, 1], -15 }");
+                break;
+            case CurSpKey.NOTHING:
+            default:
+                getterm().execute("selected.each { |obj| translate obj, [0, 0, -10] }");
+                break;
+            }
         }
 
         private void group()
