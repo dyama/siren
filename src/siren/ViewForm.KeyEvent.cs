@@ -55,6 +55,7 @@ namespace siren
             kemap.Add(Keys.Enter, showTerminal);
             kemap.Add(Keys.Space, showMenu);
             kemap.Add(Keys.Delete, myViewer.EraseObjects);
+            kemap.Add(Keys.X, myViewer.EraseObjects);
 
             // funny move
             kemap.Add(Keys.W, move_to_front);
@@ -74,10 +75,12 @@ namespace siren
         /// <param name="e"></param>
 		private void onKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
 		{
-			if (e.Shift)
-				myCurSpKey=CurSpKey.SHIFT;
-			else if (e.Control)
-				myCurSpKey=CurSpKey.CTRL;
+            if (e.Shift)
+                myCurSpKey = CurSpKey.SHIFT;
+            else if (e.Control)
+                myCurSpKey = CurSpKey.CTRL;
+            else if (e.Alt)
+                myCurSpKey = CurSpKey.META;
 
             if (kemap != null && kemap.ContainsKey(e.KeyCode))
                 kemap[e.KeyCode]();
@@ -167,6 +170,7 @@ namespace siren
             case CurSpKey.CTRL:
                 break;
             case CurSpKey.META:
+                getterm().execute("selected.each { |obj| scale obj, 1.25, (location obj) }");
                 break;
             case CurSpKey.SHIFT:
                 getterm().execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], 15 }");
@@ -185,6 +189,8 @@ namespace siren
             case CurSpKey.CTRL:
                 break;
             case CurSpKey.META:
+                getterm().execute("selected.each { |obj| scale obj, 0.75, (location obj) }");
+                break;
                 break;
             case CurSpKey.SHIFT:
                 getterm().execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], -15 }");
