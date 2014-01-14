@@ -90,6 +90,10 @@ bool OCCViewer::mruby_init()
 	regcmd("isave",     &saveiges,  2,0, "Save object to an IGES.",         "isave(path, obj) -> nil");
 	regcmd("iload",     &loadiges,  1,0, "Load object from an IGES.",       "iload(path) -> Ary");
 
+    //
+	regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");
+
+
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
 		"DRAW=1;"
@@ -465,4 +469,23 @@ mrb_value selected(mrb_state* mrb, mrb_value self)
 		return ar;
 	else
 		return mrb_nil_value();
+}
+
+/**
+ * \brief 
+ */
+mrb_value selmode(mrb_state* mrb, mrb_value self)
+{
+	mrb_int type;
+	int argc = mrb_get_args(mrb, "i", &type);
+
+    cur->aiscxt->CloseAllContexts();
+    cur->aiscxt->OpenLocalContext();
+    cur->aiscxt->ActivateStandardMode((TopAbs_ShapeEnum)type);
+
+    if (type == TopAbs_SHAPE) {
+        cur->aiscxt->CloseAllContexts();
+    }
+
+    return mrb_nil_value();
 }

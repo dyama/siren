@@ -16,6 +16,8 @@
 mrb_value help      (mrb_state*, mrb_value);
 mrb_value version   (mrb_state*, mrb_value);
 
+mrb_value selmode   (mrb_state*, mrb_value);
+
 // Information/Status
 mrb_value exist     (mrb_state*, mrb_value);
 mrb_value location  (mrb_state*, mrb_value);
