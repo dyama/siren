@@ -26,6 +26,11 @@ namespace siren
 
         protected bool isSpaceKeyDown = false;
 
+        public static double move_unit_distance = 10;
+        public static double rotate_unit_angle  = 15;
+        public static double scale_up_factor    = 1.25;
+        public static double scale_down_factor  = 0.75;
+
         /// <summary>
         /// キー イベントのメソッド定義
         /// </summary>
@@ -64,6 +69,10 @@ namespace siren
             kemap.Add(Keys.A, move_to_left);
             kemap.Add(Keys.E, move_to_top);
             kemap.Add(Keys.Q, move_to_bottom);
+
+            //
+            kemap.Add(Keys.Oemplus, scale_up);
+            kemap.Add(Keys.OemMinus, scale_down);
 
             kemap.Add(Keys.G, group);
         }
@@ -170,14 +179,14 @@ namespace siren
             case CurSpKey.CTRL:
                 break;
             case CurSpKey.META:
-                getterm().execute("selected.each { |obj| scale obj, 1.25, (location obj) }");
+                getterm().execute("selected.each { |obj| scale obj, " + scale_up_factor.ToString() + ", (location obj) }");
                 break;
             case CurSpKey.SHIFT:
                 getterm().execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], 15 }");
                 break;
             case CurSpKey.NOTHING:
             default:
-                getterm().execute("selected.each { |obj| translate obj, [10, 0, 0] }");
+                getterm().execute("selected.each { |obj| translate obj, [" + move_unit_distance.ToString() + ", 0, 0] }");
                 break;
             }
         }
@@ -189,15 +198,32 @@ namespace siren
             case CurSpKey.CTRL:
                 break;
             case CurSpKey.META:
-                getterm().execute("selected.each { |obj| scale obj, 0.75, (location obj) }");
-                break;
+                getterm().execute("selected.each { |obj| scale obj, " + scale_down_factor.ToString() + ", (location obj) }");
                 break;
             case CurSpKey.SHIFT:
                 getterm().execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], -15 }");
                 break;
             case CurSpKey.NOTHING:
             default:
-                getterm().execute("selected.each { |obj| translate obj, [-10, 0, 0] }");
+                getterm().execute("selected.each { |obj| translate obj, [-" + move_unit_distance.ToString() + ", 0, 0] }");
+                break;
+            }
+        }
+        private void move_to_left()
+        {
+            if (!Viewer.IsObjectSelected())
+                return;
+            switch (myCurSpKey) {
+            case CurSpKey.CTRL:
+                break;
+            case CurSpKey.META:
+                break;
+            case CurSpKey.SHIFT:
+                getterm().execute("selected.each { |obj| rotate obj, (location obj), [1, 0, 0], -15 }");
+                break;
+            case CurSpKey.NOTHING:
+            default:
+                getterm().execute("selected.each { |obj| translate obj, [0, " + move_unit_distance.ToString() + ", 0] }");
                 break;
             }
         }
@@ -216,25 +242,7 @@ namespace siren
                 break;
             case CurSpKey.NOTHING:
             default:
-                getterm().execute("selected.each { |obj| translate obj, [0, -10, 0] }");
-                break;
-            }
-        }
-        private void move_to_left()
-        {
-            if (!Viewer.IsObjectSelected())
-                return;
-            switch (myCurSpKey) {
-            case CurSpKey.CTRL:
-                break;
-            case CurSpKey.META:
-                break;
-            case CurSpKey.SHIFT:
-                getterm().execute("selected.each { |obj| rotate obj, (location obj), [1, 0, 0], -15 }");
-                break;
-            case CurSpKey.NOTHING:
-            default:
-                getterm().execute("selected.each { |obj| translate obj, [0, 10, 0] }");
+                getterm().execute("selected.each { |obj| translate obj, [0, -" + move_unit_distance.ToString() + ", 0] }");
                 break;
             }
         }
@@ -252,7 +260,7 @@ namespace siren
                 break;
             case CurSpKey.NOTHING:
             default:
-                getterm().execute("selected.each { |obj| translate obj, [0, 0, 10] }");
+                getterm().execute("selected.each { |obj| translate obj, [0, 0, " + move_unit_distance.ToString() + "] }");
                 break;
             }
         }
@@ -270,9 +278,23 @@ namespace siren
                 break;
             case CurSpKey.NOTHING:
             default:
-                getterm().execute("selected.each { |obj| translate obj, [0, 0, -10] }");
+                getterm().execute("selected.each { |obj| translate obj, [0, 0, -" + move_unit_distance.ToString() + "] }");
                 break;
             }
+        }
+
+        private void scale_up()
+        {
+            if (!Viewer.IsObjectSelected())
+                return;
+            getterm().execute("selected.each { |obj| scale obj, " + scale_up_factor.ToString() + ", (location obj) }");
+        }
+
+        private void scale_down()
+        {
+            if (!Viewer.IsObjectSelected())
+                return;
+            getterm().execute("selected.each { |obj| scale obj, " + scale_down_factor.ToString() + ", (location obj) }");
         }
 
         private void group()

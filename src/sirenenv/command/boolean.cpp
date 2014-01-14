@@ -236,14 +236,18 @@ mrb_value split(mrb_state* mrb, mrb_value self)
              splitter.Add(ee, ff);
         }
     }
-    splitter.Build();
-
-	if (!splitter.IsDone()) {
+    try {
+        splitter.Build();
+    	if (!splitter.IsDone()) {
+    		static const char m[] = "Failed to intersection.";
+            return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    	}
+    }
+    catch (...) {
 		static const char m[] = "Failed to intersection.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
+    }
 
 	TopoDS_Shape shape = splitter.Shape();
-
 	return mrb_fixnum_value(::set(shape));
 }

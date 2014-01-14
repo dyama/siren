@@ -104,3 +104,19 @@ mrb_value wire2plane(mrb_state* mrb, mrb_value self)
 	}
 	return mrb_fixnum_value(::set(shape));
 }
+
+/**
+ * \brief 
+ */
+mrb_value obj2brep(mrb_state* mrb, mrb_value self)
+{
+    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+}
+
+/**
+ * \brief 
+ */
+mrb_value brep2obj(mrb_state* mrb, mrb_value self)
+{
+    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+}
