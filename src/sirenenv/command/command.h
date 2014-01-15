@@ -62,8 +62,9 @@ mrb_value cone      (mrb_state*, mrb_value);
 mrb_value sphere    (mrb_state*, mrb_value);
 mrb_value torus     (mrb_state*, mrb_value);
 mrb_value plane     (mrb_state*, mrb_value);
-mrb_value wire			(mrb_state*, mrb_value);
+mrb_value wire	    (mrb_state*, mrb_value);
 mrb_value sweep     (mrb_state*, mrb_value);
+mrb_value loft      (mrb_state*, mrb_value);
 
 // Convertion
 mrb_value wire2pts  (mrb_state*, mrb_value);

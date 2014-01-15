@@ -72,14 +72,14 @@ void Mirb::p(mrb_value obj, int prompt)
     obj = mrb_funcall(mrb, obj, "inspect", 0);
     if (prompt) {
         if (!mrb->exc) {
-            fputs(" => ", stdout);
+            //fputs(" => ", stdout);
         }
         else {
             obj = mrb_funcall(mrb, mrb_obj_value(mrb->exc), "inspect", 0);
         }
     }
-    fwrite(RSTRING_PTR(obj), RSTRING_LEN(obj), 1, stdout);
-    putc('\n', stdout);
+    //fwrite(RSTRING_PTR(obj), RSTRING_LEN(obj), 1, stdout);
+    //putc('\n', stdout);
 }
 
 void Mirb::p(int prompt, std::string& msg)

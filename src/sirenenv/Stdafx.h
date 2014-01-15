@@ -120,6 +120,7 @@
 #include <BRepBuilderAPI_Sewing.hxx>
 // BRep Offset API
 #include <BRepOffsetAPI_MakePipe.hxx>
+#include <BRepOffsetAPI_ThruSections.hxx>
 // for primitive
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>

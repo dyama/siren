@@ -85,6 +85,7 @@
             this.tb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tb.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tb.Location = new System.Drawing.Point(0, 0);
+            this.tb.MaxLength = 327670;
             this.tb.Multiline = true;
             this.tb.Name = "tb";
             this.tb.Size = new System.Drawing.Size(337, 56);

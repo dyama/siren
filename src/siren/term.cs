@@ -18,6 +18,8 @@ namespace siren
 
         public string result_string;
 
+        public bool use_p = true;
+
         public term(sirenenv.Viewer Viewer)
         {
             InitializeComponent();
@@ -44,11 +46,16 @@ namespace siren
             rtb.ScrollToCaret();
         }
 
+        public int execute(string cmd)
+        {
+            return execute(cmd, true);
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="cmd"></param>
-        public int execute(string cmd)
+        public int execute(string cmd, bool use_func)
         {
             if (System.Text.RegularExpressions.Regex.IsMatch(cmd, @"^\s*$"))
                 return -1;
@@ -64,7 +71,7 @@ namespace siren
             int err = myViewer.mruby_exec(cmd, out errmsg);
 
             if (!myViewer.mruby_isCodeBlockOpen())
-                result += (err == 0) ? myViewer.mruby_p() : errmsg;
+                result += (err == 0) ? p() : errmsg;
             else
                 prompt = "* ";
 
@@ -74,10 +81,18 @@ namespace siren
             this.Scroll2Last(rtb);
             tb.Focus();
 
-            if (_func != null)
+            if (use_func && _func != null)
                 _func();
 
             return err;
+        }
+
+        public string p()
+        {
+            if (use_p)
+                return myViewer.mruby_p();
+            else
+                return "";
         }
 
         /// <summary>
@@ -118,8 +133,15 @@ namespace siren
             switch (e.KeyCode) {
             case Keys.Enter:
                 if (e.Modifiers != Keys.Shift) {
-                    foreach (string line in Regex.Split(tb.Text, @"\n", RegexOptions.Multiline))
-                        this.execute(line);
+                    string[] cmdlines = Regex.Split(tb.Text, @"\n", RegexOptions.Multiline);
+                    if (cmdlines.Length > 5)
+                        use_p = false;
+                    foreach (string line in cmdlines)
+                        this.execute(line, false);
+                    if (_func != null)
+                        _func();
+                    if (cmdlines.Length > 5)
+                        use_p = true;
                     tb.Text = "";
                     e.SuppressKeyPress = true;
                 }

@@ -51,26 +51,27 @@ mrb_value polyline(mrb_state* mrb, mrb_value self)
 
 	BRepBuilderAPI_MakePolygon poly;
 	TopoDS_Shape shape;
-	try
-	{
+	try {
 		for (int i=0; i<psize; i++) {
 			mrb_value pt = mrb_ary_ref(mrb, pts, i);
 			gp_Pnt pnt = *ar2pnt(mrb, pt);
 			poly.Add(pnt);
 		}
 		poly.Build();
-		if ( poly.IsDone() ) 
-			shape = poly.Shape();
+        if (poly.IsDone()) {
+            shape = poly.Wire();
+        }
 
-	}	catch (...) {
+	}
+    catch (...) {
 		static const char m[] = "Failed to make a polyline.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	if ( shape.IsNull() )
-	{
+	if ( shape.IsNull() ) {
 		static const char m[] = "Failed to make a polyline.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
+
 	return mrb_fixnum_value(::set(shape));
 }
 
@@ -121,10 +122,11 @@ mrb_value curve(mrb_state* mrb, mrb_value self)
     intp.Perform();
     Handle(Geom_BSplineCurve) geSpl = intp.Curve();
     TopoDS_Edge e = BRepBuilderAPI_MakeEdge(geSpl);
+    TopoDS_Wire w = BRepBuilderAPI_MakeWire(e);
 
 	delete(pary);
 
-	return mrb_fixnum_value(::set(e));
+	return mrb_fixnum_value(::set(w));
 }
 
 /**
@@ -383,4 +385,51 @@ mrb_value wire(mrb_state* mrb, mrb_value self)
 	}
 	return mrb_fixnum_value(::set(shape));
 
+}
+
+mrb_value loft(mrb_state* mrb, mrb_value self)
+{
+	mrb_value objs;
+	int argc = mrb_get_args(mrb, "A", &objs);
+    int lsize = mrb_ary_len(mrb, objs);
+
+    if (lsize < 2) {
+        static const char m[] = "Number of objects must be over 2 lines.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    BRepOffsetAPI_ThruSections ts(/* isSolid = */ Standard_False, /* isRuled = */ Standard_True);
+
+    for (int i=0; i<lsize; i++) {
+		mrb_value line = mrb_ary_ref(mrb, objs, i);
+        mrb_int target = mrb_fixnum(line);
+    	Handle(AIS_Shape) hashape = ::get(target);
+    	if (hashape.IsNull()) {
+    		static const char m[] = "No such profile object.";
+            return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    	}
+        TopoDS_Shape shape = hashape->Shape();
+        TopAbs_ShapeEnum type = shape.ShapeType();
+        if (type == TopAbs_WIRE) {
+            TopoDS_Wire w = TopoDS::Wire(shape);
+            ts.AddWire(w);
+        }
+        else {
+            // Edge‚âCompound‚ÈEdge‚Ìê‡
+            // Wire‚ğì‚éH
+        }
+    }
+
+    mrb_value result;
+    TopoDS_Shape shape;
+    try {
+        ts.Build();
+		shape = ts.Shape();
+    	result = mrb_fixnum_value(::set(shape));
+    }
+    catch (...) {
+		static const char m[] = "Internal error.";
+        result = mrb_exc_new(mrb, E_RUNTIME_ERROR, m, sizeof(m) - 1);
+    }
+    return result;
 }
