@@ -81,6 +81,8 @@ bool OCCViewer::mruby_init()
 	// Convertion commands
 	regcmd("wire2pts",  &wire2pts,  1,1, "Convert wire to points.",         "wire2pts(ObjID) -> Ary[[X, Y, Z], ...]");
 	regcmd("wire2plane",&wire2plane,1,0, "Make a plane.",                   "wire2plane( Close wire ObjID ) -> String");
+	regcmd("shell2solid",&shell2solid,1,0, "Make a solid by shell.",        "shell2solid(ObjID) -> ObjID");
+
 
 	regcmd("obj2brep",  &obj2brep,  1,0, "Object to OpenCASCADE BRep.",     "obj2brep(obj) -> String");
 	regcmd("brep2obj",  &brep2obj,  1,0, "Object from OpenCASCADE BRep.",   "obj2brep(string) -> obj");
@@ -93,8 +95,6 @@ bool OCCViewer::mruby_init()
 
     //
 	regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");
-
-
 
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
@@ -110,6 +110,7 @@ bool OCCViewer::mruby_init()
 		);
 	//myMirb->user_exec("class Stype;private_class_method :new;COMPOUND=0;COMPSOLID=1;SOLID=2;SHELL=3;FACE=4;WIRE=5;EDGE=6;VERTEX=7;SHAPE=8;end\n");
 	myMirb->user_exec("class Stype;COMPOUND=0;COMPSOLID=1;SOLID=2;SHELL=3;FACE=4;WIRE=5;EDGE=6;VERTEX=7;SHAPE=8;end\n");
+    myMirb->user_exec("p nil");
 
 	return true;
 }

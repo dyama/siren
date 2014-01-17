@@ -107,7 +107,7 @@ void OCCViewer::initViewAppearance()
 			lay->AddVertex(-.8, .9);
 			lay->AddVertex(-.95, .9);
 		lay->ClosePrimitive();
-		lay->DrawText((Standard_CString)"siren", 0, 0, 120);
+		//lay->DrawText((Standard_CString)"siren", 0, 0, 120);
 		//
 	lay->End();
 #endif

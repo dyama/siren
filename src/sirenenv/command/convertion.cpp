@@ -106,6 +106,42 @@ mrb_value wire2plane(mrb_state* mrb, mrb_value self)
 }
 
 /**
+ * \brief Make a solid by shell.
+ */
+mrb_value shell2solid(mrb_state* mrb, mrb_value self)
+{
+    mrb_int obj;
+	int argc = mrb_get_args(mrb, "i", &obj);
+
+	Handle(AIS_Shape) hashape = ::get(obj);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such specified object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    mrb_value result;
+
+    TopoDS_Solid solid;
+    TopoDS_Shape shape = hashape->Shape();
+    BRepBuilderAPI_MakeSolid solid_maker;
+    
+	for (TopExp_Explorer ex(shape, TopAbs_SHELL); ex.More(); ex.Next()) {
+		TopoDS_Shell shell = TopoDS::Shell(ex.Current());
+        solid_maker.Add(shell);
+	}
+	if (solid_maker.IsDone()) {
+		solid = solid_maker.Solid();
+        result = mrb_fixnum_value(::set(solid));
+	}
+	else {
+		static const char m[] = "Failed to make a solid by shell.";
+        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    return result;
+}
+
+/**
  * \brief 
  */
 mrb_value obj2brep(mrb_state* mrb, mrb_value self)
