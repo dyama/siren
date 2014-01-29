@@ -31,7 +31,10 @@
 #include <Quantity_NameOfColor.hxx>
 #include <Aspect_TypeOfLayer.hxx>
 
+#include <Aspect_TypeOfDisplayText.hxx>
+
 //collections
+#include <TCollection.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
@@ -149,6 +152,11 @@
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
 
+// BRep Mesh
+#include <BRepMesh.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
+#include <Poly_Triangulation.hxx>
+
 //Shape fix
 #include <ShapeFix_ShapeTolerance.hxx>
 #include <ShapeFix_Wire.hxx>
@@ -182,6 +190,7 @@
 #pragma comment (lib, "TKGeomBase.lib") // for GCPnts_UniformDeflection
 #pragma comment (lib, "TKHLR.lib")
 #pragma comment (lib, "TKMath.lib")
+#pragma comment (lib, "TKMesh.lib")     // for triangulation
 #pragma comment (lib, "TKPShape.lib")
 #pragma comment (lib, "TKPrim.lib")
 #pragma comment (lib, "TKService.lib")

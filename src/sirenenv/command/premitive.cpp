@@ -423,6 +423,7 @@ mrb_value loft(mrb_state* mrb, mrb_value self)
     mrb_value result;
     TopoDS_Shape shape;
     try {
+        //ts.SetSmoothing(Standard_True);
         ts.Build();
 		shape = ts.Shape();
     	result = mrb_fixnum_value(::set(shape));

@@ -18,6 +18,11 @@ bool OCCViewer::mruby_init()
 
 	// コマンドの登録
 
+    // 実装予定コマンド
+    // transparency obj val ... 不透明度設定。valを省略すると現在設定されている値を返す。
+    // 視点制御系コマンド
+    // ビュー管理系コマンド
+
 	// General commands
 	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
 	regcmd("version",   &version,   0,0, "",                                "version() -> String");
@@ -82,6 +87,7 @@ bool OCCViewer::mruby_init()
 	regcmd("wire2pts",  &wire2pts,  1,1, "Convert wire to points.",         "wire2pts(ObjID) -> Ary[[X, Y, Z], ...]");
 	regcmd("wire2plane",&wire2plane,1,0, "Make a plane.",                   "wire2plane( Close wire ObjID ) -> String");
 	regcmd("shell2solid",&shell2solid,1,0, "Make a solid by shell.",        "shell2solid(ObjID) -> ObjID");
+    regcmd("triangle",  &triangle,  1,2, "Make triangle mesh from face.",   "triangle(ObjID, Deflection, Angle) -> ObjID");
 
 
 	regcmd("obj2brep",  &obj2brep,  1,0, "Object to OpenCASCADE BRep.",     "obj2brep(obj) -> String");
