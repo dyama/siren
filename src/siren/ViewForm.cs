@@ -52,10 +52,10 @@ namespace siren
         /// <summary>
         /// Viewer3d 初期化
         /// </summary>
-		public void InitV3D()
+		public void InitV3D(bool is_raytracing)
 		{
             IntPtr handle = this.Handle;
-            if (!myViewer.InitViewer(handle)) {
+            if (!myViewer.InitViewer(handle, is_raytracing, false)) {
                 MessageBox.Show("グラフィックシステム初期化エラー", "Error!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

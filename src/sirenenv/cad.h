@@ -19,10 +19,10 @@ private:
 	OCCViewer* myOCCViewer;
 public:
 
-	bool InitViewer(System::IntPtr wnd)
+	bool InitViewer(System::IntPtr wnd, bool is_raytracing, bool is_persepective)
 	{
 		if (myOCCViewer != NULL)
-			return myOCCViewer->InitViewer(wnd.ToPointer());
+			return myOCCViewer->InitViewer(wnd.ToPointer(), is_raytracing, is_persepective);
 		else
 			return false;
 	}
@@ -334,10 +334,10 @@ public:
 		else return -1;
 	}
 
-	void CreateNewView(System::IntPtr wnd)
+	void CreateNewView(System::IntPtr wnd, bool is_raytracing)
 	{
 		if (myOCCViewer != NULL)
-			myOCCViewer->CreateNewView(wnd.ToPointer());
+			myOCCViewer->CreateNewView(wnd.ToPointer(), is_raytracing);
 	}
 
 	bool SetAISContext(Viewer^ v)

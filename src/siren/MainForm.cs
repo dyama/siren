@@ -191,7 +191,7 @@ namespace siren
             newForm.Text = str;
 			newForm.Show();
 			newForm.InitViewer();
-			newForm.InitV3D();
+			newForm.InitV3D(false);
             setToolBarButtonState();
             newForm.getterm().setChangeStateFunc(setToolBarButtonState);
 			this.Cursor=System.Windows.Forms.Cursors.Default;
@@ -308,8 +308,8 @@ namespace siren
             newViewer.Show();
             newViewer.InitViewer();
             newViewer.SetContext(curForm.Viewer);
-            newViewer.Viewer.CreateNewView(newViewer.Handle);
-            {
+            newViewer.Viewer.CreateNewView(newViewer.Handle, false);
+            { // Setting title bar text
                 string title = curForm.Text;
                 System.Text.StringBuilder bld= new System.Text.StringBuilder(title);
                 char c = bld[title.Length - 1];
@@ -492,6 +492,7 @@ namespace siren
                 tsbCascade.Enabled = true;
                 tsbTile.Enabled = true;
                 tsbDump.Enabled = true;
+                tsbRender.Enabled = true;
                 // ----
                 tsbPlane.Enabled = true;
                 tsbBox.Enabled = true;

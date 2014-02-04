@@ -33,33 +33,27 @@ OCCViewer::~OCCViewer(void)
 /**
  * \brief ビューの初期化
  */
-void OCCViewer::initViewAppearance()
+void OCCViewer::initViewAppearance(bool is_raytracing, bool is_shadow, bool is_antialias, bool is_reflection)
 {
-#if 1
-	// Enable ray tracing mode
-	view->SetRaytracingMode();
-	view->SetRasterizationMode(); // OpenGL rasterize rennaring mode
-	view->EnableGLLight(Standard_True);
-	view->EnableRaytracedShadows();
-	view->EnableRaytracedAntialiasing();
-	view->EnableRaytracedReflections();
-	//view->EnableDepthTest(Standard_True);
-#endif
+    if (is_raytracing) { // Enable ray tracing mode
+        view->SetRaytracingMode();
+        view->EnableGLLight(Standard_True);
+        is_shadow     ? view->EnableRaytracedShadows()      : view->DisableRaytracedShadows();
+        is_antialias  ? view->EnableRaytracedAntialiasing() : view->DisableRaytracedAntialiasing();
+        is_reflection ? view->EnableRaytracedReflections()  : view->DisableRaytracedReflections();
+    }
+    else { // OpenGL rasterize rennaring mode
+        view->SetRasterizationMode();
+    }
 	//view->SetShadingModel(V3d_GOURAUD);
 
-	//view->DisableRaytracedAntialiasing();
-	//view->DisableRaytracedReflections();
-	//view->DisableRaytracedShadows();
-
-	// Background color
-#if 1
-    Quantity_Color color_top(0.00, 0.40, 0.70, Quantity_TOC_RGB);
-    Quantity_Color color_btm(0.00, 0.03, 0.05, Quantity_TOC_RGB);
-#else
-    Quantity_Color color_top(0.05, 0.05, 0.05, Quantity_TOC_RGB);
-    Quantity_Color color_btm(0.40, 0.40, 0.40, Quantity_TOC_RGB);
-#endif
-    view->SetBgGradientColors(color_top, color_btm, Aspect_GFM_VER, Standard_False);
+    { // Background color
+        Quantity_Color color_top(0.35, 0.35, 0.35, Quantity_TOC_RGB);
+        Quantity_Color color_btm(0.10, 0.10, 0.10, Quantity_TOC_RGB);
+        //Quantity_Color color_top(0.00, 0.40, 0.70, Quantity_TOC_RGB);
+        //Quantity_Color color_btm(0.00, 0.03, 0.05, Quantity_TOC_RGB);
+        view->SetBgGradientColors(color_top, color_btm, Aspect_GFM_VER, Standard_False);
+    }
 
 	// Show trihedron on 3d viewer
     view->TriedronDisplay(Aspect_TOTP_RIGHT_UPPER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER);
@@ -83,35 +77,6 @@ void OCCViewer::initViewAppearance()
 	view->SetUp(0.0, 0.0, 1.0);
 	view->SetCenter(0.0, 0.0);
 
-#if 0
-	// test for layer
-	Handle(Visual3d_Layer) lay
-		= new Visual3d_Layer(viewer->Viewer(), Aspect_TOL_OVERLAY, Standard_False);
-	lay->Clear();
-	lay->Begin();
-		lay->SetViewport(800, 600);
-		lay->SetTransparency(0.5);
-		lay->BeginPolygon();
-			lay->SetColor(Quantity_Color(1., 1., 1., Quantity_TOC_RGB));
-			lay->AddVertex(.95, -.9);
-			lay->AddVertex(.95, -.95);
-			lay->AddVertex(.8, -.95);
-			lay->AddVertex(.8, -.9);
-			lay->AddVertex(.95, -.9);
-		lay->ClosePrimitive();
-		lay->BeginPolyline();
-			lay->SetColor(Quantity_Color(1., 1., 1., Quantity_TOC_RGB));
-			lay->AddVertex(-.95, .9);
-			lay->AddVertex(-.95, -.5);
-			lay->AddVertex(-.8, -.5);
-			lay->AddVertex(-.8, .9);
-			lay->AddVertex(-.95, .9);
-		lay->ClosePrimitive();
-		//lay->DrawText((Standard_CString)"siren", 0, 0, 120);
-		//
-	lay->End();
-#endif
-
 	//view->SetAntialiasingOn();
 	//view->SetClipPlanes();
 	//view->SetFocale(50000);
@@ -126,12 +91,12 @@ void OCCViewer::initViewAppearance()
 /**
  * \brief ビューアの初期化
  */
-bool OCCViewer::InitViewer(void* wnd)
+bool OCCViewer::InitViewer(void* wnd, bool is_raytracing, bool is_parsepective)
 {
 	// init graphic driver
     try {
         Handle(Aspect_DisplayConnection) aDisplayConnection;
-        myGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
+        myGraphicDriver = Graphic3d::InitGraphicDriver(aDisplayConnection);
     }
     catch (Standard_Failure) {
         return false;
@@ -150,12 +115,13 @@ bool OCCViewer::InitViewer(void* wnd)
 		= Handle(OpenGl_GraphicDriver)::DownCast(viewer->Driver());
 	aDriver->ChangeOptions().vboDisable = Standard_False;
 
-#if 0
-	viewer->Init();
+	//viewer->Init();
+	viewer->InitDefinedViews();
+
+#if 1
 	viewer->SetDefaultLights();
 	viewer->SetLightOn();
 #else
-	viewer->InitDefinedViews();
 	Handle(V3d_DirectionalLight) light = new V3d_DirectionalLight(viewer, V3d_Zneg);
 	//light->Position(V3d_Coodinate(0, 0, 1000);
 	//light->SetHeadlight(Standard_False);
@@ -195,8 +161,49 @@ bool OCCViewer::InitViewer(void* wnd)
 	if (!aWNTWindow->IsMapped()) 
 		 aWNTWindow->Map();
 
-	initViewAppearance();
+    initViewAppearance(is_raytracing, true, true, true);
 		
+#if 0
+    {
+        //viewer->Driver()->Text((Standard_CString)"siren", 0.5, 0.5, 120.0);
+        Standard_Integer w,h;
+        Handle(Aspect_Window) hWin = view->Window();
+        hWin->Size(w, h);
+
+        // test for layer
+        Handle(Visual3d_Layer) lay
+            = new Visual3d_Layer(viewer->Viewer(), Aspect_TOL_OVERLAY, Standard_False);
+        lay->Clear();
+        lay->Begin();
+        {
+            lay->SetViewport(1600, 1000);
+            //lay->SetTransparency(0.5);
+
+            lay->BeginPolygon(); {
+                lay->SetColor(Quantity_Color(1., 0., 0., Quantity_TOC_RGB));
+                lay->AddVertex(.95, -.9);
+                lay->AddVertex(.95, -.95);
+                lay->AddVertex(.8, -.95);
+                lay->AddVertex(.8, -.9);
+                lay->AddVertex(.95, -.9);
+            } lay->ClosePrimitive();
+            lay->BeginPolyline(); {
+                lay->SetColor(Quantity_Color(1., 1., 1., Quantity_TOC_RGB));
+                lay->AddVertex(-.95, .9);
+                lay->AddVertex(-.95, -.5);
+                lay->AddVertex(-.8, -.5);
+                lay->AddVertex(-.8, .9);
+                lay->AddVertex(-.95, .9);
+            } lay->ClosePrimitive();
+
+            //lay->SetTextAttributes("Times-Roman", Aspect_TODT_NORMAL, Quantity_Color(Quantity_NOC_ORANGE));
+            //lay->SetTextAttributes((Standard_CString)"Arial", Aspect_TODT_NORMAL, Quantity_Color(Quantity_NOC_WHITE));
+            lay->DrawText((Standard_CString)"A", -2.0, 0.0, 500.0);
+        }
+        lay->End();
+    }
+#endif
+
 	// grid
 	{
 		gp_Pnt p(0, 0, 0);
@@ -216,9 +223,9 @@ bool OCCViewer::InitViewer(void* wnd)
 		viewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
 	}
 
-	aiscxt->UpdateCurrentViewer();
-
 	mruby_init();
+
+	aiscxt->UpdateCurrentViewer();
 
 	return true;
 }
@@ -742,7 +749,7 @@ int OCCViewer::DisplayMode(void)
 	return mode;
 }
 
-void OCCViewer::CreateNewView(void* wnd)
+void OCCViewer::CreateNewView(void* wnd, bool is_raytracing)
 {
 	if (aiscxt.IsNull())
 		return;
@@ -758,7 +765,7 @@ void OCCViewer::CreateNewView(void* wnd)
 	aWNTWindow->Size(w,h);
 	if (!aWNTWindow->IsMapped()) 
 		 aWNTWindow->Map();
-	initViewAppearance();
+    initViewAppearance(is_raytracing, false, false, false);
 }
 
 bool OCCViewer::SetAISContext(OCCViewer* Viewer)
