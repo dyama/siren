@@ -87,6 +87,7 @@
 #include <gp_Pln.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <GeomAPI_Interpolate.hxx>
+#include <GeomAPI_IntCS.hxx>
 //csfdb I/E
 #include <Message_ProgressIndicator.hxx>
 #include <FSD_File.hxx>

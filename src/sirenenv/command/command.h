@@ -49,6 +49,7 @@ mrb_value volume      (mrb_state*, mrb_value);
 mrb_value cog         (mrb_state*, mrb_value);
 mrb_value intersect   (mrb_state*, mrb_value);
 mrb_value split       (mrb_state*, mrb_value);
+mrb_value intcs       (mrb_state*, mrb_value);
 
 // Premitive
 mrb_value vertex      (mrb_state*, mrb_value);

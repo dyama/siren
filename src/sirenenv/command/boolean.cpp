@@ -251,3 +251,53 @@ mrb_value split(mrb_state* mrb, mrb_value self)
 	TopoDS_Shape shape = splitter.Shape();
 	return mrb_fixnum_value(::set(shape));
 }
+
+/**
+ * \brief サーフェスとカーブの交点を得る
+ */
+/*
+ * GeomAPI_IntCS
+ * IntCurvesFace_ShapeIntersector
+ * IntCurvesFace_Intersector
+ */
+mrb_value intcs(mrb_state* mrb, mrb_value self)
+{
+    mrb_int c, s;
+	int argc = mrb_get_args(mrb, "ii", &c, &s);
+
+	Handle(AIS_Shape) hacurve = ::get(c);
+	if (hacurve.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	Handle(AIS_Shape) hasurf = ::get(s);
+	if (hasurf.IsNull()) {
+		static const char m[] = "No such object name of specified at second.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    mrb_value result = mrb_ary_new(mrb);
+
+    Standard_Real first, last;
+    TopExp_Explorer exc, exs;
+
+    for (exc.Init(hacurve->Shape(), TopAbs_EDGE); exc.More(); exc.Next()) {
+        TopoDS_Edge edge = TopoDS::Edge(exc.Current());
+        Handle(Geom_Curve) gcurve = BRep_Tool::Curve(edge, first, last);
+
+        for (exs.Init(hasurf->Shape(), TopAbs_FACE); exs.More(); exs.Next()) {
+            TopoDS_Face face = TopoDS::Face(exs.Current());
+            Handle(Geom_Surface) gsurf  = BRep_Tool::Surface(face);
+            GeomAPI_IntCS isc = GeomAPI_IntCS(gcurve, gsurf);
+            if (!isc.IsDone())
+                continue;
+            for (int i = 1; i <= isc.NbPoints() ; i++ ) {
+               gp_Pnt p = isc.Point(i);
+               mrb_value item = pnt2ar(mrb, p);
+        	   mrb_ary_push(mrb, result, item);
+            }
+        }
+    }
+
+    return result;
+}

@@ -64,7 +64,9 @@ bool OCCViewer::mruby_init()
 	regcmd("fuse",      &fuse,      2,1, "Fuse boolean operation.",         "fuse(obj1, obj2) -> String");
 	regcmd("volume",    &volume,    1,0, "Get volume of object.",           "volume(obj) -> float");
 	regcmd("cog",       &cog,       1,0, "Get center position of gravity",  "cog(obj) -> float[X, Y, Z]");
-	regcmd("intersect", &intersect, 2,0, "Get intersection line.",          "intersect(obj1, obj2) -> ObjID)");
+	regcmd("intersect", &intersect, 2,0, "Get intersection line.",          "intersect(obj1, obj2) -> ObjID");
+	regcmd("intcs",     &intcs,     2,0, "Intersection Curve x Surface",    "intcs(obj_curve, obj_surf) -> [float[X, Y, Z], ...]");
+
 
 	regcmd("split",     &split,     2,0, "",                                "");
 
