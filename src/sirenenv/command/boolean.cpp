@@ -263,7 +263,8 @@ mrb_value split(mrb_state* mrb, mrb_value self)
 mrb_value intcs(mrb_state* mrb, mrb_value self)
 {
     mrb_int c, s;
-	int argc = mrb_get_args(mrb, "ii", &c, &s);
+    mrb_bool with_normal = FALSE;
+	int argc = mrb_get_args(mrb, "ii|b", &c, &s, &with_normal);
 
 	Handle(AIS_Shape) hacurve = ::get(c);
 	if (hacurve.IsNull()) {
@@ -292,9 +293,25 @@ mrb_value intcs(mrb_state* mrb, mrb_value self)
             if (!isc.IsDone())
                 continue;
             for (int i = 1; i <= isc.NbPoints() ; i++ ) {
+               // Intersect point
                gp_Pnt p = isc.Point(i);
                mrb_value item = pnt2ar(mrb, p);
         	   mrb_ary_push(mrb, result, item);
+
+               // Normal vector on a point
+               if (with_normal) {
+                   Quantity_Parameter u, v, w;
+                   isc.Parameters(i, u, v, w);
+                   BRepAdaptor_Surface aSurface(face);
+                   gp_Vec ut, vt;
+                   gp_Pnt pt;
+                   aSurface.D1(u, v, pt, ut, vt);
+                   gp_Vec normal = ut.Crossed(vt);
+                   normal.Normalize();
+                   gp_Pnt np(normal.X(), normal.Y(), normal.Z());
+                   mrb_value a = pnt2ar(mrb, np);
+            	   mrb_ary_push(mrb, result, a);
+               }
             }
         }
     }

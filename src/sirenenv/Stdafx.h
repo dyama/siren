@@ -147,6 +147,7 @@
 #include <Bnd_Box.hxx>
 #include <GCPnts_UniformDeflection.hxx> // wire2pts
 #include <BRepAdaptor_Curve.hxx>        // wire2pts
+#include <BRepAdaptor_Surface.hxx>
 #include <IntAna_IntConicQuad.hxx>
 
 // for volume
