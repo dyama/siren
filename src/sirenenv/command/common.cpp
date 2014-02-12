@@ -105,3 +105,15 @@ mrb_value pnt2ar(mrb_state* mrb, const gp_Pnt& rPnt)
 	res[2] = mrb_float_value(mrb, rPnt.Z());
 	return mrb_ary_new_from_values(mrb, 3, res);
 }
+
+/**
+ * \brief OCCのgp_Vecをmrubyの配列オブジェクトに変換する
+ */
+mrb_value vec2ar(mrb_state* mrb, const gp_Vec& rVec)
+{
+	mrb_value res[3];
+	res[0] = mrb_float_value(mrb, rVec.X());
+	res[1] = mrb_float_value(mrb, rVec.Y());
+	res[2] = mrb_float_value(mrb, rVec.Z());
+	return mrb_ary_new_from_values(mrb, 3, res);
+}

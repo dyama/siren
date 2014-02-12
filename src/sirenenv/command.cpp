@@ -33,6 +33,10 @@ bool OCCViewer::mruby_init()
 	regcmd("type",      &type,      1,0, "Get type of object.",             "type(ObjID) -> Type");
 	regcmd("exist",     &exist,     1,0, "Check exist.",                    "exist(ObjID) -> Boolean");
 	regcmd("location",  &location,  1,1, "Get/Set location of shape in WCS.","location(ObjID, [X,Y,Z]) -> Ary[X,Y,Z]");
+    regcmd("cparam",    &cparam,    2,0, "Get curve parameter at a point.", "cparam(obj, [X, Y, Z]) -> [int index, float param]");
+    regcmd("cpoint",    &cpoint,    2,0, "Get point from parameter.",       "cpoint(obj, cparam) -> [X, Y, Z]");
+    regcmd("ccurvature",&ccurvature,2,0, "Get curvature vector.",           "ccurvature(obj, cparam) -> [X, Y, Z]");
+    regcmd("ctangent",  &ctangent  ,2,0, "Get tangent vector.",             "ctangent(obj, cparam) -> [X, Y, Z]");
 
 	// Edit object commands
 	regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(ObjID) -> ObjID");

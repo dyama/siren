@@ -22,6 +22,7 @@ gp_Ax1*   ar2ax1    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
 gp_Ax2*   ar2ax2    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
 gp_Ax3*   ar2ax3    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
 mrb_value pnt2ar    (mrb_state* mrb, const gp_Pnt& rPnt);
+mrb_value vec2ar    (mrb_state* mrb, const gp_Vec& rVec);
 
 int set(const TopoDS_Shape& shape);
 int set(const TopoDS_Shape& shape, int draw);

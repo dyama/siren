@@ -166,6 +166,8 @@
 // for wire
 #include <ShapeExtend_WireData.hxx>
 
+#include <ShapeAnalysis_Curve.hxx>
+
 // new 
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>

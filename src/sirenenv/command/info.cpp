@@ -105,3 +105,180 @@ mrb_value bndbox(mrb_state* mrb, mrb_value self)
 
 	return mrb_ary_new_from_values(mrb, 2, res);
 }
+
+/**
+ * \brief 線上点における曲線パラメータを取得する
+ */
+mrb_value cparam(mrb_state* mrb, mrb_value self)
+{
+	mrb_int target;
+    mrb_value xyz;
+	int argc = mrb_get_args(mrb, "iA", &target, &xyz);
+
+	Handle(AIS_Shape) hashape = ::get(target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    gp_Pnt p = *::ar2pnt(mrb, xyz);
+	TopoDS_Shape shape = hashape->Shape();
+
+    Standard_Real tol = 1.0e-7;
+    TopExp_Explorer exp(shape, TopAbs_EDGE);
+    ShapeAnalysis_Curve ana;
+    gp_Pnt pp;
+
+    Standard_Real param, distance;
+    int n; // index
+
+    for (n = 0; exp.More(); n++, exp.Next()) {
+        TopoDS_Edge e = TopoDS::Edge(exp.Current());
+        if (e.IsNull())
+            continue;
+
+        BRepAdaptor_Curve gcurve(e);
+
+        distance = ana.Project(gcurve, p, tol, pp, param);
+
+        if (fabs(distance) <= tol) {
+            break;
+        }
+    }
+
+	mrb_value res[2];
+	res[0] = mrb_fixnum_value(n);
+	res[1] = mrb_float_value(mrb, param);
+
+	return mrb_ary_new_from_values(mrb, 2, res);
+}
+
+/**
+ * \brief 曲線パラメータに対応する点座標を取得する
+ */
+mrb_value cpoint(mrb_state* mrb, mrb_value self)
+{
+	mrb_int target;
+    mrb_value params;
+	int argc = mrb_get_args(mrb, "iA", &target, &params);
+
+	Handle(AIS_Shape) hashape = ::get(target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	TopoDS_Shape shape = hashape->Shape();
+
+    if (mrb_ary_len(mrb, params) != 2) {
+		static const char m[] = "Illigal array of params.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    int index = mrb_fixnum(mrb_ary_ref(mrb, params, 0));
+    double param = mrb_float(mrb_ary_ref(mrb, params, 1));
+
+    TopExp_Explorer exp(shape, TopAbs_EDGE);
+    for (int i=0; i<index && exp.More(); i++, exp.Next())
+        ;
+    TopoDS_Edge e = TopoDS::Edge(exp.Current());
+    if (e.IsNull()) {
+		static const char m[] = "Illigal index of params.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    BRepAdaptor_Curve c(e);
+
+    gp_Pnt p;
+    gp_Vec v1, v2;
+    c.D2((Standard_Real)param, p, v1, v2);
+
+    // 幾何誤差丸め
+    // http://wasabiz.hatenablog.com/entry/2013/08/07/144145
+    p = gp_Pnt((float)p.X(), (float)p.Y(), (float)p.Z());
+
+    return ::pnt2ar(mrb, p);
+}
+
+/**
+ * \brief 線上点(パラメータ指定)における曲率線ベクトルを取得する
+ */
+mrb_value ccurvature(mrb_state* mrb, mrb_value self)
+{
+	mrb_int target;
+    mrb_value params;
+	int argc = mrb_get_args(mrb, "iA", &target, &params);
+
+	Handle(AIS_Shape) hashape = ::get(target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	TopoDS_Shape shape = hashape->Shape();
+
+    if (mrb_ary_len(mrb, params) != 2) {
+		static const char m[] = "Illigal array of params.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    int index = mrb_fixnum(mrb_ary_ref(mrb, params, 0));
+    double param = mrb_float(mrb_ary_ref(mrb, params, 1));
+
+    TopExp_Explorer exp(shape, TopAbs_EDGE);
+    for (int i=0; i<index && exp.More(); i++, exp.Next())
+        ;
+    TopoDS_Edge e = TopoDS::Edge(exp.Current());
+    if (e.IsNull()) {
+		static const char m[] = "Illigal index of params.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    BRepAdaptor_Curve c(e);
+
+    gp_Pnt p;
+    gp_Vec v1, v2;
+    c.D2((Standard_Real)param, p, v1, v2);
+
+    return ::vec2ar(mrb, v2);
+}
+
+/**
+ * \brief 線上点(パラメータ指定)における接線ベクトルを取得する
+ */
+mrb_value ctangent(mrb_state* mrb, mrb_value self)
+{
+	mrb_int target;
+    mrb_value params;
+	int argc = mrb_get_args(mrb, "iA", &target, &params);
+
+	Handle(AIS_Shape) hashape = ::get(target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	TopoDS_Shape shape = hashape->Shape();
+
+    if (mrb_ary_len(mrb, params) != 2) {
+		static const char m[] = "Illigal array of params.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    int index = mrb_fixnum(mrb_ary_ref(mrb, params, 0));
+    double param = mrb_float(mrb_ary_ref(mrb, params, 1));
+
+    TopExp_Explorer exp(shape, TopAbs_EDGE);
+    for (int i=0; i<index && exp.More(); i++, exp.Next())
+        ;
+    TopoDS_Edge e = TopoDS::Edge(exp.Current());
+    if (e.IsNull()) {
+		static const char m[] = "Illigal index of params.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    BRepAdaptor_Curve c(e);
+
+    gp_Pnt p;
+    gp_Vec v1, v2;
+    c.D2((Standard_Real)param, p, v1, v2);
+
+    return ::vec2ar(mrb, v1);
+}

@@ -24,6 +24,10 @@ mrb_value location    (mrb_state*, mrb_value);
 mrb_value type        (mrb_state*, mrb_value);
 mrb_value bndbox      (mrb_state*, mrb_value);
 mrb_value selected    (mrb_state*, mrb_value);
+mrb_value cparam      (mrb_state*, mrb_value);
+mrb_value cpoint      (mrb_state*, mrb_value);
+mrb_value ccurvature  (mrb_state*, mrb_value);
+mrb_value ctangent    (mrb_state*, mrb_value);
 
 // group
 mrb_value compound    (mrb_state*, mrb_value);
