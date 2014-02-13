@@ -38,10 +38,12 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
+#include <TColStd_Array2OfReal.hxx>
 #include <PTColStd_PersistentTransientMap.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray1OfVec.hxx>
+#include <TColgp_Array2OfPnt.hxx>
 
 //for OCC graphic
 #include <Aspect_DisplayConnection.hxx>
@@ -86,6 +88,7 @@
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
 #include <Geom_Axis2Placement.hxx>
+#include <Geom_BezierSurface.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <GeomAPI_IntCS.hxx>
 //csfdb I/E

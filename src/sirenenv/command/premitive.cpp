@@ -434,3 +434,50 @@ mrb_value loft(mrb_state* mrb, mrb_value self)
     }
     return result;
 }
+
+/**
+ * \brief ポールとウェイトを指定してベジエ曲面を作成する
+ */
+mrb_value bzsurf(mrb_state* mrb, mrb_value self)
+{
+	mrb_value ptary, wtary;
+	int argc = mrb_get_args(mrb, "A|A", &ptary, &wtary);
+
+    int rlen = mrb_ary_len(mrb, ptary);
+    int clen = mrb_ary_len(mrb, mrb_ary_ref(mrb, ptary, 0));
+
+    TColgp_Array2OfPnt poles(0, rlen-1, 0, clen-1);
+
+    for (int r=0; r<rlen; r++) {
+        mrb_value ar = mrb_ary_ref(mrb, ptary, r);
+        for (int c=0; c<clen; c++) {
+            mrb_value p = mrb_ary_ref(mrb, ar, c);
+            gp_Pnt pp = *::ar2pnt(mrb, p);
+            poles.SetValue(r, c, pp);
+        }
+    }
+
+    Handle(Geom_BezierSurface) s = NULL;
+
+    if (argc == 2) {
+        // ウェイトが指定された場合
+        TColStd_Array2OfReal weights(0, rlen-1, 0, clen-1);
+
+        for (int r=0; r<rlen; r++) {
+            mrb_value ar = mrb_ary_ref(mrb, wtary, r);
+            for (int c=0; c<clen; c++) {
+                mrb_value val = mrb_ary_ref(mrb, ar, c);
+                double value = mrb_float(val);
+                weights.SetValue(r, c, (Standard_Real)value);
+            }
+        }
+        s = new Geom_BezierSurface(poles, weights);
+    }
+    else {
+        s = new Geom_BezierSurface(poles);
+    }
+
+    TopoDS_Face f = BRepBuilderAPI_MakeFace(s, 1.0e-7);
+
+	return mrb_fixnum_value(::set(f));
+}

@@ -99,10 +99,15 @@ gp_Ax3* ar2ax3(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
  */
 mrb_value pnt2ar(mrb_state* mrb, const gp_Pnt& rPnt)
 {
+    // Ç¢Ç¢â¡å∏Ç»ä€Çﬂ
+    // Ç«Ç§Ç…Ç©ÇµÇ»Ç¢Ç∆Ç»Ç†Å[
+    // http://wasabiz.hatenablog.com/entry/2013/08/07/144145
+    gp_Pnt p = gp_Pnt((float)rPnt.X(), (float)rPnt.Y(), (float)rPnt.Z());
+
 	mrb_value res[3];
-	res[0] = mrb_float_value(mrb, rPnt.X());
-	res[1] = mrb_float_value(mrb, rPnt.Y());
-	res[2] = mrb_float_value(mrb, rPnt.Z());
+	res[0] = mrb_float_value(mrb, p.X());
+	res[1] = mrb_float_value(mrb, p.Y());
+	res[2] = mrb_float_value(mrb, p.Z());
 	return mrb_ary_new_from_values(mrb, 3, res);
 }
 
@@ -111,9 +116,14 @@ mrb_value pnt2ar(mrb_state* mrb, const gp_Pnt& rPnt)
  */
 mrb_value vec2ar(mrb_state* mrb, const gp_Vec& rVec)
 {
+    // Ç¢Ç¢â¡å∏Ç»ä€Çﬂ
+    // Ç«Ç§Ç…Ç©ÇµÇ»Ç¢Ç∆Ç»Ç†Å[
+    // http://wasabiz.hatenablog.com/entry/2013/08/07/144145
+    gp_Vec v = gp_Vec((float)rVec.X(), (float)rVec.Y(), (float)rVec.Z());
+
 	mrb_value res[3];
-	res[0] = mrb_float_value(mrb, rVec.X());
-	res[1] = mrb_float_value(mrb, rVec.Y());
-	res[2] = mrb_float_value(mrb, rVec.Z());
+	res[0] = mrb_float_value(mrb, v.X());
+	res[1] = mrb_float_value(mrb, v.Y());
+	res[2] = mrb_float_value(mrb, v.Z());
 	return mrb_ary_new_from_values(mrb, 3, res);
 }

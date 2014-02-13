@@ -87,7 +87,8 @@ bool OCCViewer::mruby_init()
 	regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
 	regcmd("wire",		&wire,		1,0, "Make a wire.",					"wire( Ary[edge or wire or comp obj] ) -> String");
 	regcmd("sweep",     &sweep,		2,0, "Make a sweep model.",             "sweep( profile obj, vec[X, Y, Z] ) -> String | sweep( profile obj, path obj ) -> String");
-	regcmd("loft",      &loft,      1,0, "Make loft surface.",              "loft(Array[obj]) -> ObjID");
+	regcmd("loft",      &loft,      1,0, "Make a loft surface.",            "loft(Array[obj]) -> ObjID");
+    regcmd("bzsurf",    &bzsurf,    1,1, "Make a bezier surface.",          "bzsurf([[pu, ...], [pv, ...]], [[wu, ...], [wv, ...]]) -> ObjID");
 
 	// Convertion commands
 	regcmd("wire2pts",  &wire2pts,  1,1, "Convert wire to points.",         "wire2pts(ObjID) -> Ary[[X, Y, Z], ...]");

@@ -291,6 +291,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\NOTE.txt"
+			>
+		</File>
+		<File
 			RelativePath=".\OCCViewer.cpp"
 			>
 		</File>

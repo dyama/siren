@@ -192,10 +192,6 @@ mrb_value cpoint(mrb_state* mrb, mrb_value self)
     gp_Vec v1, v2;
     c.D2((Standard_Real)param, p, v1, v2);
 
-    // Šô‰½Œë·ŠÛ‚ß
-    // http://wasabiz.hatenablog.com/entry/2013/08/07/144145
-    p = gp_Pnt((float)p.X(), (float)p.Y(), (float)p.Z());
-
     return ::pnt2ar(mrb, p);
 }
 
