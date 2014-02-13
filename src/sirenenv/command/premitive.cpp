@@ -481,3 +481,36 @@ mrb_value bzsurf(mrb_state* mrb, mrb_value self)
 
 	return mrb_fixnum_value(::set(f));
 }
+
+/**
+ * \brief オフセット曲面を作成する
+ */
+mrb_value offset(mrb_state* mrb, mrb_value self)
+{
+	mrb_int target;
+	mrb_float offset;
+	int argc = mrb_get_args(mrb, "if", &target, &offset);
+
+	Handle(AIS_Shape) hashape = ::get(target);
+	if (hashape.IsNull() ) {
+		static const char m[] = "No such specified object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+    TopoDS_Shape shape = hashape->Shape();
+
+	TopoDS_Compound	comp;
+	BRep_Builder B;
+	B.MakeCompound(comp);
+
+    TopExp_Explorer exp(shape, TopAbs_FACE);
+
+    for (; exp.More(); exp.Next()) {
+        TopoDS_Face face = TopoDS::Face(exp.Current());
+        Handle(Geom_Surface) gs = BRep_Tool::Surface(face);
+        Handle(Geom_OffsetSurface) gos = new Geom_OffsetSurface(gs, (Standard_Real)offset);
+        TopoDS_Face newface = BRepBuilderAPI_MakeFace(gos, 1.0e-7);        
+        B.Add(comp, newface);
+    }
+
+	return mrb_fixnum_value(::set(comp));
+}

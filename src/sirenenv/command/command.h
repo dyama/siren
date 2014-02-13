@@ -71,6 +71,7 @@ mrb_value wire	      (mrb_state*, mrb_value);
 mrb_value sweep       (mrb_state*, mrb_value);
 mrb_value loft        (mrb_state*, mrb_value);
 mrb_value bzsurf      (mrb_state*, mrb_value);
+mrb_value offset      (mrb_state*, mrb_value);
 
 // Convertion
 mrb_value wire2pts    (mrb_state*, mrb_value);

@@ -89,6 +89,7 @@
 #include <gp_Pln.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_BezierSurface.hxx>
+#include <Geom_OffsetSurface.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <GeomAPI_IntCS.hxx>
 //csfdb I/E
