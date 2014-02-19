@@ -78,6 +78,8 @@ namespace siren
             this.tsbRotate = new System.Windows.Forms.ToolStripButton();
             this.tsbScale = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbLoft = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbFuse = new System.Windows.Forms.ToolStripButton();
             this.tsbCut = new System.Windows.Forms.ToolStripButton();
             this.tsbCommon = new System.Windows.Forms.ToolStripButton();
@@ -188,6 +190,8 @@ namespace siren
             this.tsbRotate,
             this.tsbScale,
             this.toolStripButton6,
+            this.tsbLoft,
+            this.toolStripSeparator17,
             this.tsbFuse,
             this.tsbCut,
             this.tsbCommon,
@@ -526,6 +530,21 @@ namespace siren
             this.toolStripButton6.Name = "toolStripButton6";
             this.toolStripButton6.Size = new System.Drawing.Size(6, 25);
             // 
+            // tsbLoft
+            // 
+            this.tsbLoft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbLoft.Image = ((System.Drawing.Image)(resources.GetObject("tsbLoft.Image")));
+            this.tsbLoft.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbLoft.Name = "tsbLoft";
+            this.tsbLoft.Size = new System.Drawing.Size(23, 22);
+            this.tsbLoft.Text = "ロフト";
+            this.tsbLoft.Click += new System.EventHandler(this.tsbLoft_Click);
+            // 
+            // toolStripSeparator17
+            // 
+            this.toolStripSeparator17.Name = "toolStripSeparator17";
+            this.toolStripSeparator17.Size = new System.Drawing.Size(6, 25);
+            // 
             // tsbFuse
             // 
             this.tsbFuse.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -861,7 +880,7 @@ namespace siren
             this.tsbAxoView.Image = ((System.Drawing.Image)(resources.GetObject("tsbAxoView.Image")));
             this.tsbAxoView.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAxoView.Name = "tsbAxoView";
-            this.tsbAxoView.Size = new System.Drawing.Size(32, 22);
+            this.tsbAxoView.Size = new System.Drawing.Size(32, 20);
             this.tsbAxoView.Text = "視点";
             this.tsbAxoView.ToolTipText = "視点";
             this.tsbAxoView.ButtonClick += new System.EventHandler(this.tsbAxoView_ButtonClick);
@@ -1072,6 +1091,8 @@ namespace siren
         private ToolStripButton tsbLine;
         private ToolStripButton tsbPolyline;
         private ToolStripButton tsbCurve;
+        private ToolStripButton tsbLoft;
+        private ToolStripSeparator toolStripSeparator17;
 
     }
 }

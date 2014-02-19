@@ -695,6 +695,10 @@ namespace siren
                     tsbCommon.Enabled = true;
                     tsbIntersect.Enabled = true;
                 }
+                // オブジェクトが2個以上選択されている場合のみ有効
+                if (nb_selected >= 2) {
+                    tsbLoft.Enabled = true;
+                }
             }
             toolStripMain.Enabled = true;
             toolStripMain.ResumeLayout(true);
@@ -726,6 +730,17 @@ namespace siren
             if (curForm != null && curForm.Viewer.IsObjectSelected()) {
                 curForm.getterm().execute("a = []; selected.each { |obj| a.push(explode Stype::SOLID, obj) }");
             }
+        }
+
+        #endregion
+
+        #region "Wire operation"
+
+        private void tsbLoft_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("a = loft ??");
         }
 
         #endregion
