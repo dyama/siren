@@ -55,7 +55,12 @@ namespace siren
             this.tsbCascade = new System.Windows.Forms.ToolStripButton();
             this.tsbTile = new System.Windows.Forms.ToolStripButton();
             this.tsbDump = new System.Windows.Forms.ToolStripButton();
+            this.tsbRender = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbVertex = new System.Windows.Forms.ToolStripButton();
+            this.tsbLine = new System.Windows.Forms.ToolStripButton();
+            this.tsbPolyline = new System.Windows.Forms.ToolStripButton();
+            this.tsbCurve = new System.Windows.Forms.ToolStripButton();
             this.tsbPlane = new System.Windows.Forms.ToolStripButton();
             this.tsbBox = new System.Windows.Forms.ToolStripButton();
             this.tsbSphere = new System.Windows.Forms.ToolStripButton();
@@ -126,7 +131,6 @@ namespace siren
             this.tsbHlr = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbTerminal = new System.Windows.Forms.ToolStripButton();
-            this.tsbRender = new System.Windows.Forms.ToolStripButton();
             this.toolStripPanel2.SuspendLayout();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -163,6 +167,10 @@ namespace siren
             this.tsbDump,
             this.tsbRender,
             this.toolStripSeparator1,
+            this.tsbVertex,
+            this.tsbLine,
+            this.tsbPolyline,
+            this.tsbCurve,
             this.tsbPlane,
             this.tsbBox,
             this.tsbSphere,
@@ -203,7 +211,7 @@ namespace siren
             this.tsbTerminal});
             this.toolStripMain.Location = new System.Drawing.Point(3, 0);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(999, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(1005, 25);
             this.toolStripMain.TabIndex = 14;
             // 
             // tsbNew
@@ -301,10 +309,59 @@ namespace siren
             this.tsbDump.Text = "スクリーンショット";
             this.tsbDump.Click += new System.EventHandler(this.tsbDump_Click);
             // 
+            // tsbRender
+            // 
+            this.tsbRender.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbRender.Image = ((System.Drawing.Image)(resources.GetObject("tsbRender.Image")));
+            this.tsbRender.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbRender.Name = "tsbRender";
+            this.tsbRender.Size = new System.Drawing.Size(23, 22);
+            this.tsbRender.Text = "レンダービュー";
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // tsbVertex
+            // 
+            this.tsbVertex.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbVertex.Image = ((System.Drawing.Image)(resources.GetObject("tsbVertex.Image")));
+            this.tsbVertex.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbVertex.Name = "tsbVertex";
+            this.tsbVertex.Size = new System.Drawing.Size(23, 22);
+            this.tsbVertex.Text = "バーテックス(点)";
+            this.tsbVertex.Click += new System.EventHandler(this.tsbVertex_Click);
+            // 
+            // tsbLine
+            // 
+            this.tsbLine.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbLine.Image = ((System.Drawing.Image)(resources.GetObject("tsbLine.Image")));
+            this.tsbLine.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbLine.Name = "tsbLine";
+            this.tsbLine.Size = new System.Drawing.Size(23, 22);
+            this.tsbLine.Text = "ライン(直線)";
+            this.tsbLine.Click += new System.EventHandler(this.tsbLine_Click);
+            // 
+            // tsbPolyline
+            // 
+            this.tsbPolyline.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPolyline.Image = ((System.Drawing.Image)(resources.GetObject("tsbPolyline.Image")));
+            this.tsbPolyline.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPolyline.Name = "tsbPolyline";
+            this.tsbPolyline.Size = new System.Drawing.Size(23, 22);
+            this.tsbPolyline.Text = "ポリライン(折れ線)";
+            this.tsbPolyline.Click += new System.EventHandler(this.tsbPolyline_Click);
+            // 
+            // tsbCurve
+            // 
+            this.tsbCurve.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbCurve.Image = ((System.Drawing.Image)(resources.GetObject("tsbCurve.Image")));
+            this.tsbCurve.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbCurve.Name = "tsbCurve";
+            this.tsbCurve.Size = new System.Drawing.Size(23, 22);
+            this.tsbCurve.Text = "カーブ(曲線)";
+            this.tsbCurve.Click += new System.EventHandler(this.tsbCurve_Click);
             // 
             // tsbPlane
             // 
@@ -868,7 +925,7 @@ namespace siren
             this.tsbResetView.Image = ((System.Drawing.Image)(resources.GetObject("tsbResetView.Image")));
             this.tsbResetView.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbResetView.Name = "tsbResetView";
-            this.tsbResetView.Size = new System.Drawing.Size(23, 22);
+            this.tsbResetView.Size = new System.Drawing.Size(23, 20);
             this.tsbResetView.Text = "ビューをリセット";
             this.tsbResetView.Click += new System.EventHandler(this.tsbResetView_Click);
             // 
@@ -883,7 +940,7 @@ namespace siren
             this.tsbHlr.Image = ((System.Drawing.Image)(resources.GetObject("tsbHlr.Image")));
             this.tsbHlr.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbHlr.Name = "tsbHlr";
-            this.tsbHlr.Size = new System.Drawing.Size(23, 22);
+            this.tsbHlr.Size = new System.Drawing.Size(23, 20);
             this.tsbHlr.Text = "陰面消去";
             this.tsbHlr.ToolTipText = "隠面消去";
             this.tsbHlr.Click += new System.EventHandler(this.tsbHlr_Click);
@@ -899,18 +956,9 @@ namespace siren
             this.tsbTerminal.Image = ((System.Drawing.Image)(resources.GetObject("tsbTerminal.Image")));
             this.tsbTerminal.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbTerminal.Name = "tsbTerminal";
-            this.tsbTerminal.Size = new System.Drawing.Size(23, 22);
+            this.tsbTerminal.Size = new System.Drawing.Size(23, 20);
             this.tsbTerminal.Text = "Rubyターミナル";
             this.tsbTerminal.Click += new System.EventHandler(this.tsbTerminal_Click);
-            // 
-            // tsbRender
-            // 
-            this.tsbRender.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbRender.Image = ((System.Drawing.Image)(resources.GetObject("tsbRender.Image")));
-            this.tsbRender.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbRender.Name = "tsbRender";
-            this.tsbRender.Size = new System.Drawing.Size(23, 22);
-            this.tsbRender.Text = "レンダービュー";
             // 
             // MainForm
             // 
@@ -1020,6 +1068,10 @@ namespace siren
         private ToolStripMenuItem miBndbox;
         private ToolStripButton tsbPlane;
         private ToolStripButton tsbRender;
+        private ToolStripButton tsbVertex;
+        private ToolStripButton tsbLine;
+        private ToolStripButton tsbPolyline;
+        private ToolStripButton tsbCurve;
 
     }
 }

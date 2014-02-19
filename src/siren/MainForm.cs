@@ -217,6 +217,125 @@ namespace siren
 
         #region "Make premitive"
 
+        private void tsbVertex_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+
+            ToolStripButton button = (ToolStripButton)sender;
+            button.Checked = true;
+
+            // カウンタを1点ピックに設定
+            curForm.MousePickCount = 1;
+
+            // 確定時イベント
+            curForm.MousePickedEvent = (List<Point3d> pts) => {
+                double x, y, z;
+                x = pts[0].X;
+                y = pts[0].Y;
+                z = pts[0].Z;
+                string pos = "" + x.ToString() + "," + y.ToString() + "," + z.ToString() + "";
+                curForm.getterm().execute("a = vertex " + pos);
+                button.Checked = false;
+            };
+
+            // キャンセル時イベント
+            curForm.MousePickedCancelEvent = () => {
+                button.Checked = false;
+            };
+
+            return;
+        }
+
+        private void tsbLine_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+
+            ToolStripButton button = (ToolStripButton)sender;
+            button.Checked = true;
+
+            // カウンタを2点ピックに設定
+            curForm.MousePickCount = 2;
+
+            // 確定時イベント
+            curForm.MousePickedEvent = (List<Point3d> pts) => {
+                string spos = pts[0].to_a();
+                string tpos = pts[1].to_a();
+                curForm.getterm().execute("a = line " + spos + ", " + tpos);
+                button.Checked = false;
+            };
+
+            // キャンセル時イベント
+            curForm.MousePickedCancelEvent = () => {
+                button.Checked = false;
+            };
+
+            return;
+        }
+
+        private void tsbPolyline_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+
+            ToolStripButton button = (ToolStripButton)sender;
+            button.Checked = true;
+
+            // カウンタを上限なしに設定
+            curForm.MousePickCount = -1;
+
+            // 確定時イベント
+            curForm.MousePickedEvent = (List<Point3d> pts) => {
+                string args = string.Empty;
+                foreach (Point3d p in pts) {
+                    args += (args.Length > 0 ? ", " : "") + p.to_a();
+                }
+                curForm.getterm().execute("a = polyline [" + args + "]");
+                button.Checked = false;
+            };
+
+            // キャンセル時イベント
+            curForm.MousePickedCancelEvent = () => {
+                button.Checked = false;
+            };
+
+            return;
+        }
+
+        private void tsbCurve_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm == null)
+                return;
+
+            ToolStripButton button = (ToolStripButton)sender;
+            button.Checked = true;
+
+            // カウンタを上限なしに設定
+            curForm.MousePickCount = -1;
+
+            // 確定時イベント
+            curForm.MousePickedEvent = (List<Point3d> pts) => {
+                string args = string.Empty;
+                foreach (Point3d p in pts) {
+                    args += (args.Length > 0 ? ", " : "") + p.to_a();
+                }
+                curForm.getterm().execute("a = curve [" + args + "]");
+                button.Checked = false;
+            };
+
+            // キャンセル時イベント
+            curForm.MousePickedCancelEvent = () => {
+                button.Checked = false;
+            };
+
+            return;
+        }
+
         private void tsbPlane_Click(object sender, EventArgs e)
         {
             ViewForm curForm = (ViewForm)this.ActiveMdiChild;
@@ -494,6 +613,10 @@ namespace siren
                 tsbDump.Enabled = true;
                 tsbRender.Enabled = true;
                 // ----
+                tsbVertex.Enabled = true;
+                tsbLine.Enabled = true;
+                tsbPolyline.Enabled = true;
+                tsbCurve.Enabled = true;
                 tsbPlane.Enabled = true;
                 tsbBox.Enabled = true;
                 tsbSphere.Enabled = true;

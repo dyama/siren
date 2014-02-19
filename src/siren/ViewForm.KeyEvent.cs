@@ -91,11 +91,11 @@ namespace siren
             else if (e.Alt)
                 myCurSpKey = CurSpKey.META;
 
-            if (kemap != null && kemap.ContainsKey(e.KeyCode))
+            if (kemap != null && kemap.ContainsKey(e.KeyCode)) {
                 kemap[e.KeyCode]();
-
-			siren.MainForm parent = (siren.MainForm) this.ParentForm;
-            parent.setToolBarButtonState();
+                siren.MainForm parent = (siren.MainForm)this.ParentForm;
+                parent.setToolBarButtonState();
+            }
             
             return;
 		}

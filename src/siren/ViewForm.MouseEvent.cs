@@ -18,6 +18,9 @@ namespace siren
     public enum MouseState : int { DOWN = -1, UP = 1 }
 	public enum CurAct3d { NOTHING, ZOOM, WINZOOM, PAN, GLOPAN, ROTATE }
 
+    public delegate void evfuncMousePicked(List<Point3d> points);
+    public delegate void evfuncMousePickedCancel();
+
     public partial class ViewForm : System.Windows.Forms.Form
     {
         protected CurAct3d myCurMode;
@@ -33,6 +36,12 @@ namespace siren
 		protected int theRectDownX;
 		protected int theRectDownY;
 		protected bool IsRectVisible;
+
+        // マウスピック時のコールバック関数定義
+        public evfuncMousePicked MousePickedEvent = null;
+        public evfuncMousePickedCancel MousePickedCancelEvent = null;
+        public int MousePickCount = 0;
+        public List<Point3d> MousePickedPoints = null;
 
         protected void initMouseEvent()
         {
@@ -115,8 +124,69 @@ namespace siren
         public bool isDirectTranslateMode = false;
         private void ViewForm_Click(object sender, EventArgs e)
         {
+            MouseEventArgs mea = (MouseEventArgs)e;
+
+            // マウスによるピック イベント
+            if (this.MousePickedEvent != null) {
+
+                // Shiftが押されていたら座標を丸める
+                bool doRound = (myCurSpKey == CurSpKey.SHIFT);
+
+                if (MousePickCount > 0) {
+                    // MousePickCount が正数の時はカウントダウン式
+                    if (mea.Button == MouseButtons.Left) {
+                        if (MousePickedPoints == null)
+                            MousePickedPoints = new List<Point3d>();
+                        double x, y, z;
+                        Viewer.xy2xyz(mea.X, mea.Y, out x, out y, out z, doRound);
+                        MousePickedPoints.Add(new Point3d(x, y, z));
+                    }
+                    else {
+                        // カウントダウン式の時に左クリック以外を押すとキャンセル
+                        if (MousePickedCancelEvent != null) {
+                            MousePickedCancelEvent();
+                            MousePickedPoints = null;
+                            MousePickedEvent = null;
+                            MousePickedCancelEvent = null;
+                        }
+                    }
+                    MousePickCount -= 1;
+                }
+                else if (MousePickCount < 0) {
+                    // MousePickCount が負数の時は任意の数
+                    if (mea.Button == MouseButtons.Left) {
+                        if (MousePickedPoints == null)
+                            MousePickedPoints = new List<Point3d>();
+                        double x, y, z;
+                        Viewer.xy2xyz(mea.X, mea.Y, out x, out y, out z, doRound);
+                        MousePickedPoints.Add(new Point3d(x, y, z));
+                    }
+                    else {
+                        if (MousePickedPoints == null || MousePickedPoints.Count < 2) {
+                            // キャンセル
+                            if (MousePickedCancelEvent != null) {
+                                MousePickedCancelEvent();
+                                MousePickedPoints = null;
+                                MousePickedEvent = null;
+                                MousePickedCancelEvent = null;
+                            }
+                        }
+                        else {
+                            // 確定
+                            MousePickCount = 0;
+                        }
+                    }
+                }
+                // 終了条件
+                if (MousePickedEvent != null && MousePickCount == 0) {
+                    MousePickedEvent(MousePickedPoints);
+                    MousePickedPoints = null;
+                    MousePickedEvent = null;
+                    MousePickedCancelEvent = null;
+                }
+            }
+
             if (isDirectTranslateMode) {
-                MouseEventArgs mea = (MouseEventArgs)e;
                 if (mea.Button == MouseButtons.Left) {
                     double x, y, z;
                     this.Viewer.xy2xyz(mea.X, mea.Y, out x, out y, out z, true);
@@ -135,7 +205,6 @@ namespace siren
 				myXmin=e.X;	myYmin=e.Y;
 				myXmax=e.X;	myYmax=e.Y;
                 if (myCurSpKey == CurSpKey.CTRL) {
-                    // start the dinamic zooming....
                     this.Cursor = System.Windows.Forms.Cursors.SizeWE;
                     myCurMode = CurAct3d.ZOOM;
                 }
