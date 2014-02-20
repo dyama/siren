@@ -650,6 +650,9 @@ namespace siren
                     tsbTranslate.Enabled = true;
                     //tsbRotate.Enabled = true;
                     //tsbScale.Enabled = true;
+                    //tsbMirror.Enabled = true;
+                    // ----
+                    //tsbOffset.Enabled = true;
                     // ----
                     tsbDisplayMode.Enabled = true;
                     tsbTransparency.Enabled = true;
@@ -698,6 +701,7 @@ namespace siren
                 // オブジェクトが2個以上選択されている場合のみ有効
                 if (nb_selected >= 2) {
                     tsbLoft.Enabled = true;
+                    tsbSewing.Enabled = true;
                 }
             }
             toolStripMain.Enabled = true;
@@ -848,6 +852,13 @@ namespace siren
             ViewForm curForm = (ViewForm)this.ActiveMdiChild;
             if (curForm != null)
                 curForm.showTerminal();
+        }
+
+        private void tsbSewing_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("a = sew ??");
         }
 
     }
