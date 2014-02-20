@@ -72,7 +72,14 @@ namespace siren
             this.tsbDelete = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbCompound = new System.Windows.Forms.ToolStripButton();
-            this.tsbExplode = new System.Windows.Forms.ToolStripButton();
+            this.tsbExplode = new System.Windows.Forms.ToolStripSplitButton();
+            this.miExCompound = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExSolid = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExShell = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExFace = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExWire = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExEdge = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExVertex = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbTranslate = new System.Windows.Forms.ToolStripButton();
             this.tsbRotate = new System.Windows.Forms.ToolStripButton();
@@ -470,20 +477,82 @@ namespace siren
             this.tsbCompound.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCompound.Name = "tsbCompound";
             this.tsbCompound.Size = new System.Drawing.Size(23, 22);
-            this.tsbCompound.Text = "グループ化";
-            this.tsbCompound.ToolTipText = "グループ化";
+            this.tsbCompound.Text = "コンパウンド";
+            this.tsbCompound.ToolTipText = "コンパウンド";
             this.tsbCompound.Click += new System.EventHandler(this.tsbCompound_Click);
             // 
             // tsbExplode
             // 
             this.tsbExplode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbExplode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miExCompound,
+            this.miExSolid,
+            this.miExShell,
+            this.miExFace,
+            this.miExWire,
+            this.miExEdge,
+            this.miExVertex});
             this.tsbExplode.Image = ((System.Drawing.Image)(resources.GetObject("tsbExplode.Image")));
             this.tsbExplode.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbExplode.Name = "tsbExplode";
-            this.tsbExplode.Size = new System.Drawing.Size(23, 22);
-            this.tsbExplode.Text = "グループ解除";
-            this.tsbExplode.ToolTipText = "グループ解除";
-            this.tsbExplode.Click += new System.EventHandler(this.tsbExplode_Click);
+            this.tsbExplode.Size = new System.Drawing.Size(32, 22);
+            this.tsbExplode.Text = "エクスプロード";
+            this.tsbExplode.ToolTipText = "エクスプロード";
+            // 
+            // miExCompound
+            // 
+            this.miExCompound.Image = ((System.Drawing.Image)(resources.GetObject("miExCompound.Image")));
+            this.miExCompound.Name = "miExCompound";
+            this.miExCompound.Size = new System.Drawing.Size(166, 22);
+            this.miExCompound.Text = "コンパウンド(&C)";
+            this.miExCompound.Click += new System.EventHandler(this.miExCompound_Click);
+            // 
+            // miExSolid
+            // 
+            this.miExSolid.Image = ((System.Drawing.Image)(resources.GetObject("miExSolid.Image")));
+            this.miExSolid.Name = "miExSolid";
+            this.miExSolid.Size = new System.Drawing.Size(166, 22);
+            this.miExSolid.Text = "ソリッド(&L)";
+            this.miExSolid.Click += new System.EventHandler(this.miExSolid_Click);
+            // 
+            // miExShell
+            // 
+            this.miExShell.Name = "miExShell";
+            this.miExShell.Size = new System.Drawing.Size(166, 22);
+            this.miExShell.Text = "シェル(&S)";
+            this.miExShell.Click += new System.EventHandler(this.miExShell_Click);
+            // 
+            // miExFace
+            // 
+            this.miExFace.Image = ((System.Drawing.Image)(resources.GetObject("miExFace.Image")));
+            this.miExFace.Name = "miExFace";
+            this.miExFace.Size = new System.Drawing.Size(166, 22);
+            this.miExFace.Text = "フェイス(&F)";
+            this.miExFace.Click += new System.EventHandler(this.miExFace_Click);
+            // 
+            // miExWire
+            // 
+            this.miExWire.Image = ((System.Drawing.Image)(resources.GetObject("miExWire.Image")));
+            this.miExWire.Name = "miExWire";
+            this.miExWire.Size = new System.Drawing.Size(166, 22);
+            this.miExWire.Text = "ワイヤー(&W)";
+            this.miExWire.Click += new System.EventHandler(this.miExWire_Click);
+            // 
+            // miExEdge
+            // 
+            this.miExEdge.Image = ((System.Drawing.Image)(resources.GetObject("miExEdge.Image")));
+            this.miExEdge.Name = "miExEdge";
+            this.miExEdge.Size = new System.Drawing.Size(166, 22);
+            this.miExEdge.Text = "エッジ(&E)";
+            this.miExEdge.Click += new System.EventHandler(this.miExEdge_Click);
+            // 
+            // miExVertex
+            // 
+            this.miExVertex.Image = ((System.Drawing.Image)(resources.GetObject("miExVertex.Image")));
+            this.miExVertex.Name = "miExVertex";
+            this.miExVertex.Size = new System.Drawing.Size(166, 22);
+            this.miExVertex.Text = "バーテックス(&V)";
+            this.miExVertex.Click += new System.EventHandler(this.miExVertex_Click);
             // 
             // toolStripSeparator11
             // 
@@ -1071,7 +1140,6 @@ namespace siren
         private ToolStripMenuItem miChrome;
         private ToolStripSeparator toolStripSeparator9;
         private ToolStripButton tsbCompound;
-        private ToolStripButton tsbExplode;
         private ToolStripSeparator toolStripSeparator11;
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripButton tsbTerminal;
@@ -1093,6 +1161,14 @@ namespace siren
         private ToolStripButton tsbCurve;
         private ToolStripButton tsbLoft;
         private ToolStripSeparator toolStripSeparator17;
+        private ToolStripSplitButton tsbExplode;
+        private ToolStripMenuItem miExCompound;
+        private ToolStripMenuItem miExSolid;
+        private ToolStripMenuItem miExShell;
+        private ToolStripMenuItem miExFace;
+        private ToolStripMenuItem miExWire;
+        private ToolStripMenuItem miExEdge;
+        private ToolStripMenuItem miExVertex;
 
     }
 }

@@ -724,12 +724,53 @@ namespace siren
                 curForm.getterm().execute("a = compound selected");
         }
 
-        private void tsbExplode_Click(object sender, EventArgs e)
+        private void miExCompound_Click(object sender, EventArgs e)
         {
             ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null && curForm.Viewer.IsObjectSelected()) {
-                curForm.getterm().execute("a = []; selected.each { |obj| a.push(explode Stype::SOLID, obj) }");
-            }
+            if (curForm != null)
+                curForm.getterm().execute("a = []; selected.each { |n| a.push(explode Stype::COMPOUND, n) }");
+        }
+
+        private void miExSolid_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("a = []; selected.each { |n| a.push(explode Stype::SOLID, n) }");
+        }
+
+        private void miExShell_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("a = []; selected.each { |n| a.push(explode Stype::SHELL, n) }");
+        }
+
+        private void miExFace_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("a = []; selected.each { |n| a.push(explode Stype::FACE, n) }");
+        }
+
+        private void miExWire_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("a = []; selected.each { |n| a.push(explode Stype::WIRE, n) }");
+        }
+
+        private void miExEdge_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("a = []; selected.each { |n| a.push(explode Stype::EDGE, n) }");
+        }
+
+        private void miExVertex_Click(object sender, EventArgs e)
+        {
+            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
+            if (curForm != null)
+                curForm.getterm().execute("a = []; selected.each { |n| a.push(explode Stype::VERTEX, n) }");
         }
 
         #endregion
