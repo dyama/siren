@@ -56,8 +56,8 @@
             // 
             this.sc.Panel2.Controls.Add(this.tb);
             this.sc.Panel2MinSize = 10;
-            this.sc.Size = new System.Drawing.Size(337, 157);
-            this.sc.SplitterDistance = 100;
+            this.sc.Size = new System.Drawing.Size(337, 97);
+            this.sc.SplitterDistance = 60;
             this.sc.SplitterWidth = 1;
             this.sc.TabIndex = 1;
             // 
@@ -73,7 +73,7 @@
             this.rtb.Location = new System.Drawing.Point(0, 0);
             this.rtb.Name = "rtb";
             this.rtb.ReadOnly = true;
-            this.rtb.Size = new System.Drawing.Size(337, 100);
+            this.rtb.Size = new System.Drawing.Size(337, 60);
             this.rtb.TabIndex = 1;
             this.rtb.Text = "";
             this.rtb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tb_KeyDown);
@@ -88,7 +88,7 @@
             this.tb.MaxLength = 327670;
             this.tb.Multiline = true;
             this.tb.Name = "tb";
-            this.tb.Size = new System.Drawing.Size(337, 56);
+            this.tb.Size = new System.Drawing.Size(337, 36);
             this.tb.TabIndex = 0;
             this.tb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tb_KeyDown);
             // 
@@ -100,7 +100,7 @@
             this.Controls.Add(this.sc);
             this.Name = "term";
             this.Padding = new System.Windows.Forms.Padding(1, 1, 2, 2);
-            this.Size = new System.Drawing.Size(340, 160);
+            this.Size = new System.Drawing.Size(340, 100);
             this.sc.Panel1.ResumeLayout(false);
             this.sc.Panel2.ResumeLayout(false);
             this.sc.Panel2.PerformLayout();

@@ -14,42 +14,41 @@ using sirenenv;
 
 namespace siren
 {
-    public partial class ViewForm : System.Windows.Forms.Form
+    public partial class ViewForm : System.Windows.Forms.UserControl
     {
 		//private System.ComponentModel.IContainer components;
 
 		#region Windows Form Designer generated code
 		private void InitializeComponent()
 		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewForm));
             this.SuspendLayout();
             // 
             // ViewForm
             // 
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
-            this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-            this.ClientSize = new System.Drawing.Size(464, 322);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.DoubleBuffered = true;
             this.Name = "ViewForm";
-            this.Text = "ビューア";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Size = new System.Drawing.Size(462, 320);
             this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.onMouseWheel);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.onMouseUp);
-            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.onMouseDoubleClick);
+            this.MouseLeave += new System.EventHandler(this.onMouseLeave);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.ViewForm_Paint);
-            this.SizeChanged += new System.EventHandler(this.ViewForm_SizeChanged);
-            this.Closed += new System.EventHandler(this.onClosed);
-            this.MouseEnter += new System.EventHandler(this.onMouseEnter);
             this.Click += new System.EventHandler(this.ViewForm_Click);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.onMouseDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.onKeyUp);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.onMouseMove);
+            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.onMouseDoubleClick);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.onKeyUp);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.onMouseDown);
+            this.MouseHover += new System.EventHandler(this.onMouseHover);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.onMouseUp);
+            this.SizeChanged += new System.EventHandler(this.ViewForm_SizeChanged);
+            this.MouseEnter += new System.EventHandler(this.onMouseEnter);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.onKeyDown);
             this.ResumeLayout(false);
 
 		}
 
 		#endregion
+
 
     }
 }

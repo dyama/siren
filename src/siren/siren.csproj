@@ -163,7 +163,7 @@
       <DependentUpon>term.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewForm.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="TransparencyDialog.cs">
       <SubType>Form</SubType>
@@ -172,10 +172,10 @@
       <DependentUpon>ViewForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewForm.KeyEvent.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ViewForm.MouseEvent.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <EmbeddedResource Include="AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>

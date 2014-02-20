@@ -48,14 +48,19 @@ namespace siren
 
         public int execute(string cmd)
         {
-            return execute(cmd, true);
+            return execute(cmd, null, true);
+        }
+
+        public int execute(string cmd, Control focus)
+        {
+            return execute(cmd, focus, true);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="cmd"></param>
-        public int execute(string cmd, bool use_func)
+        public int execute(string cmd, Control focus, bool use_func)
         {
             if (System.Text.RegularExpressions.Regex.IsMatch(cmd, @"^\s*$"))
                 return -1;
@@ -79,7 +84,10 @@ namespace siren
 
             rtb.Text += prompt + cmd + "\n" + result;
             this.Scroll2Last(rtb);
-            tb.Focus();
+            if (focus == null)
+                tb.Focus();
+            else
+                focus.Focus();
 
             if (use_func && _func != null)
                 _func();
@@ -122,13 +130,13 @@ namespace siren
 
         private void tb_KeyDown(object sender, KeyEventArgs e)
         {
-            // rtb
-            if (sender.Equals(rtb)) {
-                if (e.KeyCode == Keys.Escape) {
-                    this.Visible = false;
-                    this.Parent.Parent.Focus();
-                }
-            }
+            // // rtb
+            // if (sender.Equals(rtb)) {
+            //     if (e.KeyCode == Keys.Escape) {
+            //         this.Visible = false;
+            //         this.Parent.Parent.Focus();
+            //     }
+            // }
             // tb
             switch (e.KeyCode) {
             case Keys.Enter:
@@ -137,7 +145,7 @@ namespace siren
                     if (cmdlines.Length > 5)
                         use_p = false;
                     foreach (string line in cmdlines)
-                        this.execute(line, false);
+                        this.execute(line, tb, false);
                     if (_func != null)
                         _func();
                     if (cmdlines.Length > 5)
@@ -146,10 +154,10 @@ namespace siren
                     e.SuppressKeyPress = true;
                 }
                 break;
-            case Keys.Escape:
-                this.Visible = false;
-                this.Parent.Parent.Focus();
-                break;
+            // case Keys.Escape:
+            //     this.Visible = false;
+            //     this.Parent.Parent.Focus();
+            //     break;
             case Keys.Up:
                 e.SuppressKeyPress = true;
                 break;
