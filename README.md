@@ -1,7 +1,8 @@
  siren - the simple CAD viewer
 ============================================================
 
-![siren](http://dyama.org/siren_screenshot.png "siren")
+![siren](http://dyama.org/siren/siren_screenshot.png "siren")
+
 
  About siren
 ------------------------------------------------------------
