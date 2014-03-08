@@ -68,7 +68,10 @@ mrb_value sew(mrb_state* mrb, mrb_value self)
 	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 		}
 		TopoDS_Shape shape = hashape->Shape();
-		sewer.Add(shape);
+        TopExp_Explorer ex(shape, TopAbs_FACE);
+        for (; ex.More(); ex.Next()) {
+            sewer.Add(ex.Current());
+        }
 	}
 
 	TopoDS_Shape result;
