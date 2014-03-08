@@ -527,6 +527,8 @@ namespace siren
             if (nb_selected == 1) {
                 this.myTerm.execute("location ?", this.view1 , false);
                 string result = this.myTerm.result_string;
+                if (result == null || result.Length < 1)
+                    return;
                 System.Text.RegularExpressions.Regex re = new System.Text.RegularExpressions.Regex(@"[\d\.\-]+");
                 System.Text.RegularExpressions.MatchCollection ma = re.Matches(result);
 

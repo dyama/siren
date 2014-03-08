@@ -58,8 +58,8 @@ namespace siren
             kemap.Add(Keys.D3, TopView);
             kemap.Add(Keys.D4, RightView);
             kemap.Add(Keys.Space, parent.toggleFullscreen);
-            kemap.Add(Keys.Delete, myViewer.EraseObjects);
-            kemap.Add(Keys.X, myViewer.EraseObjects);
+            kemap.Add(Keys.Delete, eraseSelected);
+            kemap.Add(Keys.X, eraseSelected);
 
             // funny move
             kemap.Add(Keys.W, move_to_front);
@@ -260,8 +260,15 @@ namespace siren
         {
             if (myCurSpKey == CurSpKey.CTRL) {
                 if (Viewer.NbSelected() > 1) {
-                    parent.myTerm.execute("a = compound selected", this);
+                    parent.myTerm.execute("a = compound selected", this, true);
                 }
+            }
+        }
+
+        private void eraseSelected()
+        {
+            if (Viewer.NbSelected() > 0) {
+                parent.myTerm.execute("selected.each { |item| erase item }", this, true);
             }
         }
 
