@@ -19,7 +19,6 @@ namespace siren
         protected ViewForm view2;
         protected ViewForm view3;
 
-        public term myTerm;
         public MousePicking MousePickingEvent = null;
 
         public ObjectProperty SelectedObject = null;
@@ -56,10 +55,6 @@ namespace siren
             view3.Viewer.CreateNewView(view3.Handle, false);
             view3.Viewer.setProjection(TypeOfOrientation.Ypos);
 
-            this.myTerm = new term(view1.Viewer);
-            myTerm.Dock = DockStyle.Fill;
-            splitContainer2.Panel2.Controls.Add(myTerm);
-
             splitContainer3.Visible = false;
 
             List<string> args = new List<string>(System.Environment.GetCommandLineArgs());
@@ -76,7 +71,8 @@ namespace siren
 
             // dummy
             propertyGrid1.SelectedObject = this;
-            
+
+            myTerm.set(view1.Viewer, this);
             changeState();
             myTerm.setChangeStateFunc(changeState);
             this.Cursor = System.Windows.Forms.Cursors.Default;
@@ -525,7 +521,7 @@ namespace siren
         public void setPropertyState(int nb_selected)
         {
             if (nb_selected == 1) {
-                this.myTerm.execute("location ?", this.view1 , false);
+                this.myTerm.execute("location ?", this.view1, false, false);
                 string result = this.myTerm.result_string;
                 if (result == null || result.Length < 1)
                     return;
@@ -540,7 +536,7 @@ namespace siren
                 if (!f)
                     return;
 
-                this.myTerm.execute("bndbox ?", this.view1 , false);
+                this.myTerm.execute("bndbox ?", this.view1, false, false);
                 result = this.myTerm.result_string;
                 ma = re.Matches(result);
 
@@ -804,6 +800,9 @@ namespace siren
                 myTerm.execute("a = sew ??");
         }
 
+        /// <summary>
+        /// フルスクリーン状態を切り替える
+        /// </summary>
         public void toggleFullscreen()
         {
             if (view1.Focused) {
@@ -838,6 +837,25 @@ namespace siren
             }
             return;
         }
+
+        /// <summary>
+        /// ターミナルにフォーカスを移す
+        /// </summary>
+        public void focusTerminal()
+        {
+            this.myTerm.setFocus();
+            return;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void focusViewer()
+        {
+            this.view1.Focus();
+            return;
+        }
+
 
     }
 

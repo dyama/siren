@@ -15,19 +15,26 @@ namespace siren
     {
         protected sirenenv.Viewer myViewer;
         protected change_state_func _func;
+        protected MainForm mf;
 
         public string result_string;
 
         public bool use_p = true;
 
-        public term(sirenenv.Viewer Viewer)
+        public term()
         {
             InitializeComponent();
             result_string = string.Empty;
             _func = null;
-            myViewer = Viewer;
             Scroll2Last(rtb);
             tb.Focus();
+        }
+
+        public void set(sirenenv.Viewer Viewer, MainForm mainform)
+        {
+            myViewer = Viewer;
+            mf = mainform;
+            return;
         }
 
         public void setFocus()
@@ -48,19 +55,19 @@ namespace siren
 
         public int execute(string cmd)
         {
-            return execute(cmd, null, true);
+            return execute(cmd, null, true, true);
         }
 
         public int execute(string cmd, Control focus)
         {
-            return execute(cmd, focus, true);
+            return execute(cmd, focus, true, true);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="cmd"></param>
-        public int execute(string cmd, Control focus, bool use_func)
+        public int execute(string cmd, Control focus, bool echo, bool use_func)
         {
             if (System.Text.RegularExpressions.Regex.IsMatch(cmd, @"^\s*$"))
                 return -1;
@@ -82,12 +89,14 @@ namespace siren
 
             result_string = result;
 
-            rtb.Text += prompt + cmd + "\n" + result;
-            this.Scroll2Last(rtb);
-            if (focus == null)
-                tb.Focus();
-            else
-                focus.Focus();
+            if (echo) {
+                rtb.Text += prompt + cmd + "\n" + result;
+                this.Scroll2Last(rtb);
+                if (focus == null)
+                    tb.Focus();
+                else
+                    focus.Focus();
+            }
 
             if (use_func && _func != null)
                 _func();
@@ -145,7 +154,8 @@ namespace siren
                     if (cmdlines.Length > 5)
                         use_p = false;
                     foreach (string line in cmdlines)
-                        this.execute(line, tb, false);
+                        if (this.execute(line, tb, true, false) != 0) {
+                        }
                     if (_func != null)
                         _func();
                     if (cmdlines.Length > 5)
@@ -163,6 +173,9 @@ namespace siren
                 break;
             case Keys.Down:
                 e.SuppressKeyPress = true;
+                break;
+            case Keys.Escape:
+                mf.focusViewer();
                 break;
             default:
                 break;

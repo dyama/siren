@@ -20,6 +20,8 @@ bool OCCViewer::mruby_init()
 
     // 実装予定コマンド
     // transparency obj val ... 不透明度設定。valを省略すると現在設定されている値を返す。
+    // arc                  ... 円弧曲線を作成する
+    // circle               ... 円曲線を作成する。内部的にはarcと同じ？
     // 視点制御系コマンド
     // ビュー管理系コマンド
 

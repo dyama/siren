@@ -9,6 +9,8 @@
 
 #include "Stdafx.h"
 
+#define NOREGIST 1
+
 /**
  * \brief 
  */
@@ -35,9 +37,14 @@ mrb_value translate(mrb_state* mrb, mrb_value self)
 
 	mrb_value result;
 	if (trf.IsDone()){
+#if NOREGIST
 		hashape->Set(trf.Shape());
 		redisplay(hashape);
 		result = mrb_nil_value();
+#else
+        result = mrb_fixnum_value(::set(trf.Shape()));
+        ::unset(target);
+#endif
 	}
 	else {
 		static const char m[] = "Failed to translate object.";
@@ -74,9 +81,14 @@ mrb_value rotate(mrb_state* mrb, mrb_value self)
 
 	mrb_value result;
 	if (trf.IsDone()){
+#if NOREGIST
 		hashape->Set(trf.Shape());
 		redisplay(hashape);
 		result = mrb_nil_value();
+#else
+        result = mrb_fixnum_value(::set(trf.Shape()));
+        ::unset(target);
+#endif
 	}
 	else {
 		static const char m[] = "Failed to rotate object.";
@@ -118,9 +130,14 @@ mrb_value scale(mrb_state* mrb, mrb_value self)
 
 	mrb_value result;
 	if (trf.IsDone()){
+#if NOREGIST
 		hashape->Set(trf.Shape());
 		redisplay(hashape);
 		result = mrb_nil_value();
+#else
+        result = mrb_fixnum_value(::set(trf.Shape()));
+        ::unset(target);
+#endif
 	}
 	else {
 		static const char m[] = "Failed to scale object.";
@@ -154,9 +171,14 @@ mrb_value mirror(mrb_state* mrb, mrb_value self)
 
 	mrb_value result;
 	if (trf.IsDone()){
+#if NOREGIST && 0
 		hashape->Set(trf.Shape());
 		redisplay(hashape);
 		result = mrb_nil_value();
+#else
+        result = mrb_fixnum_value(::set(trf.Shape()));
+        ::unset(target);
+#endif
 	}
 	else {
 		static const char m[] = "Failed to mirror object.";
