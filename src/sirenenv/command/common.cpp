@@ -10,7 +10,6 @@
 #include "Stdafx.h"
 #include "common.h"
 
-
 /**
  * \brief 
  */

@@ -108,6 +108,7 @@ bool OCCViewer::mruby_init()
 	regcmd("bload",     &loadbrep,  1,0, "Load object from a file.",        "bload(path) -> ID");
 	regcmd("isave",     &saveiges,  2,0, "Save object to an IGES.",         "isave(path, obj) -> nil");
 	regcmd("iload",     &loadiges,  1,0, "Load object from an IGES.",       "iload(path) -> Ary");
+	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path)");
 
     //
 	regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");
