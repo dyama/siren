@@ -193,6 +193,8 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 
+#include <TopOpeBRep_FaceEdgeIntersector.hxx>
+
 // libraries
 #pragma comment (lib, "TKernel.lib")
 #pragma comment (lib, "PTKernel.lib")

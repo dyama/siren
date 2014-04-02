@@ -254,6 +254,8 @@ mrb_value split(mrb_state* mrb, mrb_value self)
 
 /**
  * \brief サーフェスとカーブの交点を得る
+ *
+ * \note サーフェスの外形を考慮せず無限曲面の交点を得る
  */
 /*
  * GeomAPI_IntCS
@@ -312,6 +314,51 @@ mrb_value intcs(mrb_state* mrb, mrb_value self)
                    mrb_value a = pnt2ar(mrb, np);
             	   mrb_ary_push(mrb, result, a);
                }
+            }
+        }
+    }
+
+    return result;
+}
+
+/**
+ * \brief フェイスとエッジの交点を得る
+ */
+mrb_value intfe(mrb_state* mrb, mrb_value self)
+{
+    mrb_int c, s;
+    mrb_bool with_normal = FALSE;
+	int argc = mrb_get_args(mrb, "ii|b", &c, &s, &with_normal);
+
+	Handle(AIS_Shape) hacurve = ::get(c);
+	if (hacurve.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	Handle(AIS_Shape) hasurf = ::get(s);
+	if (hasurf.IsNull()) {
+		static const char m[] = "No such object name of specified at second.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    mrb_value result = mrb_ary_new(mrb);
+
+    TopExp_Explorer exc, exs;
+
+    for (exc.Init(hacurve->Shape(), TopAbs_EDGE); exc.More(); exc.Next()) {
+        TopoDS_Edge edge = TopoDS::Edge(exc.Current());
+
+        for (exs.Init(hasurf->Shape(), TopAbs_FACE); exs.More(); exs.Next()) {
+            TopoDS_Face face = TopoDS::Face(exs.Current());
+
+            TopOpeBRep_FaceEdgeIntersector feint;
+            feint.Perform(face, edge);
+
+            for (feint.InitPoint(); feint.MorePoint(); feint.NextPoint()) {
+                gp_Pnt p = feint.Value();
+
+                mrb_value item = pnt2ar(mrb, p);
+        	    mrb_ary_push(mrb, result, item);
             }
         }
     }
