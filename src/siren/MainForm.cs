@@ -76,6 +76,8 @@ namespace siren
             changeState();
             myTerm.setChangeStateFunc(changeState);
             this.Cursor = System.Windows.Forms.Cursors.Default;
+
+            view1.Viewer.RedrawView();
         }
 
         void MainForm_DragEnter(object sender, DragEventArgs e)
