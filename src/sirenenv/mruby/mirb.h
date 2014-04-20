@@ -32,7 +32,7 @@ private:
 	int first_command;
 	unsigned int nregs;
 
-    char ruby_code[1024];// = { 0 };
+    char ruby_code[1024*32];// = { 0 };
 
 public:
     Mirb();  /**< constructor */

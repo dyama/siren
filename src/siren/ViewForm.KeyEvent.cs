@@ -17,7 +17,7 @@ namespace siren
 {
 	public enum CurSpKey { NOTHING, CTRL, SHIFT, META }
 
-    public partial class ViewForm : System.Windows.Forms.Form
+    public partial class ViewForm : System.Windows.Forms.UserControl
     {
         /// <summary>
         /// 現在押されている特殊キー
@@ -57,10 +57,10 @@ namespace siren
             kemap.Add(Keys.D2, BackView);
             kemap.Add(Keys.D3, TopView);
             kemap.Add(Keys.D4, RightView);
-            kemap.Add(Keys.Enter, showTerminal);
-            kemap.Add(Keys.Space, showMenu);
-            kemap.Add(Keys.Delete, myViewer.EraseObjects);
-            kemap.Add(Keys.X, myViewer.EraseObjects);
+            kemap.Add(Keys.Space, parent.toggleFullscreen);
+            kemap.Add(Keys.Delete, eraseSelected);
+            kemap.Add(Keys.X, eraseSelected);
+            kemap.Add(Keys.Enter, parent.focusTerminal);
 
             // funny move
             kemap.Add(Keys.W, move_to_front);
@@ -94,7 +94,7 @@ namespace siren
             if (kemap != null && kemap.ContainsKey(e.KeyCode)) {
                 kemap[e.KeyCode]();
                 siren.MainForm parent = (siren.MainForm)this.ParentForm;
-                parent.setToolBarButtonState();
+                parent.changeState();
             }
             
             return;
@@ -108,36 +108,8 @@ namespace siren
 		private void onKeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
 		{
 			myCurSpKey = CurSpKey.NOTHING;
-            if (isSpaceKeyDown) {
-                m.Visible = false;
-                isSpaceKeyDown = false;
-                this.Focus();
-            }
             return;
 		}
-
-        /// <summary>
-        /// Key Event: show mruby command terminal on view
-        /// </summary>
-        public void showTerminal()
-        {
-            t.Visible = true;
-            t.BringToFront();
-            t.setFocus();
-            return;
-        }
-
-        /// <summary>
-        /// Key Event: show interactive menu on view
-        /// </summary>
-        public void showMenu()
-        {
-            if (!isSpaceKeyDown) {
-                m.Location = Parent.PointToClient(Cursor.Position);
-                m.Visible = true;
-                isSpaceKeyDown = true;
-            }
-        }
 
         /// <summary>
         /// ディスプレイ モード切り替え
@@ -148,18 +120,6 @@ namespace siren
                 currentDisplayMode = DisplayMode.SHADING;
             else
                 currentDisplayMode = DisplayMode.WIREFRAME;
-            return;
-        }
-
-        /// <summary>
-        /// ビュー ウィンドウの最大化切り替え
-        /// </summary>
-        private void toggleWindowState()
-        {
-            if (this.WindowState == FormWindowState.Normal || this.WindowState == FormWindowState.Minimized)
-                this.WindowState = FormWindowState.Maximized;
-            else
-                this.WindowState = FormWindowState.Normal;
             return;
         }
 
@@ -179,14 +139,14 @@ namespace siren
             case CurSpKey.CTRL:
                 break;
             case CurSpKey.META:
-                getterm().execute("selected.each { |obj| scale obj, " + scale_up_factor.ToString() + ", (location obj) }");
+                parent.myTerm.execute("selected.each { |obj| scale obj, " + scale_up_factor.ToString() + ", (location obj) }", this, false, false);
                 break;
             case CurSpKey.SHIFT:
-                getterm().execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], 15 }");
+                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], 15 }", this, false, false);
                 break;
             case CurSpKey.NOTHING:
             default:
-                getterm().execute("selected.each { |obj| translate obj, [" + move_unit_distance.ToString() + ", 0, 0] }");
+                parent.myTerm.execute("selected.each { |obj| translate obj, [" + move_unit_distance.ToString() + ", 0, 0] }", this, false, false);
                 break;
             }
         }
@@ -198,14 +158,14 @@ namespace siren
             case CurSpKey.CTRL:
                 break;
             case CurSpKey.META:
-                getterm().execute("selected.each { |obj| scale obj, " + scale_down_factor.ToString() + ", (location obj) }");
+                parent.myTerm.execute("selected.each { |obj| scale obj, " + scale_down_factor.ToString() + ", (location obj) }", this, false, false);
                 break;
             case CurSpKey.SHIFT:
-                getterm().execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], -15 }");
+                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], -15 }", this, false, false);
                 break;
             case CurSpKey.NOTHING:
             default:
-                getterm().execute("selected.each { |obj| translate obj, [-" + move_unit_distance.ToString() + ", 0, 0] }");
+                parent.myTerm.execute("selected.each { |obj| translate obj, [-" + move_unit_distance.ToString() + ", 0, 0] }", this, false, false);
                 break;
             }
         }
@@ -219,11 +179,11 @@ namespace siren
             case CurSpKey.META:
                 break;
             case CurSpKey.SHIFT:
-                getterm().execute("selected.each { |obj| rotate obj, (location obj), [1, 0, 0], -15 }");
+                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [1, 0, 0], -15 }", this, false, false);
                 break;
             case CurSpKey.NOTHING:
             default:
-                getterm().execute("selected.each { |obj| translate obj, [0, " + move_unit_distance.ToString() + ", 0] }");
+                parent.myTerm.execute("selected.each { |obj| translate obj, [0, " + move_unit_distance.ToString() + ", 0] }", this, false, false);
                 break;
             }
         }
@@ -233,16 +193,16 @@ namespace siren
                 return;
             switch (myCurSpKey) {
             case CurSpKey.CTRL:
-                getterm().execute("a = []; selected.each { |obj| a.push(copy obj) }");
+                parent.myTerm.execute("a = []; selected.each { |obj| a.push(copy obj) }", this, false, false);
                 break;
             case CurSpKey.META:
                 break;
             case CurSpKey.SHIFT:
-                getterm().execute("selected.each { |obj| rotate obj, (location obj), [1, 0, 0], 15 }");
+                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [1, 0, 0], 15 }", this, false, false);
                 break;
             case CurSpKey.NOTHING:
             default:
-                getterm().execute("selected.each { |obj| translate obj, [0, -" + move_unit_distance.ToString() + ", 0] }");
+                parent.myTerm.execute("selected.each { |obj| translate obj, [0, -" + move_unit_distance.ToString() + ", 0] }", this, false, false);
                 break;
             }
         }
@@ -256,11 +216,11 @@ namespace siren
             case CurSpKey.META:
                 break;
             case CurSpKey.SHIFT:
-                getterm().execute("selected.each { |obj| rotate obj, (location obj), [0, 0, 1], 15 }");
+                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [0, 0, 1], 15 }", this, false, false);
                 break;
             case CurSpKey.NOTHING:
             default:
-                getterm().execute("selected.each { |obj| translate obj, [0, 0, " + move_unit_distance.ToString() + "] }");
+                parent.myTerm.execute("selected.each { |obj| translate obj, [0, 0, " + move_unit_distance.ToString() + "] }", this, false, false);
                 break;
             }
         }
@@ -274,11 +234,11 @@ namespace siren
             case CurSpKey.META:
                 break;
             case CurSpKey.SHIFT:
-                getterm().execute("selected.each { |obj| rotate obj, (location obj), [0, 0, 1], -15 }");
+                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [0, 0, 1], -15 }", this, false, false);
                 break;
             case CurSpKey.NOTHING:
             default:
-                getterm().execute("selected.each { |obj| translate obj, [0, 0, -" + move_unit_distance.ToString() + "] }");
+                parent.myTerm.execute("selected.each { |obj| translate obj, [0, 0, -" + move_unit_distance.ToString() + "] }", this, false, false);
                 break;
             }
         }
@@ -287,22 +247,29 @@ namespace siren
         {
             if (!Viewer.IsObjectSelected())
                 return;
-            getterm().execute("selected.each { |obj| scale obj, " + scale_up_factor.ToString() + ", (location obj) }");
+            parent.myTerm.execute("selected.each { |obj| scale obj, " + scale_up_factor.ToString() + ", (location obj) }", this, false, false);
         }
 
         private void scale_down()
         {
             if (!Viewer.IsObjectSelected())
                 return;
-            getterm().execute("selected.each { |obj| scale obj, " + scale_down_factor.ToString() + ", (location obj) }");
+            parent.myTerm.execute("selected.each { |obj| scale obj, " + scale_down_factor.ToString() + ", (location obj) }", this, false, false);
         }
 
         private void group()
         {
             if (myCurSpKey == CurSpKey.CTRL) {
                 if (Viewer.NbSelected() > 1) {
-                    getterm().execute("a = compound selected");
+                    parent.myTerm.execute("a = compound selected", this, true, true);
                 }
+            }
+        }
+
+        private void eraseSelected()
+        {
+            if (Viewer.NbSelected() > 0) {
+                parent.myTerm.execute("selected.each { |item| erase item }", this, true, true);
             }
         }
 

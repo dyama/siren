@@ -115,3 +115,33 @@ mrb_value loadstep(mrb_state* mrb, mrb_value self)
 {
     return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
 }
+
+/**
+ * \brief Load object from STEP file
+ */
+mrb_value loadstl(mrb_state* mrb, mrb_value self)
+{
+    mrb_value path;
+	int argc = mrb_get_args(mrb, "S", &path);
+
+    // OSD_Path aFile();
+    // Handle(StlMesh_Mesh) aSTLMesh = RWStl::ReadFile(aFile);
+
+    TopoDS_Shape shape;
+    // StlAPI_Reader::Read(shape, (Standard_CString)RSTRING_PTR(path));
+
+    StlAPI_Reader reader;
+    reader.Read(shape, (Standard_CString)RSTRING_PTR(path));
+
+    mrb_value result;
+
+    if (shape.IsNull()) {
+	 	static const char m[] = "Failed to load STL file.";
+        result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+    else {
+	 	result = mrb_fixnum_value(::set(shape));
+    }
+
+    return result;
+}

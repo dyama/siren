@@ -8,9 +8,78 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel;
 
 namespace siren
 {
+
+    public delegate void evfuncMousePickedApply(List<Point3d> points);
+    public delegate void evfuncMousePickedCancel();
+
+    /// <summary>
+    /// マウス ピッキング 構造体
+    /// </summary>
+    public class MousePicking
+    {
+        public evfuncMousePickedApply ApplyEvent = null;
+        public evfuncMousePickedCancel CancelEvent = null;
+        public int Count = 0;
+        public List<Point3d> PickedPoints = null;
+
+        public void init()
+        {
+            ApplyEvent = null;
+            CancelEvent = null;
+            Count = 0;
+            PickedPoints = null;
+        }
+    }
+
+    public class ObjectProperty
+    {
+        [ReadOnly(true)]
+        [CategoryAttribute("ロケーション")]
+        public double X { set; get; }
+        [ReadOnly(true)]
+        [CategoryAttribute("ロケーション")]
+        public double Y { set; get; }
+        [ReadOnly(true)]
+        [CategoryAttribute("ロケーション")]
+        public double Z { set; get; }
+
+        [ReadOnly(true)]
+        [CategoryAttribute("範囲(最小)")]
+        public double SX { set; get; }
+        [ReadOnly(true)]
+        [CategoryAttribute("範囲(最小)")]
+        public double SY { set; get; }
+        [ReadOnly(true)]
+        [CategoryAttribute("範囲(最小)")]
+        public double SZ { set; get; }
+
+        [ReadOnly(true)]
+        [CategoryAttribute("範囲(最大)")]
+        public double LX { set; get; }
+        [ReadOnly(true)]
+        [CategoryAttribute("範囲(最大)")]
+        public double LY { set; get; }
+        [ReadOnly(true)]
+        [CategoryAttribute("範囲(最大)")]
+        public double LZ { set; get; }
+
+        public ObjectProperty(
+            double x, double y, double z,
+            double sx, double sy, double sz,
+            double lx, double ly, double lz
+            )
+        {
+            X = x; Y = y; Z = z;
+            SX = sx; SY = sy; SZ = sz;
+            LX = lx; LY = ly; LZ = lz;
+        }
+
+    }
+
     /// <summary>
     /// 共通関数群
     /// </summary>

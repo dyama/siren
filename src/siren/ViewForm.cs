@@ -16,34 +16,37 @@ namespace siren
 {
     public enum DisplayMode : int { WIREFRAME = 0, SHADING = 1 }
 
-	public partial class ViewForm : System.Windows.Forms.Form
+	public partial class ViewForm : System.Windows.Forms.UserControl
 	{
-        private term t;
-        public term getterm()
-        {
-            return t;
-        }
-        private InteractiveMenuContext m;
+        protected MainForm parent = null;
+        protected TypeOfOrientation orient;
+        protected bool allowRotation;
+
+        protected PictureBox focuser;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
-		public ViewForm()
+		public ViewForm(MainForm aParent, TypeOfOrientation orient, bool allowRotation)
 		{
 			InitializeComponent();
 
 			myViewer = new Viewer();
 
-            // Make terminal on background
-            t = new term(myViewer);
-            t.Visible = false;
-            this.Controls.Add(t);
-            t.Location = new System.Drawing.Point(5, 5);
-
-            m = new InteractiveMenuContext(this);
+            parent = aParent;
 
             initKeyEvent();
             initMouseEvent();
+
+            this.orient = orient;
+            this.allowRotation = allowRotation;
+
+            focuser = new PictureBox();
+            focuser.Size = new Size(6, 6);
+            focuser.Location = new Point(3, 3);
+            focuser.BackColor = Color.DarkRed;
+            focuser.BorderStyle = BorderStyle.FixedSingle;
+            this.Controls.Add(focuser);
 		}
 
         //private System.Windows.Forms.ImageList imageList1;
@@ -63,6 +66,7 @@ namespace siren
             myViewer.SetAntialiasing(false);
             myViewer.setHighlightColor(NameOfColor.ORANGE);
             myViewer.setSelectionColor(NameOfColor.YELLOW);
+            myViewer.setProjection(orient);
 		}
 
 		private void ViewForm_SizeChanged(object sender, System.EventArgs e)
@@ -135,9 +139,9 @@ namespace siren
             case ModelFormat.BREP:
                 {
                     filename = filename.Replace(@"\", @"\\"); // escape
-                    int err = getterm().execute("a = bload(\"" + filename + "\")");
+                    int err = parent.myTerm.execute("a = bload(\"" + filename + "\")");
                     if (err == 0) {
-                        getterm().execute("fit");
+                        parent.myTerm.execute("fit");
                         return true;
                     }
                     else
@@ -146,9 +150,9 @@ namespace siren
             case ModelFormat.IGES:
                 {
                     filename = filename.Replace(@"\", @"\\"); // escape
-                    int err = getterm().execute("a = iload(\"" + filename + "\")");
+                    int err = parent.myTerm.execute("a = iload(\"" + filename + "\")");
                     if (err == 0) {
-                        getterm().execute("fit");
+                        parent.myTerm.execute("fit");
                         return true;
                     }
                     else
@@ -177,7 +181,7 @@ namespace siren
             case ModelFormat.BREP:
                 {
                     filename = filename.Replace(@"\", @"\\"); // escape
-                    return (getterm().execute("bsave(\"" + filename + "\", selected[0])") == 0);
+                    return (parent.myTerm.execute("bsave(\"" + filename + "\", selected[0])") == 0);
                 }
             //case ModelFormat.CSFDB:
             case ModelFormat.IGES:
@@ -317,10 +321,15 @@ namespace siren
 
         #endregion
 
-        private void onClosed(object sender, EventArgs e)
+        private void onMouseHover(object sender, EventArgs e)
         {
-			siren.MainForm parent = (siren.MainForm) this.ParentForm;
-            parent.setToolBarButtonState();
+            this.Focus();
+            focuser.BackColor = Color.Red;
+        }
+
+        private void onMouseLeave(object sender, EventArgs e)
+        {
+            focuser.BackColor = Color.DarkRed;
         }
 
     }

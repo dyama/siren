@@ -15,6 +15,13 @@ namespace siren
 
 	public partial class MainForm : System.Windows.Forms.Form
 	{
+        protected ViewForm view1;
+        protected ViewForm view2;
+        protected ViewForm view3;
+
+        public MousePicking MousePickingEvent = null;
+
+        public ObjectProperty SelectedObject = null;
 
 		[STAThread]
 		static void Main() 
@@ -26,6 +33,30 @@ namespace siren
 
         void MainForm_Load(object sender, EventArgs e)
         {
+            this.view1 = new ViewForm(this, TypeOfOrientation.XnegYnegZpos, true);
+            view1.Dock = DockStyle.Fill;
+            splitContainer2.Panel1.Controls.Add(this.view1);
+			view1.InitViewer();
+			view1.InitV3D(false);
+
+            this.view2 = new ViewForm(this, TypeOfOrientation.Zneg, false);
+            view2.Dock = DockStyle.Fill;
+            splitContainer4.Panel1.Controls.Add(this.view2);
+            view2.InitViewer();
+            view2.SetContext(view1.Viewer);
+            view2.Viewer.CreateNewView(view2.Handle, false);
+            view2.Viewer.setProjection(TypeOfOrientation.Zpos);
+
+            this.view3 = new ViewForm(this, TypeOfOrientation.Ypos, false);
+            view3.Dock = DockStyle.Fill;
+            splitContainer4.Panel2.Controls.Add(this.view3);
+            view3.InitViewer();
+            view3.SetContext(view1.Viewer);
+            view3.Viewer.CreateNewView(view3.Handle, false);
+            view3.Viewer.setProjection(TypeOfOrientation.Ypos);
+
+            splitContainer3.Visible = false;
+
             List<string> args = new List<string>(System.Environment.GetCommandLineArgs());
             // コマンドライン引数から開く
             args.RemoveAt(0); // 自身の呼び出しパス
@@ -36,8 +67,17 @@ namespace siren
                 }
             }
             else {
-                NewFile();
             }
+
+            // dummy
+            propertyGrid1.SelectedObject = this;
+
+            myTerm.set(view1.Viewer, this);
+            changeState();
+            myTerm.setChangeStateFunc(changeState);
+            this.Cursor = System.Windows.Forms.Cursors.Default;
+
+            view1.Viewer.RedrawView();
         }
 
         void MainForm_DragEnter(object sender, DragEventArgs e)
@@ -56,30 +96,6 @@ namespace siren
             }
         }
 
-        /// <summary>
-        /// ツールバー状態の切り替え
-        /// </summary>
-        public void onSelectObject()
-        {
-            tsbTranslate.Enabled = true;
-            tsbRotate.Enabled = true;
-            tsbScale.Enabled = true;
-            tsbDisplayMode.Enabled = true;
-            tsbTransparency.Enabled = true;
-            tsbColor.Enabled = true;
-            tsbMaterial.Enabled = true;
-        }
-        public void onUnselectObject()
-        {
-            tsbTranslate.Enabled = false;
-            tsbRotate.Enabled = false;
-            tsbScale.Enabled = false;
-            tsbDisplayMode.Enabled = false;
-            tsbTransparency.Enabled = false;
-            tsbColor.Enabled = false;
-            tsbMaterial.Enabled = false;
-        }
-
         #endregion // イベント
 
         private bool OpenFile(string filename, ModelFormat theformat)
@@ -95,9 +111,7 @@ namespace siren
 
 			this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
 
-            NewFile();
-		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
-            bool result = curForm.Import(filename, theformat);
+            bool result = this.view1.Import(filename, theformat);
 
 			this.Cursor = System.Windows.Forms.Cursors.Default;
 
@@ -141,11 +155,10 @@ namespace siren
 
 			this.Cursor=System.Windows.Forms.Cursors.WaitCursor;
 
-			ViewForm curForm = (ViewForm) this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return false;
 
-            bool result = curForm.Export(filename, format);
+            bool result = this.view1.Export(filename, format);
 
 			this.Cursor=System.Windows.Forms.Cursors.Default;
 
@@ -182,66 +195,49 @@ namespace siren
             SaveFile();
 		}
 
-		public void NewFile()
-		{
-			ViewForm newForm = new ViewForm();
-            newForm.MdiParent = this;
-            siren.MainForm.myNbOfChildren = siren.MainForm.myNbOfChildren + 1;
-            string str = System.String.Format(newForm.Text + " {0}: ビュー {1}", siren.MainForm.myNbOfChildren, 1);
-            newForm.Text = str;
-			newForm.Show();
-			newForm.InitViewer();
-			newForm.InitV3D(false);
-            setToolBarButtonState();
-            newForm.getterm().setChangeStateFunc(setToolBarButtonState);
-			this.Cursor=System.Windows.Forms.Cursors.Default;
-		}
-
         private void tsbTransparency_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-			if (curForm == null)
+			if (this.view1 == null)
 				return;
 			siren.TransparencyDialog t = new TransparencyDialog();
-			t.Viewer=curForm.Viewer;
-			t.ShowDialog(curForm);
+			t.Viewer=this.view1.Viewer;
+			t.ShowDialog(this.view1);
         }
 
         private void tsbFit_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
-            curForm.Viewer.ZoomAllView();
+            this.view1.Viewer.ZoomAllView();
         }
 
         #region "Make premitive"
 
         private void tsbVertex_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
 
             ToolStripButton button = (ToolStripButton)sender;
             button.Checked = true;
 
             // カウンタを1点ピックに設定
-            curForm.MousePickCount = 1;
+            this.MousePickingEvent = new MousePicking();
+            this.MousePickingEvent.Count = 1;
 
             // 確定時イベント
-            curForm.MousePickedEvent = (List<Point3d> pts) => {
+            this.MousePickingEvent.ApplyEvent = (List<Point3d> pts) => {
                 double x, y, z;
                 x = pts[0].X;
                 y = pts[0].Y;
                 z = pts[0].Z;
                 string pos = "" + x.ToString() + "," + y.ToString() + "," + z.ToString() + "";
-                curForm.getterm().execute("a = vertex " + pos);
+                myTerm.execute("a = vertex " + pos);
                 button.Checked = false;
             };
 
             // キャンセル時イベント
-            curForm.MousePickedCancelEvent = () => {
+            this.MousePickingEvent.CancelEvent = () => {
                 button.Checked = false;
             };
 
@@ -250,26 +246,26 @@ namespace siren
 
         private void tsbLine_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
 
             ToolStripButton button = (ToolStripButton)sender;
             button.Checked = true;
 
             // カウンタを2点ピックに設定
-            curForm.MousePickCount = 2;
+            this.MousePickingEvent = new MousePicking();
+            this.MousePickingEvent.Count = 2;
 
             // 確定時イベント
-            curForm.MousePickedEvent = (List<Point3d> pts) => {
+            this.MousePickingEvent.ApplyEvent = (List<Point3d> pts) => {
                 string spos = pts[0].to_a();
                 string tpos = pts[1].to_a();
-                curForm.getterm().execute("a = line " + spos + ", " + tpos);
+                myTerm.execute("a = line " + spos + ", " + tpos);
                 button.Checked = false;
             };
 
             // キャンセル時イベント
-            curForm.MousePickedCancelEvent = () => {
+            this.MousePickingEvent.CancelEvent = () => {
                 button.Checked = false;
             };
 
@@ -278,28 +274,28 @@ namespace siren
 
         private void tsbPolyline_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
 
             ToolStripButton button = (ToolStripButton)sender;
             button.Checked = true;
 
             // カウンタを上限なしに設定
-            curForm.MousePickCount = -1;
+            this.MousePickingEvent = new MousePicking();
+            this.MousePickingEvent.Count = -1;
 
             // 確定時イベント
-            curForm.MousePickedEvent = (List<Point3d> pts) => {
+            this.MousePickingEvent.ApplyEvent = (List<Point3d> pts) => {
                 string args = string.Empty;
                 foreach (Point3d p in pts) {
                     args += (args.Length > 0 ? ", " : "") + p.to_a();
                 }
-                curForm.getterm().execute("a = polyline [" + args + "]");
+                myTerm.execute("a = polyline [" + args + "]");
                 button.Checked = false;
             };
 
             // キャンセル時イベント
-            curForm.MousePickedCancelEvent = () => {
+            this.MousePickingEvent.CancelEvent = () => {
                 button.Checked = false;
             };
 
@@ -308,28 +304,28 @@ namespace siren
 
         private void tsbCurve_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
 
             ToolStripButton button = (ToolStripButton)sender;
             button.Checked = true;
 
             // カウンタを上限なしに設定
-            curForm.MousePickCount = -1;
+            this.MousePickingEvent = new MousePicking();
+            this.MousePickingEvent.Count = -1;
 
             // 確定時イベント
-            curForm.MousePickedEvent = (List<Point3d> pts) => {
+            this.MousePickingEvent.ApplyEvent = (List<Point3d> pts) => {
                 string args = string.Empty;
                 foreach (Point3d p in pts) {
                     args += (args.Length > 0 ? ", " : "") + p.to_a();
                 }
-                curForm.getterm().execute("a = curve [" + args + "]");
+                myTerm.execute("a = curve [" + args + "]");
                 button.Checked = false;
             };
 
             // キャンセル時イベント
-            curForm.MousePickedCancelEvent = () => {
+            this.MousePickingEvent.CancelEvent = () => {
                 button.Checked = false;
             };
 
@@ -338,51 +334,45 @@ namespace siren
 
         private void tsbPlane_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
-            curForm.getterm().execute("a = plane [0, 0, 0], [0, 0, 1], -10, 10, -10, 10");
+            myTerm.execute("a = plane [0, 0, 0], [0, 0, 1], -10, 10, -10, 10");
         }
 
         private void tsbBox_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
-            curForm.getterm().execute("a = box [10,10,10]");
+            myTerm.execute("a = box [10,10,10]");
         }
 
         private void tsbSphere_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
-            curForm.getterm().execute("a = sphere 10");
+            myTerm.execute("a = sphere 10");
         }
 
         private void tsbCylinder_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
-            curForm.getterm().execute("a = cylinder op, [0, 0, 1], 10, 20, " + deg2rad(360).ToString());
+            myTerm.execute("a = cylinder op, [0, 0, 1], 10, 20, " + deg2rad(360).ToString());
         }
 
         private void tsbCone_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
-            curForm.getterm().execute("a = cone op, [0, 0, 1], 10, 0, 20, " + deg2rad(360).ToString() );
+            myTerm.execute("a = cone op, [0, 0, 1], 10, 0, 20, " + deg2rad(360).ToString() );
         }
 
         private void tsbTorus_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
             string a = deg2rad(360).ToString();
-            curForm.getterm().execute("a = torus([0,0,0], [0,0,1], 7, 3, "+a+")");
+            myTerm.execute("a = torus([0,0,0], [0,0,1], 7, 3, "+a+")");
         }
 
         private double deg2rad(double deg)
@@ -408,52 +398,6 @@ namespace siren
             this.OpenFile();
         }
 
-        private void tsbNew_Click(object sender, EventArgs e)
-        {
-            this.NewFile();
-        }
-
-        private void tsbNewView_Click(object sender, EventArgs e)
-        {
-			this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
-            
-            siren.ViewForm curForm = (siren.ViewForm)this.ActiveMdiChild;
-            if (curForm == null) {
-                return;
-            }
-
-            siren.ViewForm newViewer = new ViewForm();
-            newViewer.MdiParent = this;
-            newViewer.Show();
-            newViewer.InitViewer();
-            newViewer.SetContext(curForm.Viewer);
-            newViewer.Viewer.CreateNewView(newViewer.Handle, false);
-            { // Setting title bar text
-                string title = curForm.Text;
-                System.Text.StringBuilder bld= new System.Text.StringBuilder(title);
-                char c = bld[title.Length - 1];
-                string s=c.ToString();
-                int NbOfViewer = newViewer.Viewer.CharToInt(s);
-                NbOfViewer++;
-                bld.Remove(title.Length - 1, 1);
-                bld.Append(NbOfViewer);
-                newViewer.Text = bld.ToString();
-            }
-            setToolBarButtonState();
-            newViewer.getterm().setChangeStateFunc(setToolBarButtonState);
-            this.Cursor = System.Windows.Forms.Cursors.Default;
-        }
-
-        private void tsbCascade_Click(object sender, EventArgs e)
-        {
-			this.LayoutMdi(System.Windows.Forms.MdiLayout.Cascade);
-        }
-
-        private void tsbTile_Click(object sender, EventArgs e)
-        {
-			this.LayoutMdi(System.Windows.Forms.MdiLayout.TileVertical);
-        }
-
         private void tsbDump_Click(object sender, EventArgs e)
         {
             SaveFileDialog d = new SaveFileDialog();
@@ -472,55 +416,39 @@ namespace siren
                 return;
 
             SaveFile(d.FileName, ModelFormat.IMAGE);
-            setToolBarButtonState();
-        }
-
-        private void tsbClose_Click(object sender, EventArgs e)
-        {
-		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
-            if (curForm != null) {
-                curForm.Close();
-                setToolBarButtonState();
-            }
         }
 
         private void tsbDisplayMode_Click(object sender, EventArgs e)
         {
-		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
-            if (curForm != null) {
-                curForm.toggleDisplayMode();
-                setToolBarButtonState();
+            if (this.view1 != null) {
+                this.view1.toggleDisplayMode();
             }
         }
 
         private void tsbDelete_Click(object sender, EventArgs e)
         {
-		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
-            if (curForm != null) {
-                curForm.Viewer.EraseObjects();
-                setToolBarButtonState();
+            if (this.view1 != null) {
+                this.view1.Viewer.EraseObjects();
             }
         }
 
         private void tsbCopy_Click(object sender, EventArgs e)
         {
-		    ViewForm curForm = (ViewForm) this.ActiveMdiChild;
-            if (curForm != null) {
-                curForm.getterm().execute("a = []; selected.each { |obj| a.push(copy(obj)) }");
-                setToolBarButtonState();
+            if (this.view1 != null) {
+                myTerm.execute("a = []; selected.each { |obj| a.push(copy(obj)) }");
+                changeState();
             }
         }
 
         private void tsbColor_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
 
             int r, g, b;
-            r = curForm.Viewer.GetObjColR();
-            g = curForm.Viewer.GetObjColG();
-            b = curForm.Viewer.GetObjColB();
+            r = this.view1.Viewer.GetObjColR();
+            g = this.view1.Viewer.GetObjColG();
+            b = this.view1.Viewer.GetObjColB();
 
             System.Windows.Forms.ColorDialog ColDlg = new ColorDialog();
             ColDlg.Color = System.Drawing.Color.FromArgb(r, g, b);
@@ -529,65 +457,111 @@ namespace siren
                 r = c.R;
                 g = c.G;
                 b = c.B;
-                curForm.Viewer.SetColor(r, g, b);
+                this.view1.Viewer.SetColor(r, g, b);
             }
-            curForm.Viewer.UpdateCurrentViewer();
+            this.view1.Viewer.UpdateCurrentViewer();
         }
 
         private void tsbHlr_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
-            curForm.myDegenerateModeIsOn = !curForm.myDegenerateModeIsOn;
-            curForm.Viewer.UpdateCurrentViewer();
+            this.view1.myDegenerateModeIsOn = !this.view1.myDegenerateModeIsOn;
+            this.view1.Viewer.UpdateCurrentViewer();
         }
 
         #region Materialize
-        private void tsbMaterial_ButtonClick(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.DEFAULT); } 
-        private void miGold_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.GOLD); } 
-        private void miSilver_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.SILVER); } 
-        private void miCopper_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.COPPER); } 
-        private void miBronze_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.BRONZE); } 
-        private void miPewter_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.PEWTER); } 
-        private void miBrass_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.BRASS); } 
-        private void miSteel_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.STEEL); } 
-        private void miAluminium_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.ALUMINIUM); } 
-        private void miMetalized_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.METALIZED); } 
-        private void miStone_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.STONE); } 
-        private void miPlaster_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.PLASTER); } 
-        private void miObsidian_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.OBSIDIAN); } 
-        private void miJade_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.JADE); } 
-        private void miPlastic_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.PLASTIC); } 
-        private void miPlastic2_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.SHINY_PLASTIC); }
-        private void miSatin_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.SATIN); } 
-        private void miGNC_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.NEON_GNC); } 
-        private void miPHC_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.Viewer.SetMaterial((int)NameOfMaterial.NEON_PHC); }
+        private void tsbMaterial_ButtonClick(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.DEFAULT); } 
+        private void miGold_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.GOLD); } 
+        private void miSilver_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.SILVER); } 
+        private void miCopper_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.COPPER); } 
+        private void miBronze_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.BRONZE); } 
+        private void miPewter_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.PEWTER); } 
+        private void miBrass_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.BRASS); } 
+        private void miSteel_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.STEEL); } 
+        private void miAluminium_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.ALUMINIUM); } 
+        private void miMetalized_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.METALIZED); } 
+        private void miStone_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.STONE); } 
+        private void miPlaster_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.PLASTER); } 
+        private void miObsidian_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.OBSIDIAN); } 
+        private void miJade_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.JADE); } 
+        private void miPlastic_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.PLASTIC); } 
+        private void miPlastic2_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.SHINY_PLASTIC); }
+        private void miSatin_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.SATIN); } 
+        private void miGNC_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.NEON_GNC); } 
+        private void miPHC_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.NEON_PHC); }
         #endregion
 
         #region ViewDirection
-        private void tsbAxoView_ButtonClick(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.AxoView(); } 
-        private void miFront_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.FrontView(); } 
-        private void miBack_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.BackView(); } 
-        private void miLeft_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.LeftView(); } 
-        private void miRight_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.RightView(); } 
-        private void miTop_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.TopView(); } 
-        private void miBottom_Click(object sender, EventArgs e) { ViewForm curForm = (ViewForm)this.ActiveMdiChild; if (curForm == null) return; curForm.BottomView(); }
+        private void tsbAxoView_ButtonClick(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.AxoView(); } 
+        private void miFront_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.FrontView(); } 
+        private void miBack_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.BackView(); } 
+        private void miLeft_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.LeftView(); } 
+        private void miRight_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.RightView(); } 
+        private void miTop_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.TopView(); } 
+        private void miBottom_Click(object sender, EventArgs e) {  if (this.view1 == null) return; this.view1.BottomView(); }
         #endregion
 
         private void tsbResetView_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm == null)
+            if (this.view1 == null)
                 return;
-            curForm.Viewer.Reset();
-            curForm.Viewer.ZoomAllView();
+            this.view1.Viewer.Reset();
+            this.view1.Viewer.ZoomAllView();
+        }
+
+        public void changeState()
+        {
+            int nb_selected = this.view1.Viewer.NbSelected();
+            setToolBarButtonState(nb_selected);
+            setPropertyState(nb_selected);
+        }
+
+        /// <summary>
+        /// プロパティ
+        /// </summary>
+        public void setPropertyState(int nb_selected)
+        {
+            if (nb_selected == 1) {
+                this.myTerm.execute("location ?", this.view1, false, false);
+                string result = this.myTerm.result_string;
+                if (result == null || result.Length < 1)
+                    return;
+                System.Text.RegularExpressions.Regex re = new System.Text.RegularExpressions.Regex(@"[\d\.\-]+");
+                System.Text.RegularExpressions.MatchCollection ma = re.Matches(result);
+
+                bool f = true;
+                double x = 0, y = 0, z = 0;
+                f = f && double.TryParse(ma[0].Value, out x);
+                f = f && double.TryParse(ma[1].Value, out y);
+                f = f && double.TryParse(ma[2].Value, out z);
+                if (!f)
+                    return;
+
+                this.myTerm.execute("bndbox ?", this.view1, false, false);
+                result = this.myTerm.result_string;
+                ma = re.Matches(result);
+
+                double sx = 0, sy = 0, sz = 0, lx = 0, ly = 0, lz = 0;
+                f = f && double.TryParse(ma[0].Value, out sx);
+                f = f && double.TryParse(ma[1].Value, out sy);
+                f = f && double.TryParse(ma[2].Value, out sz);
+                f = f && double.TryParse(ma[3].Value, out lx);
+                f = f && double.TryParse(ma[4].Value, out ly);
+                f = f && double.TryParse(ma[5].Value, out lz);
+
+                this.SelectedObject = new ObjectProperty(x, y, z, sx, sy, sz, lx, ly, lz);
+                propertyGrid1.SelectedObject = this.SelectedObject;
+            }
+            else {
+                propertyGrid1.SelectedObject = null;
+            }
         }
 
         /// <summary>
         /// ツールバーのボタンの状態を適切な状態に変更する
         /// </summary>
-        public void setToolBarButtonState()
+        public void setToolBarButtonState(int nb_selected)
         {
             toolStripMain.SuspendLayout();
             toolStripMain.Enabled = false;
@@ -603,13 +577,7 @@ namespace siren
             tsbExit.Enabled = true;
 
             // ビューアーが存在する場合のみ有効
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null) {
-                // ----
-                tsbNewView.Enabled = true;
-                tsbClose.Enabled = true;
-                tsbCascade.Enabled = true;
-                tsbTile.Enabled = true;
+            if (this.view1 != null) {
                 tsbDump.Enabled = true;
                 tsbRender.Enabled = true;
                 // ----
@@ -635,10 +603,7 @@ namespace siren
                 tsbResetView.Enabled = true;
                 // ----
                 tsbHlr.Enabled = true;
-                // ----
-                tsbTerminal.Enabled = true;
 
-                int nb_selected = curForm.Viewer.NbSelected();
                 // オブジェクトが選択されている場合のみ有効
                 if (nb_selected > 0) {
                     tsbSave.Enabled = true;
@@ -650,6 +615,9 @@ namespace siren
                     tsbTranslate.Enabled = true;
                     //tsbRotate.Enabled = true;
                     //tsbScale.Enabled = true;
+                    //tsbMirror.Enabled = true;
+                    // ----
+                    //tsbOffset.Enabled = true;
                     // ----
                     tsbDisplayMode.Enabled = true;
                     tsbTransparency.Enabled = true;
@@ -698,6 +666,7 @@ namespace siren
                 // オブジェクトが2個以上選択されている場合のみ有効
                 if (nb_selected >= 2) {
                     tsbLoft.Enabled = true;
+                    tsbSewing.Enabled = true;
                 }
             }
             toolStripMain.Enabled = true;
@@ -708,9 +677,9 @@ namespace siren
 
         private void tsbTranslate_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null && curForm.Viewer.IsObjectSelected())
-                curForm.isDirectTranslateMode = true;
+            
+            if (this.view1 != null && this.view1.Viewer.IsObjectSelected())
+                this.view1.isDirectTranslateMode = true;
         }
 
         #endregion
@@ -719,17 +688,50 @@ namespace siren
 
         private void tsbCompound_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null && curForm.Viewer.NbSelected() > 1)
-                curForm.getterm().execute("a = compound selected");
+            if (this.view1 != null && this.view1.Viewer.NbSelected() > 1)
+                myTerm.execute("a = compound selected");
         }
 
-        private void tsbExplode_Click(object sender, EventArgs e)
+        private void miExCompound_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null && curForm.Viewer.IsObjectSelected()) {
-                curForm.getterm().execute("a = []; selected.each { |obj| a.push(explode Stype::SOLID, obj) }");
-            }
+            if (this.view1 != null)
+                myTerm.execute("a = []; selected.each { |n| a.push(explode Stype::COMPOUND, n) }");
+        }
+
+        private void miExSolid_Click(object sender, EventArgs e)
+        {
+            if (this.view1 != null)
+                myTerm.execute("a = []; selected.each { |n| a.push(explode Stype::SOLID, n) }");
+        }
+
+        private void miExShell_Click(object sender, EventArgs e)
+        {
+            if (this.view1 != null)
+                myTerm.execute("a = []; selected.each { |n| a.push(explode Stype::SHELL, n) }");
+        }
+
+        private void miExFace_Click(object sender, EventArgs e)
+        {
+            if (this.view1 != null)
+                myTerm.execute("a = []; selected.each { |n| a.push(explode Stype::FACE, n) }");
+        }
+
+        private void miExWire_Click(object sender, EventArgs e)
+        {
+            if (this.view1 != null)
+                myTerm.execute("a = []; selected.each { |n| a.push(explode Stype::WIRE, n) }");
+        }
+
+        private void miExEdge_Click(object sender, EventArgs e)
+        {
+            if (this.view1 != null)
+                myTerm.execute("a = []; selected.each { |n| a.push(explode Stype::EDGE, n) }");
+        }
+
+        private void miExVertex_Click(object sender, EventArgs e)
+        {
+            if (this.view1 != null)
+                myTerm.execute("a = []; selected.each { |n| a.push(explode Stype::VERTEX, n) }");
         }
 
         #endregion
@@ -738,9 +740,8 @@ namespace siren
 
         private void tsbLoft_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null)
-                curForm.getterm().execute("a = loft ??");
+            if (this.view1 != null)
+                myTerm.execute("a = loft ??");
         }
 
         #endregion
@@ -749,30 +750,26 @@ namespace siren
 
         private void tsbFuse_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null)
-                curForm.getterm().execute("a = fuse ??[0], ??[1]");
+            if (this.view1 != null)
+                myTerm.execute("a = fuse ??[0], ??[1]");
         }
 
         private void tsbCut_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null)
-                curForm.getterm().execute("a = cut ??[0], ??[1]");
+            if (this.view1 != null)
+                myTerm.execute("a = cut ??[0], ??[1]");
         }
 
         private void tsbCommon_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null)
-                curForm.getterm().execute("a = common ??[0], ??[1]");
+            if (this.view1 != null)
+                myTerm.execute("a = common ??[0], ??[1]");
         }
 
         private void tsbIntersect_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null)
-                curForm.getterm().execute("a = intersect ??[0], ??[1]");
+            if (this.view1 != null)
+                myTerm.execute("a = intersect ??[0], ??[1]");
         }
 
         #endregion
@@ -781,33 +778,86 @@ namespace siren
 
         private void miVolume_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null)
-                curForm.getterm().execute("volume ?", "ボリューム: ");
+            if (this.view1 != null)
+                myTerm.execute("volume ?", "ボリューム: ");
         }
 
         private void miCog_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null)
-                curForm.getterm().execute("cog ?", "重心位置: ");
+            if (this.view1 != null)
+                myTerm.execute("cog ?", "重心位置: ");
         }
 
         private void miBndbox_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null)
-                curForm.getterm().execute("bndbox ?", "範囲(最小位置, 最大位置): ");
+            if (this.view1 != null)
+                myTerm.execute("bndbox ?", "範囲(最小位置, 最大位置): ");
         }
 
         #endregion
 
-        private void tsbTerminal_Click(object sender, EventArgs e)
+        private void tsbSewing_Click(object sender, EventArgs e)
         {
-            ViewForm curForm = (ViewForm)this.ActiveMdiChild;
-            if (curForm != null)
-                curForm.showTerminal();
+            if (this.view1 != null)
+                myTerm.execute("a = sew ??");
         }
+
+        /// <summary>
+        /// フルスクリーン状態を切り替える
+        /// </summary>
+        public void toggleFullscreen()
+        {
+            if (view1.Focused) {
+                if (splitContainer3.Visible) {
+                    splitContainer3.Visible = false;
+                    splitContainer2.Panel1.Controls.Add(view1);
+                }
+                else {
+                    splitContainer3.Visible = true;
+                    splitContainer3.Panel2.Controls.Add(view1);
+                }
+            }
+            else if (view2.Focused) {
+                if (splitContainer3.Visible) {
+                    splitContainer3.Visible = false;
+                    splitContainer2.Panel1.Controls.Add(view2);
+                }
+                else {
+                    splitContainer3.Visible = true;
+                    splitContainer4.Panel1.Controls.Add(view2);
+                }
+            }
+            else if (view3.Focused) {
+                if (splitContainer3.Visible) {
+                    splitContainer3.Visible = false;
+                    splitContainer2.Panel1.Controls.Add(view3);
+                }
+                else {
+                    splitContainer3.Visible = true;
+                    splitContainer4.Panel2.Controls.Add(view3);
+                }
+            }
+            return;
+        }
+
+        /// <summary>
+        /// ターミナルにフォーカスを移す
+        /// </summary>
+        public void focusTerminal()
+        {
+            this.myTerm.setFocus();
+            return;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void focusViewer()
+        {
+            this.view1.Focus();
+            return;
+        }
+
 
     }
 

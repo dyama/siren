@@ -14,10 +14,18 @@
  */
 mrb_value erase(mrb_state* mrb, mrb_value self)
 {
-    mrb_int target;
-	int argc = mrb_get_args(mrb, "i", &target);
-
-	::unset(target);
+    mrb_value obj;
+    int argc = mrb_get_args(mrb, "o", &obj);
+    if (mrb_fixnum_p(obj)) {
+    	::unset(mrb_fixnum(obj));
+    }
+    else if (mrb_array_p(obj)) {
+        for (int i=0; i<mrb_ary_len(mrb, obj); i++) {
+            mrb_value item = mrb_ary_ref(mrb, obj, i);
+            mrb_int hc = mrb_fixnum(item);
+        	::unset(hc);
+        }
+    }
 	return mrb_nil_value();
 }
 

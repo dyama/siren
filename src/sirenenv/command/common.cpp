@@ -10,14 +10,13 @@
 #include "Stdafx.h"
 #include "common.h"
 
-
 /**
  * \brief 
  */
-double ar2double(mrb_state* mrb, mrb_value ary)
+double ar2double(mrb_state* mrb, mrb_value ary, int index)
 {
 	double res = 0.0;
-	mrb_value val = mrb_ary_shift(mrb, ary);
+    mrb_value val = mrb_ary_ref(mrb, ary, index);
 
 	if (mrb_nil_p(val))
 		res = 0.0;
@@ -36,9 +35,9 @@ double ar2double(mrb_state* mrb, mrb_value ary)
  */
 gp_Pnt* ar2pnt(mrb_state* mrb, mrb_value& ary)
 {
-	double x = ar2double(mrb, ary);
-	double y = ar2double(mrb, ary);
-	double z = ar2double(mrb, ary);
+	double x = ar2double(mrb, ary, 0);
+	double y = ar2double(mrb, ary, 1);
+	double z = ar2double(mrb, ary, 2);
 	return new gp_Pnt(x, y, z);
 }
 
@@ -47,9 +46,9 @@ gp_Pnt* ar2pnt(mrb_state* mrb, mrb_value& ary)
  */
 gp_Vec* ar2vec(mrb_state* mrb, mrb_value& ary)
 {
-	double x = ar2double(mrb, ary);
-	double y = ar2double(mrb, ary);
-	double z = ar2double(mrb, ary);
+	double x = ar2double(mrb, ary, 0);
+	double y = ar2double(mrb, ary, 1);
+	double z = ar2double(mrb, ary, 2);
 	return new gp_Vec(x, y, z);
 }
 
@@ -58,9 +57,9 @@ gp_Vec* ar2vec(mrb_state* mrb, mrb_value& ary)
  */
 gp_Dir* ar2dir(mrb_state* mrb, mrb_value& ary)
 {
-	double x = ar2double(mrb, ary);
-	double y = ar2double(mrb, ary);
-	double z = ar2double(mrb, ary);
+	double x = ar2double(mrb, ary, 0);
+	double y = ar2double(mrb, ary, 1);
+	double z = ar2double(mrb, ary, 2);
 	return new gp_Dir(x, y, z);
 }
 

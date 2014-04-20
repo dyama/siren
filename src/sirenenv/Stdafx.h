@@ -33,6 +33,8 @@
 
 #include <Aspect_TypeOfDisplayText.hxx>
 
+#include <OSD_Path.hxx>
+
 //collections
 #include <TCollection.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -112,7 +114,12 @@
 #include <STEPControl_Reader.hxx>
 #include <STEPControl_Writer.hxx>
 //for stl export
+#include <RWStl.hxx>
+#include <StlAPI.hxx>
+#include <StlAPI_Reader.hxx>
 #include <StlAPI_Writer.hxx>
+#include <StlMesh.hxx>
+#include <StlTransfer.hxx>
 //for vrml export
 #include <VrmlAPI_Writer.hxx>
 
@@ -185,6 +192,8 @@
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
+
+#include <TopOpeBRep_FaceEdgeIntersector.hxx>
 
 // libraries
 #pragma comment (lib, "TKernel.lib")

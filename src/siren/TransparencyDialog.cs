@@ -71,6 +71,7 @@ namespace siren
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "TransparencyDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "“§–¾“x";
             ((System.ComponentModel.ISupportInitialize)(this.MyTransparency)).EndInit();
             this.ResumeLayout(false);

@@ -20,6 +20,8 @@ bool OCCViewer::mruby_init()
 
     // 実装予定コマンド
     // transparency obj val ... 不透明度設定。valを省略すると現在設定されている値を返す。
+    // arc                  ... 円弧曲線を作成する
+    // circle               ... 円曲線を作成する。内部的にはarcと同じ？
     // 視点制御系コマンド
     // ビュー管理系コマンド
 
@@ -70,6 +72,7 @@ bool OCCViewer::mruby_init()
 	regcmd("cog",       &cog,       1,0, "Get center position of gravity",  "cog(obj) -> float[X, Y, Z]");
 	regcmd("intersect", &intersect, 2,0, "Get intersection line.",          "intersect(obj1, obj2) -> ObjID");
 	regcmd("intcs",     &intcs,     2,1, "Intersection Curve x Surface",    "intcs(obj_curve, obj_surf, with_normal) -> [float[X, Y, Z], ...]");
+	regcmd("intfe",     &intfe,     2,1, "Intersection Face x Edge",        "intfe(face, edge) -> [float[X, Y, Z], ...]");
 
 
 	regcmd("split",     &split,     2,0, "",                                "");
@@ -106,6 +109,7 @@ bool OCCViewer::mruby_init()
 	regcmd("bload",     &loadbrep,  1,0, "Load object from a file.",        "bload(path) -> ID");
 	regcmd("isave",     &saveiges,  2,0, "Save object to an IGES.",         "isave(path, obj) -> nil");
 	regcmd("iload",     &loadiges,  1,0, "Load object from an IGES.",       "iload(path) -> Ary");
+	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path)");
 
     //
 	regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");

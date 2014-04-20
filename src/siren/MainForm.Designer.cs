@@ -45,18 +45,6 @@ namespace siren
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripPanel2 = new System.Windows.Forms.ToolStripPanel();
             this.toolStripMain = new System.Windows.Forms.ToolStrip();
-            this.tsbNew = new System.Windows.Forms.ToolStripButton();
-            this.tsbOpen = new System.Windows.Forms.ToolStripButton();
-            this.tsbSave = new System.Windows.Forms.ToolStripButton();
-            this.tsbExit = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsbNewView = new System.Windows.Forms.ToolStripButton();
-            this.tsbClose = new System.Windows.Forms.ToolStripButton();
-            this.tsbCascade = new System.Windows.Forms.ToolStripButton();
-            this.tsbTile = new System.Windows.Forms.ToolStripButton();
-            this.tsbDump = new System.Windows.Forms.ToolStripButton();
-            this.tsbRender = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbVertex = new System.Windows.Forms.ToolStripButton();
             this.tsbLine = new System.Windows.Forms.ToolStripButton();
             this.tsbPolyline = new System.Windows.Forms.ToolStripButton();
@@ -72,13 +60,23 @@ namespace siren
             this.tsbDelete = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbCompound = new System.Windows.Forms.ToolStripButton();
-            this.tsbExplode = new System.Windows.Forms.ToolStripButton();
+            this.tsbExplode = new System.Windows.Forms.ToolStripSplitButton();
+            this.miExCompound = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExSolid = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExShell = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExFace = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExWire = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExEdge = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExVertex = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbTranslate = new System.Windows.Forms.ToolStripButton();
             this.tsbRotate = new System.Windows.Forms.ToolStripButton();
             this.tsbScale = new System.Windows.Forms.ToolStripButton();
+            this.tsbMirror = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbLoft = new System.Windows.Forms.ToolStripButton();
+            this.tsbOffset = new System.Windows.Forms.ToolStripButton();
+            this.tsbSewing = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbFuse = new System.Windows.Forms.ToolStripButton();
             this.tsbCut = new System.Windows.Forms.ToolStripButton();
@@ -89,7 +87,6 @@ namespace siren
             this.miVolume = new System.Windows.Forms.ToolStripMenuItem();
             this.miCog = new System.Windows.Forms.ToolStripMenuItem();
             this.miBndbox = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbDisplayMode = new System.Windows.Forms.ToolStripButton();
             this.tsbTransparency = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -118,8 +115,8 @@ namespace siren
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.miGNC = new System.Windows.Forms.ToolStripMenuItem();
             this.miPHC = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbFit = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbAxoView = new System.Windows.Forms.ToolStripSplitButton();
             this.miFront = new System.Windows.Forms.ToolStripMenuItem();
             this.miBack = new System.Windows.Forms.ToolStripMenuItem();
@@ -127,14 +124,73 @@ namespace siren
             this.miRight = new System.Windows.Forms.ToolStripMenuItem();
             this.miTop = new System.Windows.Forms.ToolStripMenuItem();
             this.miBottom = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbResetView = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbHlr = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsbTerminal = new System.Windows.Forms.ToolStripButton();
-            this.toolStripPanel2.SuspendLayout();
+            this.tsbDump = new System.Windows.Forms.ToolStripButton();
+            this.tsbRender = new System.Windows.Forms.ToolStripButton();
+            this.tsbNew = new System.Windows.Forms.ToolStripButton();
+            this.tsbOpen = new System.Windows.Forms.ToolStripButton();
+            this.tsbSave = new System.Windows.Forms.ToolStripButton();
+            this.tsbExit = new System.Windows.Forms.ToolStripButton();
+            this.toolStripPanel1 = new System.Windows.Forms.ToolStripPanel();
+            this.toolStripGeneral = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+            this.myTerm = new siren.term();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.ファイルFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.新規作成NToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.開くOToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.上書き保存SToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.名前を付けて保存AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.印刷PToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.印刷プレビューVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+            this.終了XToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.編集EToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.元に戻すUToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.やり直しRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
+            this.切り取りTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.コピーCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.貼り付けPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
+            this.すべて選択AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.ツールTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.カスタマイズCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.オプションOToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.miScript = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.ヘルプHToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.内容CToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.インデックスIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.検索SToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
+            this.バージョン情報AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMain.SuspendLayout();
+            this.toolStripGeneral.SuspendLayout();
+            this.toolStripContainer1.ContentPanel.SuspendLayout();
+            this.toolStripContainer1.LeftToolStripPanel.SuspendLayout();
+            this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
+            this.toolStripContainer1.SuspendLayout();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
+            this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.SuspendLayout();
+            this.splitContainer4.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripLabel2
@@ -145,30 +201,18 @@ namespace siren
             // 
             // toolStripPanel2
             // 
-            this.toolStripPanel2.Controls.Add(this.toolStripMain);
             this.toolStripPanel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.toolStripPanel2.Location = new System.Drawing.Point(0, 0);
             this.toolStripPanel2.Name = "toolStripPanel2";
             this.toolStripPanel2.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.toolStripPanel2.RowMargin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.toolStripPanel2.Size = new System.Drawing.Size(1008, 25);
+            this.toolStripPanel2.Size = new System.Drawing.Size(1192, 0);
             // 
             // toolStripMain
             // 
             this.toolStripMain.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStripMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsbNew,
-            this.tsbOpen,
-            this.tsbSave,
-            this.tsbExit,
-            this.toolStripSeparator2,
-            this.tsbNewView,
-            this.tsbClose,
-            this.tsbCascade,
-            this.tsbTile,
-            this.tsbDump,
-            this.tsbRender,
-            this.toolStripSeparator1,
             this.tsbVertex,
             this.tsbLine,
             this.tsbPolyline,
@@ -189,143 +233,24 @@ namespace siren
             this.tsbTranslate,
             this.tsbRotate,
             this.tsbScale,
+            this.tsbMirror,
             this.toolStripButton6,
             this.tsbLoft,
+            this.tsbOffset,
+            this.tsbSewing,
             this.toolStripSeparator17,
             this.tsbFuse,
             this.tsbCut,
             this.tsbCommon,
             this.tsbIntersect,
             this.toolStripSeparator16,
-            this.tsbInfo,
-            this.toolStripSeparator15,
-            this.tsbDisplayMode,
-            this.tsbTransparency,
-            this.toolStripSeparator10,
-            this.tsbColor,
-            this.tsbMaterial,
-            this.tsbFit,
-            this.toolStripSeparator12,
-            this.tsbAxoView,
-            this.toolStripSeparator13,
-            this.tsbResetView,
-            this.toolStripSeparator14,
-            this.tsbHlr,
-            this.toolStripSeparator3,
-            this.tsbTerminal});
-            this.toolStripMain.Location = new System.Drawing.Point(3, 0);
+            this.tsbInfo});
+            this.toolStripMain.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
+            this.toolStripMain.Location = new System.Drawing.Point(0, 0);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(1005, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(33, 692);
+            this.toolStripMain.Stretch = true;
             this.toolStripMain.TabIndex = 14;
-            // 
-            // tsbNew
-            // 
-            this.tsbNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbNew.Image = ((System.Drawing.Image)(resources.GetObject("tsbNew.Image")));
-            this.tsbNew.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbNew.Name = "tsbNew";
-            this.tsbNew.Size = new System.Drawing.Size(23, 22);
-            this.tsbNew.Text = "新規ビューアー";
-            this.tsbNew.Click += new System.EventHandler(this.tsbNew_Click);
-            // 
-            // tsbOpen
-            // 
-            this.tsbOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbOpen.Image = ((System.Drawing.Image)(resources.GetObject("tsbOpen.Image")));
-            this.tsbOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbOpen.Name = "tsbOpen";
-            this.tsbOpen.Size = new System.Drawing.Size(23, 22);
-            this.tsbOpen.Text = "開く";
-            this.tsbOpen.Click += new System.EventHandler(this.tsbOpen_Click);
-            // 
-            // tsbSave
-            // 
-            this.tsbSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbSave.Image = ((System.Drawing.Image)(resources.GetObject("tsbSave.Image")));
-            this.tsbSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbSave.Name = "tsbSave";
-            this.tsbSave.Size = new System.Drawing.Size(23, 22);
-            this.tsbSave.Text = "選択オブジェクトを保存";
-            this.tsbSave.Click += new System.EventHandler(this.tsbSave_Click);
-            // 
-            // tsbExit
-            // 
-            this.tsbExit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbExit.Image = ((System.Drawing.Image)(resources.GetObject("tsbExit.Image")));
-            this.tsbExit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbExit.Name = "tsbExit";
-            this.tsbExit.Size = new System.Drawing.Size(23, 22);
-            this.tsbExit.Text = "終了";
-            this.tsbExit.Click += new System.EventHandler(this.tsbExit_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // tsbNewView
-            // 
-            this.tsbNewView.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbNewView.Image = ((System.Drawing.Image)(resources.GetObject("tsbNewView.Image")));
-            this.tsbNewView.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbNewView.Name = "tsbNewView";
-            this.tsbNewView.Size = new System.Drawing.Size(23, 22);
-            this.tsbNewView.Text = "ビューを追加";
-            this.tsbNewView.Click += new System.EventHandler(this.tsbNewView_Click);
-            // 
-            // tsbClose
-            // 
-            this.tsbClose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbClose.Image = ((System.Drawing.Image)(resources.GetObject("tsbClose.Image")));
-            this.tsbClose.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbClose.Name = "tsbClose";
-            this.tsbClose.Size = new System.Drawing.Size(23, 22);
-            this.tsbClose.Text = "ビューを削除";
-            this.tsbClose.Click += new System.EventHandler(this.tsbClose_Click);
-            // 
-            // tsbCascade
-            // 
-            this.tsbCascade.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbCascade.Image = ((System.Drawing.Image)(resources.GetObject("tsbCascade.Image")));
-            this.tsbCascade.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbCascade.Name = "tsbCascade";
-            this.tsbCascade.Size = new System.Drawing.Size(23, 22);
-            this.tsbCascade.Text = "重ねて表示";
-            this.tsbCascade.Click += new System.EventHandler(this.tsbCascade_Click);
-            // 
-            // tsbTile
-            // 
-            this.tsbTile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbTile.Image = ((System.Drawing.Image)(resources.GetObject("tsbTile.Image")));
-            this.tsbTile.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbTile.Name = "tsbTile";
-            this.tsbTile.Size = new System.Drawing.Size(23, 22);
-            this.tsbTile.Text = "並べて表示";
-            this.tsbTile.Click += new System.EventHandler(this.tsbTile_Click);
-            // 
-            // tsbDump
-            // 
-            this.tsbDump.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbDump.Image = ((System.Drawing.Image)(resources.GetObject("tsbDump.Image")));
-            this.tsbDump.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbDump.Name = "tsbDump";
-            this.tsbDump.Size = new System.Drawing.Size(23, 22);
-            this.tsbDump.Text = "スクリーンショット";
-            this.tsbDump.Click += new System.EventHandler(this.tsbDump_Click);
-            // 
-            // tsbRender
-            // 
-            this.tsbRender.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbRender.Image = ((System.Drawing.Image)(resources.GetObject("tsbRender.Image")));
-            this.tsbRender.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbRender.Name = "tsbRender";
-            this.tsbRender.Size = new System.Drawing.Size(23, 22);
-            this.tsbRender.Text = "レンダービュー";
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbVertex
             // 
@@ -333,7 +258,7 @@ namespace siren
             this.tsbVertex.Image = ((System.Drawing.Image)(resources.GetObject("tsbVertex.Image")));
             this.tsbVertex.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbVertex.Name = "tsbVertex";
-            this.tsbVertex.Size = new System.Drawing.Size(23, 22);
+            this.tsbVertex.Size = new System.Drawing.Size(31, 20);
             this.tsbVertex.Text = "バーテックス(点)";
             this.tsbVertex.Click += new System.EventHandler(this.tsbVertex_Click);
             // 
@@ -343,7 +268,7 @@ namespace siren
             this.tsbLine.Image = ((System.Drawing.Image)(resources.GetObject("tsbLine.Image")));
             this.tsbLine.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbLine.Name = "tsbLine";
-            this.tsbLine.Size = new System.Drawing.Size(23, 22);
+            this.tsbLine.Size = new System.Drawing.Size(31, 20);
             this.tsbLine.Text = "ライン(直線)";
             this.tsbLine.Click += new System.EventHandler(this.tsbLine_Click);
             // 
@@ -353,7 +278,7 @@ namespace siren
             this.tsbPolyline.Image = ((System.Drawing.Image)(resources.GetObject("tsbPolyline.Image")));
             this.tsbPolyline.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbPolyline.Name = "tsbPolyline";
-            this.tsbPolyline.Size = new System.Drawing.Size(23, 22);
+            this.tsbPolyline.Size = new System.Drawing.Size(31, 20);
             this.tsbPolyline.Text = "ポリライン(折れ線)";
             this.tsbPolyline.Click += new System.EventHandler(this.tsbPolyline_Click);
             // 
@@ -363,7 +288,7 @@ namespace siren
             this.tsbCurve.Image = ((System.Drawing.Image)(resources.GetObject("tsbCurve.Image")));
             this.tsbCurve.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCurve.Name = "tsbCurve";
-            this.tsbCurve.Size = new System.Drawing.Size(23, 22);
+            this.tsbCurve.Size = new System.Drawing.Size(31, 20);
             this.tsbCurve.Text = "カーブ(曲線)";
             this.tsbCurve.Click += new System.EventHandler(this.tsbCurve_Click);
             // 
@@ -373,7 +298,7 @@ namespace siren
             this.tsbPlane.Image = ((System.Drawing.Image)(resources.GetObject("tsbPlane.Image")));
             this.tsbPlane.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbPlane.Name = "tsbPlane";
-            this.tsbPlane.Size = new System.Drawing.Size(23, 22);
+            this.tsbPlane.Size = new System.Drawing.Size(31, 20);
             this.tsbPlane.Text = "プレーン(面)";
             this.tsbPlane.ToolTipText = "プレーン(面)";
             this.tsbPlane.Click += new System.EventHandler(this.tsbPlane_Click);
@@ -384,7 +309,7 @@ namespace siren
             this.tsbBox.Image = ((System.Drawing.Image)(resources.GetObject("tsbBox.Image")));
             this.tsbBox.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbBox.Name = "tsbBox";
-            this.tsbBox.Size = new System.Drawing.Size(23, 22);
+            this.tsbBox.Size = new System.Drawing.Size(31, 20);
             this.tsbBox.Text = "ボックス(箱)";
             this.tsbBox.ToolTipText = "ボックス(箱)";
             this.tsbBox.Click += new System.EventHandler(this.tsbBox_Click);
@@ -395,7 +320,7 @@ namespace siren
             this.tsbSphere.Image = ((System.Drawing.Image)(resources.GetObject("tsbSphere.Image")));
             this.tsbSphere.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSphere.Name = "tsbSphere";
-            this.tsbSphere.Size = new System.Drawing.Size(23, 22);
+            this.tsbSphere.Size = new System.Drawing.Size(31, 20);
             this.tsbSphere.Text = "スフィア(球)";
             this.tsbSphere.ToolTipText = "スフィア(球)";
             this.tsbSphere.Click += new System.EventHandler(this.tsbSphere_Click);
@@ -406,7 +331,7 @@ namespace siren
             this.tsbCylinder.Image = ((System.Drawing.Image)(resources.GetObject("tsbCylinder.Image")));
             this.tsbCylinder.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCylinder.Name = "tsbCylinder";
-            this.tsbCylinder.Size = new System.Drawing.Size(23, 22);
+            this.tsbCylinder.Size = new System.Drawing.Size(31, 20);
             this.tsbCylinder.Text = "シリンダー(円筒)";
             this.tsbCylinder.ToolTipText = "シリンダー(円筒)";
             this.tsbCylinder.Click += new System.EventHandler(this.tsbCylinder_Click);
@@ -417,7 +342,7 @@ namespace siren
             this.tsbCone.Image = ((System.Drawing.Image)(resources.GetObject("tsbCone.Image")));
             this.tsbCone.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCone.Name = "tsbCone";
-            this.tsbCone.Size = new System.Drawing.Size(23, 22);
+            this.tsbCone.Size = new System.Drawing.Size(31, 20);
             this.tsbCone.Text = "コーン(円錐)";
             this.tsbCone.ToolTipText = "コーン(円錐)";
             this.tsbCone.Click += new System.EventHandler(this.tsbCone_Click);
@@ -428,7 +353,7 @@ namespace siren
             this.tsbTorus.Image = ((System.Drawing.Image)(resources.GetObject("tsbTorus.Image")));
             this.tsbTorus.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbTorus.Name = "tsbTorus";
-            this.tsbTorus.Size = new System.Drawing.Size(23, 22);
+            this.tsbTorus.Size = new System.Drawing.Size(31, 20);
             this.tsbTorus.Text = "トーラス(輪)";
             this.tsbTorus.ToolTipText = "トーラス(輪)";
             this.tsbTorus.Click += new System.EventHandler(this.tsbTorus_Click);
@@ -436,7 +361,7 @@ namespace siren
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(31, 6);
             // 
             // tsbCopy
             // 
@@ -444,7 +369,7 @@ namespace siren
             this.tsbCopy.Image = ((System.Drawing.Image)(resources.GetObject("tsbCopy.Image")));
             this.tsbCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCopy.Name = "tsbCopy";
-            this.tsbCopy.Size = new System.Drawing.Size(23, 22);
+            this.tsbCopy.Size = new System.Drawing.Size(31, 20);
             this.tsbCopy.Text = "コピー";
             this.tsbCopy.Click += new System.EventHandler(this.tsbCopy_Click);
             // 
@@ -454,14 +379,14 @@ namespace siren
             this.tsbDelete.Image = ((System.Drawing.Image)(resources.GetObject("tsbDelete.Image")));
             this.tsbDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbDelete.Name = "tsbDelete";
-            this.tsbDelete.Size = new System.Drawing.Size(23, 22);
+            this.tsbDelete.Size = new System.Drawing.Size(31, 20);
             this.tsbDelete.Text = "削除";
             this.tsbDelete.Click += new System.EventHandler(this.tsbDelete_Click);
             // 
             // toolStripSeparator9
             // 
             this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator9.Size = new System.Drawing.Size(31, 6);
             // 
             // tsbCompound
             // 
@@ -469,26 +394,89 @@ namespace siren
             this.tsbCompound.Image = ((System.Drawing.Image)(resources.GetObject("tsbCompound.Image")));
             this.tsbCompound.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCompound.Name = "tsbCompound";
-            this.tsbCompound.Size = new System.Drawing.Size(23, 22);
-            this.tsbCompound.Text = "グループ化";
-            this.tsbCompound.ToolTipText = "グループ化";
+            this.tsbCompound.Size = new System.Drawing.Size(31, 20);
+            this.tsbCompound.Text = "コンパウンド";
+            this.tsbCompound.ToolTipText = "コンパウンド";
             this.tsbCompound.Click += new System.EventHandler(this.tsbCompound_Click);
             // 
             // tsbExplode
             // 
             this.tsbExplode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbExplode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miExCompound,
+            this.miExSolid,
+            this.miExShell,
+            this.miExFace,
+            this.miExWire,
+            this.miExEdge,
+            this.miExVertex});
             this.tsbExplode.Image = ((System.Drawing.Image)(resources.GetObject("tsbExplode.Image")));
             this.tsbExplode.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbExplode.Name = "tsbExplode";
-            this.tsbExplode.Size = new System.Drawing.Size(23, 22);
-            this.tsbExplode.Text = "グループ解除";
-            this.tsbExplode.ToolTipText = "グループ解除";
-            this.tsbExplode.Click += new System.EventHandler(this.tsbExplode_Click);
+            this.tsbExplode.Size = new System.Drawing.Size(31, 20);
+            this.tsbExplode.Text = "エクスプロード";
+            this.tsbExplode.ToolTipText = "エクスプロード";
+            // 
+            // miExCompound
+            // 
+            this.miExCompound.Image = ((System.Drawing.Image)(resources.GetObject("miExCompound.Image")));
+            this.miExCompound.Name = "miExCompound";
+            this.miExCompound.Size = new System.Drawing.Size(140, 22);
+            this.miExCompound.Text = "コンパウンド(&C)";
+            this.miExCompound.Click += new System.EventHandler(this.miExCompound_Click);
+            // 
+            // miExSolid
+            // 
+            this.miExSolid.Image = ((System.Drawing.Image)(resources.GetObject("miExSolid.Image")));
+            this.miExSolid.Name = "miExSolid";
+            this.miExSolid.Size = new System.Drawing.Size(140, 22);
+            this.miExSolid.Text = "ソリッド(&L)";
+            this.miExSolid.Click += new System.EventHandler(this.miExSolid_Click);
+            // 
+            // miExShell
+            // 
+            this.miExShell.Image = ((System.Drawing.Image)(resources.GetObject("miExShell.Image")));
+            this.miExShell.Name = "miExShell";
+            this.miExShell.Size = new System.Drawing.Size(140, 22);
+            this.miExShell.Text = "シェル(&S)";
+            this.miExShell.Click += new System.EventHandler(this.miExShell_Click);
+            // 
+            // miExFace
+            // 
+            this.miExFace.Image = ((System.Drawing.Image)(resources.GetObject("miExFace.Image")));
+            this.miExFace.Name = "miExFace";
+            this.miExFace.Size = new System.Drawing.Size(140, 22);
+            this.miExFace.Text = "フェイス(&F)";
+            this.miExFace.Click += new System.EventHandler(this.miExFace_Click);
+            // 
+            // miExWire
+            // 
+            this.miExWire.Image = ((System.Drawing.Image)(resources.GetObject("miExWire.Image")));
+            this.miExWire.Name = "miExWire";
+            this.miExWire.Size = new System.Drawing.Size(140, 22);
+            this.miExWire.Text = "ワイヤー(&W)";
+            this.miExWire.Click += new System.EventHandler(this.miExWire_Click);
+            // 
+            // miExEdge
+            // 
+            this.miExEdge.Image = ((System.Drawing.Image)(resources.GetObject("miExEdge.Image")));
+            this.miExEdge.Name = "miExEdge";
+            this.miExEdge.Size = new System.Drawing.Size(140, 22);
+            this.miExEdge.Text = "エッジ(&E)";
+            this.miExEdge.Click += new System.EventHandler(this.miExEdge_Click);
+            // 
+            // miExVertex
+            // 
+            this.miExVertex.Image = ((System.Drawing.Image)(resources.GetObject("miExVertex.Image")));
+            this.miExVertex.Name = "miExVertex";
+            this.miExVertex.Size = new System.Drawing.Size(140, 22);
+            this.miExVertex.Text = "バーテックス(&V)";
+            this.miExVertex.Click += new System.EventHandler(this.miExVertex_Click);
             // 
             // toolStripSeparator11
             // 
             this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator11.Size = new System.Drawing.Size(31, 6);
             // 
             // tsbTranslate
             // 
@@ -496,7 +484,7 @@ namespace siren
             this.tsbTranslate.Image = ((System.Drawing.Image)(resources.GetObject("tsbTranslate.Image")));
             this.tsbTranslate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbTranslate.Name = "tsbTranslate";
-            this.tsbTranslate.Size = new System.Drawing.Size(23, 22);
+            this.tsbTranslate.Size = new System.Drawing.Size(31, 20);
             this.tsbTranslate.Text = "移動";
             this.tsbTranslate.ToolTipText = "移動";
             this.tsbTranslate.Click += new System.EventHandler(this.tsbTranslate_Click);
@@ -509,7 +497,7 @@ namespace siren
             this.tsbRotate.Image = ((System.Drawing.Image)(resources.GetObject("tsbRotate.Image")));
             this.tsbRotate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbRotate.Name = "tsbRotate";
-            this.tsbRotate.Size = new System.Drawing.Size(23, 22);
+            this.tsbRotate.Size = new System.Drawing.Size(31, 20);
             this.tsbRotate.Text = "回転";
             this.tsbRotate.ToolTipText = "回転";
             // 
@@ -521,14 +509,24 @@ namespace siren
             this.tsbScale.Image = ((System.Drawing.Image)(resources.GetObject("tsbScale.Image")));
             this.tsbScale.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbScale.Name = "tsbScale";
-            this.tsbScale.Size = new System.Drawing.Size(23, 22);
+            this.tsbScale.Size = new System.Drawing.Size(31, 20);
             this.tsbScale.Text = "拡大縮小";
             this.tsbScale.ToolTipText = "スケール";
+            // 
+            // tsbMirror
+            // 
+            this.tsbMirror.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbMirror.Enabled = false;
+            this.tsbMirror.Image = ((System.Drawing.Image)(resources.GetObject("tsbMirror.Image")));
+            this.tsbMirror.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbMirror.Name = "tsbMirror";
+            this.tsbMirror.Size = new System.Drawing.Size(31, 20);
+            this.tsbMirror.Text = "ミラー";
             // 
             // toolStripButton6
             // 
             this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(6, 25);
+            this.toolStripButton6.Size = new System.Drawing.Size(31, 6);
             // 
             // tsbLoft
             // 
@@ -536,14 +534,33 @@ namespace siren
             this.tsbLoft.Image = ((System.Drawing.Image)(resources.GetObject("tsbLoft.Image")));
             this.tsbLoft.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbLoft.Name = "tsbLoft";
-            this.tsbLoft.Size = new System.Drawing.Size(23, 22);
+            this.tsbLoft.Size = new System.Drawing.Size(31, 20);
             this.tsbLoft.Text = "ロフト";
             this.tsbLoft.Click += new System.EventHandler(this.tsbLoft_Click);
+            // 
+            // tsbOffset
+            // 
+            this.tsbOffset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbOffset.Image = ((System.Drawing.Image)(resources.GetObject("tsbOffset.Image")));
+            this.tsbOffset.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbOffset.Name = "tsbOffset";
+            this.tsbOffset.Size = new System.Drawing.Size(31, 20);
+            this.tsbOffset.Text = "オフセット";
+            // 
+            // tsbSewing
+            // 
+            this.tsbSewing.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbSewing.Image = ((System.Drawing.Image)(resources.GetObject("tsbSewing.Image")));
+            this.tsbSewing.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbSewing.Name = "tsbSewing";
+            this.tsbSewing.Size = new System.Drawing.Size(31, 20);
+            this.tsbSewing.Text = "シューイング";
+            this.tsbSewing.Click += new System.EventHandler(this.tsbSewing_Click);
             // 
             // toolStripSeparator17
             // 
             this.toolStripSeparator17.Name = "toolStripSeparator17";
-            this.toolStripSeparator17.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator17.Size = new System.Drawing.Size(31, 6);
             // 
             // tsbFuse
             // 
@@ -551,7 +568,7 @@ namespace siren
             this.tsbFuse.Image = ((System.Drawing.Image)(resources.GetObject("tsbFuse.Image")));
             this.tsbFuse.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbFuse.Name = "tsbFuse";
-            this.tsbFuse.Size = new System.Drawing.Size(23, 22);
+            this.tsbFuse.Size = new System.Drawing.Size(31, 20);
             this.tsbFuse.Text = "フューズ";
             this.tsbFuse.Click += new System.EventHandler(this.tsbFuse_Click);
             // 
@@ -561,7 +578,7 @@ namespace siren
             this.tsbCut.Image = ((System.Drawing.Image)(resources.GetObject("tsbCut.Image")));
             this.tsbCut.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCut.Name = "tsbCut";
-            this.tsbCut.Size = new System.Drawing.Size(23, 22);
+            this.tsbCut.Size = new System.Drawing.Size(31, 20);
             this.tsbCut.Text = "カット";
             this.tsbCut.Click += new System.EventHandler(this.tsbCut_Click);
             // 
@@ -571,7 +588,7 @@ namespace siren
             this.tsbCommon.Image = ((System.Drawing.Image)(resources.GetObject("tsbCommon.Image")));
             this.tsbCommon.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCommon.Name = "tsbCommon";
-            this.tsbCommon.Size = new System.Drawing.Size(23, 22);
+            this.tsbCommon.Size = new System.Drawing.Size(31, 20);
             this.tsbCommon.Text = "コモン";
             this.tsbCommon.Click += new System.EventHandler(this.tsbCommon_Click);
             // 
@@ -581,14 +598,14 @@ namespace siren
             this.tsbIntersect.Image = ((System.Drawing.Image)(resources.GetObject("tsbIntersect.Image")));
             this.tsbIntersect.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbIntersect.Name = "tsbIntersect";
-            this.tsbIntersect.Size = new System.Drawing.Size(23, 22);
+            this.tsbIntersect.Size = new System.Drawing.Size(31, 20);
             this.tsbIntersect.Text = "インターセクション";
             this.tsbIntersect.Click += new System.EventHandler(this.tsbIntersect_Click);
             // 
             // toolStripSeparator16
             // 
             this.toolStripSeparator16.Name = "toolStripSeparator16";
-            this.toolStripSeparator16.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator16.Size = new System.Drawing.Size(31, 6);
             // 
             // tsbInfo
             // 
@@ -600,13 +617,13 @@ namespace siren
             this.tsbInfo.Image = ((System.Drawing.Image)(resources.GetObject("tsbInfo.Image")));
             this.tsbInfo.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbInfo.Name = "tsbInfo";
-            this.tsbInfo.Size = new System.Drawing.Size(32, 22);
+            this.tsbInfo.Size = new System.Drawing.Size(31, 20);
             this.tsbInfo.Text = "toolStripSplitButton1";
             // 
             // miVolume
             // 
             this.miVolume.Name = "miVolume";
-            this.miVolume.Size = new System.Drawing.Size(154, 22);
+            this.miVolume.Size = new System.Drawing.Size(134, 22);
             this.miVolume.Text = "ボリューム(&V)";
             this.miVolume.Click += new System.EventHandler(this.miVolume_Click);
             // 
@@ -614,7 +631,7 @@ namespace siren
             // 
             this.miCog.Image = ((System.Drawing.Image)(resources.GetObject("miCog.Image")));
             this.miCog.Name = "miCog";
-            this.miCog.Size = new System.Drawing.Size(154, 22);
+            this.miCog.Size = new System.Drawing.Size(134, 22);
             this.miCog.Text = "重心位置(&G)";
             this.miCog.Click += new System.EventHandler(this.miCog_Click);
             // 
@@ -622,14 +639,9 @@ namespace siren
             // 
             this.miBndbox.Image = ((System.Drawing.Image)(resources.GetObject("miBndbox.Image")));
             this.miBndbox.Name = "miBndbox";
-            this.miBndbox.Size = new System.Drawing.Size(154, 22);
+            this.miBndbox.Size = new System.Drawing.Size(134, 22);
             this.miBndbox.Text = "範囲(&B)";
             this.miBndbox.Click += new System.EventHandler(this.miBndbox_Click);
-            // 
-            // toolStripSeparator15
-            // 
-            this.toolStripSeparator15.Name = "toolStripSeparator15";
-            this.toolStripSeparator15.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbDisplayMode
             // 
@@ -703,154 +715,159 @@ namespace siren
             // miGold
             // 
             this.miGold.Name = "miGold";
-            this.miGold.Size = new System.Drawing.Size(172, 22);
+            this.miGold.Size = new System.Drawing.Size(144, 22);
             this.miGold.Text = "金";
             this.miGold.Click += new System.EventHandler(this.miGold_Click);
             // 
             // miSilver
             // 
             this.miSilver.Name = "miSilver";
-            this.miSilver.Size = new System.Drawing.Size(172, 22);
+            this.miSilver.Size = new System.Drawing.Size(144, 22);
             this.miSilver.Text = "銀";
             this.miSilver.Click += new System.EventHandler(this.miSilver_Click);
             // 
             // miCopper
             // 
             this.miCopper.Name = "miCopper";
-            this.miCopper.Size = new System.Drawing.Size(172, 22);
+            this.miCopper.Size = new System.Drawing.Size(144, 22);
             this.miCopper.Text = "銅";
             this.miCopper.Click += new System.EventHandler(this.miCopper_Click);
             // 
             // miBronze
             // 
             this.miBronze.Name = "miBronze";
-            this.miBronze.Size = new System.Drawing.Size(172, 22);
+            this.miBronze.Size = new System.Drawing.Size(144, 22);
             this.miBronze.Text = "青銅";
             this.miBronze.Click += new System.EventHandler(this.miBronze_Click);
             // 
             // miPewter
             // 
             this.miPewter.Name = "miPewter";
-            this.miPewter.Size = new System.Drawing.Size(172, 22);
+            this.miPewter.Size = new System.Drawing.Size(144, 22);
             this.miPewter.Text = "スズ";
             this.miPewter.Click += new System.EventHandler(this.miPewter_Click);
             // 
             // miBrass
             // 
             this.miBrass.Name = "miBrass";
-            this.miBrass.Size = new System.Drawing.Size(172, 22);
+            this.miBrass.Size = new System.Drawing.Size(144, 22);
             this.miBrass.Text = "真ちゅう";
             this.miBrass.Click += new System.EventHandler(this.miBrass_Click);
             // 
             // miSteel
             // 
             this.miSteel.Name = "miSteel";
-            this.miSteel.Size = new System.Drawing.Size(172, 22);
+            this.miSteel.Size = new System.Drawing.Size(144, 22);
             this.miSteel.Text = "スチール";
             this.miSteel.Click += new System.EventHandler(this.miSteel_Click);
             // 
             // miAluminium
             // 
             this.miAluminium.Name = "miAluminium";
-            this.miAluminium.Size = new System.Drawing.Size(172, 22);
+            this.miAluminium.Size = new System.Drawing.Size(144, 22);
             this.miAluminium.Text = "アルミ";
             this.miAluminium.Click += new System.EventHandler(this.miAluminium_Click);
             // 
             // miMetalized
             // 
             this.miMetalized.Name = "miMetalized";
-            this.miMetalized.Size = new System.Drawing.Size(172, 22);
+            this.miMetalized.Size = new System.Drawing.Size(144, 22);
             this.miMetalized.Text = "メタライズ";
             this.miMetalized.Click += new System.EventHandler(this.miMetalized_Click);
             // 
             // miChrome
             // 
             this.miChrome.Name = "miChrome";
-            this.miChrome.Size = new System.Drawing.Size(172, 22);
+            this.miChrome.Size = new System.Drawing.Size(144, 22);
             this.miChrome.Text = "クロム";
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(141, 6);
             // 
             // miStone
             // 
             this.miStone.Name = "miStone";
-            this.miStone.Size = new System.Drawing.Size(172, 22);
+            this.miStone.Size = new System.Drawing.Size(144, 22);
             this.miStone.Text = "石";
             this.miStone.Click += new System.EventHandler(this.miStone_Click);
             // 
             // miPlaster
             // 
             this.miPlaster.Name = "miPlaster";
-            this.miPlaster.Size = new System.Drawing.Size(172, 22);
+            this.miPlaster.Size = new System.Drawing.Size(144, 22);
             this.miPlaster.Text = "石こう";
             this.miPlaster.Click += new System.EventHandler(this.miPlaster_Click);
             // 
             // miObsidian
             // 
             this.miObsidian.Name = "miObsidian";
-            this.miObsidian.Size = new System.Drawing.Size(172, 22);
+            this.miObsidian.Size = new System.Drawing.Size(144, 22);
             this.miObsidian.Text = "黒曜石";
             this.miObsidian.Click += new System.EventHandler(this.miObsidian_Click);
             // 
             // miJade
             // 
             this.miJade.Name = "miJade";
-            this.miJade.Size = new System.Drawing.Size(172, 22);
+            this.miJade.Size = new System.Drawing.Size(144, 22);
             this.miJade.Text = "ヒスイ";
             this.miJade.Click += new System.EventHandler(this.miJade_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(141, 6);
             // 
             // miPlastic
             // 
             this.miPlastic.Name = "miPlastic";
-            this.miPlastic.Size = new System.Drawing.Size(172, 22);
+            this.miPlastic.Size = new System.Drawing.Size(144, 22);
             this.miPlastic.Text = "プラスチック";
             this.miPlastic.Click += new System.EventHandler(this.miPlastic_Click);
             // 
             // miPlastic2
             // 
             this.miPlastic2.Name = "miPlastic2";
-            this.miPlastic2.Size = new System.Drawing.Size(172, 22);
+            this.miPlastic2.Size = new System.Drawing.Size(144, 22);
             this.miPlastic2.Text = "光沢プラスチック";
             this.miPlastic2.Click += new System.EventHandler(this.miPlastic2_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(141, 6);
             // 
             // miSatin
             // 
             this.miSatin.Name = "miSatin";
-            this.miSatin.Size = new System.Drawing.Size(172, 22);
+            this.miSatin.Size = new System.Drawing.Size(144, 22);
             this.miSatin.Text = "サテン";
             this.miSatin.Click += new System.EventHandler(this.miSatin_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(141, 6);
             // 
             // miGNC
             // 
             this.miGNC.Name = "miGNC";
-            this.miGNC.Size = new System.Drawing.Size(172, 22);
+            this.miGNC.Size = new System.Drawing.Size(144, 22);
             this.miGNC.Text = "ネオンGNC";
             this.miGNC.Click += new System.EventHandler(this.miGNC_Click);
             // 
             // miPHC
             // 
             this.miPHC.Name = "miPHC";
-            this.miPHC.Size = new System.Drawing.Size(172, 22);
+            this.miPHC.Size = new System.Drawing.Size(144, 22);
             this.miPHC.Text = "ネオンPHC";
             this.miPHC.Click += new System.EventHandler(this.miPHC_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbFit
             // 
@@ -861,11 +878,6 @@ namespace siren
             this.tsbFit.Size = new System.Drawing.Size(23, 22);
             this.tsbFit.Text = "フィット";
             this.tsbFit.Click += new System.EventHandler(this.tsbFit_Click);
-            // 
-            // toolStripSeparator12
-            // 
-            this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbAxoView
             // 
@@ -880,7 +892,7 @@ namespace siren
             this.tsbAxoView.Image = ((System.Drawing.Image)(resources.GetObject("tsbAxoView.Image")));
             this.tsbAxoView.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAxoView.Name = "tsbAxoView";
-            this.tsbAxoView.Size = new System.Drawing.Size(32, 20);
+            this.tsbAxoView.Size = new System.Drawing.Size(32, 22);
             this.tsbAxoView.Text = "視点";
             this.tsbAxoView.ToolTipText = "視点";
             this.tsbAxoView.ButtonClick += new System.EventHandler(this.tsbAxoView_ButtonClick);
@@ -889,7 +901,7 @@ namespace siren
             // 
             this.miFront.Image = ((System.Drawing.Image)(resources.GetObject("miFront.Image")));
             this.miFront.Name = "miFront";
-            this.miFront.Size = new System.Drawing.Size(112, 22);
+            this.miFront.Size = new System.Drawing.Size(106, 22);
             this.miFront.Text = "正面";
             this.miFront.Click += new System.EventHandler(this.miFront_Click);
             // 
@@ -897,7 +909,7 @@ namespace siren
             // 
             this.miBack.Image = ((System.Drawing.Image)(resources.GetObject("miBack.Image")));
             this.miBack.Name = "miBack";
-            this.miBack.Size = new System.Drawing.Size(112, 22);
+            this.miBack.Size = new System.Drawing.Size(106, 22);
             this.miBack.Text = "背面";
             this.miBack.Click += new System.EventHandler(this.miBack_Click);
             // 
@@ -905,7 +917,7 @@ namespace siren
             // 
             this.miLeft.Image = ((System.Drawing.Image)(resources.GetObject("miLeft.Image")));
             this.miLeft.Name = "miLeft";
-            this.miLeft.Size = new System.Drawing.Size(112, 22);
+            this.miLeft.Size = new System.Drawing.Size(106, 22);
             this.miLeft.Text = "左側面";
             this.miLeft.Click += new System.EventHandler(this.miLeft_Click);
             // 
@@ -913,7 +925,7 @@ namespace siren
             // 
             this.miRight.Image = ((System.Drawing.Image)(resources.GetObject("miRight.Image")));
             this.miRight.Name = "miRight";
-            this.miRight.Size = new System.Drawing.Size(112, 22);
+            this.miRight.Size = new System.Drawing.Size(106, 22);
             this.miRight.Text = "右側面";
             this.miRight.Click += new System.EventHandler(this.miRight_Click);
             // 
@@ -921,7 +933,7 @@ namespace siren
             // 
             this.miTop.Image = ((System.Drawing.Image)(resources.GetObject("miTop.Image")));
             this.miTop.Name = "miTop";
-            this.miTop.Size = new System.Drawing.Size(112, 22);
+            this.miTop.Size = new System.Drawing.Size(106, 22);
             this.miTop.Text = "上面";
             this.miTop.Click += new System.EventHandler(this.miTop_Click);
             // 
@@ -929,14 +941,9 @@ namespace siren
             // 
             this.miBottom.Image = ((System.Drawing.Image)(resources.GetObject("miBottom.Image")));
             this.miBottom.Name = "miBottom";
-            this.miBottom.Size = new System.Drawing.Size(112, 22);
+            this.miBottom.Size = new System.Drawing.Size(106, 22);
             this.miBottom.Text = "下面";
             this.miBottom.Click += new System.EventHandler(this.miBottom_Click);
-            // 
-            // toolStripSeparator13
-            // 
-            this.toolStripSeparator13.Name = "toolStripSeparator13";
-            this.toolStripSeparator13.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbResetView
             // 
@@ -944,14 +951,9 @@ namespace siren
             this.tsbResetView.Image = ((System.Drawing.Image)(resources.GetObject("tsbResetView.Image")));
             this.tsbResetView.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbResetView.Name = "tsbResetView";
-            this.tsbResetView.Size = new System.Drawing.Size(23, 20);
+            this.tsbResetView.Size = new System.Drawing.Size(23, 22);
             this.tsbResetView.Text = "ビューをリセット";
             this.tsbResetView.Click += new System.EventHandler(this.tsbResetView_Click);
-            // 
-            // toolStripSeparator14
-            // 
-            this.toolStripSeparator14.Name = "toolStripSeparator14";
-            this.toolStripSeparator14.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbHlr
             // 
@@ -959,45 +961,507 @@ namespace siren
             this.tsbHlr.Image = ((System.Drawing.Image)(resources.GetObject("tsbHlr.Image")));
             this.tsbHlr.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbHlr.Name = "tsbHlr";
-            this.tsbHlr.Size = new System.Drawing.Size(23, 20);
+            this.tsbHlr.Size = new System.Drawing.Size(23, 22);
             this.tsbHlr.Text = "陰面消去";
             this.tsbHlr.ToolTipText = "隠面消去";
             this.tsbHlr.Click += new System.EventHandler(this.tsbHlr_Click);
             // 
-            // toolStripSeparator3
+            // tsbDump
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            this.tsbDump.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbDump.Image = ((System.Drawing.Image)(resources.GetObject("tsbDump.Image")));
+            this.tsbDump.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbDump.Name = "tsbDump";
+            this.tsbDump.Size = new System.Drawing.Size(23, 22);
+            this.tsbDump.Text = "スクリーンショット";
+            this.tsbDump.Click += new System.EventHandler(this.tsbDump_Click);
             // 
-            // tsbTerminal
+            // tsbRender
             // 
-            this.tsbTerminal.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbTerminal.Image = ((System.Drawing.Image)(resources.GetObject("tsbTerminal.Image")));
-            this.tsbTerminal.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbTerminal.Name = "tsbTerminal";
-            this.tsbTerminal.Size = new System.Drawing.Size(23, 20);
-            this.tsbTerminal.Text = "Rubyターミナル";
-            this.tsbTerminal.Click += new System.EventHandler(this.tsbTerminal_Click);
+            this.tsbRender.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbRender.Image = ((System.Drawing.Image)(resources.GetObject("tsbRender.Image")));
+            this.tsbRender.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbRender.Name = "tsbRender";
+            this.tsbRender.Size = new System.Drawing.Size(23, 22);
+            this.tsbRender.Text = "レンダービュー";
+            // 
+            // tsbNew
+            // 
+            this.tsbNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbNew.Image = ((System.Drawing.Image)(resources.GetObject("tsbNew.Image")));
+            this.tsbNew.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbNew.Name = "tsbNew";
+            this.tsbNew.Size = new System.Drawing.Size(23, 22);
+            this.tsbNew.Text = "新規ビューアー";
+            // 
+            // tsbOpen
+            // 
+            this.tsbOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbOpen.Image = ((System.Drawing.Image)(resources.GetObject("tsbOpen.Image")));
+            this.tsbOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbOpen.Name = "tsbOpen";
+            this.tsbOpen.Size = new System.Drawing.Size(23, 22);
+            this.tsbOpen.Text = "開く";
+            this.tsbOpen.Click += new System.EventHandler(this.tsbOpen_Click);
+            // 
+            // tsbSave
+            // 
+            this.tsbSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbSave.Image = ((System.Drawing.Image)(resources.GetObject("tsbSave.Image")));
+            this.tsbSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbSave.Name = "tsbSave";
+            this.tsbSave.Size = new System.Drawing.Size(23, 22);
+            this.tsbSave.Text = "選択オブジェクトを保存";
+            this.tsbSave.Click += new System.EventHandler(this.tsbSave_Click);
+            // 
+            // tsbExit
+            // 
+            this.tsbExit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbExit.Image = ((System.Drawing.Image)(resources.GetObject("tsbExit.Image")));
+            this.tsbExit.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbExit.Name = "tsbExit";
+            this.tsbExit.Size = new System.Drawing.Size(23, 22);
+            this.tsbExit.Text = "終了";
+            this.tsbExit.Click += new System.EventHandler(this.tsbExit_Click);
+            // 
+            // toolStripPanel1
+            // 
+            this.toolStripPanel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.toolStripPanel1.Location = new System.Drawing.Point(0, 0);
+            this.toolStripPanel1.Name = "toolStripPanel1";
+            this.toolStripPanel1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.toolStripPanel1.RowMargin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.toolStripPanel1.Size = new System.Drawing.Size(1192, 0);
+            // 
+            // toolStripGeneral
+            // 
+            this.toolStripGeneral.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStripGeneral.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStripGeneral.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbNew,
+            this.tsbOpen,
+            this.tsbSave,
+            this.tsbExit,
+            this.toolStripSeparator3,
+            this.tsbDump,
+            this.tsbRender,
+            this.toolStripSeparator1,
+            this.tsbFit,
+            this.tsbAxoView,
+            this.tsbResetView,
+            this.tsbHlr,
+            this.tsbDisplayMode,
+            this.tsbTransparency,
+            this.toolStripSeparator10,
+            this.tsbColor,
+            this.tsbMaterial});
+            this.toolStripGeneral.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+            this.toolStripGeneral.Location = new System.Drawing.Point(3, 24);
+            this.toolStripGeneral.Name = "toolStripGeneral";
+            this.toolStripGeneral.Size = new System.Drawing.Size(361, 25);
+            this.toolStripGeneral.TabIndex = 15;
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripContainer1
+            // 
+            // 
+            // toolStripContainer1.ContentPanel
+            // 
+            this.toolStripContainer1.ContentPanel.Controls.Add(this.splitContainer1);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1159, 692);
+            this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            // 
+            // toolStripContainer1.LeftToolStripPanel
+            // 
+            this.toolStripContainer1.LeftToolStripPanel.Controls.Add(this.toolStripMain);
+            this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
+            this.toolStripContainer1.Name = "toolStripContainer1";
+            this.toolStripContainer1.Size = new System.Drawing.Size(1192, 741);
+            this.toolStripContainer1.TabIndex = 7;
+            this.toolStripContainer1.Text = "toolStripContainer1";
+            // 
+            // toolStripContainer1.TopToolStripPanel
+            // 
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStripGeneral);
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.propertyGrid1);
+            this.splitContainer1.Size = new System.Drawing.Size(1159, 692);
+            this.splitContainer1.SplitterDistance = 1003;
+            this.splitContainer1.TabIndex = 0;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.splitContainer3);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.myTerm);
+            this.splitContainer2.Size = new System.Drawing.Size(1003, 692);
+            this.splitContainer2.SplitterDistance = 603;
+            this.splitContainer2.TabIndex = 0;
+            // 
+            // splitContainer3
+            // 
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer3.Name = "splitContainer3";
+            // 
+            // splitContainer3.Panel1
+            // 
+            this.splitContainer3.Panel1.Controls.Add(this.splitContainer4);
+            this.splitContainer3.Size = new System.Drawing.Size(1003, 603);
+            this.splitContainer3.SplitterDistance = 334;
+            this.splitContainer3.TabIndex = 0;
+            // 
+            // splitContainer4
+            // 
+            this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer4.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer4.Name = "splitContainer4";
+            this.splitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.splitContainer4.Size = new System.Drawing.Size(334, 603);
+            this.splitContainer4.SplitterDistance = 298;
+            this.splitContainer4.TabIndex = 0;
+            // 
+            // myTerm
+            // 
+            this.myTerm.BackColor = System.Drawing.Color.DarkGray;
+            this.myTerm.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.myTerm.Location = new System.Drawing.Point(0, 0);
+            this.myTerm.Name = "myTerm";
+            this.myTerm.Padding = new System.Windows.Forms.Padding(1, 1, 2, 2);
+            this.myTerm.Size = new System.Drawing.Size(1003, 85);
+            this.myTerm.TabIndex = 0;
+            // 
+            // propertyGrid1
+            // 
+            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(152, 692);
+            this.propertyGrid1.TabIndex = 0;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ファイルFToolStripMenuItem,
+            this.編集EToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.ツールTToolStripMenuItem,
+            this.miScript,
+            this.toolStripMenuItem2,
+            this.ヘルプHToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1192, 24);
+            this.menuStrip1.TabIndex = 0;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // ファイルFToolStripMenuItem
+            // 
+            this.ファイルFToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.新規作成NToolStripMenuItem,
+            this.開くOToolStripMenuItem,
+            this.toolStripSeparator,
+            this.上書き保存SToolStripMenuItem,
+            this.名前を付けて保存AToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.印刷PToolStripMenuItem,
+            this.印刷プレビューVToolStripMenuItem,
+            this.toolStripSeparator12,
+            this.終了XToolStripMenuItem});
+            this.ファイルFToolStripMenuItem.Name = "ファイルFToolStripMenuItem";
+            this.ファイルFToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.ファイルFToolStripMenuItem.Text = "ファイル(&F)";
+            // 
+            // 新規作成NToolStripMenuItem
+            // 
+            this.新規作成NToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("新規作成NToolStripMenuItem.Image")));
+            this.新規作成NToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.新規作成NToolStripMenuItem.Name = "新規作成NToolStripMenuItem";
+            this.新規作成NToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.新規作成NToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.新規作成NToolStripMenuItem.Text = "新規作成(&N)";
+            // 
+            // 開くOToolStripMenuItem
+            // 
+            this.開くOToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("開くOToolStripMenuItem.Image")));
+            this.開くOToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.開くOToolStripMenuItem.Name = "開くOToolStripMenuItem";
+            this.開くOToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.開くOToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.開くOToolStripMenuItem.Text = "開く(&O)";
+            // 
+            // toolStripSeparator
+            // 
+            this.toolStripSeparator.Name = "toolStripSeparator";
+            this.toolStripSeparator.Size = new System.Drawing.Size(176, 6);
+            // 
+            // 上書き保存SToolStripMenuItem
+            // 
+            this.上書き保存SToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("上書き保存SToolStripMenuItem.Image")));
+            this.上書き保存SToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.上書き保存SToolStripMenuItem.Name = "上書き保存SToolStripMenuItem";
+            this.上書き保存SToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.上書き保存SToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.上書き保存SToolStripMenuItem.Text = "上書き保存(&S)";
+            // 
+            // 名前を付けて保存AToolStripMenuItem
+            // 
+            this.名前を付けて保存AToolStripMenuItem.Name = "名前を付けて保存AToolStripMenuItem";
+            this.名前を付けて保存AToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.名前を付けて保存AToolStripMenuItem.Text = "名前を付けて保存(&A)";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(176, 6);
+            // 
+            // 印刷PToolStripMenuItem
+            // 
+            this.印刷PToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("印刷PToolStripMenuItem.Image")));
+            this.印刷PToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.印刷PToolStripMenuItem.Name = "印刷PToolStripMenuItem";
+            this.印刷PToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.印刷PToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.印刷PToolStripMenuItem.Text = "印刷(&P)";
+            // 
+            // 印刷プレビューVToolStripMenuItem
+            // 
+            this.印刷プレビューVToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("印刷プレビューVToolStripMenuItem.Image")));
+            this.印刷プレビューVToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.印刷プレビューVToolStripMenuItem.Name = "印刷プレビューVToolStripMenuItem";
+            this.印刷プレビューVToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.印刷プレビューVToolStripMenuItem.Text = "印刷プレビュー(&V)";
+            // 
+            // toolStripSeparator12
+            // 
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(176, 6);
+            // 
+            // 終了XToolStripMenuItem
+            // 
+            this.終了XToolStripMenuItem.Name = "終了XToolStripMenuItem";
+            this.終了XToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.終了XToolStripMenuItem.Text = "終了(&X)";
+            // 
+            // 編集EToolStripMenuItem
+            // 
+            this.編集EToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.元に戻すUToolStripMenuItem,
+            this.やり直しRToolStripMenuItem,
+            this.toolStripSeparator13,
+            this.切り取りTToolStripMenuItem,
+            this.コピーCToolStripMenuItem,
+            this.貼り付けPToolStripMenuItem,
+            this.toolStripSeparator14,
+            this.すべて選択AToolStripMenuItem});
+            this.編集EToolStripMenuItem.Name = "編集EToolStripMenuItem";
+            this.編集EToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
+            this.編集EToolStripMenuItem.Text = "モデリング(&M)";
+            // 
+            // 元に戻すUToolStripMenuItem
+            // 
+            this.元に戻すUToolStripMenuItem.Name = "元に戻すUToolStripMenuItem";
+            this.元に戻すUToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.元に戻すUToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.元に戻すUToolStripMenuItem.Text = "元に戻す(&U)";
+            // 
+            // やり直しRToolStripMenuItem
+            // 
+            this.やり直しRToolStripMenuItem.Name = "やり直しRToolStripMenuItem";
+            this.やり直しRToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+            this.やり直しRToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.やり直しRToolStripMenuItem.Text = "やり直し(&R)";
+            // 
+            // toolStripSeparator13
+            // 
+            this.toolStripSeparator13.Name = "toolStripSeparator13";
+            this.toolStripSeparator13.Size = new System.Drawing.Size(163, 6);
+            // 
+            // 切り取りTToolStripMenuItem
+            // 
+            this.切り取りTToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("切り取りTToolStripMenuItem.Image")));
+            this.切り取りTToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.切り取りTToolStripMenuItem.Name = "切り取りTToolStripMenuItem";
+            this.切り取りTToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.切り取りTToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.切り取りTToolStripMenuItem.Text = "切り取り(&T)";
+            // 
+            // コピーCToolStripMenuItem
+            // 
+            this.コピーCToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("コピーCToolStripMenuItem.Image")));
+            this.コピーCToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.コピーCToolStripMenuItem.Name = "コピーCToolStripMenuItem";
+            this.コピーCToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.コピーCToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.コピーCToolStripMenuItem.Text = "コピー(&C)";
+            // 
+            // 貼り付けPToolStripMenuItem
+            // 
+            this.貼り付けPToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("貼り付けPToolStripMenuItem.Image")));
+            this.貼り付けPToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.貼り付けPToolStripMenuItem.Name = "貼り付けPToolStripMenuItem";
+            this.貼り付けPToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.貼り付けPToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.貼り付けPToolStripMenuItem.Text = "貼り付け(&P)";
+            // 
+            // toolStripSeparator14
+            // 
+            this.toolStripSeparator14.Name = "toolStripSeparator14";
+            this.toolStripSeparator14.Size = new System.Drawing.Size(163, 6);
+            // 
+            // すべて選択AToolStripMenuItem
+            // 
+            this.すべて選択AToolStripMenuItem.Name = "すべて選択AToolStripMenuItem";
+            this.すべて選択AToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.すべて選択AToolStripMenuItem.Text = "すべて選択(&A)";
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(84, 20);
+            this.toolStripMenuItem1.Text = "オブジェクト(&O)";
+            // 
+            // ツールTToolStripMenuItem
+            // 
+            this.ツールTToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.カスタマイズCToolStripMenuItem,
+            this.オプションOToolStripMenuItem});
+            this.ツールTToolStripMenuItem.Name = "ツールTToolStripMenuItem";
+            this.ツールTToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.ツールTToolStripMenuItem.Text = "ツール(&T)";
+            // 
+            // カスタマイズCToolStripMenuItem
+            // 
+            this.カスタマイズCToolStripMenuItem.Name = "カスタマイズCToolStripMenuItem";
+            this.カスタマイズCToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.カスタマイズCToolStripMenuItem.Text = "カスタマイズ(&C)";
+            // 
+            // オプションOToolStripMenuItem
+            // 
+            this.オプションOToolStripMenuItem.Name = "オプションOToolStripMenuItem";
+            this.オプションOToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.オプションOToolStripMenuItem.Text = "オプション(&O)";
+            // 
+            // miScript
+            // 
+            this.miScript.Name = "miScript";
+            this.miScript.Size = new System.Drawing.Size(73, 20);
+            this.miScript.Text = "スクリプト(&S)";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(85, 20);
+            this.toolStripMenuItem2.Text = "レンダリング(&R)";
+            // 
+            // ヘルプHToolStripMenuItem
+            // 
+            this.ヘルプHToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.内容CToolStripMenuItem,
+            this.インデックスIToolStripMenuItem,
+            this.検索SToolStripMenuItem,
+            this.toolStripSeparator15,
+            this.バージョン情報AToolStripMenuItem});
+            this.ヘルプHToolStripMenuItem.Name = "ヘルプHToolStripMenuItem";
+            this.ヘルプHToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.ヘルプHToolStripMenuItem.Text = "ヘルプ(&H)";
+            // 
+            // 内容CToolStripMenuItem
+            // 
+            this.内容CToolStripMenuItem.Name = "内容CToolStripMenuItem";
+            this.内容CToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.内容CToolStripMenuItem.Text = "内容(&C)";
+            // 
+            // インデックスIToolStripMenuItem
+            // 
+            this.インデックスIToolStripMenuItem.Name = "インデックスIToolStripMenuItem";
+            this.インデックスIToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.インデックスIToolStripMenuItem.Text = "インデックス(&I)";
+            // 
+            // 検索SToolStripMenuItem
+            // 
+            this.検索SToolStripMenuItem.Name = "検索SToolStripMenuItem";
+            this.検索SToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.検索SToolStripMenuItem.Text = "検索(&S)";
+            // 
+            // toolStripSeparator15
+            // 
+            this.toolStripSeparator15.Name = "toolStripSeparator15";
+            this.toolStripSeparator15.Size = new System.Drawing.Size(158, 6);
+            // 
+            // バージョン情報AToolStripMenuItem
+            // 
+            this.バージョン情報AToolStripMenuItem.Name = "バージョン情報AToolStripMenuItem";
+            this.バージョン情報AToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.バージョン情報AToolStripMenuItem.Text = "バージョン情報(&A)...";
             // 
             // MainForm
             // 
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.Application;
             this.AllowDrop = true;
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-            this.ClientSize = new System.Drawing.Size(1008, 602);
+            this.ClientSize = new System.Drawing.Size(1192, 741);
+            this.Controls.Add(this.toolStripContainer1);
+            this.Controls.Add(this.toolStripPanel1);
             this.Controls.Add(this.toolStripPanel2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "siren";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
-            this.toolStripPanel2.ResumeLayout(false);
-            this.toolStripPanel2.PerformLayout();
             this.toolStripMain.ResumeLayout(false);
             this.toolStripMain.PerformLayout();
+            this.toolStripGeneral.ResumeLayout(false);
+            this.toolStripGeneral.PerformLayout();
+            this.toolStripContainer1.ContentPanel.ResumeLayout(false);
+            this.toolStripContainer1.LeftToolStripPanel.ResumeLayout(false);
+            this.toolStripContainer1.LeftToolStripPanel.PerformLayout();
+            this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
+            this.toolStripContainer1.TopToolStripPanel.PerformLayout();
+            this.toolStripContainer1.ResumeLayout(false);
+            this.toolStripContainer1.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            this.splitContainer2.ResumeLayout(false);
+            this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.ResumeLayout(false);
+            this.splitContainer4.ResumeLayout(false);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1015,10 +1479,7 @@ namespace siren
         private ToolStripButton tsbTorus;
         private ToolStripSeparator toolStripButton6;
         private ToolStripButton tsbFit;
-        private ToolStripSeparator toolStripSeparator12;
-        private ToolStripSeparator toolStripSeparator13;
         private ToolStripButton tsbResetView;
-        private ToolStripSeparator toolStripSeparator14;
         private ToolStripButton tsbHlr;
         private ToolStripSplitButton tsbAxoView;
         private ToolStripMenuItem miFront;
@@ -1032,17 +1493,10 @@ namespace siren
         private ToolStripButton tsbRotate;
         private ToolStripButton tsbScale;
         private ToolStripSplitButton tsbMaterial;
-        private ToolStripButton tsbNew;
         private ToolStripButton tsbOpen;
         private ToolStripButton tsbSave;
         private ToolStripButton tsbExit;
-        private ToolStripSeparator toolStripSeparator2;
-        private ToolStripButton tsbNewView;
         private ToolStripButton tsbDump;
-        private ToolStripButton tsbCascade;
-        private ToolStripButton tsbTile;
-        private ToolStripSeparator toolStripSeparator1;
-        private ToolStripButton tsbClose;
         private ToolStripButton tsbCopy;
         private ToolStripButton tsbDelete;
         private ToolStripButton tsbColor;
@@ -1071,14 +1525,11 @@ namespace siren
         private ToolStripMenuItem miChrome;
         private ToolStripSeparator toolStripSeparator9;
         private ToolStripButton tsbCompound;
-        private ToolStripButton tsbExplode;
         private ToolStripSeparator toolStripSeparator11;
         private ToolStripSeparator toolStripSeparator3;
-        private ToolStripButton tsbTerminal;
         private ToolStripButton tsbFuse;
         private ToolStripButton tsbCut;
         private ToolStripButton tsbCommon;
-        private ToolStripSeparator toolStripSeparator15;
         private ToolStripButton tsbIntersect;
         private ToolStripSeparator toolStripSeparator16;
         private ToolStripSplitButton tsbInfo;
@@ -1093,6 +1544,61 @@ namespace siren
         private ToolStripButton tsbCurve;
         private ToolStripButton tsbLoft;
         private ToolStripSeparator toolStripSeparator17;
+        private ToolStripSplitButton tsbExplode;
+        private ToolStripMenuItem miExCompound;
+        private ToolStripMenuItem miExSolid;
+        private ToolStripMenuItem miExShell;
+        private ToolStripMenuItem miExFace;
+        private ToolStripMenuItem miExWire;
+        private ToolStripMenuItem miExEdge;
+        private ToolStripMenuItem miExVertex;
+        private ToolStripPanel toolStripPanel1;
+        private ToolStrip toolStripGeneral;
+        private ToolStripButton tsbNew;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripButton tsbOffset;
+        private ToolStripButton tsbSewing;
+        private ToolStripButton tsbMirror;
+        private ToolStripContainer toolStripContainer1;
+        private SplitContainer splitContainer1;
+        private SplitContainer splitContainer2;
+        private SplitContainer splitContainer3;
+        private SplitContainer splitContainer4;
+        private PropertyGrid propertyGrid1;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem ファイルFToolStripMenuItem;
+        private ToolStripMenuItem 新規作成NToolStripMenuItem;
+        private ToolStripMenuItem 開くOToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator;
+        private ToolStripMenuItem 上書き保存SToolStripMenuItem;
+        private ToolStripMenuItem 名前を付けて保存AToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripMenuItem 印刷PToolStripMenuItem;
+        private ToolStripMenuItem 印刷プレビューVToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator12;
+        private ToolStripMenuItem 終了XToolStripMenuItem;
+        private ToolStripMenuItem 編集EToolStripMenuItem;
+        private ToolStripMenuItem 元に戻すUToolStripMenuItem;
+        private ToolStripMenuItem やり直しRToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator13;
+        private ToolStripMenuItem 切り取りTToolStripMenuItem;
+        private ToolStripMenuItem コピーCToolStripMenuItem;
+        private ToolStripMenuItem 貼り付けPToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator14;
+        private ToolStripMenuItem すべて選択AToolStripMenuItem;
+        private ToolStripMenuItem ツールTToolStripMenuItem;
+        private ToolStripMenuItem カスタマイズCToolStripMenuItem;
+        private ToolStripMenuItem オプションOToolStripMenuItem;
+        private ToolStripMenuItem ヘルプHToolStripMenuItem;
+        private ToolStripMenuItem 内容CToolStripMenuItem;
+        private ToolStripMenuItem インデックスIToolStripMenuItem;
+        private ToolStripMenuItem 検索SToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator15;
+        private ToolStripMenuItem バージョン情報AToolStripMenuItem;
+        private ToolStripMenuItem miScript;
+        private ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripMenuItem toolStripMenuItem2;
+        public term myTerm;
 
     }
 }

@@ -48,10 +48,13 @@ void OCCViewer::initViewAppearance(bool is_raytracing, bool is_shadow, bool is_a
 	//view->SetShadingModel(V3d_GOURAUD);
 
     { // Background color
+#if 0
         Quantity_Color color_top(0.35, 0.35, 0.35, Quantity_TOC_RGB);
         Quantity_Color color_btm(0.10, 0.10, 0.10, Quantity_TOC_RGB);
-        //Quantity_Color color_top(0.00, 0.40, 0.70, Quantity_TOC_RGB);
-        //Quantity_Color color_btm(0.00, 0.03, 0.05, Quantity_TOC_RGB);
+#else
+        Quantity_Color color_top(0.00, 0.40, 0.70, Quantity_TOC_RGB);
+        Quantity_Color color_btm(0.00, 0.03, 0.05, Quantity_TOC_RGB);
+#endif
         view->SetBgGradientColors(color_top, color_btm, Aspect_GFM_VER, Standard_False);
     }
 

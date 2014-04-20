@@ -18,10 +18,7 @@ namespace siren
     public enum MouseState : int { DOWN = -1, UP = 1 }
 	public enum CurAct3d { NOTHING, ZOOM, WINZOOM, PAN, GLOPAN, ROTATE }
 
-    public delegate void evfuncMousePicked(List<Point3d> points);
-    public delegate void evfuncMousePickedCancel();
-
-    public partial class ViewForm : System.Windows.Forms.Form
+    public partial class ViewForm : System.Windows.Forms.UserControl
     {
         protected CurAct3d myCurMode;
 		protected float myCurZoom;// ~ Quantity_Factor
@@ -36,12 +33,6 @@ namespace siren
 		protected int theRectDownX;
 		protected int theRectDownY;
 		protected bool IsRectVisible;
-
-        // マウスピック時のコールバック関数定義
-        public evfuncMousePicked MousePickedEvent = null;
-        public evfuncMousePickedCancel MousePickedCancelEvent = null;
-        public int MousePickCount = 0;
-        public List<Point3d> MousePickedPoints = null;
 
         protected void initMouseEvent()
         {
@@ -94,31 +85,37 @@ namespace siren
 			Graphics gr = Graphics.FromHwnd(this.Handle);
 			System.Drawing.Pen p = null;
 
-			if (this.IsRectVisible ||(!draw))//erase the rect
-			{
-				int r = myViewer.GetBGColR();
-				int g = myViewer.GetBGColG();
-				int b = myViewer.GetBGColB();
-				p = new Pen(System.Drawing.Color.FromArgb(r,g, b));
-				this.IsRectVisible = false;
-				this.myViewer.UpdateView();
-			} 
-			else if (draw) 
-			{
-				p = new Pen(System.Drawing.Color.White);
-				this.IsRectVisible = true;
-			}
+            if (!draw) {
+                //this.myViewer.UpdateView();
+                return;
+            }
+
+			// if (this.IsRectVisible ||(!draw)) //erase the rect
+			// {
+			// 	int r = myViewer.GetBGColR();
+			// 	int g = myViewer.GetBGColG();
+			// 	int b = myViewer.GetBGColB();
+			// 	p = new Pen(System.Drawing.Color.FromArgb(r,g, b));
+			// 	this.IsRectVisible = false;
+			// 	this.myViewer.UpdateView();
+			// } 
+			// else if (draw) 
+			// {
+			// 	p = new Pen(System.Drawing.Color.White);
+			// 	this.IsRectVisible = true;
+			// }
+
+			p = new Pen(System.Drawing.Color.White);
 
 			if (p == null)
 				return;
-
-            this.myViewer.UpdateView();
 
 			int x = Math.Min(this.myXmin, this.myXmax);
 			int y = Math.Min(this.myYmin, this.myYmax);
 			gr.DrawRectangle(p, x, y, Math.Abs(myXmax - myXmin), Math.Abs(myYmax - myYmin));
 			this.theRectDownX = Math.Max(this.myXmin, this.myXmax);
 			this.theRectDownY = Math.Max(this.myYmin, this.myYmax);
+
 		}
 
         public bool isDirectTranslateMode = false;
@@ -126,63 +123,59 @@ namespace siren
         {
             MouseEventArgs mea = (MouseEventArgs)e;
 
+            MousePicking mp = parent.MousePickingEvent;
+
             // マウスによるピック イベント
-            if (this.MousePickedEvent != null) {
+            if (mp != null && mp.ApplyEvent != null) {
 
                 // Shiftが押されていたら座標を丸める
                 bool doRound = (myCurSpKey == CurSpKey.SHIFT);
 
-                if (MousePickCount > 0) {
-                    // MousePickCount が正数の時はカウントダウン式
+                if (mp.Count > 0) {
+                    // Count が正数の時はカウントダウン式
                     if (mea.Button == MouseButtons.Left) {
-                        if (MousePickedPoints == null)
-                            MousePickedPoints = new List<Point3d>();
+                        if (mp.PickedPoints == null)
+                            mp.PickedPoints = new List<Point3d>();
                         double x, y, z;
                         Viewer.xy2xyz(mea.X, mea.Y, out x, out y, out z, doRound);
-                        MousePickedPoints.Add(new Point3d(x, y, z));
+                        mp.PickedPoints.Add(new Point3d(x, y, z));
                     }
                     else {
                         // カウントダウン式の時に左クリック以外を押すとキャンセル
-                        if (MousePickedCancelEvent != null) {
-                            MousePickedCancelEvent();
-                            MousePickedPoints = null;
-                            MousePickedEvent = null;
-                            MousePickedCancelEvent = null;
+                        if (mp.CancelEvent != null) {
+                            mp.CancelEvent();
+                            mp.init();
                         }
                     }
-                    MousePickCount -= 1;
+                    mp.Count -= 1;
                 }
-                else if (MousePickCount < 0) {
-                    // MousePickCount が負数の時は任意の数
+                else if (mp.Count < 0) {
+                    // Count が負数の時は任意の数
                     if (mea.Button == MouseButtons.Left) {
-                        if (MousePickedPoints == null)
-                            MousePickedPoints = new List<Point3d>();
+                        if (mp.PickedPoints == null)
+                            mp.PickedPoints = new List<Point3d>();
                         double x, y, z;
                         Viewer.xy2xyz(mea.X, mea.Y, out x, out y, out z, doRound);
-                        MousePickedPoints.Add(new Point3d(x, y, z));
+                        mp.PickedPoints.Add(new Point3d(x, y, z));
                     }
                     else {
-                        if (MousePickedPoints == null || MousePickedPoints.Count < 2) {
+                        if (mp.PickedPoints == null || mp.PickedPoints.Count < 2) {
                             // キャンセル
-                            if (MousePickedCancelEvent != null) {
-                                MousePickedCancelEvent();
-                                MousePickedPoints = null;
-                                MousePickedEvent = null;
-                                MousePickedCancelEvent = null;
+                            if (mp.CancelEvent != null) {
+                                mp.CancelEvent();
+                                mp.init();
                             }
                         }
                         else {
                             // 確定
-                            MousePickCount = 0;
+                            mp.Count = 0;
                         }
                     }
                 }
                 // 終了条件
-                if (MousePickedEvent != null && MousePickCount == 0) {
-                    MousePickedEvent(MousePickedPoints);
-                    MousePickedPoints = null;
-                    MousePickedEvent = null;
-                    MousePickedCancelEvent = null;
+                if (mp.ApplyEvent != null && mp.Count == 0) {
+                    mp.ApplyEvent(mp.PickedPoints);
+                    mp.init();
                 }
             }
 
@@ -191,7 +184,7 @@ namespace siren
                     double x, y, z;
                     this.Viewer.xy2xyz(mea.X, mea.Y, out x, out y, out z, true);
                     string pos = "[" + x.ToString() + "," + y.ToString() + "," + z.ToString() + "]";
-                    this.getterm().execute("location ?, " + pos);
+                    parent.myTerm.execute("location ?, " + pos);
                 }
                 isDirectTranslateMode = false;
             }
@@ -234,10 +227,12 @@ namespace siren
 				break;
 
 			case MouseButtons.Right:
-				if (!myDegenerateModeIsOn)
-					myViewer.SetDegenerateModeOn();
-                this.Cursor = System.Windows.Forms.Cursors.SizeAll;
-				myViewer.StartRotation(e.X, e.Y);
+                if (allowRotation) {
+                    if (!myDegenerateModeIsOn)
+                        myViewer.SetDegenerateModeOn();
+                    this.Cursor = System.Windows.Forms.Cursors.SizeAll;
+                    myViewer.StartRotation(e.X, e.Y);
+                }
 				break;
 
             case MouseButtons.Middle:
@@ -267,11 +262,11 @@ namespace siren
 						myViewer.Zoom(myXmax, myYmax, e.X, e.Y);
 						myXmax=e.X; myYmax=e.Y;
 						break;
-					case CurAct3d.WINZOOM:
-						DrawRectangle(false);
-						myXmax=e.X; myYmax=e.Y;
-						DrawRectangle(true);//add brush here
-						break;
+					// case CurAct3d.WINZOOM:
+					// 	DrawRectangle(false);
+					// 	myXmax=e.X; myYmax=e.Y;
+					// 	DrawRectangle(true);//add brush here
+					// 	break;
 					case CurAct3d.PAN:
 						myViewer.Pan(e.X-myXmax, myYmax - e.Y);
 						myXmax=e.X; myYmax=e.Y;
@@ -292,7 +287,8 @@ namespace siren
 				myXmax=e.X; myYmax=e.Y;
 			}
 			else if	(e.Button==MouseButtons.Right) {
-				myViewer.Rotation(e.X, e.Y);
+                if (allowRotation)
+    				myViewer.Rotation(e.X, e.Y);
 			}
 			else {
 				myXmax=e.X; myYmax=e.Y;
@@ -322,7 +318,7 @@ namespace siren
 					} 
 					else {
 						myXmax=e.X; myYmax=e.Y;
-						DrawRectangle(false);
+						//DrawRectangle(false);
 						DragEvent(myXmax, myYmax, MouseState.UP);
 					}
 					break;
@@ -331,17 +327,17 @@ namespace siren
 					myCurMode = CurAct3d.NOTHING;
 					break;
 
-				case CurAct3d.WINZOOM:
-					myXmax = e.X;
-                    myYmax = e.Y;
-					DrawRectangle(false);
-					int ValZWMin = 1;
-					if (Math.Abs(myXmax-myXmin)>ValZWMin && Math.Abs(myXmax-myYmax)>ValZWMin)
-						myViewer.WindowFitAll(myXmin, myYmin, myXmax, myYmax);
-					this.Cursor = System.Windows.Forms.Cursors.Default;
-					siren.MainForm f = (siren.MainForm)this.ParentForm;
-					myCurMode = CurAct3d.NOTHING;
-					break;
+				// case CurAct3d.WINZOOM:
+				// 	myXmax = e.X;
+                //     myYmax = e.Y;
+				// 	DrawRectangle(false);
+				// 	int ValZWMin = 1;
+				// 	if (Math.Abs(myXmax-myXmin)>ValZWMin && Math.Abs(myXmax-myYmax)>ValZWMin)
+				// 		myViewer.WindowFitAll(myXmin, myYmin, myXmax, myYmax);
+				// 	this.Cursor = System.Windows.Forms.Cursors.Default;
+				// 	siren.MainForm f = (siren.MainForm)this.ParentForm;
+				// 	myCurMode = CurAct3d.NOTHING;
+				// 	break;
 
 				case CurAct3d.PAN:
 					myCurMode = CurAct3d.NOTHING;
@@ -371,14 +367,16 @@ namespace siren
 				break;
 
 			case MouseButtons.Right:
-				if (!myDegenerateModeIsOn) {
-					myViewer.SetDegenerateModeOff();
-					myDegenerateModeIsOn=false;
-				} 
-				else {
-					myViewer.SetDegenerateModeOn();
-					myDegenerateModeIsOn=true;
-				}
+                if (allowRotation) {
+                    if (!myDegenerateModeIsOn) {
+                        myViewer.SetDegenerateModeOff();
+                        myDegenerateModeIsOn = false;
+                    }
+                    else {
+                        myViewer.SetDegenerateModeOn();
+                        myDegenerateModeIsOn = true;
+                    }
+                }
 				break;
 
 			default:
@@ -388,7 +386,7 @@ namespace siren
 			this.Cursor = System.Windows.Forms.Cursors.Default;
 
 			siren.MainForm parent = (siren.MainForm)this.ParentForm;
-            parent.setToolBarButtonState();
+            parent.changeState();
 
             return;
 		}

@@ -54,6 +54,7 @@ mrb_value cog         (mrb_state*, mrb_value);
 mrb_value intersect   (mrb_state*, mrb_value);
 mrb_value split       (mrb_state*, mrb_value);
 mrb_value intcs       (mrb_state*, mrb_value);
+mrb_value intfe       (mrb_state*, mrb_value);
 
 // Premitive
 mrb_value vertex      (mrb_state*, mrb_value);
@@ -89,6 +90,7 @@ mrb_value saveiges    (mrb_state*, mrb_value);
 mrb_value loadiges    (mrb_state*, mrb_value);
 mrb_value savestep    (mrb_state*, mrb_value);
 mrb_value loadstep    (mrb_state*, mrb_value);
+mrb_value loadstl     (mrb_state*, mrb_value);
 
 // Visualization
 mrb_value fit         (mrb_state*, mrb_value);

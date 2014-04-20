@@ -301,25 +301,27 @@ mrb_value sweep(mrb_state* mrb, mrb_value self)
 
 	try 
 	{
-		if ( mrb_array_p(obj) ) { //Vector
+		if (mrb_array_p(obj)) {
+            // Vector
 			gp_Pnt _vec = *ar2pnt(mrb, obj);
 			gp_Pnt _pt = gp_Pnt(0.,0.,0.).Transformed(bs.Location());
 			TopoDS_Edge pe = BRepBuilderAPI_MakeEdge(_pt,_vec);
 			pw = BRepBuilderAPI_MakeWire(pe);
-		}	else if (mrb_fixnum_p(obj))	{ //profile
-			Handle(AIS_Shape) path = ::get(mrb_fixnum(obj) );
+		} else if (mrb_fixnum_p(obj)) {
+            // Profile
+			Handle(AIS_Shape) path = ::get(mrb_fixnum(obj));
 			if (path.IsNull()) {
 				static const char m[] = "No such path object.";
 						return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 			}
 			ps = path->Shape();
-			if ( ps.ShapeType() == TopAbs_EDGE )
-				pw = BRepBuilderAPI_MakeWire( TopoDS::Edge(path->Shape()));
+			if (ps.ShapeType() == TopAbs_EDGE)
+				pw = BRepBuilderAPI_MakeWire(TopoDS::Edge(path->Shape()));
 			else
-				pw = TopoDS::Wire( path->Shape() );
+				pw = TopoDS::Wire(path->Shape());
 		}
 
-		BRepOffsetAPI_MakePipe mp( pw, bs );
+		BRepOffsetAPI_MakePipe mp(pw, bs);
 		mp.Build();
 		shape = mp.Shape();
 		if (shape.IsNull()) {
