@@ -46,7 +46,7 @@ namespace siren
         /// Scroll RichTextBox to last line
         /// </summary>
         /// <param name="rtb"></param>
-        private void Scroll2Last(RichTextBox rtb)
+        private void Scroll2Last(TextBox rtb)
         {
             rtb.SelectionStart = rtb.TextLength;
             rtb.Focus();
@@ -90,7 +90,7 @@ namespace siren
             result_string = result;
 
             if (echo) {
-                rtb.Text += prompt + cmd + "\n" + result;
+                rtb.Text += prompt + cmd + "\r\n" + result.Replace("\n", "\r\n");
                 this.Scroll2Last(rtb);
                 if (focus == null)
                     tb.Focus();

@@ -328,7 +328,7 @@ mrb_value intfe(mrb_state* mrb, mrb_value self)
 {
     mrb_int c, s;
     mrb_bool with_normal = FALSE;
-	int argc = mrb_get_args(mrb, "ii|b", &c, &s, &with_normal);
+	int argc = mrb_get_args(mrb, "ii|b", &s, &c, &with_normal);
 
 	Handle(AIS_Shape) hacurve = ::get(c);
 	if (hacurve.IsNull()) {

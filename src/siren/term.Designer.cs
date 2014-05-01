@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.sc = new System.Windows.Forms.SplitContainer();
-            this.rtb = new System.Windows.Forms.RichTextBox();
+            this.rtb = new System.Windows.Forms.TextBox();
             this.tb = new System.Windows.Forms.TextBox();
             this.sc.Panel1.SuspendLayout();
             this.sc.Panel2.SuspendLayout();
@@ -60,31 +60,27 @@
             // 
             // rtb
             // 
-            this.rtb.BackColor = System.Drawing.Color.Black;
-            this.rtb.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtb.DetectUrls = false;
             this.rtb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtb.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rtb.ForeColor = System.Drawing.Color.Lime;
-            this.rtb.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.rtb.Location = new System.Drawing.Point(0, 0);
+            this.rtb.Multiline = true;
             this.rtb.Name = "rtb";
             this.rtb.ReadOnly = true;
+            this.rtb.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.rtb.Size = new System.Drawing.Size(617, 147);
             this.rtb.TabIndex = 1;
-            this.rtb.Text = "";
             this.rtb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tb_KeyDown);
             // 
             // tb
             // 
             this.tb.AcceptsTab = true;
-            this.tb.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tb.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tb.Location = new System.Drawing.Point(0, 0);
             this.tb.MaxLength = 327670;
             this.tb.Multiline = true;
             this.tb.Name = "tb";
+            this.tb.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tb.Size = new System.Drawing.Size(617, 87);
             this.tb.TabIndex = 0;
             this.tb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tb_KeyDown);
@@ -99,6 +95,7 @@
             this.Padding = new System.Windows.Forms.Padding(1, 1, 2, 2);
             this.Size = new System.Drawing.Size(620, 241);
             this.sc.Panel1.ResumeLayout(false);
+            this.sc.Panel1.PerformLayout();
             this.sc.Panel2.ResumeLayout(false);
             this.sc.Panel2.PerformLayout();
             this.sc.ResumeLayout(false);
@@ -109,7 +106,7 @@
         #endregion
 
         private System.Windows.Forms.SplitContainer sc;
-        private System.Windows.Forms.RichTextBox rtb;
+        private System.Windows.Forms.TextBox rtb;
         private System.Windows.Forms.TextBox tb;
     }
 }
