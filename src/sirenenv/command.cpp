@@ -8,6 +8,11 @@
 #include "Stdafx.h"
 #include "OCCViewer.h"
 
+mrb_value my_class_print_name(mrb_state* mrb, mrb_value self)
+{
+	return mrb_fixnum_value(226);
+}
+
 /**
  * \brief 
  */
@@ -28,6 +33,7 @@ bool OCCViewer::mruby_init()
 	// General commands
 	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
 	regcmd("version",   &version,   0,0, "",                                "version() -> String");
+	regcmd("debug",     &debug,     0,0, "",                                "");
 
 	// Infomation/Status commands
 	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(ObjID) -> Ary[min[X,Y,Z], max[X,Y,Z]]");

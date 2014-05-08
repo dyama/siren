@@ -16,6 +16,7 @@ using namespace std;
 
 #include <mruby.h>
 
+#include <mruby/class.h>
 #include <mruby/array.h>
 #include <mruby/proc.h>
 #include <mruby/data.h>

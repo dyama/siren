@@ -15,6 +15,7 @@
 // General commands
 mrb_value help        (mrb_state*, mrb_value);
 mrb_value version     (mrb_state*, mrb_value);
+mrb_value debug       (mrb_state*, mrb_value);
 
 mrb_value selmode     (mrb_state*, mrb_value);
 
