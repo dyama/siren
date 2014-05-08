@@ -21,10 +21,13 @@ namespace siren
 
         public bool use_p = true;
 
+        private System.Collections.Generic.Queue<string> history;
+
         public term()
         {
             InitializeComponent();
             result_string = string.Empty;
+            this.history = new Queue<string>();
             _func = null;
             Scroll2Last(rtb);
             tb.Focus();
@@ -139,35 +142,34 @@ namespace siren
 
         private void tb_KeyDown(object sender, KeyEventArgs e)
         {
-            // // rtb
-            // if (sender.Equals(rtb)) {
-            //     if (e.KeyCode == Keys.Escape) {
-            //         this.Visible = false;
-            //         this.Parent.Parent.Focus();
-            //     }
-            // }
-            // tb
             switch (e.KeyCode) {
             case Keys.Enter:
                 if (e.Modifiers != Keys.Shift) {
-                    string[] cmdlines = Regex.Split(tb.Text, @"\n", RegexOptions.Multiline);
-                    if (cmdlines.Length > 5)
-                        use_p = false;
-                    foreach (string line in cmdlines)
-                        if (this.execute(line, tb, true, false) != 0) {
+
+                    List<string> cmdlines = new List<string>(Regex.Split(tb.Text, @"\n", RegexOptions.Multiline));
+
+                    while (cmdlines.Count > 0) {
+                        string line = cmdlines[0];
+                        if (!Regex.IsMatch(line, @"^\s*$")) {
+                            if (this.execute(line, tb, true, false) != 0) {
+                                break;
+                            }
                         }
+                        cmdlines.RemoveAt(0);
+
+                        tb.Text = string.Join("\n", cmdlines.ToArray());
+                        Application.DoEvents();
+                    }
+
                     if (_func != null)
                         _func();
-                    if (cmdlines.Length > 5)
-                        use_p = true;
-                    tb.Text = "";
+
+                    if (cmdlines.Count == 0)
+                        tb.Text = string.Empty;
+                    
                     e.SuppressKeyPress = true;
                 }
                 break;
-            // case Keys.Escape:
-            //     this.Visible = false;
-            //     this.Parent.Parent.Focus();
-            //     break;
             case Keys.Up:
                 e.SuppressKeyPress = true;
                 break;
