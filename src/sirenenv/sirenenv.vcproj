@@ -27,6 +27,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine=""
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -101,6 +102,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcVector -oscript/vector.h $(ProjectDir)script\vector.rb&#x0D;&#x0A;$(MRUBYROOT)\build\host\bin\mrbc -BbcStype -oscript/stype.h $(ProjectDir)script\stype.rb&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -300,6 +302,90 @@
 			<File
 				RelativePath=".\orientation.h"
 				>
+			</File>
+		</Filter>
+		<Filter
+			Name="script"
+			>
+			<File
+				RelativePath=".\script\script.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\script\script.h"
+				>
+			</File>
+			<File
+				RelativePath=".\script\shape.rb"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MRBC(shape)"
+						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcShape -oscript/shape.h $(ProjectDir)script\shape.rb"
+						Outputs="script/shape.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MRBC(shape)"
+						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcShape -oscript/shape.h $(ProjectDir)script\shape.rb"
+						Outputs="script/shape.h"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\script\stype.rb"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MRBC(stype)"
+						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcStype -oscript/stype.h $(ProjectDir)script\stype.rb"
+						Outputs="script/stype.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MRBC(stype)"
+						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcStype -oscript/stype.h $(ProjectDir)script\stype.rb"
+						Outputs="script/stype.h"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\script\vec.rb"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MRBC(vec)"
+						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcVec -oscript/vec.h $(ProjectDir)script\vec.rb&#x0D;&#x0A;"
+						Outputs="script/vec.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MRBC(vec)"
+						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcVec -oscript/vec.h $(ProjectDir)script\vec.rb&#x0D;&#x0A;"
+						Outputs="script/vec.h"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<File

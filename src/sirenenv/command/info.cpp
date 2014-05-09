@@ -96,9 +96,25 @@ mrb_value bndbox(mrb_state* mrb, mrb_value self)
     Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
     box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
+#if 0
 	mrb_value rmin = ::pnt2ar(mrb, gp_Pnt(xmin, ymin, zmin));
 	mrb_value rmax = ::pnt2ar(mrb, gp_Pnt(xmax, ymax, zmax));
-	
+#else
+    RClass* prVec = mrb_class_get(mrb, "Vec");
+
+    mrb_value arg[3];
+
+    arg[0] = mrb_float_value(mrb, xmin);
+    arg[1] = mrb_float_value(mrb, ymin);
+    arg[2] = mrb_float_value(mrb, zmin);
+    mrb_value rmin = mrb_class_new_instance(mrb, 3, arg, prVec);
+
+    arg[0] = mrb_float_value(mrb, xmax);
+    arg[1] = mrb_float_value(mrb, ymax);
+    arg[2] = mrb_float_value(mrb, zmax);
+    mrb_value rmax = mrb_class_new_instance(mrb, 3, arg, prVec);
+#endif
+
 	mrb_value res[2];
 	res[0] = rmin;
 	res[1] = rmax;	

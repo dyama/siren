@@ -244,6 +244,7 @@
 #include "help.h"
 #include "mirb.h"
 #include "common.h"
+#include "script/script.h"
 #include "command.h"
 
 #include "OCCViewer.h"

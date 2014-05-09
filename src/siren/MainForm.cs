@@ -523,35 +523,40 @@ namespace siren
         public void setPropertyState(int nb_selected)
         {
             if (nb_selected == 1) {
-                this.myTerm.execute("location ?", this.view1, false, false);
-                string result = this.myTerm.result_string;
-                if (result == null || result.Length < 1)
-                    return;
-                System.Text.RegularExpressions.Regex re = new System.Text.RegularExpressions.Regex(@"[\d\.\-]+");
-                System.Text.RegularExpressions.MatchCollection ma = re.Matches(result);
+                try {
+                    this.myTerm.execute("location ?", this.view1, false, false);
+                    string result = this.myTerm.result_string;
+                    if (result == null || result.Length < 1)
+                        return;
+                    System.Text.RegularExpressions.Regex re = new System.Text.RegularExpressions.Regex(@"[\d\.\-]+");
+                    System.Text.RegularExpressions.MatchCollection ma = re.Matches(result);
 
-                bool f = true;
-                double x = 0, y = 0, z = 0;
-                f = f && double.TryParse(ma[0].Value, out x);
-                f = f && double.TryParse(ma[1].Value, out y);
-                f = f && double.TryParse(ma[2].Value, out z);
-                if (!f)
-                    return;
+                    bool f = true;
+                    double x = 0, y = 0, z = 0;
+                    f = f && double.TryParse(ma[0].Value, out x);
+                    f = f && double.TryParse(ma[1].Value, out y);
+                    f = f && double.TryParse(ma[2].Value, out z);
+                    if (!f)
+                        return;
 
-                this.myTerm.execute("bndbox ?", this.view1, false, false);
-                result = this.myTerm.result_string;
-                ma = re.Matches(result);
+                    this.myTerm.execute("bndbox ?", this.view1, false, false);
+                    result = this.myTerm.result_string;
+                    ma = re.Matches(result);
 
-                double sx = 0, sy = 0, sz = 0, lx = 0, ly = 0, lz = 0;
-                f = f && double.TryParse(ma[0].Value, out sx);
-                f = f && double.TryParse(ma[1].Value, out sy);
-                f = f && double.TryParse(ma[2].Value, out sz);
-                f = f && double.TryParse(ma[3].Value, out lx);
-                f = f && double.TryParse(ma[4].Value, out ly);
-                f = f && double.TryParse(ma[5].Value, out lz);
+                    double sx = 0, sy = 0, sz = 0, lx = 0, ly = 0, lz = 0;
+                    f = f && double.TryParse(ma[0].Value, out sx);
+                    f = f && double.TryParse(ma[1].Value, out sy);
+                    f = f && double.TryParse(ma[2].Value, out sz);
+                    f = f && double.TryParse(ma[3].Value, out lx);
+                    f = f && double.TryParse(ma[4].Value, out ly);
+                    f = f && double.TryParse(ma[5].Value, out lz);
 
-                this.SelectedObject = new ObjectProperty(x, y, z, sx, sy, sz, lx, ly, lz);
-                propertyGrid1.SelectedObject = this.SelectedObject;
+                    this.SelectedObject = new ObjectProperty(x, y, z, sx, sy, sz, lx, ly, lz);
+                    propertyGrid1.SelectedObject = this.SelectedObject;
+                }
+                catch {
+                    propertyGrid1.SelectedObject = null;
+                }
             }
             else {
                 propertyGrid1.SelectedObject = null;

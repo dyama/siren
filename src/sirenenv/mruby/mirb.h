@@ -15,13 +15,15 @@
 using namespace std;
 
 #include <mruby.h>
-
-#include <mruby/class.h>
 #include <mruby/array.h>
+#include <mruby/class.h>
+#include <mruby/numeric.h>
 #include <mruby/proc.h>
+#include <mruby/string.h>
+#include <mruby/variable.h>
+#include <mruby/error.h>
 #include <mruby/data.h>
 #include <mruby/compile.h>
-#include <mruby/string.h>
 
 class Mirb
 {

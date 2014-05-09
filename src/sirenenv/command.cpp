@@ -122,19 +122,12 @@ bool OCCViewer::mruby_init()
 
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
-		"DRAW=1;"
-		"tri10=[10,10,10];"
-		"op=[0,0,0];"
-		"axx=[1,0,0];"
-		"axy=[0,1,0];"
-		"axz=[0,0,1];"
-		"anx=[-1,0,0];"
-		"any=[0,-1,0];"
-		"anz=[0,0,-1];"
+		"$DRAW=1;"
+		"$tri10=[10,10,10];"
 		);
-	//myMirb->user_exec("class Stype;private_class_method :new;COMPOUND=0;COMPSOLID=1;SOLID=2;SHELL=3;FACE=4;WIRE=5;EDGE=6;VERTEX=7;SHAPE=8;end\n");
-	myMirb->user_exec("class Stype;COMPOUND=0;COMPSOLID=1;SOLID=2;SHELL=3;FACE=4;WIRE=5;EDGE=6;VERTEX=7;SHAPE=8;end\n");
-    myMirb->user_exec("p nil");
+
+    // バイトコードのロード
+    loadbc(myMirb->mrb);
 
 	return true;
 }
@@ -225,9 +218,7 @@ int set(const TopoDS_Shape& shape, int draw)
 	cur->aiscxt->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
 
 	cur->aiscxt->Display(hashape);
-
 	cur->aiscxt->SetSelected(hashape, Standard_False);
-
 	cur->aiscxt->UpdateCurrentViewer();
 
 	return shape.HashCode(INT_MAX);
