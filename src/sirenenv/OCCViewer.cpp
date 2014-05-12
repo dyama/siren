@@ -492,7 +492,7 @@ void OCCViewer::SetTransparency(int theTrans)
 	for(aiscxt->InitCurrent(); aiscxt->MoreCurrent(); aiscxt->NextSelected())
 		aiscxt->SetTransparency(aiscxt->Current(), ((Standard_Real)theTrans) / 10.0);
 }
-
+/*
 bool OCCViewer::ImportCsfdb(wchar_t* filename)
 {
     char fname[_MAX_PATH];
@@ -713,7 +713,7 @@ bool OCCViewer::Dump(wchar_t* filename)
 	view->Redraw();
     return (bool)view->Dump((Standard_CString)fname);
 }
-
+*/
 bool OCCViewer::IsObjectSelected(void)
 {
 	if (aiscxt.IsNull())

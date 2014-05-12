@@ -225,78 +225,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="command"
-			>
-			<File
-				RelativePath=".\command\boolean.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\command.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\command\command.h"
-				>
-			</File>
-			<File
-				RelativePath=".\command\common.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\command\common.h"
-				>
-			</File>
-			<File
-				RelativePath=".\command\convertion.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\command\edit.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\command\general.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\command\group.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\command\info.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\command\io.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\command\premitive.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\command\transform.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\command\visual.cpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="dotnet_if"
-			>
-			<File
-				RelativePath=".\cad.h"
-				>
-			</File>
-			<File
-				RelativePath=".\iftype.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="script"
 			>
 			<File
@@ -380,6 +308,26 @@
 				</FileConfiguration>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\command.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\command.h"
+			>
+		</File>
+		<File
+			RelativePath=".\common.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\common.h"
+			>
+		</File>
+		<File
+			RelativePath=".\dotnetwrapper.h"
+			>
+		</File>
 		<File
 			RelativePath=".\help.h"
 			>

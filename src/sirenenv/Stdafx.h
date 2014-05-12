@@ -237,8 +237,6 @@
 #endif
 
 // local
-#include "iftype.h"
-
 #include "help.h"
 #include "mirb.h"
 #include "common.h"

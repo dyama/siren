@@ -86,14 +86,14 @@ public: // Common functions
 	bool  xy2xyz(int Xs, int Ys, double& X, double& Y, double& Z, bool usePrecision);
 
 public: // I/O
-	bool  ImportCsfdb(wchar_t* filename);
-	bool  ImportIges (wchar_t* filename);
-	bool  ImportStep (wchar_t* filename);
-	bool  ExportIges (wchar_t* filename);
-	bool  ExportStep  (wchar_t* filename);
-	bool  ExportStl  (wchar_t* filename);
-	bool  ExportVrml (wchar_t* filename);
-	bool  Dump       (wchar_t* filename);
+	// bool  ImportCsfdb(wchar_t* filename);
+	// bool  ImportIges (wchar_t* filename);
+	// bool  ImportStep (wchar_t* filename);
+	// bool  ExportIges (wchar_t* filename);
+	// bool  ExportStep  (wchar_t* filename);
+	// bool  ExportStl  (wchar_t* filename);
+	// bool  ExportVrml (wchar_t* filename);
+	// bool  Dump       (wchar_t* filename);
 
 };
 

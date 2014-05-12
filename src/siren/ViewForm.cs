@@ -158,12 +158,14 @@ namespace siren
                     else
                         return false;
                 }
+                /*
             case ModelFormat.CSFDB:
             case ModelFormat.STEP:
                 bool result = myViewer.TranslateModel(filename, (int)format, true) ;
                 if (result)
                     myViewer.ZoomAllView();
                 return result;
+                 */
             default:
                 return false;
             }
@@ -184,12 +186,14 @@ namespace siren
                     return (parent.myTerm.execute("bsave(\"" + filename + "\", selected[0])") == 0);
                 }
             //case ModelFormat.CSFDB:
+                /*
             case ModelFormat.IGES:
             case ModelFormat.STEP:
             case ModelFormat.STL:
             case ModelFormat.VRML:
             case ModelFormat.IMAGE:
                 return myViewer.TranslateModel(filename, (int)format, false);
+                 */
             default:
                 return false;
             }
