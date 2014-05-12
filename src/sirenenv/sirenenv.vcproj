@@ -173,40 +173,32 @@
 	</References>
 	<Files>
 		<Filter
-			Name="TopoDS"
+			Name="dummy"
 			>
-			<Filter
-				Name="header"
-				>
-				<File
-					RelativePath=".\TopoDS\Shape.h"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
-			</Filter>
-			<Filter
-				Name="source"
-				>
-				<File
-					RelativePath=".\TopoDS\Shape.cpp"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-			</Filter>
+            <File
+                RelativePath=".\TopoDS\Shape.h"
+                >
+                <FileConfiguration
+                    Name="Release|Win32"
+                    ExcludedFromBuild="true"
+                    >
+                    <Tool
+                        Name="VCCustomBuildTool"
+                        />
+                </FileConfiguration>
+            </File>
+            <File
+                RelativePath=".\TopoDS\Shape.cpp"
+                >
+                <FileConfiguration
+                    Name="Release|Win32"
+                    ExcludedFromBuild="true"
+                    >
+                    <Tool
+                        Name="VCCLCompilerTool"
+                        />
+                </FileConfiguration>
+            </File>
 		</Filter>
 		<Filter
 			Name="mruby"
