@@ -176,7 +176,7 @@
 			Name="dummy"
 			>
             <File
-                RelativePath=".\TopoDS\Shape.h"
+                RelativePath=".\Shape.h"
                 >
                 <FileConfiguration
                     Name="Release|Win32"
@@ -188,7 +188,7 @@
                 </FileConfiguration>
             </File>
             <File
-                RelativePath=".\TopoDS\Shape.cpp"
+                RelativePath=".\Shape.cpp"
                 >
                 <FileConfiguration
                     Name="Release|Win32"
