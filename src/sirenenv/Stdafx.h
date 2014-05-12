@@ -237,9 +237,7 @@
 #endif
 
 // local
-#include "colorname.h"
-#include "material.h"
-#include "orientation.h"
+#include "iftype.h"
 
 #include "help.h"
 #include "mirb.h"

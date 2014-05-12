@@ -292,15 +292,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\colorname.h"
-				>
-			</File>
-			<File
-				RelativePath=".\material.h"
-				>
-			</File>
-			<File
-				RelativePath=".\orientation.h"
+				RelativePath=".\iftype.h"
 				>
 			</File>
 		</Filter>
@@ -324,7 +316,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="MRBC(shape)"
-						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcShape -oscript/shape.h $(ProjectDir)script\shape.rb"
+						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcShape -oscript/shape.h $(ProjectDir)script\shape.rb&#x0D;&#x0A;"
 						Outputs="script/shape.h"
 					/>
 				</FileConfiguration>
@@ -334,7 +326,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="MRBC(shape)"
-						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcShape -oscript/shape.h $(ProjectDir)script\shape.rb"
+						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcShape -oscript/shape.h $(ProjectDir)script\shape.rb&#x0D;&#x0A;"
 						Outputs="script/shape.h"
 					/>
 				</FileConfiguration>
@@ -348,7 +340,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="MRBC(stype)"
-						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcStype -oscript/stype.h $(ProjectDir)script\stype.rb"
+						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcStype -oscript/stype.h $(ProjectDir)script\stype.rb&#x0D;&#x0A;"
 						Outputs="script/stype.h"
 					/>
 				</FileConfiguration>
@@ -358,7 +350,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="MRBC(stype)"
-						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcStype -oscript/stype.h $(ProjectDir)script\stype.rb"
+						CommandLine="$(MRUBYROOT)\build\host\bin\mrbc -BbcStype -oscript/stype.h $(ProjectDir)script\stype.rb&#x0D;&#x0A;"
 						Outputs="script/stype.h"
 					/>
 				</FileConfiguration>

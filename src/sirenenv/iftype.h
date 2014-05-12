@@ -7,6 +7,59 @@
 
 #pragma once
 
+public enum class NameOfMaterial {
+	BRASS,			// 真鍮
+	BRONZE,         // 青銅
+	COPPER,         // 銅
+	GOLD,           // 金
+	PEWTER,         // スズ
+	PLASTER,        // 石膏
+	PLASTIC,        // プラスチック
+	SILVER,         // 銀
+	STEEL,          // スチール
+	STONE,          // 石
+	SHINY_PLASTIC,  // 光沢のあるプラスチック
+	SATIN,          // サテン
+	METALIZED,      // メタライズ
+	NEON_GNC,       // ネオンGNC
+	CHROME,         // クロム
+	ALUMINIUM,      // アルミニウム
+	OBSIDIAN,       // 黒曜石
+	NEON_PHC,       // ネオンPHC
+	JADE,           // ヒスイ
+	DEFAULT,        // デフォルト
+	UserDefined     // ユーザー定義
+};
+
+public enum class TypeOfOrientation {
+    Xpos,
+    Ypos,
+    Zpos,
+    Xneg,
+    Yneg,
+    Zneg,
+    XposYpos,
+    XposZpos,
+    YposZpos,
+    XnegYneg,
+    XnegYpos,
+    XnegZneg,
+    XnegZpos,
+    YnegZneg,
+    YnegZpos,
+    XposYneg,
+    XposZneg,
+    YposZneg,
+    XposYposZpos,
+    XposYnegZpos,
+    XposYposZneg,
+    XnegYposZpos,
+    XposYnegZneg,
+    XnegYposZneg,
+    XnegYnegZpos,
+    XnegYnegZneg
+};
+
 public enum class NameOfColor {
 	BLACK,
 	MATRABLUE,
