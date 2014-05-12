@@ -41,6 +41,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <TColStd_Array2OfReal.hxx>
+#include <TColStd_Array1OfReal.hxx>
 #include <PTColStd_PersistentTransientMap.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
@@ -89,6 +90,14 @@
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Parab.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_OffsetSurface.hxx>

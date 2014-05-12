@@ -65,6 +65,8 @@ cut hull, sol
 erase [shell, hull, sol]
 erase parts
 
+fit
+
 # —ëŽ®ŒÜ˜A‘z‹›—‹”­ŽËŠÇ
 def torpedo
 
