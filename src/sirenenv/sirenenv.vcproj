@@ -178,26 +178,10 @@
             <File
                 RelativePath=".\Shape.h"
                 >
-                <FileConfiguration
-                    Name="Release|Win32"
-                    ExcludedFromBuild="true"
-                    >
-                    <Tool
-                        Name="VCCustomBuildTool"
-                        />
-                </FileConfiguration>
             </File>
             <File
                 RelativePath=".\Shape.cpp"
                 >
-                <FileConfiguration
-                    Name="Release|Win32"
-                    ExcludedFromBuild="true"
-                    >
-                    <Tool
-                        Name="VCCLCompilerTool"
-                        />
-                </FileConfiguration>
             </File>
 		</Filter>
 		<Filter
