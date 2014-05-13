@@ -173,16 +173,16 @@
 	</References>
 	<Files>
 		<Filter
-			Name="dummy"
+			Name="method"
 			>
-            <File
-                RelativePath=".\Shape.h"
-                >
-            </File>
-            <File
-                RelativePath=".\Shape.cpp"
-                >
-            </File>
+			<File
+				RelativePath=".\Shape.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Shape.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="mruby"
@@ -201,7 +201,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="script"
+			Name="class"
 			>
 			<File
 				RelativePath=".\script\script.cpp"

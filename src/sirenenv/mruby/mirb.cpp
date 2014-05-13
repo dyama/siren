@@ -2,7 +2,7 @@
  * \brief mruby interpretor interface
  * THIS FILE IS PART OF *SIREN* SOURCE CODES.
  * WHEN YOU WANT THE LICENSE OF THIS FILE, YOU CAN GET IT
- * IN README OR LICENSE DOCMENTATION OF THIS PROJECT.
+ * IN README OR LICENSE DOCUMENTATION OF THIS PROJECT.
  * ---------------------------------------------------------
  * \author dyama <dyama@member.fsf.org>
  */
