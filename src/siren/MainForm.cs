@@ -358,14 +358,14 @@ namespace siren
         {
             if (this.view1 == null)
                 return;
-            myTerm.execute("a = cylinder op, [0, 0, 1], 10, 20, " + deg2rad(360).ToString());
+            myTerm.execute("a = cylinder [0, 0, 0], [0, 0, 1], 10, 20, " + deg2rad(360).ToString());
         }
 
         private void tsbCone_Click(object sender, EventArgs e)
         {
             if (this.view1 == null)
                 return;
-            myTerm.execute("a = cone op, [0, 0, 1], 10, 0, 20, " + deg2rad(360).ToString() );
+            myTerm.execute("a = cone [0, 0, 0], [0, 0, 1], 10, 0, 20, " + deg2rad(360).ToString() );
         }
 
         private void tsbTorus_Click(object sender, EventArgs e)
@@ -373,7 +373,7 @@ namespace siren
             if (this.view1 == null)
                 return;
             string a = deg2rad(360).ToString();
-            myTerm.execute("a = torus([0,0,0], [0,0,1], 7, 3, "+a+")");
+            myTerm.execute("a = torus([0, 0, 0], [0, 0, 1], 7, 3, "+a+")");
         }
 
         private double deg2rad(double deg)

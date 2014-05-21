@@ -83,6 +83,18 @@ namespace siren
             cmd = cmd.Replace("??", "selected");
             cmd = cmd.Replace("?", "selected[0]");
 
+            string cmd2 = Regex.Replace(cmd, @"^\s+|\s+$", "");
+            if (Regex.IsMatch(cmd2, @"sleep\s+\d+")) {
+                string cmd3 = Regex.Replace(cmd2, @"sleep\s+", "");
+                int foo;
+                if (!int.TryParse(cmd3, out foo)) {
+                    throw new Exception();
+                }
+                System.Threading.Thread.Sleep(foo);
+                Application.DoEvents();
+                return 0;
+            }
+
             int err = myViewer.mruby_exec(cmd, out errmsg);
 
             if (!myViewer.mruby_isCodeBlockOpen())
