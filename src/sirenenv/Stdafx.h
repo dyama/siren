@@ -41,6 +41,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <TColStd_Array2OfReal.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <PTColStd_PersistentTransientMap.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -100,6 +101,7 @@
 #include <gp_Parab.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <GeomAPI_IntCS.hxx>
@@ -138,6 +140,7 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeShell.hxx>
 #include <BRepBuilderAPI_MakeSolid.hxx>
 // BRep Builder API, Modify
 #include <BRepBuilderAPI_Copy.hxx>

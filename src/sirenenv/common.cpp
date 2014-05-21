@@ -13,7 +13,7 @@
 /**
  * \brief 
  */
-double ar2double(mrb_state* mrb, mrb_value ary, int index)
+double ar2double(mrb_state* mrb, mrb_value& ary, int index)
 {
 	double res = 0.0;
     mrb_value val = mrb_ary_ref(mrb, ary, index);

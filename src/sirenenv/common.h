@@ -14,7 +14,7 @@
 #include "Stdafx.h"
 #include "mirb.h"
 
-double    ar2double (mrb_state* mrb, mrb_value ary);
+double    ar2double (mrb_state* mrb, mrb_value& ary, int index);
 gp_Pnt*   ar2pnt    (mrb_state* mrb, mrb_value& ary);
 gp_Vec*   ar2vec    (mrb_state* mrb, mrb_value& ary);
 gp_Dir*   ar2dir    (mrb_state* mrb, mrb_value& ary);

@@ -9,11 +9,7 @@
 #include "OCCViewer.h"
 
 #define NOREGIST 1
-
-mrb_value my_class_print_name(mrb_state* mrb, mrb_value self)
-{
-	return mrb_fixnum_value(226);
-}
+#define USECLASS 0
 
 /**
  * \brief 
@@ -31,6 +27,98 @@ bool OCCViewer::mruby_init()
     // circle               ... 円曲線を作成する。内部的にはarcと同じ？
     // 視点制御系コマンド
     // ビュー管理系コマンド
+
+#if USECLASS
+
+	// General commands
+	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
+	regcmd("version",   &version,   0,0, "",                                "version() -> String");
+	regcmd("debug",     &debug,     0,0, "",                                "");
+
+	// // Infomation/Status commands
+	// regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(ObjID) -> Ary[min[X,Y,Z], max[X,Y,Z]]");
+	// regcmd("selected",  &selected,  0,0, "Get name of selected objects.",   "selected() -> Ary[ObjID, ...]");
+	// regcmd("type",      &type,      1,0, "Get type of object.",             "type(ObjID) -> Type");
+	// regcmd("exist",     &exist,     1,0, "Check exist.",                    "exist(ObjID) -> Boolean");
+	// regcmd("location",  &location,  1,1, "Get/Set location of shape in WCS.","location(ObjID, [X,Y,Z]) -> Ary[X,Y,Z]");
+    // regcmd("cparam",    &cparam,    2,0, "Get curve parameter at a point.", "cparam(obj, [X, Y, Z]) -> [int index, float param]");
+    // regcmd("cpoint",    &cpoint,    2,0, "Get point from parameter.",       "cpoint(obj, cparam) -> [X, Y, Z]");
+    // regcmd("ccurvature",&ccurvature,2,0, "Get curvature vector.",           "ccurvature(obj, cparam) -> [X, Y, Z]");
+    // regcmd("ctangent",  &ctangent  ,2,0, "Get tangent vector.",             "ctangent(obj, cparam) -> [X, Y, Z]");
+
+	// // Edit object commands
+	// regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(ObjID) -> ObjID");
+	// regcmd("erase",     &erase,     1,0, "Erase specified object.",         "erase(ObjID) -> nil");
+	// regcmd("close",		&close,		1,0, "Close a wire.",                   "close( ObjID ) -> ObjID");
+
+	// // Group commands
+	// regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound([ObjID, ObjID, ...]) -> ObjID");
+	// regcmd("sew",       &sew,       1,1, "Make shell model by objects.",    "sew([ObjID, ObjID, ...]) -> ObjID");
+	// regcmd("explode",   &explode,   2,0, "Explode object to children.",     "explode(type, ObjID) -> Ary");
+
+	// Transform commands
+	regcmd("translate", &translate, 2,0, "Translate specified object.",     "translate(obj, vector[X, Y, Z]) -> nil");
+	regcmd("rotate",    &rotate,    4,0, "Rotate specified object.",        "rotate(obj, center[X, Y, Z], normal[X, Y, Z], angle) -> nil"); 
+	regcmd("scale",     &scale,     3,0, "Scale specified object.",         "scale(obj, scale, center[X, Y, Z] = [0, 0, 0]) -> nil");
+	regcmd("mirror",    &mirror,    3,0, "Mirror copy specified object.",   "mirror(obj, center[X, Y, Z], normal[X, Y, Z]) -> nil");
+
+	// // Visualization commands
+	// regcmd("display",   &display,   1,0, "Dislay object.",                  "display(obj) -> nil");
+	// regcmd("hide",      &hide,      1,0, "Hide object.",                    "hide(obj) -> nil");
+	// regcmd("fit",       &fit,       0,0, "Fit view to objects",             "fit() -> nil");
+	// regcmd("update",    &update,    0,0, "Update current viewer.",          "update() -> nil");
+	// regcmd("color",     &color,     4,0, "Set color of object.",            "color(obj, R, G, B) -> nil");
+	// regcmd("bgcolor",   &bgcolor,   3,3, "Set color of background.",        "bgcolor(topR, topG, topB, btmR, btmG, btmB) -> nil");
+
+	// // Boolean operation commands
+	// regcmd("common",    &common,    2,1, "Common boolean operation.",       "common(obj1, obj2) -> String");
+	// regcmd("cut",       &cut,       2,1, "Cut boolean operation.",          "cut(obj1, obj2) -> String");
+	// regcmd("fuse",      &fuse,      2,1, "Fuse boolean operation.",         "fuse(obj1, obj2) -> String");
+	// regcmd("volume",    &volume,    1,0, "Get volume of object.",           "volume(obj) -> float");
+	// regcmd("cog",       &cog,       1,0, "Get center position of gravity",  "cog(obj) -> float[X, Y, Z]");
+	// regcmd("intersect", &intersect, 2,0, "Get intersection line.",          "intersect(obj1, obj2) -> ObjID");
+	// regcmd("intcs",     &intcs,     2,1, "Intersection Curve x Surface",    "intcs(obj_curve, obj_surf, with_normal) -> [float[X, Y, Z], ...]");
+	// regcmd("intfe",     &intfe,     2,1, "Intersection Face x Edge",        "intfe(face, edge) -> [float[X, Y, Z], ...]");
+
+
+	// regcmd("split",     &split,     2,0, "",                                "");
+
+	// // Make object commands
+	regcmd("vertex",    &vertex,    3,0, "Make a vertex.",                  "vertex(X, Y, Z) -> Shape");
+	regcmd("line",      &line,      2,0, "Make a line.",                    "line([X, Y, Z], [X, Y, Z]) -> Shape");
+	regcmd("polyline",  &polyline,  1,0, "Make a polyline.",                "polyline(pts[[X, Y, Z], ...]) -> String");
+	regcmd("curve",     &curve,     1,1, "Make a curve.",                   "curve(pts[[X, Y, Z], ...], vecs[[X, Y, Z], ...]) -> String");
+	regcmd("box",       &box,       1,1, "Make a box.",                     "box(size[X, Y, Z], pos[X, Y, Z] = [0, 0, 0]) -> String");
+	regcmd("sphere",    &sphere,    1,1, "Make a sphere.",                  "sphere(R, pos[X, Y, Z] = [0, 0, 0]) -> String");
+	regcmd("cylinder",  &cylinder,  5,0, "Make a cylinder.",                "cylinder(pos[X, Y, Z], normal[X, Y, Z], R, height, angle) -> String");
+	regcmd("cone",      &cone,      6,0, "Make a cone.",                    "cone(pos[X, Y, Z], normal[X, Y, Z], R1, R2, height, angle) -> String");
+	regcmd("torus",     &torus,     7,0, "Make a torus.",                   "torus(pos[X, Y, Z], normal[X, Y, Z], R1, R2, angle) -> String");
+	regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
+	regcmd("wire",	    &wire,      1,0, "Make a wire.",                    "wire( Ary[edge or wire or comp obj] ) -> String");
+	regcmd("sweep",     &sweep,     2,0, "Make a sweep model.",             "sweep( profile obj, vec[X, Y, Z] ) -> String | sweep( profile obj, path obj ) -> String");
+	regcmd("loft",      &loft,      1,0, "Make a loft surface.",            "loft(Array[obj]) -> ObjID");
+    regcmd("bzsurf",    &bzsurf,    1,1, "Make a bezier surface.",          "bzsurf([[pu, ...], [pv, ...]], [[wu, ...], [wv, ...]]) -> ObjID");
+    regcmd("offset",    &offset,    1,1, "Make an offset surface.",         "offset(surface, offset_value) -> ObjID");
+
+	// // Convertion commands
+	// regcmd("wire2pts",  &wire2pts,  1,1, "Convert wire to points.",         "wire2pts(ObjID) -> Ary[[X, Y, Z], ...]");
+	// regcmd("wire2plane",&wire2plane,1,0, "Make a plane.",                   "wire2plane( Close wire ObjID ) -> String");
+	// regcmd("shell2solid",&shell2solid,1,0, "Make a solid by shell.",        "shell2solid(ObjID) -> ObjID");
+    // regcmd("triangle",  &triangle,  1,2, "Make triangle mesh from face.",   "triangle(ObjID, Deflection, Angle) -> ObjID");
+
+	// regcmd("obj2brep",  &obj2brep,  1,0, "Object to OpenCASCADE BRep.",     "obj2brep(obj) -> String");
+	// regcmd("brep2obj",  &brep2obj,  1,0, "Object from OpenCASCADE BRep.",   "obj2brep(string) -> obj");
+
+	// // I/O commands
+	// regcmd("brepsave",     &savebrep,  2,0, "Save object to a file.",          "brepsave(path, obj) -> nil");
+	regcmd("brepload",  &loadbrep,  1,0, "Load object from a file.",        "brepload(path) -> Shape");
+	// regcmd("igessave",     &saveiges,  2,0, "Save object to an IGES.",         "igessave(path, obj) -> nil");
+	regcmd("igesload",  &loadiges,  1,0, "Load object from an IGES.",       "igesload(path) -> Shape");
+	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path) -> Shape");
+
+    // //
+	// regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");
+#else
 
 	// General commands
 	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
@@ -82,12 +170,11 @@ bool OCCViewer::mruby_init()
 	regcmd("intcs",     &intcs,     2,1, "Intersection Curve x Surface",    "intcs(obj_curve, obj_surf, with_normal) -> [float[X, Y, Z], ...]");
 	regcmd("intfe",     &intfe,     2,1, "Intersection Face x Edge",        "intfe(face, edge) -> [float[X, Y, Z], ...]");
 
-
 	regcmd("split",     &split,     2,0, "",                                "");
 
 	// Make object commands
-	regcmd("vertex",    &vertex,    3,0, "Make a vertex.",                  "vertex(X, Y, Z) -> String");
-	regcmd("line",      &line,      2,0, "Make a line.",                    "line(sp[X, Y, Z], tp[X, Y, Z]) -> String");
+	regcmd("vertex",    &vertex,    3,0, "Make a vertex.",                  "vertex(X, Y, Z) -> Shape");
+	regcmd("line",      &line,      2,0, "Make a line.",                    "line([X, Y, Z], [X, Y, Z]) -> Shape");
 	regcmd("polyline",  &polyline,  1,0, "Make a polyline.",                "polyline(pts[[X, Y, Z], ...]) -> String");
 	regcmd("curve",     &curve,     1,1, "Make a curve.",                   "curve(pts[[X, Y, Z], ...], vecs[[X, Y, Z], ...]) -> String");
 	regcmd("box",       &box,       1,1, "Make a box.",                     "box(size[X, Y, Z], pos[X, Y, Z] = [0, 0, 0]) -> String");
@@ -96,10 +183,11 @@ bool OCCViewer::mruby_init()
 	regcmd("cone",      &cone,      6,0, "Make a cone.",                    "cone(pos[X, Y, Z], normal[X, Y, Z], R1, R2, height, angle) -> String");
 	regcmd("torus",     &torus,     7,0, "Make a torus.",                   "torus(pos[X, Y, Z], normal[X, Y, Z], R1, R2, angle) -> String");
 	regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
-	regcmd("wire",		&wire,		1,0, "Make a wire.",					"wire( Ary[edge or wire or comp obj] ) -> String");
-	regcmd("sweep",     &sweep,		2,0, "Make a sweep model.",             "sweep( profile obj, vec[X, Y, Z] ) -> String | sweep( profile obj, path obj ) -> String");
+	regcmd("wire",	    &wire,      1,0, "Make a wire.",                    "wire( Ary[edge or wire or comp obj] ) -> String");
+	regcmd("sweep",     &sweep,     2,0, "Make a sweep model.",             "sweep( profile obj, vec[X, Y, Z] ) -> String | sweep( profile obj, path obj ) -> String");
 	regcmd("loft",      &loft,      1,0, "Make a loft surface.",            "loft(Array[obj]) -> ObjID");
     regcmd("bzsurf",    &bzsurf,    1,1, "Make a bezier surface.",          "bzsurf([[pu, ...], [pv, ...]], [[wu, ...], [wv, ...]]) -> ObjID");
+    regcmd("bssurf",    &bssurf,    0,0, "Make a B-spline surface.",        "");
     regcmd("offset",    &offset,    1,1, "Make an offset surface.",         "offset(surface, offset_value) -> ObjID");
 
 	// Convertion commands
@@ -112,14 +200,16 @@ bool OCCViewer::mruby_init()
 	regcmd("brep2obj",  &brep2obj,  1,0, "Object from OpenCASCADE BRep.",   "obj2brep(string) -> obj");
 
 	// I/O commands
-	regcmd("bsave",     &savebrep,  2,0, "Save object to a file.",          "bsave(path, obj) -> nil");
-	regcmd("bload",     &loadbrep,  1,0, "Load object from a file.",        "bload(path) -> ID");
-	regcmd("isave",     &saveiges,  2,0, "Save object to an IGES.",         "isave(path, obj) -> nil");
-	regcmd("iload",     &loadiges,  1,0, "Load object from an IGES.",       "iload(path) -> Ary");
-	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path)");
+	regcmd("brepsave",     &savebrep,  2,0, "Save object to a file.",          "brepsave(path, obj) -> nil");
+	regcmd("brepload",  &loadbrep,  1,0, "Load object from a file.",        "brepload(path) -> Shape");
+	// regcmd("igessave",     &saveiges,  2,0, "Save object to an IGES.",         "igessave(path, obj) -> nil");
+	regcmd("igesload",  &loadiges,  1,0, "Load object from an IGES.",       "igesload(path) -> Shape");
+	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path) -> Shape");
 
-    //
-	regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");
+    // //
+	// regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");
+
+#endif
 
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
@@ -225,6 +315,45 @@ int set(const TopoDS_Shape& shape, int draw)
 	return shape.HashCode(INT_MAX);
 }
 
+#if USECLASS
+int regist(const TopoDS_Shape& shape, mrb_value& result, bool drawnow = true)
+{
+	if (cur->aiscxt.IsNull()) {
+		throw "No AIS Interactive Context.";
+	}
+	Handle(AIS_Shape) hashape = new AIS_Shape(shape);
+
+	Handle(Graphic3d_ShaderProgram) myShader;
+	myShader = new Graphic3d_ShaderProgram(Graphic3d_ShaderProgram::ShaderName_Phong);
+	hashape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram(myShader);
+
+	cur->aiscxt->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
+	cur->aiscxt->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
+	cur->aiscxt->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
+
+	cur->aiscxt->Display(hashape);
+	cur->aiscxt->SetSelected(hashape, Standard_False);
+	cur->aiscxt->UpdateCurrentViewer();
+
+    int hashcode = shape.HashCode(INT_MAX);
+
+    int m = cur->myMirb->mrb->live;
+
+    const char* ivname = "@id";
+    RClass* prclass = mrb_class_get(cur->myMirb->mrb, "Shape");
+
+    result = mrb_class_new_instance(cur->myMirb->mrb, 0, NULL, prclass);
+
+    RObject* pobj = mrb_obj_ptr(result);
+    mrb_sym sym = mrb_intern(cur->myMirb->mrb, ivname, strlen(ivname));
+    mrb_obj_iv_set(cur->myMirb->mrb, pobj, sym, mrb_fixnum_value(hashcode));
+
+    int n = cur->myMirb->mrb->live;
+
+    return 0;
+}
+#endif
+
 /**
  * \brief 
  */
@@ -254,6 +383,32 @@ Handle(AIS_Shape) get(int hashcode)
 	return NULL;
 #endif
 }
+
+#if USECLASS
+Handle(AIS_Shape) get(mrb_value obj)
+{
+    const char* ivname = "@id"; 
+    RObject* pobj = mrb_obj_ptr(obj);
+    mrb_sym sym = mrb_intern(cur->myMirb->mrb, ivname, strlen(ivname));
+    mrb_value val = mrb_obj_iv_get(cur->myMirb->mrb, pobj, sym);
+    int hashcode;
+	if (mrb_fixnum_p(val))
+		hashcode = mrb_fixnum(val);
+    else
+        return NULL;
+
+	AIS_ListOfInteractive ar;
+	cur->aiscxt->ObjectsInside(ar);
+	AIS_ListIteratorOfListOfInteractive it(ar);
+	for (; it.More(); it.Next()) {
+		Handle(AIS_InteractiveObject) aisobj = it.Value();
+		Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(aisobj);
+        if (hashcode == hashape->Shape().HashCode(INT_MAX))
+            return hashape;
+	}
+	return NULL;
+}
+#endif
 
 /**
  * \brief 
@@ -514,9 +669,14 @@ mrb_value selmode(mrb_state* mrb, mrb_value self)
  */
 mrb_value translate(mrb_state* mrb, mrb_value self)
 {
-    mrb_int target;
 	mrb_value vec;
+#if USECLASS
+    mrb_value target;
+	int argc = mrb_get_args(mrb, "oA", &target, &vec);
+#else
+    mrb_int target;
 	int argc = mrb_get_args(mrb, "iA", &target, &vec);
+#endif
 
 	gp_Pnt pvec = *ar2pnt(mrb, vec);
 	gp_Vec myvec(pvec.X(), pvec.Y(), pvec.Z());
@@ -536,9 +696,19 @@ mrb_value translate(mrb_state* mrb, mrb_value self)
 	mrb_value result;
 	if (trf.IsDone()){
 #if NOREGIST
-		hashape->Set(trf.Shape());
+        TopoDS_Shape shape = trf.Shape();
+		hashape->Set(shape);
 		redisplay(hashape);
-		result = mrb_nil_value();
+  #if USECLASS
+        int hashcode = shape.HashCode(INT_MAX);
+        result = mrb_fixnum_value(hashcode);
+        const char* ivname = "@id"; 
+        RObject* pobj = mrb_obj_ptr(target);
+        mrb_sym sym = mrb_intern(cur->myMirb->mrb, ivname, strlen(ivname));
+        mrb_obj_iv_set(cur->myMirb->mrb, pobj, sym, mrb_fixnum_value(hashcode));
+  #else
+        result = mrb_nil_value();
+  #endif
 #else
         result = mrb_fixnum_value(::set(trf.Shape()));
         ::unset(target);
@@ -557,10 +727,15 @@ mrb_value translate(mrb_state* mrb, mrb_value self)
  */
 mrb_value rotate(mrb_state* mrb, mrb_value self)
 {
-    mrb_int target;
 	mrb_float a;
 	mrb_value pos, norm;
+#if USECLASS
+    mrb_value target;
+	int argc = mrb_get_args(mrb, "oAAf", &target, &pos, &norm, &a);
+#else
+    mrb_int target;
 	int argc = mrb_get_args(mrb, "iAAf", &target, &pos, &norm, &a);
+#endif
 
 	Handle(AIS_Shape) hashape = ::get(target);
 	if (hashape.IsNull()) {
@@ -580,9 +755,19 @@ mrb_value rotate(mrb_state* mrb, mrb_value self)
 	mrb_value result;
 	if (trf.IsDone()){
 #if NOREGIST
-		hashape->Set(trf.Shape());
+        TopoDS_Shape shape = trf.Shape();
+		hashape->Set(shape);
 		redisplay(hashape);
-		result = mrb_nil_value();
+  #if USECLASS
+        int hashcode = shape.HashCode(INT_MAX);
+        result = mrb_fixnum_value(hashcode);
+        const char* ivname = "@id"; 
+        RObject* pobj = mrb_obj_ptr(target);
+        mrb_sym sym = mrb_intern(cur->myMirb->mrb, ivname, strlen(ivname));
+        mrb_obj_iv_set(cur->myMirb->mrb, pobj, sym, mrb_fixnum_value(hashcode));
+  #else
+        result = mrb_nil_value();
+  #endif
 #else
         result = mrb_fixnum_value(::set(trf.Shape()));
         ::unset(target);
@@ -601,10 +786,15 @@ mrb_value rotate(mrb_state* mrb, mrb_value self)
  */
 mrb_value scale(mrb_state* mrb, mrb_value self)
 {
-    mrb_int target;
 	mrb_value pos;
 	mrb_float s;
+#if USECLASS
+    mrb_value target;
+	int argc = mrb_get_args(mrb, "ofA", &target, &s, &pos);
+#else
+    mrb_int target;
 	int argc = mrb_get_args(mrb, "ifA", &target, &s, &pos);
+#endif
 
 	Handle(AIS_Shape) hashape = ::get(target);
 	if (hashape.IsNull()) {
@@ -629,9 +819,19 @@ mrb_value scale(mrb_state* mrb, mrb_value self)
 	mrb_value result;
 	if (trf.IsDone()){
 #if NOREGIST
-		hashape->Set(trf.Shape());
+        TopoDS_Shape shape = trf.Shape();
+		hashape->Set(shape);
 		redisplay(hashape);
-		result = mrb_nil_value();
+  #if USECLASS
+        int hashcode = shape.HashCode(INT_MAX);
+        result = mrb_fixnum_value(hashcode);
+        const char* ivname = "@id"; 
+        RObject* pobj = mrb_obj_ptr(target);
+        mrb_sym sym = mrb_intern(cur->myMirb->mrb, ivname, strlen(ivname));
+        mrb_obj_iv_set(cur->myMirb->mrb, pobj, sym, mrb_fixnum_value(hashcode));
+  #else
+        result = mrb_nil_value();
+  #endif
 #else
         result = mrb_fixnum_value(::set(trf.Shape()));
         ::unset(target);
@@ -650,9 +850,14 @@ mrb_value scale(mrb_state* mrb, mrb_value self)
  */
 mrb_value mirror(mrb_state* mrb, mrb_value self)
 {
-	mrb_int target;
     mrb_value pos, norm;
+#if USECLASS
+	mrb_value target;
+	int argc = mrb_get_args(mrb, "oAA", &target, &pos, &norm);
+#else
+	mrb_int target;
 	int argc = mrb_get_args(mrb, "iAA", &target, &pos, &norm);
+#endif
 
 	Handle(AIS_Shape) hashape = ::get(target);
 	if (hashape.IsNull()) {
@@ -670,10 +875,21 @@ mrb_value mirror(mrb_state* mrb, mrb_value self)
 	mrb_value result;
 	if (trf.IsDone()){
 #if NOREGIST && 0
-		hashape->Set(trf.Shape());
+        TopoDS_Shape shape = trf.Shape();
+		hashape->Set(shape);
 		redisplay(hashape);
-		result = mrb_nil_value();
+  #if USECLASS 
+        int hashcode = shape.HashCode(INT_MAX);
+        result = mrb_fixnum_value(hashcode);
+        const char* ivname = "@id"; 
+        RObject* pobj = mrb_obj_ptr(target);
+        mrb_sym sym = mrb_intern(cur->myMirb->mrb, ivname, strlen(ivname));
+        mrb_obj_iv_set(cur->myMirb->mrb, pobj, sym, mrb_fixnum_value(hashcode));
+  #else
+        result = mrb_nil_value(); 
+  #endif
 #else
+        // copy
         result = mrb_fixnum_value(::set(trf.Shape()));
         ::unset(target);
 #endif
@@ -697,7 +913,13 @@ mrb_value vertex(mrb_state* mrb, mrb_value self)
 	gp_Pnt p((Standard_Real)x, (Standard_Real)y, (Standard_Real)z);
 	TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(p);
 
-	return mrb_fixnum_value(::set(v));
+#if USECLASS
+    mrb_value result;
+    ::regist(v, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(v));
+#endif
 }
 
 /**
@@ -714,7 +936,13 @@ mrb_value line(mrb_state* mrb, mrb_value self)
 	BRepBuilderAPI_MakeEdge line(_sp, _tp);
     TopoDS_Shape shape = line.Shape();
 
-	return mrb_fixnum_value(::set(shape));
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
 }
 
 /**
@@ -749,7 +977,13 @@ mrb_value polyline(mrb_state* mrb, mrb_value self)
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(::set(shape));
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
 }
 
 /**
@@ -803,7 +1037,13 @@ mrb_value curve(mrb_state* mrb, mrb_value self)
 
 	delete(pary);
 
-	return mrb_fixnum_value(::set(w));
+#if USECLASS
+    mrb_value result;
+    ::regist(w, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(w));
+#endif
 }
 
 /**
@@ -828,7 +1068,13 @@ mrb_value box(mrb_state* mrb, mrb_value self)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(::set(shape));
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
 }
 
 /**
@@ -853,7 +1099,13 @@ mrb_value sphere(mrb_state* mrb, mrb_value self)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(::set(shape));
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
 }
 
 /**
@@ -877,7 +1129,13 @@ mrb_value cylinder(mrb_state* mrb, mrb_value self)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(::set(shape));
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
 }
 
 /**
@@ -901,7 +1159,13 @@ mrb_value cone(mrb_state* mrb, mrb_value self)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(::set(shape));
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
 }
 
 /**
@@ -925,7 +1189,13 @@ mrb_value torus(mrb_state* mrb, mrb_value self)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(::set(shape));
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
 }
 
 /**
@@ -952,7 +1222,13 @@ mrb_value plane(mrb_state* mrb, mrb_value self)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	return mrb_fixnum_value(::set(shape));
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
 }
 
 
@@ -1010,7 +1286,13 @@ mrb_value sweep(mrb_state* mrb, mrb_value self)
 		static const char m[] = "Failed to make a sweep model.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	return mrb_fixnum_value(::set(shape));
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
 }
 
 /**
@@ -1062,8 +1344,14 @@ mrb_value wire(mrb_state* mrb, mrb_value self)
 		static const char m[] = "Failed to make a wire.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	return mrb_fixnum_value(::set(shape));
 
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
 }
 
 mrb_value loft(mrb_state* mrb, mrb_value self)
@@ -1105,7 +1393,11 @@ mrb_value loft(mrb_state* mrb, mrb_value self)
         //ts.SetSmoothing(Standard_True);
         ts.Build();
 		shape = ts.Shape();
-    	result = mrb_fixnum_value(::set(shape));
+#if USECLASS
+        ::regist(shape, result);
+#else
+        result = mrb_fixnum_value(::set(shape));
+#endif
     }
     catch (...) {
 		static const char m[] = "Internal error.";
@@ -1158,7 +1450,135 @@ mrb_value bzsurf(mrb_state* mrb, mrb_value self)
 
     TopoDS_Face f = BRepBuilderAPI_MakeFace(s, 1.0e-7);
 
-	return mrb_fixnum_value(::set(f));
+#if USECLASS
+    mrb_value result;
+    ::regist(f, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(f));
+#endif
+}
+
+/**
+ * \brief Bスプライン曲面を作成する
+ */
+mrb_value bssurf(mrb_state* mrb, mrb_value self)
+{
+    // bsplinesurf s   1 2 0 2 1 2   2 3 0 3 1 1 2 3   0 0 0 1  10 0 5 1   0 10 2 1  10 10 3 1   0 20 10 1  10 20 20 1   0 30 0 1  10 30 0 1
+    //                 u n u u u u   v n v v v v v v   x y z w  x  y z w   x y  z w  x  y  z w   x y  z  w  x  y  z  w   x y  z w  x  y  z w
+    //                 d k k m k m   d k k m k m k m   POLES ...
+    // bssurf 1,[[0,2],[1,2]],2,[[0,3],[1,1],[2,3]],[[[0,0,0,1],[10,0,5,1]],[[0,10,2,1],[10,10,3,1]],[[0,20,10,1],[10,20,20,1]],[[0,30,0,1],[10,30,0,1]]]
+
+    // Poles
+    // [[u1, u2], [u1, u2], [u1, u2], ... ]
+
+    mrb_int _udeg, _vdeg;
+    mrb_value _ar_ukm, _ar_vkm;
+    mrb_value _pol;
+	int argc = mrb_get_args(mrb, "iAiAA", &_udeg, &_ar_ukm, &_vdeg, &_ar_vkm, &_pol);
+
+    Standard_Integer udeg = _udeg;
+    Standard_Integer nbuknots = mrb_ary_len(mrb, _ar_ukm);
+    Standard_Integer nbuknots_pure = 0;
+    TColStd_Array1OfReal uknots(1, nbuknots);
+    TColStd_Array1OfInteger umults(1, nbuknots);
+    for (int i=1; i<=nbuknots; i++) {
+        mrb_value item = mrb_ary_ref(mrb, _ar_ukm, i - 1);
+        mrb_value knot = mrb_ary_ref(mrb, item, 0);
+        mrb_value mult = mrb_ary_ref(mrb, item, 1);
+        uknots(i) = mrb_fixnum(knot);
+        umults(i) = mrb_fixnum(mult);
+        nbuknots_pure += umults(i);
+    }
+    Standard_Integer nbupoles = nbuknots_pure - udeg - 1;
+
+    Standard_Integer vdeg = _vdeg;
+    Standard_Integer nbvknots = mrb_ary_len(mrb, _ar_vkm);
+    Standard_Integer nbvknots_pure = 0;
+    TColStd_Array1OfReal vknots(1, nbvknots);
+    TColStd_Array1OfInteger vmults(1, nbvknots);
+    for (int i=1; i<=nbvknots; i++) {
+        mrb_value item = mrb_ary_ref(mrb, _ar_vkm, i - 1);
+        mrb_value knot = mrb_ary_ref(mrb, item, 0);
+        mrb_value mult = mrb_ary_ref(mrb, item, 1);
+        vknots(i) = mrb_fixnum(knot);
+        vmults(i) = mrb_fixnum(mult);
+        nbvknots_pure += vmults(i);
+    }
+    Standard_Integer nbvpoles = nbvknots_pure - vdeg - 1;
+
+    TColgp_Array2OfPnt   poles  (1, nbupoles, 1, nbvpoles);
+    TColStd_Array2OfReal weights(1, nbupoles, 1, nbvpoles);
+
+	for (int v=1; v <= nbvpoles; v++) {
+        mrb_value vitem = mrb_ary_ref(mrb, _pol, v - 1);
+    	for (int u=1; u <= nbupoles; u++) {
+            mrb_value uitem = mrb_ary_ref(mrb, vitem, u - 1);
+
+            double x = ar2double(mrb, uitem, 0);
+            double y = ar2double(mrb, uitem, 1);
+            double z = ar2double(mrb, uitem, 2);
+            double w = ar2double(mrb, uitem, 3);
+
+            poles.SetValue(u, v, gp_Pnt(x, y, z));
+            weights.SetValue(u, v, w);
+            // cout << x << "," << y << "," << z << "," << w << endl;
+		}
+        // std::cout << std::endl;
+	}
+
+    Handle(Geom_BSplineSurface) hg_bssurf = new Geom_BSplineSurface(poles, weights, uknots, vknots, umults, vmults, udeg, vdeg);
+    TopoDS_Shell shape = BRepBuilderAPI_MakeShell(hg_bssurf);
+
+#if 0
+    Standard_Integer udeg = 1;
+    Standard_Integer nbuknots = 2;
+    Standard_Integer nbuknots_pure = 0;
+    TColStd_Array1OfReal uknots(1, nbuknots);
+    TColStd_Array1OfInteger umults(1, nbuknots);
+    uknots(1) = 0; umults(1) = 2;
+    uknots(2) = 1; umults(2) = 2;
+    for (int i=1; i<=umults.Length(); i++) {
+        nbuknots_pure += umults(i);
+    }
+    Standard_Integer nbupoles = nbuknots_pure - udeg - 1; // 4 - 1 - 1 = 2
+
+    Standard_Integer vdeg = 2;
+    Standard_Integer nbvknots = 3;
+    Standard_Integer nbvknots_pure = 0;
+    TColStd_Array1OfReal vknots(1, nbvknots);
+    TColStd_Array1OfInteger vmults(1, nbvknots);
+    vknots(1) = 0; vmults(1) = 3;
+    vknots(2) = 1; vmults(2) = 1;
+    vknots(3) = 2; vmults(3) = 3;
+    for (int i=1; i<=vmults.Length(); i++) {
+        nbvknots_pure += vmults(i);
+    }
+    Standard_Integer nbvpoles = nbvknots_pure - vdeg - 1; // 7 - 2 - 1 = 4
+
+    TColgp_Array2OfPnt poles(1, nbupoles, 1, nbvpoles);
+    TColStd_Array2OfReal weights(1, nbupoles, 1, nbvpoles);
+    poles.SetValue(1, 1, gp_Pnt(0., 0., 0.));    weights.SetValue(1, 1, 1.);
+    poles.SetValue(2, 1, gp_Pnt(10., 0., 5.));   weights.SetValue(2, 1, 1.);
+    poles.SetValue(1, 2, gp_Pnt(0., 10., 2.));   weights.SetValue(1, 2, 1.);
+    poles.SetValue(2, 2, gp_Pnt(10., 10., 3.));  weights.SetValue(2, 2, 1.);
+    poles.SetValue(1, 3, gp_Pnt(0., 20., 10.));  weights.SetValue(1, 3, 1.);
+    poles.SetValue(2, 3, gp_Pnt(10., 20., 20.)); weights.SetValue(2, 3, 1.);
+    poles.SetValue(1, 4, gp_Pnt(0., 30., 0.));   weights.SetValue(1, 4, 1.);
+    poles.SetValue(2, 4, gp_Pnt(10., 30., 0.));  weights.SetValue(2, 4, 1.);
+
+    Handle(Geom_BSplineSurface) hg_bssurf = new Geom_BSplineSurface(poles, weights, uknots, vknots, umults, vmults, udeg, vdeg);
+    TopoDS_Shell shape = BRepBuilderAPI_MakeShell(hg_bssurf);
+
+#endif
+
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
 }
 
 /**
@@ -1191,7 +1611,13 @@ mrb_value offset(mrb_state* mrb, mrb_value self)
         B.Add(comp, newface);
     }
 
-	return mrb_fixnum_value(::set(comp));
+#if USECLASS
+    mrb_value result;
+    ::regist(comp, result);
+    return result;
+#else
+    return mrb_fixnum_value(::set(comp));
+#endif
 }
 
 /**
@@ -1613,6 +2039,10 @@ mrb_value erase(mrb_state* mrb, mrb_value self)
             mrb_int hc = mrb_fixnum(item);
         	::unset(hc);
         }
+    }
+    else {
+		static const char m[] = "No such specified object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     }
 	return mrb_nil_value();
 }
@@ -2497,9 +2927,11 @@ mrb_value loadbrep(mrb_state* mrb, mrb_value self)
 	mrb_value result;
 
 	if (res) {
-		//if(AISContext->HasOpenedContext())
-		//	AISContext->CloseLocalContext();
-		result = mrb_fixnum_value(::set(shape));
+#if USECLASS
+        ::regist(shape, result, true);
+#else
+        result = mrb_fixnum_value(::set(shape));
+#endif
 	}
 	else {
 		static const char m[] = "Failed to load BRep file.";
@@ -2532,7 +2964,11 @@ mrb_value loadiges(mrb_state* mrb, mrb_value self)
     if (stat == IFSelect_RetDone) {
 	    iges_reader.TransferRoots();
 	    TopoDS_Shape shape = iges_reader.OneShape();
-		result = mrb_fixnum_value(::set(shape));
+#if USECLASS
+        ::regist(shape, result, true);
+#else
+        result = mrb_fixnum_value(::set(shape));
+#endif
 	}
 	else {
 		static const char m[] = "Failed to load IGES file.";
@@ -2565,23 +3001,21 @@ mrb_value loadstl(mrb_state* mrb, mrb_value self)
     mrb_value path;
 	int argc = mrb_get_args(mrb, "S", &path);
 
-    // OSD_Path aFile();
-    // Handle(StlMesh_Mesh) aSTLMesh = RWStl::ReadFile(aFile);
-
     TopoDS_Shape shape;
-    // StlAPI_Reader::Read(shape, (Standard_CString)RSTRING_PTR(path));
-
     StlAPI_Reader reader;
     reader.Read(shape, (Standard_CString)RSTRING_PTR(path));
 
     mrb_value result;
-
     if (shape.IsNull()) {
 	 	static const char m[] = "Failed to load STL file.";
         result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     }
     else {
-	 	result = mrb_fixnum_value(::set(shape));
+#if USECLASS
+        ::regist(shape, result, true);
+#else
+        result = mrb_fixnum_value(::set(shape));
+#endif
     }
 
     return result;
