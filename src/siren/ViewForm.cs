@@ -139,7 +139,7 @@ namespace siren
             case ModelFormat.BREP:
                 {
                     filename = filename.Replace(@"\", @"\\"); // escape
-                    int err = parent.myTerm.execute("a = bload(\"" + filename + "\")");
+                    int err = parent.myTerm.execute("a = brepload(\"" + filename + "\")");
                     if (err == 0) {
                         parent.myTerm.execute("fit");
                         return true;
@@ -150,7 +150,7 @@ namespace siren
             case ModelFormat.IGES:
                 {
                     filename = filename.Replace(@"\", @"\\"); // escape
-                    int err = parent.myTerm.execute("a = iload(\"" + filename + "\")");
+                    int err = parent.myTerm.execute("a = igesload(\"" + filename + "\")");
                     if (err == 0) {
                         parent.myTerm.execute("fit");
                         return true;
@@ -183,7 +183,7 @@ namespace siren
             case ModelFormat.BREP:
                 {
                     filename = filename.Replace(@"\", @"\\"); // escape
-                    return (parent.myTerm.execute("bsave(\"" + filename + "\", selected[0])") == 0);
+                    return (parent.myTerm.execute("brepsave(\"" + filename + "\", selected[0])") == 0);
                 }
             //case ModelFormat.CSFDB:
                 /*

@@ -94,6 +94,7 @@ bool OCCViewer::mruby_init()
 	regcmd("cone",      &cone,      6,0, "Make a cone.",                    "cone(pos[X, Y, Z], normal[X, Y, Z], R1, R2, height, angle) -> String");
 	regcmd("torus",     &torus,     7,0, "Make a torus.",                   "torus(pos[X, Y, Z], normal[X, Y, Z], R1, R2, angle) -> String");
 	regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
+	regcmd("polygon",   &polygon,   1,0, "Make a plane by contour points.", "");
 	regcmd("wire",	    &wire,      1,0, "Make a wire.",                    "wire( Ary[edge or wire or comp obj] ) -> String");
 	regcmd("sweep",     &sweep,     2,0, "Make a sweep model.",             "sweep( profile obj, vec[X, Y, Z] ) -> String | sweep( profile obj, path obj ) -> String");
 	regcmd("loft",      &loft,      1,0, "Make a loft surface.",            "loft(Array[obj]) -> ObjID");
@@ -182,7 +183,8 @@ bool OCCViewer::mruby_init()
 	regcmd("cylinder",  &cylinder,  5,0, "Make a cylinder.",                "cylinder(pos[X, Y, Z], normal[X, Y, Z], R, height, angle) -> String");
 	regcmd("cone",      &cone,      6,0, "Make a cone.",                    "cone(pos[X, Y, Z], normal[X, Y, Z], R1, R2, height, angle) -> String");
 	regcmd("torus",     &torus,     7,0, "Make a torus.",                   "torus(pos[X, Y, Z], normal[X, Y, Z], R1, R2, angle) -> String");
-	regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
+    regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
+	regcmd("polygon",   &polygon,   1,0, "Make a plane by contour points.", "");
 	regcmd("wire",	    &wire,      1,0, "Make a wire.",                    "wire( Ary[edge or wire or comp obj] ) -> String");
 	regcmd("sweep",     &sweep,     2,0, "Make a sweep model.",             "sweep( profile obj, vec[X, Y, Z] ) -> String | sweep( profile obj, path obj ) -> String");
 	regcmd("loft",      &loft,      1,0, "Make a loft surface.",            "loft(Array[obj]) -> ObjID");
@@ -1231,6 +1233,43 @@ mrb_value plane(mrb_state* mrb, mrb_value self)
 #endif
 }
 
+/**
+ * \brief make plane from contour points
+ */
+mrb_value polygon(mrb_state* mrb, mrb_value self)
+{
+    mrb_value pts;
+	int argc = mrb_get_args(mrb, "A", &pts);
+    
+	BRepBuilderAPI_MakePolygon mp;
+
+    for (int i=0; i<mrb_ary_len(mrb, pts); i++) {
+        mrb_value p = mrb_ary_ref(mrb, pts, i);
+		gp_Pnt pp = *ar2pnt(mrb, p);
+        mp.Add(pp);
+    }
+
+    mp.Close();
+
+	BRepBuilderAPI_MakeFace mf(mp.Wire(), true);
+
+	mf.Build();
+
+	if (!mf.IsDone()) {
+		static const char m[] = "Failed to make a plane.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    TopoDS_Shape shape = mf.Shape();
+
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
+}
 
 /**
  * \brief make surface by profile-wire and path-wire
