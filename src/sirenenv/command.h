@@ -94,6 +94,7 @@ mrb_value loadiges    (mrb_state*, mrb_value);
 mrb_value savestep    (mrb_state*, mrb_value);
 mrb_value loadstep    (mrb_state*, mrb_value);
 mrb_value loadstl     (mrb_state*, mrb_value);
+mrb_value savestl     (mrb_state*, mrb_value);
 
 // Visualization
 mrb_value fit         (mrb_state*, mrb_value);

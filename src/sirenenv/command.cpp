@@ -113,9 +113,10 @@ bool OCCViewer::mruby_init()
 	// // I/O commands
 	// regcmd("brepsave",     &savebrep,  2,0, "Save object to a file.",          "brepsave(path, obj) -> nil");
 	regcmd("brepload",  &loadbrep,  1,0, "Load object from a file.",        "brepload(path) -> Shape");
-	// regcmd("igessave",     &saveiges,  2,0, "Save object to an IGES.",         "igessave(path, obj) -> nil");
+	regcmd("igessave",     &saveiges,  2,0, "Save object to an IGES.",         "igessave(path, obj) -> nil");
 	regcmd("igesload",  &loadiges,  1,0, "Load object from an IGES.",       "igesload(path) -> Shape");
 	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path) -> Shape");
+	//regcmd("stlsave",   &savestl,   2,0, "Save object to an STL file.",     "stlsave(obj, path) -> nil");
 
     // //
 	// regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");
@@ -204,9 +205,10 @@ bool OCCViewer::mruby_init()
 	// I/O commands
 	regcmd("brepsave",     &savebrep,  2,0, "Save object to a file.",          "brepsave(path, obj) -> nil");
 	regcmd("brepload",  &loadbrep,  1,0, "Load object from a file.",        "brepload(path) -> Shape");
-	// regcmd("igessave",     &saveiges,  2,0, "Save object to an IGES.",         "igessave(path, obj) -> nil");
+	regcmd("igessave",     &saveiges,  2,0, "Save object to an IGES.",         "igessave(path, obj) -> nil");
 	regcmd("igesload",  &loadiges,  1,0, "Load object from an IGES.",       "igesload(path) -> Shape");
 	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path) -> Shape");
+	regcmd("stlsave",   &savestl,   2,0, "Save object to an STL file.",     "stlsave(obj, path) -> nil");
 
     // //
 	// regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");
@@ -2985,7 +2987,29 @@ mrb_value loadbrep(mrb_state* mrb, mrb_value self)
  */
 mrb_value saveiges(mrb_state* mrb, mrb_value self)
 {
-    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+    mrb_int target;
+    mrb_value path;
+	int argc = mrb_get_args(mrb, "iS", &target, &path);
+
+	Handle(AIS_Shape) hashape = ::get((int)target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such named object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+	IGESControl_Controller::Init();
+	IGESControl_Writer writer(Interface_Static::CVal("XSTEP.iges.unit"),
+                               Interface_Static::IVal("XSTEP.iges.writebrep.mode"));
+ 
+	writer.AddShape(hashape->Shape());
+	writer.ComputeModel();
+
+    if (writer.Write((Standard_CString)RSTRING_PTR(path)) == Standard_False) {
+		static const char m[] = "Save error.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    return mrb_nil_value();
 }
 
 /**
@@ -3058,6 +3082,27 @@ mrb_value loadstl(mrb_state* mrb, mrb_value self)
     }
 
     return result;
+}
+
+/**
+ * \brief Save object from STL file
+ */
+mrb_value savestl(mrb_state* mrb, mrb_value self)
+{
+    mrb_int target;
+    mrb_value path;
+	int argc = mrb_get_args(mrb, "iS", &target, &path);
+
+	Handle(AIS_Shape) hashape = ::get((int)target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such named object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    StlAPI_Writer writer;
+    writer.Write(hashape->Shape(), (Standard_CString)RSTRING_PTR(path));
+
+    return mrb_nil_value();
 }
 
 /**
