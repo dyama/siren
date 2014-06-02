@@ -35,6 +35,11 @@ OCCViewer::~OCCViewer(void)
  */
 void OCCViewer::initViewAppearance(bool is_raytracing, bool is_shadow, bool is_antialias, bool is_reflection)
 {
+    // is_raytracing = true;
+    // is_shadow = false;
+    // is_antialias = false;
+    // is_reflection = false;
+
     if (is_raytracing) { // Enable ray tracing mode
         view->SetRaytracingMode();
         view->EnableGLLight(Standard_True);
@@ -165,7 +170,8 @@ bool OCCViewer::InitViewer(void* wnd, bool is_raytracing, bool is_parsepective)
 		 aWNTWindow->Map();
 
     initViewAppearance(is_raytracing, true, true, true);
-		
+
+
 #if 0
     {
         //viewer->Driver()->Text((Standard_CString)"siren", 0.5, 0.5, 120.0);

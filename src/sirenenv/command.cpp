@@ -125,7 +125,7 @@ bool OCCViewer::mruby_init()
 	// General commands
 	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
 	regcmd("version",   &version,   0,0, "",                                "version() -> String");
-	regcmd("debug",     &debug,     0,0, "",                                "");
+	regcmd("debug",     &debug,     0,1, "",                                "");
 
 	// Infomation/Status commands
 	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(ObjID) -> Ary[min[X,Y,Z], max[X,Y,Z]]");
@@ -3123,6 +3123,37 @@ mrb_value debug2(mrb_state* mrb, mrb_value self)
  */
 mrb_value debug(mrb_state* mrb, mrb_value self)
 {
+    mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
+
+	Handle(AIS_Shape) hashape = ::get((int)target);
+
+    {
+        //cur->view->SetZClippingType(V3d_TypeOfZclipping::V3d_OFF);
+        // NCollection_Vec4<Standard_Real> eq(0., 0., 1., 1.);
+
+        gp_Pln pln(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0));
+        Handle(Graphic3d_ClipPlane) thePlane = new Graphic3d_ClipPlane(pln);
+
+        thePlane->SetCappingHatch(Aspect_HS_DIAGONAL_45);
+        thePlane->SetCappingHatchOn();
+        thePlane->SetCapping(Standard_True);
+        thePlane->SetOn(Standard_True);
+
+        hashape->AddClipPlane(thePlane);
+        hashape->Redisplay();
+
+        //cur->aiscxt->Display(hashape);
+
+        //cur->view->AddClipPlane(thePlane);
+        //cur->view->Redraw();
+        //cur->aiscxt->Update(hashape);
+        //cur->aiscxt->UpdateCurrent();
+        //cur->aiscxt->UpdateCurrentViewer();
+    }
+    return mrb_nil_value();
+
+#if 0
     //RClass* my_class = mrb_define_class(mrb, "Shape", mrb->object_class);
     //mrb_define_method(mrb, my_class, "type", debug2, ARGS_NONE());
     //RClass* a_class = mrb_class_get(myMirb->mrb, "MyClass");
@@ -3141,4 +3172,5 @@ mrb_value debug(mrb_state* mrb, mrb_value self)
     RObject* pobj = mrb_obj_ptr(obj);
     mrb_obj_iv_set(mrb, pobj, sym, mrb_fixnum_value(1244));
     return mrb_obj_iv_get(mrb, pobj, sym);
+#endif
 }

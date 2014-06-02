@@ -2,7 +2,7 @@
 
 SET "SIRENVCVER=vc9"
 SET "SIRENPLATFORM=win32"
-SET "OCCTCASROOT=E:\occ\670\opencascade-6.7.0"
+REM SET "OCCTCASROOT=E:\occ\670\opencascade-6.7.0"
 
 REM ----------------------------------------------
 

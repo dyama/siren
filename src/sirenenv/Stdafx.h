@@ -72,6 +72,14 @@
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <Visual3d_Layer.hxx>
 #include <Handle_Visual3d_Layer.hxx>
+
+#include <Visual3d_ContextView.hxx>
+#include <V3d.hxx>
+#include <Visual3d_View.hxx>
+#include <Visual3d_Light.hxx>
+
+#include <Graphic3d_ClipPlane.hxx>
+
 //topology
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
