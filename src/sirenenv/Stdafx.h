@@ -165,6 +165,8 @@
 #include <BRepPrimAPI_MakeTorus.hxx>
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
+// for isin
+#include <BRepClass3d_SolidClassifier.hxx>
 
 // BRep Algo API
 #include <BRepAlgoAPI_Common.hxx>

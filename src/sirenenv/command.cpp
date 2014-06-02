@@ -79,7 +79,7 @@ bool OCCViewer::mruby_init()
 	// regcmd("intersect", &intersect, 2,0, "Get intersection line.",          "intersect(obj1, obj2) -> ObjID");
 	// regcmd("intcs",     &intcs,     2,1, "Intersection Curve x Surface",    "intcs(obj_curve, obj_surf, with_normal) -> [float[X, Y, Z], ...]");
 	// regcmd("intfe",     &intfe,     2,1, "Intersection Face x Edge",        "intfe(face, edge) -> [float[X, Y, Z], ...]");
-
+    regcmd("isin",      &isin,      2,0, "Check a point located in a solid.","isin([X, Y, Z], solid) -> 0/1/-1");
 
 	// regcmd("split",     &split,     2,0, "",                                "");
 
@@ -171,6 +171,7 @@ bool OCCViewer::mruby_init()
 	regcmd("intersect", &intersect, 2,0, "Get intersection line.",          "intersect(obj1, obj2) -> ObjID");
 	regcmd("intcs",     &intcs,     2,1, "Intersection Curve x Surface",    "intcs(obj_curve, obj_surf, with_normal) -> [float[X, Y, Z], ...]");
 	regcmd("intfe",     &intfe,     2,1, "Intersection Face x Edge",        "intfe(face, edge) -> [float[X, Y, Z], ...]");
+    regcmd("isin",      &isin,      2,0, "Check a point located in a solid.","isin([X, Y, Z], solid) -> 0/1/-1");
 
 	regcmd("split",     &split,     2,0, "",                                "");
 
@@ -2916,6 +2917,50 @@ mrb_value intfe(mrb_state* mrb, mrb_value self)
         	    mrb_ary_push(mrb, result, item);
             }
         }
+    }
+
+    return result;
+}
+
+/**
+ * \brief Check point location at In/Out side of a object
+ */
+mrb_value isin(mrb_state* mrb, mrb_value self)
+{
+    mrb_value point;
+    mrb_int target;
+	int argc = mrb_get_args(mrb, "Ai", &point, &target);
+
+	Handle(AIS_Shape) hashape = ::get((int)target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such named object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    TopoDS_Solid solid = TopoDS::Solid(hashape->Shape());
+    if (solid.IsNull()) {
+		static const char m[] = "Specified object is not SOLID.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    gp_Pnt p = *::ar2pnt(mrb, point);
+
+    mrb_value result;
+
+    BRepClass3d_SolidClassifier sc;
+    sc.Load(solid);
+    sc.Perform(p, 1.0);
+
+    switch (sc.State()) {
+    case TopAbs_IN:
+        result = mrb_fixnum_value(1);
+        break;
+    case TopAbs_ON:
+        result = mrb_fixnum_value(-1);
+        break;
+    case TopAbs_OUT:
+        result = mrb_fixnum_value(0);
+        break;
     }
 
     return result;
