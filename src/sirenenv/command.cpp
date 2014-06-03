@@ -96,7 +96,8 @@ bool OCCViewer::mruby_init()
 	regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
 	regcmd("polygon",   &polygon,   1,0, "Make a plane by contour points.", "");
 	regcmd("wire",	    &wire,      1,0, "Make a wire.",                    "wire( Ary[edge or wire or comp obj] ) -> String");
-	regcmd("sweep",     &sweep,     2,0, "Make a sweep model.",             "sweep( profile obj, vec[X, Y, Z] ) -> String | sweep( profile obj, path obj ) -> String");
+	regcmd("sweepv",    &sweepv     2,0, "Make a sweep model with vector.", "sweepv(profile obj, vec[X, Y, Z]) -> objID");
+	regcmd("sweepp",    &sweepp     2,0, "Make a sweep model with path.",   "sweepp(profile obj, path obj) -> objID");
 	regcmd("loft",      &loft,      1,0, "Make a loft surface.",            "loft(Array[obj]) -> ObjID");
     regcmd("bzsurf",    &bzsurf,    1,1, "Make a bezier surface.",          "bzsurf([[pu, ...], [pv, ...]], [[wu, ...], [wv, ...]]) -> ObjID");
     regcmd("offset",    &offset,    1,1, "Make an offset surface.",         "offset(surface, offset_value) -> ObjID");
@@ -188,7 +189,8 @@ bool OCCViewer::mruby_init()
     regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
 	regcmd("polygon",   &polygon,   1,0, "Make a plane by contour points.", "");
 	regcmd("wire",	    &wire,      1,0, "Make a wire.",                    "wire( Ary[edge or wire or comp obj] ) -> String");
-	regcmd("sweep",     &sweep,     2,0, "Make a sweep model.",             "sweep( profile obj, vec[X, Y, Z] ) -> String | sweep( profile obj, path obj ) -> String");
+	regcmd("sweepv",    &sweepv,    2,0, "Make a sweep model with vector.", "sweepv(profile obj, vec[X, Y, Z]) -> objID");
+	regcmd("sweepp",    &sweepp,    2,4, "Make a sweep model with path.",   "sweepp(profile obj, path obj) -> objID");
 	regcmd("loft",      &loft,      1,0, "Make a loft surface.",            "loft(Array[obj]) -> ObjID");
     regcmd("bzsurf",    &bzsurf,    1,1, "Make a bezier surface.",          "bzsurf([[pu, ...], [pv, ...]], [[wu, ...], [wv, ...]]) -> ObjID");
     regcmd("bssurf",    &bssurf,    0,0, "Make a B-spline surface.",        "");
@@ -1275,50 +1277,143 @@ mrb_value polygon(mrb_state* mrb, mrb_value self)
 }
 
 /**
- * \brief make surface by profile-wire and path-wire
+ * \brief make surface by profile object and a vector
  */
-mrb_value sweep(mrb_state* mrb, mrb_value self)
+mrb_value sweepv(mrb_state* mrb, mrb_value self)
 {
 	mrb_int target;
-	mrb_value obj;
-	int argc = mrb_get_args(mrb, "io", &target, &obj);
+	mrb_value vec;
+	int argc = mrb_get_args(mrb, "iA", &target, &vec);
 
-	Handle(AIS_Shape) base = ::get(target);
-	if (base.IsNull() ) {
+	Handle(AIS_Shape) hashape = ::get(target);
+	if (hashape.IsNull() ) {
 		static const char m[] = "No such profile object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
 	TopoDS_Shape shape;
-	TopoDS_Shape bs, ps;
-	TopoDS_Wire pw;
-	bs = base->Shape();
+	TopoDS_Wire path;
+	TopoDS_Shape profile = hashape->Shape();
 
-	try 
-	{
-		if (mrb_array_p(obj)) {
-            // Vector
-			gp_Pnt _vec = *ar2pnt(mrb, obj);
-			gp_Pnt _pt = gp_Pnt(0.,0.,0.).Transformed(bs.Location());
-			TopoDS_Edge pe = BRepBuilderAPI_MakeEdge(_pt,_vec);
-			pw = BRepBuilderAPI_MakeWire(pe);
-		} else if (mrb_fixnum_p(obj)) {
-            // Profile
-			Handle(AIS_Shape) path = ::get(mrb_fixnum(obj));
-			if (path.IsNull()) {
-				static const char m[] = "No such path object.";
-						return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-			}
-			ps = path->Shape();
-			if (ps.ShapeType() == TopAbs_EDGE)
-				pw = BRepBuilderAPI_MakeWire(TopoDS::Edge(path->Shape()));
-			else
-				pw = TopoDS::Wire(path->Shape());
-		}
+	try {
+        gp_Pnt _vec = *ar2pnt(mrb, vec);
+        gp_Pnt _pt = gp_Pnt(0., 0., 0.).Transformed(profile.Location());
+        TopoDS_Edge pe = BRepBuilderAPI_MakeEdge(_pt, _vec);
+        path = BRepBuilderAPI_MakeWire(pe);
 
-		BRepOffsetAPI_MakePipe mp(pw, bs);
+		BRepOffsetAPI_MakePipe mp(path, profile);
 		mp.Build();
 		shape = mp.Shape();
+
+		if (shape.IsNull()) {
+			static const char m[] = "Failed to make a sweep model.";
+			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+		}
+	}
+	catch (...) {
+		static const char m[] = "Failed to make a sweep model.";
+		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+	return result;
+#else
+    return mrb_fixnum_value(::set(shape));
+#endif
+}
+
+/**
+ * \brief make surface by profile-wire and path-wire
+ */
+mrb_value sweepp(mrb_state* mrb, mrb_value self)
+{
+	mrb_int target, pathwire;
+    mrb_value cont, corr;
+    mrb_float scale_first, scale_last;
+	int argc = mrb_get_args(mrb, "ii|ooff", &target, &pathwire, &cont, &corr, &scale_first, &scale_last);
+
+	Handle(AIS_Shape) hashape_profile = ::get(target);
+	if (hashape_profile.IsNull() ) {
+		static const char m[] = "No such profile object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    Handle(AIS_Shape) hashape_path = ::get(pathwire);
+    if (hashape_path.IsNull()) {
+        static const char m[] = "No such path object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+	TopoDS_Shape shape;
+	TopoDS_Wire path;
+
+    TopoDS_Shape p = shape = hashape_path->Shape();
+
+    if (p.ShapeType() == TopAbs_EDGE) {
+        path = BRepBuilderAPI_MakeWire(TopoDS::Edge(p));
+    }
+    else if (p.ShapeType() == TopAbs_WIRE) {
+        path = TopoDS::Wire(p);
+    }
+    else {
+        static const char m[] = "Path object is not Edge or Wire.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+	try {
+        if (argc >= 3 && argc <= 6) {
+
+            Standard_Boolean withContact = (Standard_Boolean)mrb_test(cont);
+            Standard_Boolean withCorrection = (Standard_Boolean)mrb_test(corr);
+
+            BRepOffsetAPI_MakePipeShell ps(path);
+
+            // get params
+            Standard_Real fparam, lparam;
+            {
+                BRepAdaptor_CompCurve cc(path);
+                fparam = cc.FirstParameter();
+                lparam = cc.LastParameter();
+            }
+
+            if (argc < 6) {
+                scale_last  = 1.0;
+                if (argc < 5) {
+                    scale_first = 1.0;
+                }
+            }
+
+            //Handle(Law_Linear) law = new Law_Linear();
+            //law->Set(fparam, scale_first, lparam, scale_last);
+
+            Handle(Law_S) law = new Law_S();
+            law->Set(fparam, scale_first, lparam, scale_last);
+
+            //Handle(Law_Composite) law = new Law_Composite(fparam, lparam, 1.0e-6);
+
+            // get start point
+            TopoDS_Vertex pfirst; {
+                TopoDS_Vertex plast;
+                TopExp::Vertices(path, pfirst, plast);
+            }
+
+            ps.SetLaw(
+                hashape_profile->Shape(), // セクションプロファイル
+                law,                      // 掃引規則
+                pfirst,                   // 開始点
+                withContact,              // セクションプロファイルを開始点に移動して掃引する
+                withCorrection            // セクションプロファイルをパスに応じて回転する
+                );
+
+            ps.Build();
+            shape = ps.Shape();
+        }
+        else {
+    		BRepOffsetAPI_MakePipe mp(path, hashape_profile->Shape());
+    		mp.Build();
+    		shape = mp.Shape();
+        }
 		if (shape.IsNull()) {
 			static const char m[] = "Failed to make a sweep model.";
 			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);

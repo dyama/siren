@@ -156,6 +156,7 @@
 #include <BRepBuilderAPI_Sewing.hxx>
 // BRep Offset API
 #include <BRepOffsetAPI_MakePipe.hxx>
+#include <BRepOffsetAPI_MakePipeShell.hxx> // sweepp
 #include <BRepOffsetAPI_ThruSections.hxx>
 // for primitive
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -175,11 +176,13 @@
 // BRep Feat
 #include <BRepFeat_SplitShape.hxx>
 
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 #include <GCPnts_UniformDeflection.hxx> // wire2pts
 #include <BRepAdaptor_Curve.hxx>        // wire2pts
+#include <BRepAdaptor_CompCurve.hxx>    // sweepp
 #include <BRepAdaptor_Surface.hxx>
 #include <IntAna_IntConicQuad.hxx>
 
@@ -200,6 +203,9 @@
 #include <ShapeExtend_WireData.hxx>
 
 #include <ShapeAnalysis_Curve.hxx>
+
+// for sweepp command.
+#include <Law_S.hxx>
 
 // new 
 #include <Visual3d_View.hxx>
