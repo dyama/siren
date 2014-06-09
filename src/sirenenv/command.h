@@ -106,5 +106,6 @@ mrb_value display     (mrb_state*, mrb_value);
 mrb_value hide        (mrb_state*, mrb_value);
 mrb_value color       (mrb_state*, mrb_value);
 mrb_value bgcolor     (mrb_state*, mrb_value);
+mrb_value select      (mrb_state*, mrb_value);
 
 #endif // _COMMAND_H_

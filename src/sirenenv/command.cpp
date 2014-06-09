@@ -162,6 +162,7 @@ bool OCCViewer::mruby_init()
 	regcmd("update",    &update,    0,0, "Update current viewer.",          "update() -> nil");
 	regcmd("color",     &color,     4,0, "Set color of object.",            "color(obj, R, G, B) -> nil");
 	regcmd("bgcolor",   &bgcolor,   3,3, "Set color of background.",        "bgcolor(topR, topG, topB, btmR, btmG, btmB) -> nil");
+	regcmd("select",    &select,    1,9, "Select an object.",               "select(ObjID) -> nil");
 
 	// Boolean operation commands
 	regcmd("common",    &common,    2,1, "Common boolean operation.",       "common(obj1, obj2) -> String");
@@ -605,6 +606,25 @@ mrb_value bgcolor(mrb_state* mrb, mrb_value self)
 	}
 
 	return mrb_nil_value();
+}
+
+/**
+ * \brief Select an object by ID
+ */
+mrb_value select(mrb_state* mrb, mrb_value self)
+{
+	mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
+
+    Handle(AIS_Shape) hashape = ::getAISShape(target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified argument.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    cur->aiscxt->SetSelected(hashape, Standard_True);
+
+    return mrb_nil_value();
 }
 
 // ------

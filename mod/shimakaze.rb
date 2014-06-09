@@ -1,4 +1,8 @@
+#!/usr/bin/env siren
+# -*- mode:ruby; coding:utf-8 -*-
+
 # IJN destroyer Shimakaze
+# (c) dyama 2014
 
 $DRAW = false
 
