@@ -484,9 +484,12 @@ void display(const TopoDS_Shape& shape)
 	cur->aiscxt->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
 	cur->aiscxt->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
 
+    cur->aiscxt->Activate(hashape);
+
 	cur->aiscxt->Display(hashape);
 	cur->aiscxt->SetSelected(hashape, Standard_False);
 	cur->aiscxt->UpdateCurrentViewer();
+
     return;
 }
 
@@ -503,9 +506,13 @@ mrb_value display(mrb_state* mrb, mrb_value self)
 
 	Handle(AIS_Shape) hashape = ::getAISShape(target);
 	if (!hashape.IsNull()) {
-        cur->aiscxt->Erase(hashape);
+        //cur->aiscxt->Erase(hashape);
+        //display(cur->shapeman[target]);
+        redisplay(hashape);
 	}
-    display(cur->shapeman[target]);
+    else {
+        display(cur->shapeman[target]);
+    }
 
 	return mrb_nil_value();
 }
@@ -528,6 +535,7 @@ mrb_value hide(mrb_state* mrb, mrb_value self)
 	}
 
 	cur->aiscxt->Erase(hashape, Standard_True);
+
 	return mrb_nil_value();
 }
 

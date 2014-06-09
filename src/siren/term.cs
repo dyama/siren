@@ -135,7 +135,7 @@ namespace siren
         /// <returns></returns>
         public int execute(string cmd, string dialog_message)
         {
-            int err = execute(cmd);
+            int err = execute(cmd, null, true, false);
             if (err == 0)
                 MessageBox.Show(dialog_message + result_string, "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
             else

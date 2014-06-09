@@ -23,6 +23,11 @@ class Vec
     "x = " + @x.to_s + ", y = " + @y.to_s + ", z = " + @z.to_s
   end
 
+  # 文字列を返す
+  def inspect
+    to_s
+  end
+
   # ベクトル計算メソッド ------
 
   # 大きさ
