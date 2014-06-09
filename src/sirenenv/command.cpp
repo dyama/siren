@@ -8,7 +8,6 @@
 #include "Stdafx.h"
 #include "OCCViewer.h"
 
-#define NOREGIST 1
 #define USECLASS 0
 
 /**
@@ -127,6 +126,7 @@ bool OCCViewer::mruby_init()
 	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
 	regcmd("version",   &version,   0,0, "",                                "version() -> String");
 	regcmd("debug",     &debug,     0,1, "",                                "");
+    regcmd("all",       &all,       0,0, "Get an array of all objects.",    "all() -> Ary[ObjID, ...]");
 
 	// Infomation/Status commands
 	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(ObjID) -> Ary[min[X,Y,Z], max[X,Y,Z]]");
@@ -150,10 +150,10 @@ bool OCCViewer::mruby_init()
 	regcmd("explode",   &explode,   2,0, "Explode object to children.",     "explode(type, ObjID) -> Ary");
 
 	// Transform commands
-	regcmd("translate", &translate, 2,0, "Translate specified object.",     "translate(obj, vector[X, Y, Z]) -> nil");
-	regcmd("rotate",    &rotate,    4,0, "Rotate specified object.",        "rotate(obj, center[X, Y, Z], normal[X, Y, Z], angle) -> nil"); 
-	regcmd("scale",     &scale,     3,0, "Scale specified object.",         "scale(obj, scale, center[X, Y, Z] = [0, 0, 0]) -> nil");
-	regcmd("mirror",    &mirror,    3,0, "Mirror copy specified object.",   "mirror(obj, center[X, Y, Z], normal[X, Y, Z]) -> nil");
+	regcmd("translate", &translate, 2,0, "Translate specified object.",     "translate(obj, vector[X, Y, Z]) -> ObjID");
+	regcmd("rotate",    &rotate,    4,0, "Rotate specified object.",        "rotate(obj, center[X, Y, Z], normal[X, Y, Z], angle) -> ObjID"); 
+	regcmd("scale",     &scale,     3,0, "Scale specified object.",         "scale(obj, scale, center[X, Y, Z] = [0, 0, 0]) -> ObjID");
+	regcmd("mirror",    &mirror,    3,0, "Mirror copy specified object.",   "mirror(obj, center[X, Y, Z], normal[X, Y, Z]) -> ObjID");
 
 	// Visualization commands
 	regcmd("display",   &display,   1,0, "Dislay object.",                  "display(obj) -> nil");
@@ -220,8 +220,9 @@ bool OCCViewer::mruby_init()
 
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
-		"$DRAW=1;"
-		"$tri10=[10,10,10];"
+		"$DRAW = true;"
+		"$tri10 = [10,10,10];"
+        "def is_draw; $DRAW; end"
 		);
 
     // バイトコードのロード
@@ -292,34 +293,18 @@ int OCCViewer::mruby_exec(char* command, std::string& errmsg)
 /**
  * \brief 
  */
-int set(const TopoDS_Shape& shape)
+int set(const TopoDS_Shape& shape, const mrb_value& self)
 {
-	return ::set(shape, 1);
-}
+    int code = shape.HashCode(INT_MAX);
+    cur->shapeman.insert(std::pair<int, TopoDS_Shape>(code, shape));
 
-/**
- * \brief 
- */
-int set(const TopoDS_Shape& shape, int draw)
-{
-	if (cur->aiscxt.IsNull()) {
-		throw "No AIS Interactive Context.";
-	}
-	Handle(AIS_Shape) hashape = new AIS_Shape(shape);
+    mrb_value r = mrb_funcall(cur->myMirb->mrb, self, "is_draw", 0);
+    if (mrb_bool(r)) {
+        display(shape);
+    }
 
-	Handle(Graphic3d_ShaderProgram) myShader;
-	myShader = new Graphic3d_ShaderProgram(Graphic3d_ShaderProgram::ShaderName_Phong);
-	hashape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram(myShader);
-
-	cur->aiscxt->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
-	cur->aiscxt->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
-	cur->aiscxt->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
-
-	cur->aiscxt->Display(hashape);
-	cur->aiscxt->SetSelected(hashape, Standard_False);
-	cur->aiscxt->UpdateCurrentViewer();
-
-	return shape.HashCode(INT_MAX);
+    return code;
+	// return shape.HashCode(INT_MAX);
 }
 
 #if USECLASS
@@ -361,10 +346,30 @@ int regist(const TopoDS_Shape& shape, mrb_value& result, bool drawnow = true)
 }
 #endif
 
+TopoDS_Shape& getTopoDSShape(int hashcode)
+{
+    if (cur->shapeman.count(hashcode) == 0) {
+        throw;
+    }
+    return cur->shapeman[hashcode];
+}
+
+int updateTopoDSShape(int oldhashcode, const TopoDS_Shape& shape)
+{
+    if (cur->shapeman.count(oldhashcode) > 0) {
+        cur->shapeman.erase(oldhashcode);
+    }
+
+    int code = shape.HashCode(INT_MAX);
+    cur->shapeman.insert(std::pair<int, TopoDS_Shape>(code, shape));
+
+    return code;
+}
+
 /**
  * \brief 
  */
-Handle(AIS_Shape) get(int hashcode)
+Handle(AIS_Shape) getAISShape(int hashcode)
 {
 #if 0
 	// これだと選択されたものから探すので
@@ -422,8 +427,14 @@ Handle(AIS_Shape) get(mrb_value obj)
  */
 void unset(int hashcode)
 {
-	Handle(AIS_Shape) myShape = ::get(hashcode);
-	cur->aiscxt->Erase(myShape, Standard_True);
+	Handle(AIS_Shape) hashape = ::getAISShape(hashcode);
+    if (!hashape.IsNull()) {
+    	cur->aiscxt->Erase(hashape, Standard_True);
+    }
+    if (cur->shapeman.count(hashcode) > 0) {
+        cur->shapeman[hashcode].Nullify();
+        cur->shapeman.erase(hashcode);
+    }
 	return;
 }
 
@@ -432,8 +443,8 @@ void unset(int hashcode)
  */
 bool has_object(int hashcode)
 {
-	Handle(AIS_Shape) hashape = get(hashcode);
-	return !hashape.IsNull();
+	TopoDS_Shape shape = getTopoDSShape(hashcode);
+	return !shape.IsNull();
 }
 
 /**
@@ -458,6 +469,30 @@ mrb_value update(mrb_state* mrb, mrb_value self)
 /**
  * \brief 
  */
+void display(const TopoDS_Shape& shape)
+{
+	if (cur->aiscxt.IsNull()) {
+		throw "No AIS Interactive Context.";
+	}
+	Handle(AIS_Shape) hashape = new AIS_Shape(shape);
+
+	Handle(Graphic3d_ShaderProgram) myShader;
+	myShader = new Graphic3d_ShaderProgram(Graphic3d_ShaderProgram::ShaderName_Phong);
+	hashape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram(myShader);
+
+	cur->aiscxt->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
+	cur->aiscxt->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
+	cur->aiscxt->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
+
+	cur->aiscxt->Display(hashape);
+	cur->aiscxt->SetSelected(hashape, Standard_False);
+	cur->aiscxt->UpdateCurrentViewer();
+    return;
+}
+
+/**
+ * \brief 
+ */
 mrb_value display(mrb_state* mrb, mrb_value self)
 {
 	if (cur->aiscxt.IsNull())
@@ -466,13 +501,12 @@ mrb_value display(mrb_state* mrb, mrb_value self)
     mrb_int target;
 	int argc = mrb_get_args(mrb, "i", &target);
 
-	Handle(AIS_Shape) hashape = ::get(target);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such object name of specified argument.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	Handle(AIS_Shape) hashape = ::getAISShape(target);
+	if (!hashape.IsNull()) {
+        cur->aiscxt->Erase(hashape);
 	}
+    display(cur->shapeman[target]);
 
-	cur->aiscxt->Display(hashape, Standard_False);
 	return mrb_nil_value();
 }
 
@@ -487,13 +521,13 @@ mrb_value hide(mrb_state* mrb, mrb_value self)
     mrb_int target;
 	int argc = mrb_get_args(mrb, "i", &target);
 
-	Handle(AIS_Shape) hashape = ::get(target);
+	Handle(AIS_Shape) hashape = ::getAISShape(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified argument.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	cur->aiscxt->Erase(hashape, Standard_False);
+	cur->aiscxt->Erase(hashape, Standard_True);
 	return mrb_nil_value();
 }
 
@@ -522,7 +556,7 @@ mrb_value color(mrb_state* mrb, mrb_value self)
 	mrb_float r, g, b;
 	int argc = mrb_get_args(mrb, "ifff", &target, &r, &g, &b);
 
-	Handle(AIS_Shape) hashape = ::get(target);
+	Handle(AIS_Shape) hashape = ::getAISShape(target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -687,38 +721,38 @@ mrb_value translate(mrb_state* mrb, mrb_value self)
 
 	gp_Pnt pvec = *ar2pnt(mrb, vec);
 	gp_Vec myvec(pvec.X(), pvec.Y(), pvec.Z());
-
-	Handle(AIS_Shape) hashape = ::get(target);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such object name of specified at first.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
 	gp_Trsf T;
     T.SetTranslation(myvec);
 
     BRepBuilderAPI_Transform trf(T);
-	trf.Perform(hashape->Shape());
+
+    TopoDS_Shape shape = ::getTopoDSShape(target);
+    if (shape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+	trf.Perform(shape);
 
 	mrb_value result;
 	if (trf.IsDone()){
-#if NOREGIST
-        TopoDS_Shape shape = trf.Shape();
-		hashape->Set(shape);
-		redisplay(hashape);
-  #if USECLASS
+
+        TopoDS_Shape rshape = trf.Shape();
+        int newcode = updateTopoDSShape(target, rshape);
+
+    	Handle(AIS_Shape) hashape = ::getAISShape(target);
+    	if (!hashape.IsNull()) {
+            hashape->Set(rshape);
+            redisplay(hashape);
+    	}
+        result = mrb_fixnum_value(newcode);
+
+#if USECLASS
         int hashcode = shape.HashCode(INT_MAX);
         result = mrb_fixnum_value(hashcode);
         const char* ivname = "@id"; 
         RObject* pobj = mrb_obj_ptr(target);
         mrb_sym sym = mrb_intern(cur->myMirb->mrb, ivname, strlen(ivname));
         mrb_obj_iv_set(cur->myMirb->mrb, pobj, sym, mrb_fixnum_value(hashcode));
-  #else
-        result = mrb_nil_value();
-  #endif
-#else
-        result = mrb_fixnum_value(::set(trf.Shape()));
-        ::unset(target);
 #endif
 	}
 	else {
@@ -744,12 +778,6 @@ mrb_value rotate(mrb_state* mrb, mrb_value self)
 	int argc = mrb_get_args(mrb, "iAAf", &target, &pos, &norm, &a);
 #endif
 
-	Handle(AIS_Shape) hashape = ::get(target);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such object name of specified at first.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
 	gp_Trsf T;
 	Standard_Real ang = (double)a * (M_PI / 180.0);
 	gp_Ax1 ax = *ar2ax1(mrb, pos, norm);
@@ -757,27 +785,34 @@ mrb_value rotate(mrb_state* mrb, mrb_value self)
     T.SetRotation(ax, ang);
 
     BRepBuilderAPI_Transform trf(T);
-	trf.Perform(hashape->Shape());
 
-	mrb_value result;
-	if (trf.IsDone()){
-#if NOREGIST
-        TopoDS_Shape shape = trf.Shape();
-		hashape->Set(shape);
-		redisplay(hashape);
-  #if USECLASS
+    TopoDS_Shape shape = ::getTopoDSShape(target);
+    if (shape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+	trf.Perform(shape);
+
+    mrb_value result;
+    if (trf.IsDone()) {
+
+        TopoDS_Shape rshape = trf.Shape();
+        int newcode = updateTopoDSShape(target, rshape);
+
+    	Handle(AIS_Shape) hashape = ::getAISShape(target);
+    	if (!hashape.IsNull()) {
+            hashape->Set(rshape);
+            redisplay(hashape);
+    	}
+        result = mrb_fixnum_value(newcode);
+
+#if USECLASS
         int hashcode = shape.HashCode(INT_MAX);
         result = mrb_fixnum_value(hashcode);
         const char* ivname = "@id"; 
         RObject* pobj = mrb_obj_ptr(target);
         mrb_sym sym = mrb_intern(cur->myMirb->mrb, ivname, strlen(ivname));
         mrb_obj_iv_set(cur->myMirb->mrb, pobj, sym, mrb_fixnum_value(hashcode));
-  #else
-        result = mrb_nil_value();
-  #endif
-#else
-        result = mrb_fixnum_value(::set(trf.Shape()));
-        ::unset(target);
 #endif
 	}
 	else {
@@ -803,12 +838,6 @@ mrb_value scale(mrb_state* mrb, mrb_value self)
 	int argc = mrb_get_args(mrb, "ifA", &target, &s, &pos);
 #endif
 
-	Handle(AIS_Shape) hashape = ::get(target);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such object name of specified at first.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
 	gp_Pnt p;
 	if (argc == 2) {
 		p = gp_Pnt(0, 0, 0);
@@ -821,27 +850,34 @@ mrb_value scale(mrb_state* mrb, mrb_value self)
     T.SetScale(p, (Standard_Real)s);
 
     BRepBuilderAPI_Transform trf(T);
-	trf.Perform(hashape->Shape());
+
+    TopoDS_Shape shape = ::getTopoDSShape(target);
+    if (shape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+	trf.Perform(shape);
 
 	mrb_value result;
-	if (trf.IsDone()){
-#if NOREGIST
-        TopoDS_Shape shape = trf.Shape();
-		hashape->Set(shape);
-		redisplay(hashape);
-  #if USECLASS
+	if (trf.IsDone()) {
+
+        TopoDS_Shape rshape = trf.Shape();
+        int newcode = updateTopoDSShape(target, rshape);
+
+    	Handle(AIS_Shape) hashape = ::getAISShape(target);
+    	if (!hashape.IsNull()) {
+            hashape->Set(rshape);
+            redisplay(hashape);
+    	}
+        result = mrb_fixnum_value(newcode);
+
+#if USECLASS
         int hashcode = shape.HashCode(INT_MAX);
         result = mrb_fixnum_value(hashcode);
         const char* ivname = "@id"; 
         RObject* pobj = mrb_obj_ptr(target);
         mrb_sym sym = mrb_intern(cur->myMirb->mrb, ivname, strlen(ivname));
         mrb_obj_iv_set(cur->myMirb->mrb, pobj, sym, mrb_fixnum_value(hashcode));
-  #else
-        result = mrb_nil_value();
-  #endif
-#else
-        result = mrb_fixnum_value(::set(trf.Shape()));
-        ::unset(target);
 #endif
 	}
 	else {
@@ -866,39 +902,38 @@ mrb_value mirror(mrb_state* mrb, mrb_value self)
 	int argc = mrb_get_args(mrb, "iAA", &target, &pos, &norm);
 #endif
 
-	Handle(AIS_Shape) hashape = ::get(target);
-	if (hashape.IsNull()) {
-		static const char m[] = "No such object name of specified at first.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
-
 	gp_Trsf T;
 	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
     T.SetMirror(ax);
 
     BRepBuilderAPI_Transform trf(T);
-	trf.Perform(hashape->Shape());
+    TopoDS_Shape shape = ::getTopoDSShape(target);
+    if (shape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+	trf.Perform(shape);
 
 	mrb_value result;
-	if (trf.IsDone()){
-#if NOREGIST && 0
-        TopoDS_Shape shape = trf.Shape();
-		hashape->Set(shape);
-		redisplay(hashape);
-  #if USECLASS 
+	if (trf.IsDone()) {
+        
+        TopoDS_Shape rshape = trf.Shape();
+        int newcode = updateTopoDSShape(target, rshape);
+
+    	Handle(AIS_Shape) hashape = ::getAISShape(target);
+    	if (!hashape.IsNull()) {
+            hashape->Set(rshape);
+            redisplay(hashape);
+    	}
+        result = mrb_fixnum_value(newcode);
+
+#if USECLASS 
         int hashcode = shape.HashCode(INT_MAX);
         result = mrb_fixnum_value(hashcode);
         const char* ivname = "@id"; 
         RObject* pobj = mrb_obj_ptr(target);
         mrb_sym sym = mrb_intern(cur->myMirb->mrb, ivname, strlen(ivname));
         mrb_obj_iv_set(cur->myMirb->mrb, pobj, sym, mrb_fixnum_value(hashcode));
-  #else
-        result = mrb_nil_value(); 
-  #endif
-#else
-        // copy
-        result = mrb_fixnum_value(::set(trf.Shape()));
-        ::unset(target);
 #endif
 	}
 	else {
@@ -925,7 +960,7 @@ mrb_value vertex(mrb_state* mrb, mrb_value self)
     ::regist(v, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(v));
+    return mrb_fixnum_value(::set(v, self));
 #endif
 }
 
@@ -948,7 +983,7 @@ mrb_value line(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -989,7 +1024,7 @@ mrb_value polyline(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -1049,7 +1084,7 @@ mrb_value curve(mrb_state* mrb, mrb_value self)
     ::regist(w, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(w));
+    return mrb_fixnum_value(::set(w, self));
 #endif
 }
 
@@ -1080,7 +1115,7 @@ mrb_value box(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -1111,7 +1146,7 @@ mrb_value sphere(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -1141,7 +1176,7 @@ mrb_value cylinder(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -1171,7 +1206,7 @@ mrb_value cone(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -1201,7 +1236,7 @@ mrb_value torus(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -1234,7 +1269,7 @@ mrb_value plane(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -1272,7 +1307,7 @@ mrb_value polygon(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -1285,15 +1320,13 @@ mrb_value sweepv(mrb_state* mrb, mrb_value self)
 	mrb_value vec;
 	int argc = mrb_get_args(mrb, "iA", &target, &vec);
 
-	Handle(AIS_Shape) hashape = ::get(target);
-	if (hashape.IsNull() ) {
+    TopoDS_Shape profile = ::getTopoDSShape(target);
+	if (profile.IsNull() ) {
 		static const char m[] = "No such profile object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-
 	TopoDS_Shape shape;
 	TopoDS_Wire path;
-	TopoDS_Shape profile = hashape->Shape();
 
 	try {
         gp_Pnt _vec = *ar2pnt(mrb, vec);
@@ -1319,7 +1352,7 @@ mrb_value sweepv(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -1333,14 +1366,14 @@ mrb_value sweepp(mrb_state* mrb, mrb_value self)
     mrb_float scale_first, scale_last;
 	int argc = mrb_get_args(mrb, "ii|ooff", &target, &pathwire, &cont, &corr, &scale_first, &scale_last);
 
-	Handle(AIS_Shape) hashape_profile = ::get(target);
-	if (hashape_profile.IsNull() ) {
+	TopoDS_Shape shape_profile = ::getTopoDSShape(target);
+	if (shape_profile.IsNull() ) {
 		static const char m[] = "No such profile object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-    Handle(AIS_Shape) hashape_path = ::get(pathwire);
-    if (hashape_path.IsNull()) {
+    TopoDS_Shape shape_path = ::getTopoDSShape(pathwire);
+    if (shape_path.IsNull()) {
         static const char m[] = "No such path object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     }
@@ -1348,13 +1381,11 @@ mrb_value sweepp(mrb_state* mrb, mrb_value self)
 	TopoDS_Shape shape;
 	TopoDS_Wire path;
 
-    TopoDS_Shape p = shape = hashape_path->Shape();
-
-    if (p.ShapeType() == TopAbs_EDGE) {
-        path = BRepBuilderAPI_MakeWire(TopoDS::Edge(p));
+    if (shape_path.ShapeType() == TopAbs_EDGE) {
+        path = BRepBuilderAPI_MakeWire(TopoDS::Edge(shape_path));
     }
-    else if (p.ShapeType() == TopAbs_WIRE) {
-        path = TopoDS::Wire(p);
+    else if (shape_path.ShapeType() == TopAbs_WIRE) {
+        path = TopoDS::Wire(shape_path);
     }
     else {
         static const char m[] = "Path object is not Edge or Wire.";
@@ -1399,18 +1430,18 @@ mrb_value sweepp(mrb_state* mrb, mrb_value self)
             }
 
             ps.SetLaw(
-                hashape_profile->Shape(), // セクションプロファイル
-                law,                      // 掃引規則
-                pfirst,                   // 開始点
-                withContact,              // セクションプロファイルを開始点に移動して掃引する
-                withCorrection            // セクションプロファイルをパスに応じて回転する
+                shape_profile, // セクションプロファイル
+                law,           // 掃引規則
+                pfirst,        // 開始点
+                withContact,   // セクションプロファイルを開始点に移動して掃引する
+                withCorrection // セクションプロファイルをパスに応じて回転する
                 );
 
             ps.Build();
             shape = ps.Shape();
         }
         else {
-    		BRepOffsetAPI_MakePipe mp(path, hashape_profile->Shape());
+    		BRepOffsetAPI_MakePipe mp(path, shape_profile);
     		mp.Build();
     		shape = mp.Shape();
         }
@@ -1428,7 +1459,7 @@ mrb_value sweepp(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -1442,30 +1473,33 @@ mrb_value wire(mrb_state* mrb, mrb_value self)
 	int osize = mrb_ary_len(mrb, objs);
 	
 	ShapeFix_Wire sfw;
-	Handle( ShapeExtend_WireData ) wd = new ShapeExtend_WireData;
+	Handle(ShapeExtend_WireData) wd = new ShapeExtend_WireData;
 	BRepBuilderAPI_MakeWire mw;
 	TopoDS_Shape shape;
 	Standard_Real tol = 0.01;
 	ShapeFix_ShapeTolerance FTol;
-	try
-	{
-		for ( int i = 0; i < osize ; i++ )
-		{
+	try {
+		for (int i = 0; i < osize ; i++) {
+
 			mrb_value id = mrb_ary_ref(mrb, objs, i);
-			Handle(AIS_Shape) ais = ::get(mrb_fixnum(id));
-			TopoDS_Shape s = ais->Shape();
-			if ( s.IsNull() ) continue;
+			TopoDS_Shape s = ::getTopoDSShape(mrb_fixnum(id));
+
+			if (s.IsNull())
+                continue;
+
 			TopAbs_ShapeEnum se = s.ShapeType();
-			if ( se != TopAbs_COMPOUND && se != TopAbs_EDGE && se != TopAbs_WIRE ) continue;
-			for (TopExp_Explorer exp(s, TopAbs_EDGE); exp.More(); exp.Next())
-			{
-				if ( !exp.Current().IsNull() ) wd->Add(TopoDS::Edge(exp.Current()));
+
+			if (se != TopAbs_COMPOUND && se != TopAbs_EDGE && se != TopAbs_WIRE)
+                continue;
+
+			for (TopExp_Explorer exp(s, TopAbs_EDGE); exp.More(); exp.Next()) {
+				if (!exp.Current().IsNull())
+                    wd->Add(TopoDS::Edge(exp.Current()));
 			}
 		}
-		sfw.Load( wd );
+		sfw.Load(wd);
 		sfw.Perform();
-		for (int i = 1; i <= sfw.NbEdges(); i ++)
-		{
+		for (int i = 1; i <= sfw.NbEdges(); i ++) {
 			TopoDS_Edge e = sfw.WireData()->Edge(i);
 			FTol.SetTolerance(e, tol, TopAbs_VERTEX);
 			mw.Add(e);
@@ -1476,7 +1510,8 @@ mrb_value wire(mrb_state* mrb, mrb_value self)
 			static const char m[] = "Failed to make a wire.";
 			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 		}
-	}	catch (...) {
+	}
+    catch (...) {
 		delete(wd);
 		static const char m[] = "Failed to make a wire.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -1487,7 +1522,7 @@ mrb_value wire(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -1507,12 +1542,11 @@ mrb_value loft(mrb_state* mrb, mrb_value self)
     for (int i=0; i<lsize; i++) {
 		mrb_value line = mrb_ary_ref(mrb, objs, i);
         mrb_int target = mrb_fixnum(line);
-    	Handle(AIS_Shape) hashape = ::get(target);
-    	if (hashape.IsNull()) {
+    	TopoDS_Shape shape = ::getTopoDSShape(target);
+    	if (shape.IsNull()) {
     		static const char m[] = "No such profile object.";
             return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     	}
-        TopoDS_Shape shape = hashape->Shape();
         TopAbs_ShapeEnum type = shape.ShapeType();
         if (type == TopAbs_WIRE) {
             TopoDS_Wire w = TopoDS::Wire(shape);
@@ -1527,13 +1561,13 @@ mrb_value loft(mrb_state* mrb, mrb_value self)
     mrb_value result;
     TopoDS_Shape shape;
     try {
-        //ts.SetSmoothing(Standard_True);
+        ts.SetSmoothing(Standard_True);
         ts.Build();
 		shape = ts.Shape();
 #if USECLASS
         ::regist(shape, result);
 #else
-        result = mrb_fixnum_value(::set(shape));
+        result = mrb_fixnum_value(::set(shape, self));
 #endif
     }
     catch (...) {
@@ -1592,7 +1626,7 @@ mrb_value bzsurf(mrb_state* mrb, mrb_value self)
     ::regist(f, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(f));
+    return mrb_fixnum_value(::set(f, self));
 #endif
 }
 
@@ -1714,7 +1748,7 @@ mrb_value bssurf(mrb_state* mrb, mrb_value self)
     ::regist(shape, result);
 	return result;
 #else
-    return mrb_fixnum_value(::set(shape));
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
@@ -1727,12 +1761,11 @@ mrb_value offset(mrb_state* mrb, mrb_value self)
 	mrb_float offset;
 	int argc = mrb_get_args(mrb, "if", &target, &offset);
 
-	Handle(AIS_Shape) hashape = ::get(target);
-	if (hashape.IsNull() ) {
+	TopoDS_Shape shape = ::getTopoDSShape(target);
+	if (shape.IsNull() ) {
 		static const char m[] = "No such specified object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-    TopoDS_Shape shape = hashape->Shape();
 
 	TopoDS_Compound	comp;
 	BRep_Builder B;
@@ -1753,7 +1786,7 @@ mrb_value offset(mrb_state* mrb, mrb_value self)
     ::regist(comp, result);
     return result;
 #else
-    return mrb_fixnum_value(::set(comp));
+    return mrb_fixnum_value(::set(comp, self));
 #endif
 }
 
@@ -1777,7 +1810,7 @@ mrb_value location(mrb_state* mrb, mrb_value self)
     mrb_value location;
     int argc = mrb_get_args(mrb, "i|A", &target, &location);
 
-    Handle(AIS_Shape) hashape = ::get(target);
+    Handle(AIS_Shape) hashape = ::getAISShape(target);
     if (hashape.IsNull()) {
         static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -1808,13 +1841,13 @@ mrb_value type(mrb_state* mrb, mrb_value self)
     mrb_int target;
     int argc = mrb_get_args(mrb, "i", &target);
 
-    Handle(AIS_Shape) hashape = ::get(target);
-    if (hashape.IsNull()) {
+    TopoDS_Shape shape = ::getTopoDSShape(target);
+    if (shape.IsNull()) {
         static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     }
 
-    int type = (int)hashape->Shape().ShapeType();
+    int type = (int)shape.ShapeType();
 
     return mrb_fixnum_value(type);
 }
@@ -1830,13 +1863,11 @@ mrb_value bndbox(mrb_state* mrb, mrb_value self)
     mrb_int target;
     int argc = mrb_get_args(mrb, "i", &target);
 
-    Handle(AIS_Shape) hashape = ::get(target);
-    if (hashape.IsNull()) {
+    TopoDS_Shape shape = ::getTopoDSShape(target);
+    if (shape.IsNull()) {
         static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     }
-
-    TopoDS_Shape shape = hashape->Shape();
 
     Bnd_Box box;
     BRepBndLib::Add(shape, box);
@@ -1878,14 +1909,12 @@ mrb_value cparam(mrb_state* mrb, mrb_value self)
     mrb_value xyz;
     int argc = mrb_get_args(mrb, "iA", &target, &xyz);
 
-    Handle(AIS_Shape) hashape = ::get(target);
-    if (hashape.IsNull()) {
+    TopoDS_Shape shape = ::getTopoDSShape(target);
+    if (shape.IsNull()) {
         static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     }
-
     gp_Pnt p = *::ar2pnt(mrb, xyz);
-    TopoDS_Shape shape = hashape->Shape();
 
     Standard_Real tol = 1.0e-7;
     TopExp_Explorer exp(shape, TopAbs_EDGE);
@@ -1925,12 +1954,11 @@ mrb_value cpoint(mrb_state* mrb, mrb_value self)
     mrb_value params;
     int argc = mrb_get_args(mrb, "iA", &target, &params);
 
-    Handle(AIS_Shape) hashape = ::get(target);
-    if (hashape.IsNull()) {
+    TopoDS_Shape shape = ::getTopoDSShape(target);
+    if (shape.IsNull()) {
         static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     }
-    TopoDS_Shape shape = hashape->Shape();
 
     if (mrb_ary_len(mrb, params) != 2) {
         static const char m[] = "Illigal array of params.";
@@ -1967,12 +1995,11 @@ mrb_value ccurvature(mrb_state* mrb, mrb_value self)
     mrb_value params;
     int argc = mrb_get_args(mrb, "iA", &target, &params);
 
-    Handle(AIS_Shape) hashape = ::get(target);
-    if (hashape.IsNull()) {
+    TopoDS_Shape shape = ::getTopoDSShape(target);
+    if (shape.IsNull()) {
         static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     }
-    TopoDS_Shape shape = hashape->Shape();
 
     if (mrb_ary_len(mrb, params) != 2) {
         static const char m[] = "Illigal array of params.";
@@ -2009,12 +2036,11 @@ mrb_value ctangent(mrb_state* mrb, mrb_value self)
     mrb_value params;
     int argc = mrb_get_args(mrb, "iA", &target, &params);
 
-    Handle(AIS_Shape) hashape = ::get(target);
-    if (hashape.IsNull()) {
+    TopoDS_Shape shape = ::getTopoDSShape(target);
+    if (shape.IsNull()) {
         static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     }
-    TopoDS_Shape shape = hashape->Shape();
 
     if (mrb_ary_len(mrb, params) != 2) {
         static const char m[] = "Illigal array of params.";
@@ -2062,16 +2088,15 @@ mrb_value compound(mrb_state* mrb, mrb_value self)
 	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 		}
 		mrb_int target = mrb_fixnum(item);
-		Handle(AIS_Shape) hashape = ::get(target);
-		if (hashape.IsNull()) {
+		TopoDS_Shape shape = ::getTopoDSShape(target);
+		if (shape.IsNull()) {
 			static const char m[] = "No such object name of specified at first.";
 	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 		}
-		TopoDS_Shape shape = hashape->Shape();
 		B.Add(comp, shape);
         ::unset(target);
 	}
-	return mrb_fixnum_value(::set(comp));
+	return mrb_fixnum_value(::set(comp, self));
 }
 
 /**
@@ -2096,8 +2121,8 @@ mrb_value sew(mrb_state* mrb, mrb_value self)
 	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 		}
 		mrb_int target = mrb_fixnum(item);
-		Handle(AIS_Shape) hashape = ::get(target);
-		if (hashape.IsNull()) {
+		TopoDS_Shape shape = ::getTopoDSShape(target);
+		if (shape.IsNull()) {
 #if 0
 			static const char m[] = "No such object name of specified at first.";
 	        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -2105,7 +2130,6 @@ mrb_value sew(mrb_state* mrb, mrb_value self)
             continue;
 #endif
 		}
-		TopoDS_Shape shape = hashape->Shape();
         TopExp_Explorer ex(shape, TopAbs_FACE);
         for (; ex.More(); ex.Next()) {
             sewer.Add(ex.Current());
@@ -2122,7 +2146,7 @@ mrb_value sew(mrb_state* mrb, mrb_value self)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 	
-	return mrb_fixnum_value(::set(result));
+	return mrb_fixnum_value(::set(result, self));
 }
 
 /**
@@ -2140,18 +2164,18 @@ mrb_value explode(mrb_state* mrb, mrb_value self)
 	}
 	TopAbs_ShapeEnum shapetype = (TopAbs_ShapeEnum)type;
 
-	Handle(AIS_Shape) hashape = ::get(target);
-	if (hashape.IsNull()) {
+	TopoDS_Shape shape = ::getTopoDSShape(target);
+	if (shape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
 	mrb_value ar = mrb_ary_new(mrb);
-    TopExp_Explorer ex(hashape->Shape(), shapetype);
+    TopExp_Explorer ex(shape, shapetype);
 
     for (; ex.More(); ex.Next()) {
         const TopoDS_Shape& Sx = ex.Current();
-		mrb_value hc = mrb_fixnum_value(::set(Sx));
+		mrb_value hc = mrb_fixnum_value(::set(Sx, self));
 		mrb_ary_push(mrb, ar, hc);
     }
 
@@ -2192,18 +2216,30 @@ mrb_value copy(mrb_state* mrb, mrb_value self)
 	mrb_int src;
 	int argc = mrb_get_args(mrb, "i", &src);
 
-	Handle(AIS_Shape) hashape = ::get(src);
-	if (hashape.IsNull()) {
+	TopoDS_Shape shape = ::getTopoDSShape(src);
+	if (shape.IsNull()) {
 		static const char m[] = "No such specified object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
 	// Deep copy
 	BRepBuilderAPI_Copy Builder;
-	Builder.Perform(hashape->Shape());
-	TopoDS_Shape shape = Builder.Shape();
+	Builder.Perform(shape);
 
-	return mrb_fixnum_value(::set(shape));
+    if (!Builder.IsDone()) {
+		static const char m[] = "Internal error.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+    TopoDS_Shape rshape = Builder.Shape();
+    if (rshape.IsNull()) {
+		static const char m[] = "Internal error.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    int shape_code = shape.HashCode(INT_MAX);
+    int rshape_code = rshape.HashCode(INT_MAX);
+
+	return mrb_fixnum_value(::set(rshape, self));
 }
 
 /**
@@ -2214,18 +2250,18 @@ mrb_value close(mrb_state* mrb, mrb_value self)
 	mrb_int src;
 	int argc = mrb_get_args(mrb, "i", &src);
 
-	Handle(AIS_Shape) hashape = ::get(src);
-	if (hashape.IsNull()) {
+	TopoDS_Shape shape = ::getTopoDSShape(src);
+	if (shape.IsNull()) {
 		static const char m[] = "No such specified object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	TopAbs_ShapeEnum se = hashape->Shape().ShapeType();
+	TopAbs_ShapeEnum se = shape.ShapeType();
 	if ( se != TopAbs_WIRE && se != TopAbs_EDGE && se != TopAbs_COMPOUND ) {
 		static const char m[] = "Failed to make a closed wire.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	TopoDS_Shape shape;
-	TopoDS_Shape sThis = hashape->Shape();
+	TopoDS_Shape rshape;
+	TopoDS_Shape sThis = shape;
 	try {
 		BRepBuilderAPI_MakeWire mw;
 		// find first point
@@ -2259,8 +2295,8 @@ mrb_value close(mrb_state* mrb, mrb_value self)
 		ShapeFix_Wire sfw;
 		sfw.Load( mw.Wire() );
 		sfw.FixClosed();
-		shape = sfw.Wire();
-		if ( shape.IsNull() )
+		rshape = sfw.Wire();
+		if ( rshape.IsNull() )
 		{
 			static const char m[] = "Failed to make a closed wire.";
 			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -2269,7 +2305,7 @@ mrb_value close(mrb_state* mrb, mrb_value self)
 		static const char m[] = "Failed to make a closed wire.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	return mrb_fixnum_value(::set(shape));
+	return mrb_fixnum_value(::set(rshape, self));
 #if 0
 
         double qTolerance = 0.1e-3;
@@ -2428,8 +2464,8 @@ mrb_value wire2pts(mrb_state* mrb, mrb_value self)
 	mrb_float deflect;
 	int argc = mrb_get_args(mrb, "i|f", &src, &deflect);
 
-	Handle(AIS_Shape) hashape = ::get(src);
-	if (hashape.IsNull()) {
+	TopoDS_Shape shape = ::getTopoDSShape(src);
+	if (shape.IsNull()) {
 		static const char m[] = "No such specified object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
@@ -2440,7 +2476,7 @@ mrb_value wire2pts(mrb_state* mrb, mrb_value self)
 	mrb_value result = mrb_ary_new(mrb);
 	double first_param, last_param;
 
-	TopExp_Explorer	exp(hashape->Shape(), TopAbs_EDGE);
+	TopExp_Explorer	exp(shape, TopAbs_EDGE);
 	for(; exp.More(); exp.Next()) {
 		const TopoDS_Edge& edge = TopoDS::Edge(exp.Current());
 		try {
@@ -2482,28 +2518,28 @@ mrb_value wire2plane(mrb_state* mrb, mrb_value self)
 	mrb_int src;
 	int argc = mrb_get_args(mrb, "i", &src);
 
-	Handle(AIS_Shape) hashape = ::get(src);
-	if (hashape.IsNull()) {
+	TopoDS_Shape shape = ::getTopoDSShape(src);
+	if (shape.IsNull()) {
 		static const char m[] = "No such specified object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	if ( hashape->Shape().ShapeType() != TopAbs_WIRE ) {
+	if (shape.ShapeType() != TopAbs_WIRE) {
 		static const char m[] = "Failed to make a plane.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 	
-	TopoDS_Shape shape;
+	TopoDS_Shape rshape;
 	try {
-		TopoDS_Wire w = TopoDS::Wire( hashape->Shape() );
+		TopoDS_Wire w = TopoDS::Wire(shape);
 		BRepBuilderAPI_MakeFace mf( w, Standard_True );
 		mf.Build();
 		if (  !mf.IsDone() ) {
 			static const char m[] = "Failed to make a plane.";
 			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 		}
-		shape = mf.Shape();
+		rshape = mf.Shape();
 		//TopAbs_ShapeEnum se = shape.ShapeType();
-		if ( shape.IsNull() )
+		if ( rshape.IsNull() )
 		{
 			static const char m[] = "Failed to make a plane.";
 			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -2512,7 +2548,7 @@ mrb_value wire2plane(mrb_state* mrb, mrb_value self)
 		static const char m[] = "Failed to make a plane.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	return mrb_fixnum_value(::set(shape));
+	return mrb_fixnum_value(::set(rshape, self));
 }
 
 /**
@@ -2523,8 +2559,8 @@ mrb_value shell2solid(mrb_state* mrb, mrb_value self)
     mrb_int obj;
 	int argc = mrb_get_args(mrb, "i", &obj);
 
-	Handle(AIS_Shape) hashape = ::get(obj);
-	if (hashape.IsNull()) {
+	TopoDS_Shape shape = ::getTopoDSShape(obj);
+	if (shape.IsNull()) {
 		static const char m[] = "No such specified object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
@@ -2532,7 +2568,6 @@ mrb_value shell2solid(mrb_state* mrb, mrb_value self)
     mrb_value result;
 
     TopoDS_Solid solid;
-    TopoDS_Shape shape = hashape->Shape();
     BRepBuilderAPI_MakeSolid solid_maker;
     
 	for (TopExp_Explorer ex(shape, TopAbs_SHELL); ex.More(); ex.Next()) {
@@ -2541,7 +2576,7 @@ mrb_value shell2solid(mrb_state* mrb, mrb_value self)
 	}
 	if (solid_maker.IsDone()) {
 		solid = solid_maker.Solid();
-        result = mrb_fixnum_value(::set(solid));
+        result = mrb_fixnum_value(::set(solid, self));
 	}
 	else {
 		static const char m[] = "Failed to make a solid by shell.";
@@ -2563,7 +2598,7 @@ mrb_value triangle(mrb_state* mrb, mrb_value self)
     Standard_Real deflection = (argc >= 2 ? (Standard_Real)defl : 1.0);
     Standard_Real angle      = (argc == 3 ? (Standard_Real)ang  : 0.5);
 
-	Handle(AIS_Shape) hashape = ::get(obj);
+	Handle(AIS_Shape) hashape = ::getAISShape(obj);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such specified object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -2668,18 +2703,18 @@ mrb_value common(mrb_state* mrb, mrb_value self)
 	mrb_int s1, s2;
 	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
 
-	Handle(AIS_Shape) haS1 = ::get(s1);
-	if (haS1.IsNull()) {
+	TopoDS_Shape S1 = ::getTopoDSShape(s1);
+	if (S1.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) haS2 = ::get(s2);
-	if (haS2.IsNull()) {
+	TopoDS_Shape S2 = ::getTopoDSShape(s2);
+	if (S2.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	BRepAlgoAPI_Common bo(haS1->Shape(), haS2->Shape());
+	BRepAlgoAPI_Common bo(S1, S2);
 	bo.SetOperation(BOPAlgo_COMMON);
 	bo.Build();
 
@@ -2687,7 +2722,7 @@ mrb_value common(mrb_state* mrb, mrb_value self)
 
 	if (!bo.ErrorStatus()) {
 	    TopoDS_Shape shape = bo.Shape();
-		result = mrb_fixnum_value(::set(shape));
+		result = mrb_fixnum_value(::set(shape, self));
 	}
 	else {
 		static const char m[] = "Failed to fuse operation of boolean.";
@@ -2705,18 +2740,18 @@ mrb_value cut(mrb_state* mrb, mrb_value self)
     mrb_int s1, s2;
 	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
 
-	Handle(AIS_Shape) haS1 = ::get(s1);
-	if (haS1.IsNull()) {
+	TopoDS_Shape S1 = ::getTopoDSShape(s1);
+	if (S1.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) haS2 = ::get(s2);
-	if (haS2.IsNull()) {
+	TopoDS_Shape S2 = ::getTopoDSShape(s2);
+	if (S2.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	BRepAlgoAPI_Common bo(haS1->Shape(), haS2->Shape());
+	BRepAlgoAPI_Common bo(S1, S2);
 	bo.SetOperation(BOPAlgo_CUT);
 	bo.Build();
 
@@ -2724,7 +2759,7 @@ mrb_value cut(mrb_state* mrb, mrb_value self)
 
 	if (!bo.ErrorStatus()) {
 	    TopoDS_Shape shape = bo.Shape();
-		result = mrb_fixnum_value(::set(shape));
+		result = mrb_fixnum_value(::set(shape, self));
 	}
 	else {
 		static const char m[] = "Failed to fuse operation of boolean.";
@@ -2742,18 +2777,18 @@ mrb_value fuse(mrb_state* mrb, mrb_value self)
     mrb_int s1, s2;
 	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
 
-	Handle(AIS_Shape) haS1 = ::get(s1);
-	if (haS1.IsNull()) {
+	TopoDS_Shape S1 = ::getTopoDSShape(s1);
+	if (S1.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) haS2 = ::get(s2);
-	if (haS2.IsNull()) {
+	TopoDS_Shape S2 = ::getTopoDSShape(s2);
+	if (S2.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	BRepAlgoAPI_Common bo(haS1->Shape(), haS2->Shape());
+	BRepAlgoAPI_Common bo(S1, S2);
 	bo.SetOperation(BOPAlgo_FUSE);
 	bo.Build();
 
@@ -2761,7 +2796,7 @@ mrb_value fuse(mrb_state* mrb, mrb_value self)
 
 	if (!bo.ErrorStatus()) {
 	    TopoDS_Shape shape = bo.Shape();
-		result = mrb_fixnum_value(::set(shape));
+		result = mrb_fixnum_value(::set(shape, self));
 	}
 	else {
 		static const char m[] = "Failed to fuse operation of boolean.";
@@ -2779,14 +2814,14 @@ mrb_value volume(mrb_state* mrb, mrb_value self)
     mrb_int target;
 	int argc = mrb_get_args(mrb, "i", &target);
 
-	Handle(AIS_Shape) hashape = ::get(target);
-	if (hashape.IsNull()) {
+	TopoDS_Shape shape = ::getTopoDSShape(target);
+	if (shape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
 	GProp_GProps gprops;
-	BRepGProp::VolumeProperties(hashape->Shape(), gprops);
+	BRepGProp::VolumeProperties(shape, gprops);
 	Standard_Real vol = gprops.Mass();
 
 	return mrb_float_value(mrb, (mrb_float)vol);
@@ -2800,14 +2835,14 @@ mrb_value cog(mrb_state* mrb, mrb_value self)
     mrb_int target;
 	int argc = mrb_get_args(mrb, "i", &target);
 
-	Handle(AIS_Shape) hashape = ::get(target);
-	if (hashape.IsNull()) {
+	TopoDS_Shape shape = ::getTopoDSShape(target);
+	if (shape.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
 	GProp_GProps gprops;
-	BRepGProp::VolumeProperties(hashape->Shape(), gprops);
+	BRepGProp::VolumeProperties(shape, gprops);
 	gp_Pnt cog = gprops.CentreOfMass();
 
 	return ::pnt2ar(mrb, cog);
@@ -2821,18 +2856,18 @@ mrb_value intersect(mrb_state* mrb, mrb_value self)
     mrb_int s1, s2;
 	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
 
-	Handle(AIS_Shape) haS1 = ::get(s1);
-	if (haS1.IsNull()) {
+	TopoDS_Shape S1 = ::getTopoDSShape(s1);
+	if (S1.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) haS2 = ::get(s2);
-	if (haS2.IsNull()) {
+	TopoDS_Shape S2 = ::getTopoDSShape(s2);
+	if (S2.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	BRepAlgoAPI_Section	sect(haS1->Shape(), haS2->Shape(), Standard_False );
+	BRepAlgoAPI_Section	sect(S1, S2, Standard_False );
 	sect.ComputePCurveOn1(Standard_True);
 	sect.Approximation(Standard_True);
 	sect.Build();
@@ -2844,7 +2879,7 @@ mrb_value intersect(mrb_state* mrb, mrb_value self)
 
 	TopoDS_Shape shape = sect.Shape();
 
-	return mrb_fixnum_value(::set(shape));
+	return mrb_fixnum_value(::set(shape, self));
 }
 
 /**
@@ -2855,19 +2890,19 @@ mrb_value split(mrb_state* mrb, mrb_value self)
     mrb_int s1, s2;
 	int argc = mrb_get_args(mrb, "ii", &s1, &s2);
 
-	Handle(AIS_Shape) haS1 = ::get(s1);
-	if (haS1.IsNull()) {
+	TopoDS_Shape S1 = ::getTopoDSShape(s1);
+	if (S1.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) haS2 = ::get(s2);
-	if (haS2.IsNull()) {
+	TopoDS_Shape S2 = ::getTopoDSShape(s2);
+	if (S2.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
     // Intersection
-    BRepAlgoAPI_Section asect(haS1->Shape(), haS2->Shape(), FALSE);
+    BRepAlgoAPI_Section asect(S1, S2, FALSE);
     asect.ComputePCurveOn1(TRUE);
     asect.Approximation(TRUE);
     asect.Build();
@@ -2875,7 +2910,7 @@ mrb_value split(mrb_state* mrb, mrb_value self)
         return mrb_nil_value();
     TopoDS_Shape curve = asect.Shape();
 
-    BRepFeat_SplitShape splitter(haS1->Shape());
+    BRepFeat_SplitShape splitter(S1);
     TopExp_Explorer exp(curve, TopAbs_EDGE);
 
     for (; exp.More(); exp.Next()) {
@@ -2900,7 +2935,7 @@ mrb_value split(mrb_state* mrb, mrb_value self)
     }
 
 	TopoDS_Shape shape = splitter.Shape();
-	return mrb_fixnum_value(::set(shape));
+	return mrb_fixnum_value(::set(shape, self));
 }
 
 /**
@@ -2919,12 +2954,12 @@ mrb_value intcs(mrb_state* mrb, mrb_value self)
     mrb_bool with_normal = FALSE;
 	int argc = mrb_get_args(mrb, "ii|b", &c, &s, &with_normal);
 
-	Handle(AIS_Shape) hacurve = ::get(c);
+	Handle(AIS_Shape) hacurve = ::getAISShape(c);
 	if (hacurve.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) hasurf = ::get(s);
+	Handle(AIS_Shape) hasurf = ::getAISShape(s);
 	if (hasurf.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -2981,12 +3016,12 @@ mrb_value intfe(mrb_state* mrb, mrb_value self)
     mrb_bool with_normal = FALSE;
 	int argc = mrb_get_args(mrb, "ii|b", &s, &c, &with_normal);
 
-	Handle(AIS_Shape) hacurve = ::get(c);
+	Handle(AIS_Shape) hacurve = ::getAISShape(c);
 	if (hacurve.IsNull()) {
 		static const char m[] = "No such object name of specified at first.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
-	Handle(AIS_Shape) hasurf = ::get(s);
+	Handle(AIS_Shape) hasurf = ::getAISShape(s);
 	if (hasurf.IsNull()) {
 		static const char m[] = "No such object name of specified at second.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -3026,7 +3061,7 @@ mrb_value isin(mrb_state* mrb, mrb_value self)
     mrb_int target;
 	int argc = mrb_get_args(mrb, "Ai", &point, &target);
 
-	Handle(AIS_Shape) hashape = ::get((int)target);
+	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such named object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -3072,7 +3107,7 @@ mrb_value savebrep(mrb_state* mrb, mrb_value self)
 
 	mrb_value result;
 
-	Handle(AIS_Shape) hashape = ::get((int)target);
+	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
 
 	if (hashape.IsNull()) {
 		static const char m[] = "No such named object.";
@@ -3111,7 +3146,7 @@ mrb_value loadbrep(mrb_state* mrb, mrb_value self)
 #if USECLASS
         ::regist(shape, result, true);
 #else
-        result = mrb_fixnum_value(::set(shape));
+        result = mrb_fixnum_value(::set(shape, self));
 #endif
 	}
 	else {
@@ -3131,7 +3166,7 @@ mrb_value saveiges(mrb_state* mrb, mrb_value self)
     mrb_value path;
 	int argc = mrb_get_args(mrb, "iS", &target, &path);
 
-	Handle(AIS_Shape) hashape = ::get((int)target);
+	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such named object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -3170,7 +3205,7 @@ mrb_value loadiges(mrb_state* mrb, mrb_value self)
 #if USECLASS
         ::regist(shape, result, true);
 #else
-        result = mrb_fixnum_value(::set(shape));
+        result = mrb_fixnum_value(::set(shape, self));
 #endif
 	}
 	else {
@@ -3217,7 +3252,7 @@ mrb_value loadstl(mrb_state* mrb, mrb_value self)
 #if USECLASS
         ::regist(shape, result, true);
 #else
-        result = mrb_fixnum_value(::set(shape));
+        result = mrb_fixnum_value(::set(shape, self));
 #endif
     }
 
@@ -3233,7 +3268,7 @@ mrb_value savestl(mrb_state* mrb, mrb_value self)
     mrb_value path;
 	int argc = mrb_get_args(mrb, "iS", &target, &path);
 
-	Handle(AIS_Shape) hashape = ::get((int)target);
+	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
 	if (hashape.IsNull()) {
 		static const char m[] = "No such named object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
@@ -3253,6 +3288,21 @@ mrb_value version(mrb_state* mrb, mrb_value self)
     return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
 }
 
+mrb_value all(mrb_state* mrb, mrb_value self)
+{
+    mrb_value result = mrb_ary_new(mrb);
+
+    std::map<int, TopoDS_Shape>::iterator it = cur->shapeman.begin();
+    for (; it != cur->shapeman.end(); it++) {
+        int id = (int)(it->first);
+        mrb_ary_push(mrb, result, mrb_fixnum_value(id));
+    }
+    if (mrb_ary_len(mrb, result) == 0)
+        return mrb_nil_value();
+    else
+        return result;
+}
+
 mrb_value debug2(mrb_state* mrb, mrb_value self)
 {
     return mrb_fixnum_value(123);
@@ -3261,12 +3311,31 @@ mrb_value debug2(mrb_state* mrb, mrb_value self)
 /**
  * \brief debug command
  */
+#include <Prs3d_Root.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Graphic3d_AspectText3d.hxx>
 mrb_value debug(mrb_state* mrb, mrb_value self)
 {
+#if 0
+    Handle(Prs3d_Presentation) aPrs;
+    // get the group
+    Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (aPrs);
+    // change the text aspect
+    Handle(Graphic3d_AspectText3d) aTextAspect = new Graphic3d_AspectText3d ();
+    aTextAspect->SetTextZoomable (Standard_True);
+    aTextAspect->SetTextAngle (45.0);
+    aGroup->SetPrimitivesAspect (aTextAspect);
+    
+    // add a text primitive to the structure
+    Graphic3d_Vertex aPoint (1, 1, 1);
+    aGroup->Text (Standard_CString ("Text"), aPoint, 16.0);
+
+    return mrb_nil_value();
+#endif
     mrb_int target;
 	int argc = mrb_get_args(mrb, "i", &target);
 
-	Handle(AIS_Shape) hashape = ::get((int)target);
+	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
 
     {
         //cur->view->SetZClippingType(V3d_TypeOfZclipping::V3d_OFF);

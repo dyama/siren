@@ -275,8 +275,6 @@
 
 // Global/Static varibles
 static std::map<std::string, structHelp*> Help;       // Help string map
-//static Handle(AIS_InteractiveContext)     AISContext; // Visualization manager
-//static Handle(V3d_View)                   View;       // 3D-View
 static OCCViewer* cur;
 
 #endif

@@ -1,5 +1,7 @@
 # IJN destroyer Shimakaze
 
+$DRAW = false
+
 $ap = [0, 0, 0]
 $yaxis = [0, 1, 0]
 
@@ -34,9 +36,13 @@ lines.each do |n|
 end
 erase [ltopp, gtopp, lbtmp, gbtmp]
 
-hulls = mirror(copy(hullp), $ap, $yaxis)
-tops  = mirror(copy(topp),  $ap, $yaxis)
-btms  = mirror(copy(btmp),  $ap, $yaxis)
+hulls = copy(hullp)
+tops = copy(topp)
+btms = copy(btmp)
+
+hulls = mirror(hulls, $ap, $yaxis)
+tops  = mirror(tops,  $ap, $yaxis)
+btms  = mirror(btms,  $ap, $yaxis)
 
 # Upperdeck line
 def updk_mold_solid
@@ -48,7 +54,7 @@ def updk_mold_solid
     hoge = polyline ul
     fuga = wire([hoge])
     piyo = wire2plane(fuga)
-    result = sweep(piyo, [0, -n*2, 0])
+    result = sweepv(piyo, [0, -n*2, 0])
 
     erase [hoge, fuga, piyo]
 
@@ -60,10 +66,14 @@ parts = [hullp, topp, btmp, hulls, tops, btms]
 shell = sew parts
 hull = shell2solid shell
 sol = updk_mold_solid
-cut hull, sol
+res = cut hull, sol
 
 erase [shell, hull, sol]
 erase parts
+
+erase [hulls, tops, btms]
+
+display res
 
 fit
 
@@ -116,7 +126,7 @@ def torpedo
     zs = 1.4
     zu = 1.7
     a = polyline([[x,-1,zs],[x,-1,zu],[x,1,zu],[x,1,zs]]);
-    comp.push(sweep(a,[0.5,0,0]))
+    comp.push(sweepv(a,[0.5,0,0]))
     erase a
 
     # 窓
@@ -128,7 +138,7 @@ def torpedo
     # 出入口(サイド)
     w = 6
     a = polyline([[6,-w/2,0], [6,-w/2,1.8], [6.8,-w/2,1.8], [6.8,-w/2,0]])
-    comp.push(sweep(a,[0,w,0]))
+    comp.push(sweepv(a,[0,w,0]))
     erase a
 
     # マンホール

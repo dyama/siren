@@ -24,9 +24,13 @@ gp_Ax3*   ar2ax3    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
 mrb_value pnt2ar    (mrb_state* mrb, const gp_Pnt& rPnt);
 mrb_value vec2ar    (mrb_state* mrb, const gp_Vec& rVec);
 
-int set(const TopoDS_Shape& shape);
-int set(const TopoDS_Shape& shape, int draw);
+int set(const TopoDS_Shape& shape, const mrb_value& self);
+void display(const TopoDS_Shape& shape);
 void unset(int hashcode);
-Handle(AIS_Shape) get(int hashcode);
+
+Handle(AIS_Shape) getAISShape(int hashcode);
+TopoDS_Shape& getTopoDSShape(int hashcode);
+int updateTopoDSShape(int oldhashcode, const TopoDS_Shape& shape);
+
 bool has_object(int hashcode);
 void redisplay(const Handle(AIS_Shape)& hashape);

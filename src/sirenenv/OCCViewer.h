@@ -24,6 +24,9 @@ public:
 	Handle(V3d_View)                view;
 	Handle(Graphic3d_GraphicDriver) myGraphicDriver;
 
+    // Object manager
+    std::map<int, TopoDS_Shape> shapeman;
+
 public: // Ruby
 	Mirb* myMirb;
 	bool  mruby_init();
