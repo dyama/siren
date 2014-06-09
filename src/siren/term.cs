@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -16,6 +17,8 @@ namespace siren
         protected sirenenv.Viewer myViewer;
         protected change_state_func _func;
         protected MainForm mf;
+
+        protected string previous_path = "";
 
         public string result_string;
 
@@ -152,33 +155,43 @@ namespace siren
             this._func = func;
         }
 
+        /// <summary>
+        /// コマンドの実行処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void run()
+        {
+            List<string> cmdlines = new List<string>(Regex.Split(tb.Text, @"\n", RegexOptions.Multiline));
+
+            while (cmdlines.Count > 0) {
+                string line = cmdlines[0];
+                if (!Regex.IsMatch(line, @"^\s*$")) {
+                    if (this.execute(line, tb, true, false) != 0) {
+                        break;
+                    }
+                }
+                cmdlines.RemoveAt(0);
+
+                tb.Text = string.Join("\n", cmdlines.ToArray());
+                Application.DoEvents();
+            }
+
+            if (_func != null)
+                _func();
+
+            if (cmdlines.Count == 0)
+                tb.Text = string.Empty;
+
+            return;
+        }
+
         private void tb_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode) {
             case Keys.Enter:
                 if (e.Modifiers != Keys.Shift) {
-
-                    List<string> cmdlines = new List<string>(Regex.Split(tb.Text, @"\n", RegexOptions.Multiline));
-
-                    while (cmdlines.Count > 0) {
-                        string line = cmdlines[0];
-                        if (!Regex.IsMatch(line, @"^\s*$")) {
-                            if (this.execute(line, tb, true, false) != 0) {
-                                break;
-                            }
-                        }
-                        cmdlines.RemoveAt(0);
-
-                        tb.Text = string.Join("\n", cmdlines.ToArray());
-                        Application.DoEvents();
-                    }
-
-                    if (_func != null)
-                        _func();
-
-                    if (cmdlines.Count == 0)
-                        tb.Text = string.Empty;
-                    
+                    run();
                     e.SuppressKeyPress = true;
                 }
                 break;
@@ -195,6 +208,42 @@ namespace siren
                 break;
             }
         }
+
+        private void tsbClear_Click(object sender, EventArgs e)
+        {
+            tb.Clear();
+        }
+
+        private void tsbRun_Click(object sender, EventArgs e)
+        {
+            run();
+        }
+
+        private void tsbOpen_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog d = new OpenFileDialog();
+            d.Filter = "siren スクリプトファイル(*.rb)|*.rb|すべてのファイル(*.*)|*.*";
+            d.RestoreDirectory = true;
+            d.Multiselect = false;
+            if (d.ShowDialog() != DialogResult.OK) {
+                return;
+            }
+            this.previous_path = d.FileName;
+
+            StreamReader sr = new StreamReader(this.previous_path, Encoding.UTF8);
+            tb.Text = sr.ReadToEnd();
+            sr.Close();
+        }
+
+        private void tsbRelaod_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(this.previous_path)) {
+                StreamReader sr = new StreamReader(this.previous_path, Encoding.UTF8);
+                tb.Text = sr.ReadToEnd();
+                sr.Close();
+            }
+        }
+
 
     }
 }
