@@ -58,8 +58,8 @@ namespace siren
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbCopy = new System.Windows.Forms.ToolStripButton();
             this.tsbDelete = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbCompound = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbExplode = new System.Windows.Forms.ToolStripSplitButton();
             this.miExCompound = new System.Windows.Forms.ToolStripMenuItem();
             this.miExSolid = new System.Windows.Forms.ToolStripMenuItem();
@@ -363,11 +363,6 @@ namespace siren
             this.tsbDelete.Text = "削除";
             this.tsbDelete.Click += new System.EventHandler(this.tsbDelete_Click);
             // 
-            // toolStripSeparator9
-            // 
-            this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(31, 6);
-            // 
             // tsbCompound
             // 
             this.tsbCompound.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -379,6 +374,11 @@ namespace siren
             this.tsbCompound.Text = "コンパウンド";
             this.tsbCompound.ToolTipText = "コンパウンド";
             this.tsbCompound.Click += new System.EventHandler(this.tsbCompound_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(31, 6);
             // 
             // tsbExplode
             // 
