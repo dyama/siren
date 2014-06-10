@@ -107,9 +107,6 @@ bool OCCViewer::mruby_init()
 	// regcmd("shell2solid",&shell2solid,1,0, "Make a solid by shell.",        "shell2solid(ObjID) -> ObjID");
     // regcmd("triangle",  &triangle,  1,2, "Make triangle mesh from face.",   "triangle(ObjID, Deflection, Angle) -> ObjID");
 
-	// regcmd("obj2brep",  &obj2brep,  1,0, "Object to OpenCASCADE BRep.",     "obj2brep(obj) -> String");
-	// regcmd("brep2obj",  &brep2obj,  1,0, "Object from OpenCASCADE BRep.",   "obj2brep(string) -> obj");
-
 	// // I/O commands
 	// regcmd("brepsave",     &savebrep,  2,0, "Save object to a file.",          "brepsave(path, obj) -> nil");
 	regcmd("brepload",  &loadbrep,  1,0, "Load object from a file.",        "brepload(path) -> Shape");
@@ -170,6 +167,7 @@ bool OCCViewer::mruby_init()
 	regcmd("fuse",      &fuse,      2,1, "Fuse boolean operation.",         "fuse(obj1, obj2) -> String");
 	regcmd("volume",    &volume,    1,0, "Get volume of object.",           "volume(obj) -> float");
 	regcmd("cog",       &cog,       1,0, "Get center position of gravity",  "cog(obj) -> float[X, Y, Z]");
+	regcmd("area",      &area,      1,0, "Get square measure of surface.",  "area(obj) -> float");
 	regcmd("intersect", &intersect, 2,0, "Get intersection line.",          "intersect(obj1, obj2) -> ObjID");
 	regcmd("intcs",     &intcs,     2,1, "Intersection Curve x Surface",    "intcs(obj_curve, obj_surf, with_normal) -> [float[X, Y, Z], ...]");
 	regcmd("intfe",     &intfe,     2,1, "Intersection Face x Edge",        "intfe(face, edge) -> [float[X, Y, Z], ...]");
@@ -203,13 +201,10 @@ bool OCCViewer::mruby_init()
 	regcmd("shell2solid",&shell2solid,1,0, "Make a solid by shell.",        "shell2solid(ObjID) -> ObjID");
     regcmd("triangle",  &triangle,  1,2, "Make triangle mesh from face.",   "triangle(ObjID, Deflection, Angle) -> ObjID");
 
-	regcmd("obj2brep",  &obj2brep,  1,0, "Object to OpenCASCADE BRep.",     "obj2brep(obj) -> String");
-	regcmd("brep2obj",  &brep2obj,  1,0, "Object from OpenCASCADE BRep.",   "obj2brep(string) -> obj");
-
 	// I/O commands
-	regcmd("brepsave",     &savebrep,  2,0, "Save object to a file.",          "brepsave(path, obj) -> nil");
+	regcmd("brepsave",  &savebrep,  2,0, "Save object to a file.",          "brepsave(path, obj) -> nil");
 	regcmd("brepload",  &loadbrep,  1,0, "Load object from a file.",        "brepload(path) -> Shape");
-	regcmd("igessave",     &saveiges,  2,0, "Save object to an IGES.",         "igessave(path, obj) -> nil");
+	regcmd("igessave",  &saveiges,  2,0, "Save object to an IGES.",         "igessave(path, obj) -> nil");
 	regcmd("igesload",  &loadiges,  1,0, "Load object from an IGES.",       "igesload(path) -> Shape");
 	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path) -> Shape");
 	regcmd("stlsave",   &savestl,   2,0, "Save object to an STL file.",     "stlsave(obj, path) -> nil");
@@ -2708,22 +2703,6 @@ mrb_value triangle(mrb_state* mrb, mrb_value self)
 }
 
 /**
- * \brief 
- */
-mrb_value obj2brep(mrb_state* mrb, mrb_value self)
-{
-    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
-}
-
-/**
- * \brief 
- */
-mrb_value brep2obj(mrb_state* mrb, mrb_value self)
-{
-    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
-}
-
-/**
  * \brief get across area of s1 by s2
  */
 mrb_value common(mrb_state* mrb, mrb_value self)
@@ -2874,6 +2853,24 @@ mrb_value cog(mrb_state* mrb, mrb_value self)
 	gp_Pnt cog = gprops.CentreOfMass();
 
 	return ::pnt2ar(mrb, cog);
+}
+
+mrb_value area(mrb_state* mrb, mrb_value self)
+{
+    mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
+
+	TopoDS_Shape shape = ::getTopoDSShape(target);
+	if (shape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    GProp_GProps System;
+    BRepGProp::SurfaceProperties(shape, System);
+    Standard_Real Area = System.Mass();
+
+    return mrb_float_value(mrb, Area);
 }
 
 /**

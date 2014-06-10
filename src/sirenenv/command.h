@@ -53,6 +53,7 @@ mrb_value cut         (mrb_state*, mrb_value);
 mrb_value fuse        (mrb_state*, mrb_value);
 mrb_value volume      (mrb_state*, mrb_value);
 mrb_value cog         (mrb_state*, mrb_value);
+mrb_value area        (mrb_state*, mrb_value);
 mrb_value intersect   (mrb_state*, mrb_value);
 mrb_value split       (mrb_state*, mrb_value);
 mrb_value intcs       (mrb_state*, mrb_value);
@@ -85,9 +86,6 @@ mrb_value wire2pts    (mrb_state*, mrb_value);
 mrb_value wire2plane  (mrb_state*, mrb_value);
 mrb_value shell2solid (mrb_state*, mrb_value);
 mrb_value triangle    (mrb_state*, mrb_value);
-
-mrb_value obj2brep    (mrb_state*, mrb_value);
-mrb_value brep2obj    (mrb_state*, mrb_value);
 
 // I/O
 mrb_value savebrep    (mrb_state*, mrb_value);

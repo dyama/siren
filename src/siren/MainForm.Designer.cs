@@ -176,6 +176,7 @@ namespace siren
             // 
             // toolStripMain
             // 
+            this.toolStripMain.AutoSize = false;
             this.toolStripMain.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStripMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -192,8 +193,8 @@ namespace siren
             this.toolStripSeparator8,
             this.tsbCopy,
             this.tsbDelete,
-            this.toolStripSeparator9,
             this.tsbCompound,
+            this.toolStripSeparator9,
             this.tsbExplode,
             this.toolStripSeparator11,
             this.tsbTranslate,
@@ -222,6 +223,7 @@ namespace siren
             // 
             this.tsbVertex.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbVertex.Image = ((System.Drawing.Image)(resources.GetObject("tsbVertex.Image")));
+            this.tsbVertex.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbVertex.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbVertex.Name = "tsbVertex";
             this.tsbVertex.Size = new System.Drawing.Size(31, 20);
@@ -232,6 +234,7 @@ namespace siren
             // 
             this.tsbLine.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbLine.Image = ((System.Drawing.Image)(resources.GetObject("tsbLine.Image")));
+            this.tsbLine.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbLine.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbLine.Name = "tsbLine";
             this.tsbLine.Size = new System.Drawing.Size(31, 20);
@@ -242,6 +245,7 @@ namespace siren
             // 
             this.tsbPolyline.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbPolyline.Image = ((System.Drawing.Image)(resources.GetObject("tsbPolyline.Image")));
+            this.tsbPolyline.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbPolyline.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbPolyline.Name = "tsbPolyline";
             this.tsbPolyline.Size = new System.Drawing.Size(31, 20);
@@ -252,6 +256,7 @@ namespace siren
             // 
             this.tsbCurve.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbCurve.Image = ((System.Drawing.Image)(resources.GetObject("tsbCurve.Image")));
+            this.tsbCurve.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbCurve.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCurve.Name = "tsbCurve";
             this.tsbCurve.Size = new System.Drawing.Size(31, 20);
@@ -262,6 +267,7 @@ namespace siren
             // 
             this.tsbPlane.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbPlane.Image = ((System.Drawing.Image)(resources.GetObject("tsbPlane.Image")));
+            this.tsbPlane.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbPlane.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbPlane.Name = "tsbPlane";
             this.tsbPlane.Size = new System.Drawing.Size(31, 20);
@@ -273,7 +279,9 @@ namespace siren
             // 
             this.tsbBox.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbBox.Image = ((System.Drawing.Image)(resources.GetObject("tsbBox.Image")));
+            this.tsbBox.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbBox.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbBox.Margin = new System.Windows.Forms.Padding(0);
             this.tsbBox.Name = "tsbBox";
             this.tsbBox.Size = new System.Drawing.Size(31, 20);
             this.tsbBox.Text = "ボックス(箱)";
@@ -284,6 +292,7 @@ namespace siren
             // 
             this.tsbSphere.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbSphere.Image = ((System.Drawing.Image)(resources.GetObject("tsbSphere.Image")));
+            this.tsbSphere.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbSphere.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSphere.Name = "tsbSphere";
             this.tsbSphere.Size = new System.Drawing.Size(31, 20);
@@ -295,6 +304,7 @@ namespace siren
             // 
             this.tsbCylinder.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbCylinder.Image = ((System.Drawing.Image)(resources.GetObject("tsbCylinder.Image")));
+            this.tsbCylinder.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbCylinder.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCylinder.Name = "tsbCylinder";
             this.tsbCylinder.Size = new System.Drawing.Size(31, 20);
@@ -306,6 +316,7 @@ namespace siren
             // 
             this.tsbCone.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbCone.Image = ((System.Drawing.Image)(resources.GetObject("tsbCone.Image")));
+            this.tsbCone.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbCone.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCone.Name = "tsbCone";
             this.tsbCone.Size = new System.Drawing.Size(31, 20);
@@ -317,6 +328,7 @@ namespace siren
             // 
             this.tsbTorus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbTorus.Image = ((System.Drawing.Image)(resources.GetObject("tsbTorus.Image")));
+            this.tsbTorus.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbTorus.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbTorus.Name = "tsbTorus";
             this.tsbTorus.Size = new System.Drawing.Size(31, 20);
@@ -333,6 +345,7 @@ namespace siren
             // 
             this.tsbCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbCopy.Image = ((System.Drawing.Image)(resources.GetObject("tsbCopy.Image")));
+            this.tsbCopy.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCopy.Name = "tsbCopy";
             this.tsbCopy.Size = new System.Drawing.Size(31, 20);
@@ -343,6 +356,7 @@ namespace siren
             // 
             this.tsbDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbDelete.Image = ((System.Drawing.Image)(resources.GetObject("tsbDelete.Image")));
+            this.tsbDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbDelete.Name = "tsbDelete";
             this.tsbDelete.Size = new System.Drawing.Size(31, 20);
@@ -358,6 +372,7 @@ namespace siren
             // 
             this.tsbCompound.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbCompound.Image = ((System.Drawing.Image)(resources.GetObject("tsbCompound.Image")));
+            this.tsbCompound.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbCompound.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCompound.Name = "tsbCompound";
             this.tsbCompound.Size = new System.Drawing.Size(31, 20);
@@ -461,6 +476,7 @@ namespace siren
             this.tsbRotate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbRotate.Enabled = false;
             this.tsbRotate.Image = ((System.Drawing.Image)(resources.GetObject("tsbRotate.Image")));
+            this.tsbRotate.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbRotate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbRotate.Name = "tsbRotate";
             this.tsbRotate.Size = new System.Drawing.Size(31, 20);
@@ -473,6 +489,7 @@ namespace siren
             this.tsbScale.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbScale.Enabled = false;
             this.tsbScale.Image = ((System.Drawing.Image)(resources.GetObject("tsbScale.Image")));
+            this.tsbScale.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbScale.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbScale.Name = "tsbScale";
             this.tsbScale.Size = new System.Drawing.Size(31, 20);
@@ -484,6 +501,7 @@ namespace siren
             this.tsbMirror.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbMirror.Enabled = false;
             this.tsbMirror.Image = ((System.Drawing.Image)(resources.GetObject("tsbMirror.Image")));
+            this.tsbMirror.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbMirror.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbMirror.Name = "tsbMirror";
             this.tsbMirror.Size = new System.Drawing.Size(31, 20);
@@ -498,6 +516,7 @@ namespace siren
             // 
             this.tsbLoft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbLoft.Image = ((System.Drawing.Image)(resources.GetObject("tsbLoft.Image")));
+            this.tsbLoft.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbLoft.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbLoft.Name = "tsbLoft";
             this.tsbLoft.Size = new System.Drawing.Size(31, 20);
@@ -508,6 +527,7 @@ namespace siren
             // 
             this.tsbOffset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbOffset.Image = ((System.Drawing.Image)(resources.GetObject("tsbOffset.Image")));
+            this.tsbOffset.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbOffset.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbOffset.Name = "tsbOffset";
             this.tsbOffset.Size = new System.Drawing.Size(31, 20);
@@ -517,6 +537,7 @@ namespace siren
             // 
             this.tsbSewing.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbSewing.Image = ((System.Drawing.Image)(resources.GetObject("tsbSewing.Image")));
+            this.tsbSewing.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbSewing.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSewing.Name = "tsbSewing";
             this.tsbSewing.Size = new System.Drawing.Size(31, 20);
@@ -532,6 +553,7 @@ namespace siren
             // 
             this.tsbFuse.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbFuse.Image = ((System.Drawing.Image)(resources.GetObject("tsbFuse.Image")));
+            this.tsbFuse.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbFuse.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbFuse.Name = "tsbFuse";
             this.tsbFuse.Size = new System.Drawing.Size(31, 20);
@@ -542,6 +564,7 @@ namespace siren
             // 
             this.tsbCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbCut.Image = ((System.Drawing.Image)(resources.GetObject("tsbCut.Image")));
+            this.tsbCut.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbCut.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCut.Name = "tsbCut";
             this.tsbCut.Size = new System.Drawing.Size(31, 20);
@@ -552,6 +575,7 @@ namespace siren
             // 
             this.tsbCommon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbCommon.Image = ((System.Drawing.Image)(resources.GetObject("tsbCommon.Image")));
+            this.tsbCommon.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbCommon.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCommon.Name = "tsbCommon";
             this.tsbCommon.Size = new System.Drawing.Size(31, 20);
@@ -562,6 +586,7 @@ namespace siren
             // 
             this.tsbIntersect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbIntersect.Image = ((System.Drawing.Image)(resources.GetObject("tsbIntersect.Image")));
+            this.tsbIntersect.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbIntersect.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbIntersect.Name = "tsbIntersect";
             this.tsbIntersect.Size = new System.Drawing.Size(31, 20);
@@ -1153,7 +1178,6 @@ namespace siren
             this.toolStripGeneral.PerformLayout();
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
             this.toolStripContainer1.LeftToolStripPanel.ResumeLayout(false);
-            this.toolStripContainer1.LeftToolStripPanel.PerformLayout();
             this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
             this.toolStripContainer1.TopToolStripPanel.PerformLayout();
             this.toolStripContainer1.ResumeLayout(false);
