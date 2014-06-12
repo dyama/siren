@@ -592,10 +592,10 @@ namespace sirenenv
         OCCViewer* myOCCViewer;
     public:
 
-        bool InitViewer(System::IntPtr wnd, bool is_raytracing, bool is_persepective)
+        bool InitViewer(System::IntPtr wnd, bool grad, bool is_raytracing, bool is_persepective)
         {
             if (myOCCViewer != NULL)
-                return myOCCViewer->InitViewer(wnd.ToPointer(), is_raytracing, is_persepective);
+                return myOCCViewer->InitViewer(wnd.ToPointer(), grad, is_raytracing, is_persepective);
             else
                 return false;
         }
@@ -907,10 +907,10 @@ namespace sirenenv
             else return -1;
         }
 
-        void CreateNewView(System::IntPtr wnd, bool is_raytracing)
+        void CreateNewView(System::IntPtr wnd, bool grad, bool is_raytracing)
         {
             if (myOCCViewer != NULL)
-                myOCCViewer->CreateNewView(wnd.ToPointer(), is_raytracing);
+                myOCCViewer->CreateNewView(wnd.ToPointer(), grad, is_raytracing);
         }
 
         bool SetAISContext(Viewer^ v)

@@ -33,7 +33,7 @@ OCCViewer::~OCCViewer(void)
 /**
  * \brief ビューの初期化
  */
-void OCCViewer::initViewAppearance(bool is_raytracing, bool is_shadow, bool is_antialias, bool is_reflection)
+void OCCViewer::initViewAppearance(bool grad, bool is_raytracing, bool is_shadow, bool is_antialias, bool is_reflection)
 {
     // is_raytracing = true;
     // is_shadow = false;
@@ -52,7 +52,7 @@ void OCCViewer::initViewAppearance(bool is_raytracing, bool is_shadow, bool is_a
     }
 	//view->SetShadingModel(V3d_GOURAUD);
 
-    { // Background color
+    if (grad) { // Background color
 #if 0
         Quantity_Color color_top(0.35, 0.35, 0.35, Quantity_TOC_RGB);
         Quantity_Color color_btm(0.10, 0.10, 0.10, Quantity_TOC_RGB);
@@ -61,6 +61,9 @@ void OCCViewer::initViewAppearance(bool is_raytracing, bool is_shadow, bool is_a
         Quantity_Color color_btm(0.00, 0.03, 0.05, Quantity_TOC_RGB);
 #endif
         view->SetBgGradientColors(color_top, color_btm, Aspect_GFM_VER, Standard_False);
+    }
+    else {
+        view->SetBackgroundColor(Quantity_NameOfColor::Quantity_NOC_GRAY20);
     }
 
 	// Show trihedron on 3d viewer
@@ -99,7 +102,7 @@ void OCCViewer::initViewAppearance(bool is_raytracing, bool is_shadow, bool is_a
 /**
  * \brief ビューアの初期化
  */
-bool OCCViewer::InitViewer(void* wnd, bool is_raytracing, bool is_parsepective)
+bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_parsepective)
 {
 	// init graphic driver
     try {
@@ -169,7 +172,7 @@ bool OCCViewer::InitViewer(void* wnd, bool is_raytracing, bool is_parsepective)
 	if (!aWNTWindow->IsMapped()) 
 		 aWNTWindow->Map();
 
-    initViewAppearance(is_raytracing, true, true, true);
+    initViewAppearance(grad, is_raytracing, true, true, true);
 
 
 #if 0
@@ -758,7 +761,7 @@ int OCCViewer::DisplayMode(void)
 	return mode;
 }
 
-void OCCViewer::CreateNewView(void* wnd, bool is_raytracing)
+void OCCViewer::CreateNewView(void* wnd, bool grad, bool is_raytracing)
 {
 	if (aiscxt.IsNull())
 		return;
@@ -774,7 +777,7 @@ void OCCViewer::CreateNewView(void* wnd, bool is_raytracing)
 	aWNTWindow->Size(w,h);
 	if (!aWNTWindow->IsMapped()) 
 		 aWNTWindow->Map();
-    initViewAppearance(is_raytracing, false, false, false);
+    initViewAppearance(grad, is_raytracing, false, false, false);
 }
 
 bool OCCViewer::SetAISContext(OCCViewer* Viewer)

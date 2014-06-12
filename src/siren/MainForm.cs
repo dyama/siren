@@ -45,15 +45,15 @@ namespace siren
             splitContainer4.Panel1.Controls.Add(this.view2);
             view2.InitViewer();
             view2.SetContext(view1.Viewer);
-            view2.Viewer.CreateNewView(view2.Handle, false);
+            view2.Viewer.CreateNewView(view2.Handle, false, false);
             view2.Viewer.setProjection(TypeOfOrientation.Zpos);
 
-            this.view3 = new ViewForm(this, TypeOfOrientation.Ypos, false);
+            this.view3 = new ViewForm(this, TypeOfOrientation.Yneg, false);
             view3.Dock = DockStyle.Fill;
             splitContainer4.Panel2.Controls.Add(this.view3);
             view3.InitViewer();
             view3.SetContext(view1.Viewer);
-            view3.Viewer.CreateNewView(view3.Handle, false);
+            view3.Viewer.CreateNewView(view3.Handle, false, false);
             view3.Viewer.setProjection(TypeOfOrientation.Ypos);
 
             splitContainer3.Visible = false;
