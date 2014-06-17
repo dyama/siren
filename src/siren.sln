@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "siren", "siren\siren.csproj", "{B9914BB3-B886-4B41-B48D-350EBEBEFD1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "siren_dotnet", "siren_dotnet\siren_dotnet.csproj", "{B9914BB3-B886-4B41-B48D-350EBEBEFD1F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{739C3308-2F75-498A-96BC-A00D3BB9F551} = {739C3308-2F75-498A-96BC-A00D3BB9F551}
 	EndProjectSection

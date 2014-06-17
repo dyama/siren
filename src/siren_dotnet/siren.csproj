@@ -10,7 +10,7 @@
     <ApplicationIcon>256.ico</ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>siren</AssemblyName>
+    <AssemblyName>siren_dotnet</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
