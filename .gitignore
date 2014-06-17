@@ -12,3 +12,7 @@
 *.cpp~
 *.rb~
 *.swp
+obj
+bin
+bin
+obj

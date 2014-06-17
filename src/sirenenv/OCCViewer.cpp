@@ -63,7 +63,7 @@ void OCCViewer::initViewAppearance(bool grad, bool is_raytracing, bool is_shadow
         view->SetBgGradientColors(color_top, color_btm, Aspect_GFM_VER, Standard_False);
     }
     else {
-        view->SetBackgroundColor(Quantity_NameOfColor::Quantity_NOC_GRAY20);
+        view->SetBackgroundColor(Quantity_NOC_GRAY20);
     }
 
 	// Show trihedron on 3d viewer
