@@ -274,12 +274,14 @@ int OCCViewer::mruby_exec(char* command, std::string& errmsg)
 	if (cur == NULL)
 		return -1;
 
+#if 0
 	cur->aiscxt = aiscxt;
 	if (cur->aiscxt.IsNull())
 		return -1;
 	cur->view = view;
 	if (cur->view.IsNull())
 		return -1;
+#endif
 
 	int res = myMirb->user_exec(command, errmsg);
 
@@ -378,16 +380,18 @@ Handle(AIS_Shape) getAISShape(int hashcode)
     }
     return NULL;
 #else
-	// ‚±‚Á‚¿‚ª³‰ð
-	AIS_ListOfInteractive ar;
-	cur->aiscxt->ObjectsInside(ar);
-	AIS_ListIteratorOfListOfInteractive it(ar);
-	for (; it.More(); it.Next()) {
-		Handle(AIS_InteractiveObject) aisobj = it.Value();
-		Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(aisobj);
-        if (hashcode == hashape->Shape().HashCode(INT_MAX))
-            return hashape;
-	}
+
+        // ‚±‚Á‚¿‚ª³‰ð
+        AIS_ListOfInteractive ar;
+        cur->aiscxt->ObjectsInside(ar);
+        AIS_ListIteratorOfListOfInteractive it(ar);
+        for (; it.More(); it.Next()) {
+            Handle(AIS_InteractiveObject) aisobj = it.Value();
+            Handle(AIS_Shape) hashape = Handle(AIS_Shape)::DownCast(aisobj);
+            if (hashcode == hashape->Shape().HashCode(INT_MAX))
+                return hashape;
+        }
+
 	return NULL;
 #endif
 }
@@ -785,11 +789,15 @@ mrb_value translate(mrb_state* mrb, mrb_value self)
 	trsf.SetTranslation(myvec);
     shape.Move(trsf);
 
-    Handle(AIS_Shape) hashape = ::getAISShape(target);
-    if (!hashape.IsNull()) {
-        hashape->Set(shape);
-        redisplay(hashape);
+    mrb_value r = mrb_funcall(cur->myMirb->mrb, self, "is_draw", 0);
+    if (mrb_bool(r)) {
+        Handle(AIS_Shape) hashape = ::getAISShape(target);
+        if (!hashape.IsNull()) {
+            hashape->Set(shape);
+            redisplay(hashape);
+        }
     }
+
     return mrb_fixnum_value(updateTopoDSShape(target, shape));
 }
 
@@ -815,11 +823,15 @@ mrb_value rotate(mrb_state* mrb, mrb_value self)
     trsf.SetRotation(ax, ang);
     shape.Move(trsf);
 
-    Handle(AIS_Shape) hashape = ::getAISShape(target);
-    if (!hashape.IsNull()) {
-        hashape->Set(shape);
-        redisplay(hashape);
+    mrb_value r = mrb_funcall(cur->myMirb->mrb, self, "is_draw", 0);
+    if (mrb_bool(r)) {
+        Handle(AIS_Shape) hashape = ::getAISShape(target);
+        if (!hashape.IsNull()) {
+            hashape->Set(shape);
+            redisplay(hashape);
+        }
     }
+
     return mrb_fixnum_value(updateTopoDSShape(target, shape));
 }
 
@@ -844,10 +856,13 @@ mrb_value scale(mrb_state* mrb, mrb_value self)
     trsf.SetScale(p, (Standard_Real)s);
     shape.Move(trsf);
 
-    Handle(AIS_Shape) hashape = ::getAISShape(target);
-    if (!hashape.IsNull()) {
-        hashape->Set(shape);
-        redisplay(hashape);
+    mrb_value r = mrb_funcall(cur->myMirb->mrb, self, "is_draw", 0);
+    if (mrb_bool(r)) {
+        Handle(AIS_Shape) hashape = ::getAISShape(target);
+        if (!hashape.IsNull()) {
+            hashape->Set(shape);
+            redisplay(hashape);
+        }
     }
 
     return mrb_fixnum_value(updateTopoDSShape(target, shape));
@@ -873,10 +888,13 @@ mrb_value mirror(mrb_state* mrb, mrb_value self)
     trsf.SetMirror(ax);
     shape.Move(trsf);
 
-    Handle(AIS_Shape) hashape = ::getAISShape(target);
-    if (!hashape.IsNull()) {
-        hashape->Set(shape);
-        redisplay(hashape);
+    mrb_value r = mrb_funcall(cur->myMirb->mrb, self, "is_draw", 0);
+    if (mrb_bool(r)) {
+        Handle(AIS_Shape) hashape = ::getAISShape(target);
+        if (!hashape.IsNull()) {
+            hashape->Set(shape);
+            redisplay(hashape);
+        }
     }
     return mrb_fixnum_value(updateTopoDSShape(target, shape));
 }
@@ -3050,14 +3068,14 @@ mrb_value savebrep(mrb_state* mrb, mrb_value self)
 
 	mrb_value result;
 
-	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
+	TopoDS_Shape shape = ::getTopoDSShape((int)target);
 
-	if (hashape.IsNull()) {
+	if (shape.IsNull()) {
 		static const char m[] = "No such named object.";
         result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 	else {
-		Standard_Boolean res = BRepTools::Write(hashape->Shape(), (Standard_CString)RSTRING_PTR(path));
+		Standard_Boolean res = BRepTools::Write(shape, (Standard_CString)RSTRING_PTR(path));
 
 		if (res) {
 			result = mrb_nil_value();
@@ -3109,8 +3127,8 @@ mrb_value saveiges(mrb_state* mrb, mrb_value self)
     mrb_value path;
 	int argc = mrb_get_args(mrb, "iS", &target, &path);
 
-	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
-	if (hashape.IsNull()) {
+	TopoDS_Shape shape = ::getTopoDSShape((int)target);
+	if (shape.IsNull()) {
 		static const char m[] = "No such named object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
@@ -3119,7 +3137,7 @@ mrb_value saveiges(mrb_state* mrb, mrb_value self)
 	IGESControl_Writer writer(Interface_Static::CVal("XSTEP.iges.unit"),
                                Interface_Static::IVal("XSTEP.iges.writebrep.mode"));
  
-	writer.AddShape(hashape->Shape());
+	writer.AddShape(shape);
 	writer.ComputeModel();
 
     if (writer.Write((Standard_CString)RSTRING_PTR(path)) == Standard_False) {

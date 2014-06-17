@@ -19,6 +19,8 @@ OCCViewer::OCCViewer(void)
 	viewer = NULL;
 	view = NULL;
 	aiscxt = NULL;
+
+	mruby_init();
 }
 
 /**
@@ -235,7 +237,6 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_par
 		viewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
 	}
 
-	mruby_init();
 
 	aiscxt->UpdateCurrentViewer();
 
