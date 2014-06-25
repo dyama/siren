@@ -195,6 +195,9 @@
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <Poly_Triangulation.hxx>
 
+// BRep Proj
+#include <BRepProj_Projection.hxx>
+
 //Shape fix
 #include <ShapeFix_ShapeTolerance.hxx>
 #include <ShapeFix_Wire.hxx>

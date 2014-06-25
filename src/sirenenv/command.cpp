@@ -26,98 +26,6 @@ bool OCCViewer::mruby_init()
     // 視点制御系コマンド
     // ビュー管理系コマンド
 
-#if USECLASS
-
-	// General commands
-	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
-	regcmd("version",   &version,   0,0, "",                                "version() -> String");
-	regcmd("debug",     &debug,     0,0, "",                                "");
-
-	// // Infomation/Status commands
-	// regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(ObjID) -> Ary[min[X,Y,Z], max[X,Y,Z]]");
-	// regcmd("selected",  &selected,  0,0, "Get name of selected objects.",   "selected() -> Ary[ObjID, ...]");
-	// regcmd("type",      &type,      1,0, "Get type of object.",             "type(ObjID) -> Type");
-	// regcmd("exist",     &exist,     1,0, "Check exist.",                    "exist(ObjID) -> Boolean");
-	// regcmd("location",  &location,  1,1, "Get/Set location of shape in WCS.","location(ObjID, [X,Y,Z]) -> Ary[X,Y,Z]");
-    // regcmd("cparam",    &cparam,    2,0, "Get curve parameter at a point.", "cparam(obj, [X, Y, Z]) -> [int index, float param]");
-    // regcmd("cpoint",    &cpoint,    2,0, "Get point from parameter.",       "cpoint(obj, cparam) -> [X, Y, Z]");
-    // regcmd("ccurvature",&ccurvature,2,0, "Get curvature vector.",           "ccurvature(obj, cparam) -> [X, Y, Z]");
-    // regcmd("ctangent",  &ctangent  ,2,0, "Get tangent vector.",             "ctangent(obj, cparam) -> [X, Y, Z]");
-
-	// // Edit object commands
-	// regcmd("copy",      &copy,      1,0, "Copy specified object.",          "copy(ObjID) -> ObjID");
-	// regcmd("erase",     &erase,     1,0, "Erase specified object.",         "erase(ObjID) -> nil");
-	// regcmd("close",		&close,		1,0, "Close a wire.",                   "close( ObjID ) -> ObjID");
-
-	// // Group commands
-	// regcmd("compound",  &compound,  1,0, "Make compound model by objects.", "compound([ObjID, ObjID, ...]) -> ObjID");
-	// regcmd("sew",       &sew,       1,1, "Make shell model by objects.",    "sew([ObjID, ObjID, ...]) -> ObjID");
-	// regcmd("explode",   &explode,   2,0, "Explode object to children.",     "explode(type, ObjID) -> Ary");
-
-	// Transform commands
-	regcmd("translate", &translate, 2,0, "Translate specified object.",     "translate(obj, vector[X, Y, Z]) -> nil");
-	regcmd("rotate",    &rotate,    4,0, "Rotate specified object.",        "rotate(obj, center[X, Y, Z], normal[X, Y, Z], angle) -> nil"); 
-	regcmd("scale",     &scale,     3,0, "Scale specified object.",         "scale(obj, scale, center[X, Y, Z] = [0, 0, 0]) -> nil");
-	regcmd("mirror",    &mirror,    3,0, "Mirror copy specified object.",   "mirror(obj, center[X, Y, Z], normal[X, Y, Z]) -> nil");
-
-	// // Visualization commands
-	// regcmd("display",   &display,   1,0, "Dislay object.",                  "display(obj) -> nil");
-	// regcmd("hide",      &hide,      1,0, "Hide object.",                    "hide(obj) -> nil");
-	// regcmd("fit",       &fit,       0,0, "Fit view to objects",             "fit() -> nil");
-	// regcmd("update",    &update,    0,0, "Update current viewer.",          "update() -> nil");
-	// regcmd("color",     &color,     4,0, "Set color of object.",            "color(obj, R, G, B) -> nil");
-	// regcmd("bgcolor",   &bgcolor,   3,3, "Set color of background.",        "bgcolor(topR, topG, topB, btmR, btmG, btmB) -> nil");
-
-	// // Boolean operation commands
-	// regcmd("common",    &common,    2,1, "Common boolean operation.",       "common(obj1, obj2) -> String");
-	// regcmd("cut",       &cut,       2,1, "Cut boolean operation.",          "cut(obj1, obj2) -> String");
-	// regcmd("fuse",      &fuse,      2,1, "Fuse boolean operation.",         "fuse(obj1, obj2) -> String");
-	// regcmd("volume",    &volume,    1,0, "Get volume of object.",           "volume(obj) -> float");
-	// regcmd("cog",       &cog,       1,0, "Get center position of gravity",  "cog(obj) -> float[X, Y, Z]");
-	// regcmd("intersect", &intersect, 2,0, "Get intersection line.",          "intersect(obj1, obj2) -> ObjID");
-	// regcmd("intcs",     &intcs,     2,1, "Intersection Curve x Surface",    "intcs(obj_curve, obj_surf, with_normal) -> [float[X, Y, Z], ...]");
-	// regcmd("intfe",     &intfe,     2,1, "Intersection Face x Edge",        "intfe(face, edge) -> [float[X, Y, Z], ...]");
-    regcmd("isin",      &isin,      2,0, "Check a point located in a solid.","isin([X, Y, Z], solid) -> 0/1/-1");
-
-	// regcmd("split",     &split,     2,0, "",                                "");
-
-	// // Make object commands
-	regcmd("vertex",    &vertex,    3,0, "Make a vertex.",                  "vertex(X, Y, Z) -> Shape");
-	regcmd("line",      &line,      2,0, "Make a line.",                    "line([X, Y, Z], [X, Y, Z]) -> Shape");
-	regcmd("polyline",  &polyline,  1,0, "Make a polyline.",                "polyline(pts[[X, Y, Z], ...]) -> String");
-	regcmd("curve",     &curve,     1,1, "Make a curve.",                   "curve(pts[[X, Y, Z], ...], vecs[[X, Y, Z], ...]) -> String");
-	regcmd("box",       &box,       1,1, "Make a box.",                     "box(size[X, Y, Z], pos[X, Y, Z] = [0, 0, 0]) -> String");
-	regcmd("sphere",    &sphere,    1,1, "Make a sphere.",                  "sphere(R, pos[X, Y, Z] = [0, 0, 0]) -> String");
-	regcmd("cylinder",  &cylinder,  5,0, "Make a cylinder.",                "cylinder(pos[X, Y, Z], normal[X, Y, Z], R, height, angle) -> String");
-	regcmd("cone",      &cone,      6,0, "Make a cone.",                    "cone(pos[X, Y, Z], normal[X, Y, Z], R1, R2, height, angle) -> String");
-	regcmd("torus",     &torus,     7,0, "Make a torus.",                   "torus(pos[X, Y, Z], normal[X, Y, Z], R1, R2, angle) -> String");
-	regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
-	regcmd("polygon",   &polygon,   1,0, "Make a plane by contour points.", "");
-	regcmd("wire",	    &wire,      1,0, "Make a wire.",                    "wire( Ary[edge or wire or comp obj] ) -> String");
-	regcmd("sweepv",    &sweepv     2,0, "Make a sweep model with vector.", "sweepv(profile obj, vec[X, Y, Z]) -> objID");
-	regcmd("sweepp",    &sweepp     2,0, "Make a sweep model with path.",   "sweepp(profile obj, path obj) -> objID");
-	regcmd("loft",      &loft,      1,0, "Make a loft surface.",            "loft(Array[obj]) -> ObjID");
-    regcmd("bzsurf",    &bzsurf,    1,1, "Make a bezier surface.",          "bzsurf([[pu, ...], [pv, ...]], [[wu, ...], [wv, ...]]) -> ObjID");
-    regcmd("offset",    &offset,    1,1, "Make an offset surface.",         "offset(surface, offset_value) -> ObjID");
-
-	// // Convertion commands
-	// regcmd("wire2pts",  &wire2pts,  1,1, "Convert wire to points.",         "wire2pts(ObjID) -> Ary[[X, Y, Z], ...]");
-	// regcmd("wire2plane",&wire2plane,1,0, "Make a plane.",                   "wire2plane( Close wire ObjID ) -> String");
-	// regcmd("shell2solid",&shell2solid,1,0, "Make a solid by shell.",        "shell2solid(ObjID) -> ObjID");
-    // regcmd("triangle",  &triangle,  1,2, "Make triangle mesh from face.",   "triangle(ObjID, Deflection, Angle) -> ObjID");
-
-	// // I/O commands
-	// regcmd("brepsave",     &savebrep,  2,0, "Save object to a file.",          "brepsave(path, obj) -> nil");
-	regcmd("brepload",  &loadbrep,  1,0, "Load object from a file.",        "brepload(path) -> Shape");
-	regcmd("igessave",     &saveiges,  2,0, "Save object to an IGES.",         "igessave(path, obj) -> nil");
-	regcmd("igesload",  &loadiges,  1,0, "Load object from an IGES.",       "igesload(path) -> Shape");
-	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path) -> Shape");
-	//regcmd("stlsave",   &savestl,   2,0, "Save object to an STL file.",     "stlsave(obj, path) -> nil");
-
-    // //
-	// regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");
-#else
-
 	// General commands
 	regcmd("help",      &help,      1,0, "Display help of command.",        "help(cmd) -> String[][name, dest, usage]");
 	regcmd("version",   &version,   0,0, "",                                "version() -> String");
@@ -195,6 +103,8 @@ bool OCCViewer::mruby_init()
     regcmd("bssurf",    &bssurf,    0,0, "Make a B-spline surface.",        "");
     regcmd("offset",    &offset,    1,1, "Make an offset surface.",         "offset(surface, offset_value) -> ObjID");
 
+    regcmd("projw",     &projw,     3,0, "Make a cylindrical projection of wire on surface.", "");
+
 	// Convertion commands
 	regcmd("wire2pts",  &wire2pts,  1,1, "Convert wire to points.",         "wire2pts(ObjID) -> Ary[[X, Y, Z], ...]");
 	regcmd("wire2plane",&wire2plane,1,0, "Make a plane.",                   "wire2plane( Close wire ObjID ) -> String");
@@ -209,10 +119,7 @@ bool OCCViewer::mruby_init()
 	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path) -> Shape");
 	regcmd("stlsave",   &savestl,   2,0, "Save object to an STL file.",     "stlsave(obj, path) -> nil");
 
-    // //
 	// regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");
-
-#endif
 
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
@@ -1742,6 +1649,41 @@ mrb_value offset(mrb_state* mrb, mrb_value self)
     return result;
 #else
     return mrb_fixnum_value(::set(comp, self));
+#endif
+}
+
+/**
+ * \brief Cylindrical projection of wire on shape
+ */
+mrb_value projw(mrb_state* mrb, mrb_value self)
+{
+	mrb_int w, f;
+    mrb_value v;
+	int argc = mrb_get_args(mrb, "iiA", &w, &f, &v);
+
+	TopoDS_Shape wire = ::getTopoDSShape(w);
+	if (wire.IsNull() ) {
+		static const char m[] = "No such specified object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+	TopoDS_Shape face = ::getTopoDSShape(f);
+	if (face.IsNull() ) {
+		static const char m[] = "No such specified object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+    gp_Vec* vec = ::ar2vec(mrb, v);
+
+    TopoDS_Shape shape;
+    BRepProj_Projection bpp(wire, face, *vec);
+
+    shape = bpp.Shape();
+
+#if USECLASS
+    mrb_value result;
+    ::regist(shape, result);
+    return result;
+#else
+    return mrb_fixnum_value(::set(shape, self));
 #endif
 }
 
