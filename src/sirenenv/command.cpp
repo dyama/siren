@@ -387,9 +387,9 @@ void display(const TopoDS_Shape& shape)
 
     if (type == TopAbs_COMPOUND || type == TopAbs_SOLID || type == TopAbs_SHELL || type == TopAbs_FACE) {
 
-    	Handle(Graphic3d_ShaderProgram) myShader;
-    	myShader = new Graphic3d_ShaderProgram(Graphic3d_ShaderProgram::ShaderName_Phong);
-    	hashape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram(myShader);
+    	//Handle(Graphic3d_ShaderProgram) myShader;
+    	//myShader = new Graphic3d_ShaderProgram(Graphic3d_ShaderProgram::ShaderName_Phong);
+    	//hashape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram(myShader);
 
     	cur->aiscxt->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
     	cur->aiscxt->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
