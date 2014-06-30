@@ -124,6 +124,10 @@ bool OCCViewer::mruby_init()
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
 		"$DRAW = true;"
+		"$DIST = 10;"
+		"$ANG = 15;"
+		"$SUP = 1.25;"
+		"$SDOWN = 0.75;"
 		"$tri10 = [10,10,10];"
         "def is_draw; $DRAW; end"
 		);

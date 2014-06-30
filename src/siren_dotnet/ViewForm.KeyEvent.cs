@@ -26,11 +26,6 @@ namespace siren
 
         protected bool isSpaceKeyDown = false;
 
-        public static double move_unit_distance = 10;
-        public static double rotate_unit_angle  = 15;
-        public static double scale_up_factor    = 1.25;
-        public static double scale_down_factor  = 0.75;
-
         /// <summary>
         /// キー イベントのメソッド定義
         /// </summary>
@@ -139,14 +134,14 @@ namespace siren
             case CurSpKey.CTRL:
                 break;
             case CurSpKey.META:
-                parent.myTerm.execute("selected.each { |obj| scale obj, " + scale_up_factor.ToString() + ", (location obj) }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| scale obj, $SUP, (location obj) }", this, false, false);
                 break;
             case CurSpKey.SHIFT:
-                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], 15 }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], $ANG }", this, false, false);
                 break;
             case CurSpKey.NOTHING:
             default:
-                parent.myTerm.execute("selected.each { |obj| translate obj, [" + move_unit_distance.ToString() + ", 0, 0] }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| translate obj, [$DIST, 0, 0] }", this, false, false);
                 break;
             }
         }
@@ -158,14 +153,14 @@ namespace siren
             case CurSpKey.CTRL:
                 break;
             case CurSpKey.META:
-                parent.myTerm.execute("selected.each { |obj| scale obj, " + scale_down_factor.ToString() + ", (location obj) }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| scale obj, $SDOWN, (location obj) }", this, false, false);
                 break;
             case CurSpKey.SHIFT:
-                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], -15 }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [0, 1, 0], -$ANG }", this, false, false);
                 break;
             case CurSpKey.NOTHING:
             default:
-                parent.myTerm.execute("selected.each { |obj| translate obj, [-" + move_unit_distance.ToString() + ", 0, 0] }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| translate obj, [-$DIST, 0, 0] }", this, false, false);
                 break;
             }
         }
@@ -179,11 +174,11 @@ namespace siren
             case CurSpKey.META:
                 break;
             case CurSpKey.SHIFT:
-                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [1, 0, 0], -15 }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [1, 0, 0], -$ANG }", this, false, false);
                 break;
             case CurSpKey.NOTHING:
             default:
-                parent.myTerm.execute("selected.each { |obj| translate obj, [0, " + move_unit_distance.ToString() + ", 0] }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| translate obj, [0, $DIST, 0] }", this, false, false);
                 break;
             }
         }
@@ -198,11 +193,11 @@ namespace siren
             case CurSpKey.META:
                 break;
             case CurSpKey.SHIFT:
-                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [1, 0, 0], 15 }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [1, 0, 0], $ANG }", this, false, false);
                 break;
             case CurSpKey.NOTHING:
             default:
-                parent.myTerm.execute("selected.each { |obj| translate obj, [0, -" + move_unit_distance.ToString() + ", 0] }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| translate obj, [0, -$DIST, 0] }", this, false, false);
                 break;
             }
         }
@@ -216,11 +211,11 @@ namespace siren
             case CurSpKey.META:
                 break;
             case CurSpKey.SHIFT:
-                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [0, 0, 1], 15 }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [0, 0, 1], $ANG }", this, false, false);
                 break;
             case CurSpKey.NOTHING:
             default:
-                parent.myTerm.execute("selected.each { |obj| translate obj, [0, 0, " + move_unit_distance.ToString() + "] }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| translate obj, [0, 0, $DIST] }", this, false, false);
                 break;
             }
         }
@@ -234,11 +229,11 @@ namespace siren
             case CurSpKey.META:
                 break;
             case CurSpKey.SHIFT:
-                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [0, 0, 1], -15 }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| rotate obj, (location obj), [0, 0, 1], -$ANG }", this, false, false);
                 break;
             case CurSpKey.NOTHING:
             default:
-                parent.myTerm.execute("selected.each { |obj| translate obj, [0, 0, -" + move_unit_distance.ToString() + "] }", this, false, false);
+                parent.myTerm.execute("selected.each { |obj| translate obj, [0, 0, -$DIST] }", this, false, false);
                 break;
             }
         }
@@ -247,14 +242,14 @@ namespace siren
         {
             if (!Viewer.IsObjectSelected())
                 return;
-            parent.myTerm.execute("selected.each { |obj| scale obj, " + scale_up_factor.ToString() + ", (location obj) }", this, false, false);
+            parent.myTerm.execute("selected.each { |obj| scale obj, $SUP, (location obj) }", this, false, false);
         }
 
         private void scale_down()
         {
             if (!Viewer.IsObjectSelected())
                 return;
-            parent.myTerm.execute("selected.each { |obj| scale obj, " + scale_down_factor.ToString() + ", (location obj) }", this, false, false);
+            parent.myTerm.execute("selected.each { |obj| scale obj, $SDOWN, (location obj) }", this, false, false);
         }
 
         private void group()
