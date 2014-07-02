@@ -108,6 +108,7 @@
 #include <gp_Hypr.hxx>
 #include <gp_Parab.hxx>
 #include <Geom_Axis2Placement.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -158,6 +159,7 @@
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx> // sweepp
 #include <BRepOffsetAPI_ThruSections.hxx>
+#include <BRepOffsetAPI_MakeThickSolid.hxx> // 
 // for primitive
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -166,6 +168,8 @@
 #include <BRepPrimAPI_MakeTorus.hxx>
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
+//#include <BRepPrimAPI_MakeRevol.hxx>
+#include <BRepPrimAPI_MakePrism.hxx>
 // for isin
 #include <BRepClass3d_SolidClassifier.hxx>
 

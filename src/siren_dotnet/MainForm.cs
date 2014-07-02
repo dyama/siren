@@ -337,7 +337,7 @@ namespace siren
         {
             if (this.view1 == null)
                 return;
-            myTerm.execute("a = plane [0, 0, 0], [0, 0, 1], -10, 10, -10, 10");
+            myTerm.execute("a = plane [0, 0, 0], [0, 0, 1], [0, 1, 0], -10, 10, -10, 10");
         }
 
         private void tsbBox_Click(object sender, EventArgs e)

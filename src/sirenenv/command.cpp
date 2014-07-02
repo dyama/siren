@@ -93,21 +93,23 @@ bool OCCViewer::mruby_init()
 	regcmd("cylinder",  &cylinder,  5,0, "Make a cylinder.",                "cylinder(pos[X, Y, Z], normal[X, Y, Z], R, height, angle) -> String");
 	regcmd("cone",      &cone,      6,0, "Make a cone.",                    "cone(pos[X, Y, Z], normal[X, Y, Z], R1, R2, height, angle) -> String");
 	regcmd("torus",     &torus,     7,0, "Make a torus.",                   "torus(pos[X, Y, Z], normal[X, Y, Z], R1, R2, angle) -> String");
-    regcmd("plane",     &plane,     6,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
+    regcmd("plane",     &plane,     7,0, "Make a plane.",                   "plane(pos[X, Y, Z], normal[X, Y, Z], umin, umax, vmin, vmax) -> String");
 	regcmd("polygon",   &polygon,   1,0, "Make a plane by contour points.", "");
 	regcmd("wire",	    &wire,      1,0, "Make a wire.",                    "wire( Ary[edge or wire or comp obj] ) -> String");
 	regcmd("sweepv",    &sweepv,    2,0, "Make a sweep model with vector.", "sweepv(profile obj, vec[X, Y, Z]) -> objID");
 	regcmd("sweepp",    &sweepp,    2,4, "Make a sweep model with path.",   "sweepp(profile obj, path obj) -> objID");
 	regcmd("loft",      &loft,      1,0, "Make a loft surface.",            "loft(Array[obj]) -> ObjID");
+    regcmd("bscurve",   &bscurve,   0,0, "Make a B-spline curve.",          "");
     regcmd("bzsurf",    &bzsurf,    1,1, "Make a bezier surface.",          "bzsurf([[pu, ...], [pv, ...]], [[wu, ...], [wv, ...]]) -> ObjID");
     regcmd("bssurf",    &bssurf,    0,0, "Make a B-spline surface.",        "");
     regcmd("offset",    &offset,    1,1, "Make an offset surface.",         "offset(surface, offset_value) -> ObjID");
+    regcmd("thick",     &thick,     2,0, "Make a thicknessed solid.",        "thick(surface, offset_value) -> ObjID");
 
     regcmd("projw",     &projw,     3,0, "Make a cylindrical projection of wire on surface.", "");
 
 	// Convertion commands
 	regcmd("wire2pts",  &wire2pts,  1,1, "Convert wire to points.",         "wire2pts(ObjID) -> Ary[[X, Y, Z], ...]");
-	regcmd("wire2plane",&wire2plane,1,0, "Make a plane.",                   "wire2plane( Close wire ObjID ) -> String");
+	regcmd("wire2face", &wire2face, 1,1, "Make a face with boundary wire.", "wire2face(wire, is_plane = false) -> String");
 	regcmd("shell2solid",&shell2solid,1,0, "Make a solid by shell.",        "shell2solid(ObjID) -> ObjID");
     regcmd("triangle",  &triangle,  1,2, "Make triangle mesh from face.",   "triangle(ObjID, Deflection, Angle) -> ObjID");
 
@@ -1111,14 +1113,15 @@ mrb_value torus(mrb_state* mrb, mrb_value self)
  */
 mrb_value plane(mrb_state* mrb, mrb_value self)
 {
-	mrb_value pos, dir;
+	mrb_value pos, norm, vdir;
 	mrb_float umin, umax, vmin, vmax;
-	int argc = mrb_get_args(mrb, "AAffff", &pos, &dir, &umin, &umax, &vmin, &vmax);
+	int argc = mrb_get_args(mrb, "AAAffff", &pos, &norm, &vdir, &umin, &umax, &vmin, &vmax);
 
 	gp_Pnt _pos = *ar2pnt(mrb, pos);
-	gp_Pnt _dir = *ar2pnt(mrb, dir);
-	gp_Dir __dir(_dir.X(), _dir.Y(), _dir.Z());
-	gp_Pln _pln(_pos, __dir);
+	gp_Dir _norm = *ar2dir(mrb, norm);
+    gp_Dir _vdir = *ar2dir(mrb, vdir);
+    gp_Ax3 ax(_pos, _norm, _vdir);
+	gp_Pln _pln(ax);
 
 	TopoDS_Shape shape;
 	try {
@@ -1444,6 +1447,47 @@ mrb_value loft(mrb_state* mrb, mrb_value self)
 }
 
 /**
+* \brief 
+*/
+// bsplinesurf s   1 2 0 2 1 2   2 3 0 3 1 1 2 3   0 0 0 1  10 0 5 1   0 10 2 1  10 10 3 1   0 20 10 1  10 20 20 1   0 30 0 1  10 30 0 1
+//                 u n u u u u   v n v v v v v v   x y z w  x  y z w   x y  z w  x  y  z w   x y  z  w  x  y  z  w   x y  z w  x  y  z w
+//                 d k k m k m   d k k m k m k m   POLES ...
+// bssurf 1,[[0,2],[1,2]],2,[[0,3],[1,1],[2,3]],[[[0,0,0,1],[10,0,5,1]],[[0,10,2,1],[10,10,3,1]],[[0,20,10,1],[10,20,20,1]],[[0,30,0,1],[10,30,0,1]]]
+mrb_value bscurve(mrb_state* mrb, mrb_value self)
+{
+    // bsplinecurve name degree nbknots knot, umult pole, weight
+    // bsplinecurve bc   2      3       0,3  1,1  2,3  10 0 7 1    7 0 7 1    3 0 8 1    0 0 7 1
+
+    TColgp_Array1OfPnt poles(0, 3);
+    poles.SetValue(0, gp_Pnt(100,  0,  0));
+    poles.SetValue(1, gp_Pnt( 70,-10, 10));
+    poles.SetValue(2, gp_Pnt( 30, 40, 10));
+    poles.SetValue(3, gp_Pnt(  0,  0,  0));
+
+    TColStd_Array1OfReal weights(0, 3);
+    weights.SetValue(0, 1.0);
+    weights.SetValue(1, 1.0);
+    weights.SetValue(2, 1.2);
+    weights.SetValue(3, 1.0);
+
+    TColStd_Array1OfReal knots(0, 2);
+    knots.SetValue(0, 0);
+    knots.SetValue(1, 1);
+    knots.SetValue(2, 2);
+
+    TColStd_Array1OfInteger mults(0, 2);
+    mults.SetValue(0, 3);
+    mults.SetValue(1, 1);
+    mults.SetValue(2, 3);
+
+    Handle(Geom_BSplineCurve) hgeom_bscurve = new Geom_BSplineCurve(
+        poles, weights, knots, mults, 2, Standard_False);
+
+    TopoDS_Edge e = BRepBuilderAPI_MakeEdge(hgeom_bscurve);
+    return mrb_fixnum_value(::set(e, self));
+}
+
+/**
  * \brief ポールとウェイトを指定してベジエ曲面を作成する
  */
 mrb_value bzsurf(mrb_state* mrb, mrb_value self)
@@ -1654,6 +1698,50 @@ mrb_value offset(mrb_state* mrb, mrb_value self)
 #else
     return mrb_fixnum_value(::set(comp, self));
 #endif
+}
+
+/**
+ * \brief サーフェスから板厚を指定してソリッドを作成する
+ */
+mrb_value thick(mrb_state* mrb, mrb_value self)
+{
+	mrb_int target;
+	mrb_float offset;
+	int argc = mrb_get_args(mrb, "if", &target, &offset);
+
+	TopoDS_Shape shape = ::getTopoDSShape(target);
+	if (shape.IsNull() ) {
+		static const char m[] = "No such specified object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    // gp_Ax1 axis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+    // TopoDS_Shape dish = BRepPrimAPI_MakeRevol(shape, axis).Shape();
+
+    //TopTools_ListOfShape closing_faces;
+    //TopExp_Explorer ex(dish, TopAbs_FACE);
+    //closing_faces.Append(ex.Current());
+
+    //BRepOffsetAPI_MakeThickSolid mts(dish, closing_faces, (Standard_Real)offset, 1.0);
+    //TopoDS_Shape rshape = mts.Shape();
+    //TopoDS_Shape rshape = dish;
+
+     //TopoDS_Shape S1 = BRepPrimAPI_MakeBox(100,100,100);
+     //TopTools_ListOfShape aList;
+     //TopExp_Explorer Ex(S1,TopAbs_FACE);
+     //for(int i=0;i<5;i++)
+     //{
+     //     TopoDS_Shape aFace = Ex.Current();
+     //     Ex.Next();
+     //     aList.Append(aFace);
+     //}
+     //     
+     //TopoDS_Shape aThickSolid = BRepOffsetAPI_MakeThickSolid(S1,aList,10,0.01);
+     //return mrb_fixnum_value(::set(aThickSolid, self));
+
+    TopoDS_Shape rshape = BRepPrimAPI_MakePrism(shape, gp_Vec(0, 0, 5));
+
+    return mrb_fixnum_value(::set(rshape, self));
 }
 
 /**
@@ -2412,13 +2500,22 @@ mrb_value wire2pts(mrb_state* mrb, mrb_value self)
 }
 
 /**
- * \brief wire to plane
+ * \brief wire to face
  */
-mrb_value wire2plane(mrb_state* mrb, mrb_value self)
+mrb_value wire2face(mrb_state* mrb, mrb_value self)
 {
 	//!!Curveを含んだWireには未対応!!
 	mrb_int src;
-	int argc = mrb_get_args(mrb, "i", &src);
+    mrb_bool is_pln;
+	int argc = mrb_get_args(mrb, "i|b", &src, &is_pln);
+
+    Standard_Boolean is_plane;
+    if (argc == 2) {
+        is_plane = is_pln ? Standard_True : Standard_False;
+    }
+    else {
+        is_plane = Standard_False;
+    }
 
 	TopoDS_Shape shape = ::getTopoDSShape(src);
 	if (shape.IsNull()) {
@@ -2426,14 +2523,14 @@ mrb_value wire2plane(mrb_state* mrb, mrb_value self)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 	if (shape.ShapeType() != TopAbs_WIRE) {
-		static const char m[] = "Failed to make a plane.";
+		static const char m[] = "Specified shape is not wire. Failed to make a plane.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 	
 	TopoDS_Shape rshape;
 	try {
 		TopoDS_Wire w = TopoDS::Wire(shape);
-		BRepBuilderAPI_MakeFace mf( w, Standard_True );
+		BRepBuilderAPI_MakeFace mf(w, is_plane);
 		mf.Build();
 		if (  !mf.IsDone() ) {
 			static const char m[] = "Failed to make a plane.";
@@ -3223,70 +3320,94 @@ mrb_value debug2(mrb_state* mrb, mrb_value self)
 #include <Graphic3d_AspectText3d.hxx>
 mrb_value debug(mrb_state* mrb, mrb_value self)
 {
-#if 0
-    Handle(Prs3d_Presentation) aPrs;
-    // get the group
-    Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (aPrs);
-    // change the text aspect
-    Handle(Graphic3d_AspectText3d) aTextAspect = new Graphic3d_AspectText3d ();
-    aTextAspect->SetTextZoomable (Standard_True);
-    aTextAspect->SetTextAngle (45.0);
-    aGroup->SetPrimitivesAspect (aTextAspect);
-    
-    // add a text primitive to the structure
-    Graphic3d_Vertex aPoint (1, 1, 1);
-    aGroup->Text (Standard_CString ("Text"), aPoint, 16.0);
 
-    return mrb_nil_value();
-#endif
-    mrb_int target;
-	int argc = mrb_get_args(mrb, "i", &target);
+    BRepBuilderAPI_MakePolygon mp;
+    mp.Add(gp_Pnt(0, 0, 0));
+    mp.Add(gp_Pnt(10, 0, 0));
+    mp.Add(gp_Pnt(10, 5, 0));
+    mp.Add(gp_Pnt(20, 5, 0));
+    mp.Add(gp_Pnt(20, 15, 0));
+    mp.Add(gp_Pnt(15, 12, 0));
+    mp.Add(gp_Pnt(5, 12, 0));
+    mp.Add(gp_Pnt(3, 10, 0));
+    mp.Add(gp_Pnt(0, 0, 0));
 
-	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
+    mp.Build();
 
-    {
-        //cur->view->SetZClippingType(V3d_TypeOfZclipping::V3d_OFF);
-        // NCollection_Vec4<Standard_Real> eq(0., 0., 1., 1.);
-
-        gp_Pln pln(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0));
-        Handle(Graphic3d_ClipPlane) thePlane = new Graphic3d_ClipPlane(pln);
-
-        thePlane->SetCappingHatch(Aspect_HS_DIAGONAL_45);
-        thePlane->SetCappingHatchOn();
-        thePlane->SetCapping(Standard_True);
-        thePlane->SetOn(Standard_True);
-
-        hashape->AddClipPlane(thePlane);
-        hashape->Redisplay();
-
-        //cur->aiscxt->Display(hashape);
-
-        //cur->view->AddClipPlane(thePlane);
-        //cur->view->Redraw();
-        //cur->aiscxt->Update(hashape);
-        //cur->aiscxt->UpdateCurrent();
-        //cur->aiscxt->UpdateCurrentViewer();
+    if (mp.IsDone()) {
+        TopoDS_Wire w = mp.Wire();
+		BRepBuilderAPI_MakeFace mf(w, Standard_True);
+		mf.Build();
+		if (mf.IsDone()) {
+            TopoDS_Face f = mf.Face();
+            return mrb_fixnum_value(::set(f, self));
+		}
     }
     return mrb_nil_value();
-
-#if 0
-    //RClass* my_class = mrb_define_class(mrb, "Shape", mrb->object_class);
-    //mrb_define_method(mrb, my_class, "type", debug2, ARGS_NONE());
-    //RClass* a_class = mrb_class_get(myMirb->mrb, "MyClass");
-    // mrb_value args[2];
-    // args[0] = mrb_fixnum_value(LED_ORANGE);     //pin Number
-    // args[1] = mrb_fixnum_value(1000);   //interval
-
-    //return mrb_funcall(mrb, a_obj, "type", 0);
-
-    //  mrb_funcall(mrb, blinker_obj,"run",0);
-    // return a_obj;
-
-    RClass* my_class = mrb_define_class(mrb, "Test", mrb->object_class);
-    mrb_value obj = mrb_class_new_instance(mrb, 0, NULL, my_class);
-    mrb_sym sym = mrb_intern(mrb, "asdf", strlen("asdf"));
-    RObject* pobj = mrb_obj_ptr(obj);
-    mrb_obj_iv_set(mrb, pobj, sym, mrb_fixnum_value(1244));
-    return mrb_obj_iv_get(mrb, pobj, sym);
-#endif
+// #if 0
+//     Handle(Prs3d_Presentation) aPrs;
+//     // get the group
+//     Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (aPrs);
+//     // change the text aspect
+//     Handle(Graphic3d_AspectText3d) aTextAspect = new Graphic3d_AspectText3d ();
+//     aTextAspect->SetTextZoomable (Standard_True);
+//     aTextAspect->SetTextAngle (45.0);
+//     aGroup->SetPrimitivesAspect (aTextAspect);
+//     
+//     // add a text primitive to the structure
+//     Graphic3d_Vertex aPoint (1, 1, 1);
+//     aGroup->Text (Standard_CString ("Text"), aPoint, 16.0);
+// 
+//     return mrb_nil_value();
+// #endif
+//     mrb_int target;
+// 	int argc = mrb_get_args(mrb, "i", &target);
+// 
+// 	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
+// 
+//     {
+//         //cur->view->SetZClippingType(V3d_TypeOfZclipping::V3d_OFF);
+//         // NCollection_Vec4<Standard_Real> eq(0., 0., 1., 1.);
+// 
+//         gp_Pln pln(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0));
+//         Handle(Graphic3d_ClipPlane) thePlane = new Graphic3d_ClipPlane(pln);
+// 
+//         thePlane->SetCappingHatch(Aspect_HS_DIAGONAL_45);
+//         thePlane->SetCappingHatchOn();
+//         thePlane->SetCapping(Standard_True);
+//         thePlane->SetOn(Standard_True);
+// 
+//         hashape->AddClipPlane(thePlane);
+//         hashape->Redisplay();
+// 
+//         //cur->aiscxt->Display(hashape);
+// 
+//         //cur->view->AddClipPlane(thePlane);
+//         //cur->view->Redraw();
+//         //cur->aiscxt->Update(hashape);
+//         //cur->aiscxt->UpdateCurrent();
+//         //cur->aiscxt->UpdateCurrentViewer();
+//     }
+//     return mrb_nil_value();
+// 
+// #if 0
+//     //RClass* my_class = mrb_define_class(mrb, "Shape", mrb->object_class);
+//     //mrb_define_method(mrb, my_class, "type", debug2, ARGS_NONE());
+//     //RClass* a_class = mrb_class_get(myMirb->mrb, "MyClass");
+//     // mrb_value args[2];
+//     // args[0] = mrb_fixnum_value(LED_ORANGE);     //pin Number
+//     // args[1] = mrb_fixnum_value(1000);   //interval
+// 
+//     //return mrb_funcall(mrb, a_obj, "type", 0);
+// 
+//     //  mrb_funcall(mrb, blinker_obj,"run",0);
+//     // return a_obj;
+// 
+//     RClass* my_class = mrb_define_class(mrb, "Test", mrb->object_class);
+//     mrb_value obj = mrb_class_new_instance(mrb, 0, NULL, my_class);
+//     mrb_sym sym = mrb_intern(mrb, "asdf", strlen("asdf"));
+//     RObject* pobj = mrb_obj_ptr(obj);
+//     mrb_obj_iv_set(mrb, pobj, sym, mrb_fixnum_value(1244));
+//     return mrb_obj_iv_get(mrb, pobj, sym);
+// #endif
 }
