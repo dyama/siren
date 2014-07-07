@@ -30,99 +30,99 @@ namespace siren
 			Application.Run(new MainForm());
         }
 
-        #region "イベント"
+    #region "イベント"
 
-        void MainForm_Load(object sender, EventArgs e)
-        {
-            this.view1 = new ViewForm(this, TypeOfOrientation.XnegYnegZpos, true);
-            view1.Dock = DockStyle.Fill;
-            splitContainer2.Panel1.Controls.Add(this.view1);
-			view1.InitViewer();
-			view1.InitV3D(false);
+    void MainForm_Load(object sender, EventArgs e)
+    {
+      this.view1 = new ViewForm(this, TypeOfOrientation.XnegYnegZpos, true);
+      view1.Dock = DockStyle.Fill;
+      splitContainer2.Panel1.Controls.Add(this.view1);
+      view1.InitViewer();
+      view1.InitV3D(false);
 
-            this.view2 = new ViewForm(this, TypeOfOrientation.Zneg, false);
-            view2.Dock = DockStyle.Fill;
-            splitContainer4.Panel1.Controls.Add(this.view2);
-            view2.InitViewer();
-            view2.SetContext(view1.Viewer);
-            view2.Viewer.CreateNewView(view2.Handle, false, false);
-            view2.Viewer.setProjection(TypeOfOrientation.Zpos);
+      this.view2 = new ViewForm(this, TypeOfOrientation.Zneg, false);
+      view2.Dock = DockStyle.Fill;
+      splitContainer4.Panel1.Controls.Add(this.view2);
+      view2.InitViewer();
+      view2.SetContext(view1.Viewer);
+      view2.Viewer.CreateNewView(view2.Handle, false, false);
+      view2.Viewer.setProjection(TypeOfOrientation.Zpos);
 
-            this.view3 = new ViewForm(this, TypeOfOrientation.Yneg, false);
-            view3.Dock = DockStyle.Fill;
-            splitContainer4.Panel2.Controls.Add(this.view3);
-            view3.InitViewer();
-            view3.SetContext(view1.Viewer);
-            view3.Viewer.CreateNewView(view3.Handle, false, false);
-            view3.Viewer.setProjection(TypeOfOrientation.Ypos);
+      this.view3 = new ViewForm(this, TypeOfOrientation.Yneg, false);
+      view3.Dock = DockStyle.Fill;
+      splitContainer4.Panel2.Controls.Add(this.view3);
+      view3.InitViewer();
+      view3.SetContext(view1.Viewer);
+      view3.Viewer.CreateNewView(view3.Handle, false, false);
+      view3.Viewer.setProjection(TypeOfOrientation.Ypos);
 
-            splitContainer3.Visible = false;
+      splitContainer3.Visible = false;
 
-            List<string> args = new List<string>(System.Environment.GetCommandLineArgs());
-            // コマンドライン引数から開く
-            args.RemoveAt(0); // 自身の呼び出しパス
-            if (args != null && args.Count > 0) {
-                foreach (string file in args) {
-                    if (!OpenFile(file, Common.getFormatByExt(file)))
-                        break;
-                }
-            }
-            else {
-            }
-
-            // dummy
-            propertyGrid1.SelectedObject = this;
-
-            myTerm.set(view1.Viewer, this);
-            changeState();
-            myTerm.setChangeStateFunc(changeState);
-            this.Cursor = System.Windows.Forms.Cursors.Default;
-
-            view1.Viewer.RedrawView();
+      List<string> args = new List<string>(System.Environment.GetCommandLineArgs());
+      // コマンドライン引数から開く
+      args.RemoveAt(0); // 自身の呼び出しパス
+      if (args != null && args.Count > 0) {
+        foreach (string file in args) {
+          if (!OpenFile(file, Common.getFormatByExt(file)))
+            break;
         }
+      }
+      else {
+      }
 
-        void MainForm_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
+      // dummy
+      propertyGrid1.SelectedObject = this;
+
+      myTerm.set(view1.Viewer, this);
+      changeState();
+      myTerm.setChangeStateFunc(changeState);
+      this.Cursor = System.Windows.Forms.Cursors.Default;
+
+      view1.Viewer.RedrawView();
+    }
+
+    void MainForm_DragEnter(object sender, DragEventArgs e)
+    {
+      e.Effect = DragDropEffects.Move;
+    }
+
+    void MainForm_DragDrop(object sender, DragEventArgs e)
+    {
+      List<string> files = new List<string>((string[])e.Data.GetData(DataFormats.FileDrop, false));
+      if (files != null) {
+        foreach (string file in files) {
+          if (!OpenFile(file, Common.getFormatByExt(file)))
+            break;
         }
+      }
+    }
 
-        void MainForm_DragDrop(object sender, DragEventArgs e)
-        {
-            List<string> files = new List<string>((string[])e.Data.GetData(DataFormats.FileDrop, false));
-            if (files != null) {
-                foreach (string file in files) {
-                    if (!OpenFile(file, Common.getFormatByExt(file)))
-                        break;
-                }
-            }
-        }
+    #endregion // イベント
 
-        #endregion // イベント
+    private bool OpenFile(string filename, ModelFormat theformat)
+    {
+      switch (theformat) {
+      case ModelFormat.IMAGE:
+      case ModelFormat.STL:
+      case ModelFormat.VRML:
+      case ModelFormat.UNKNOWN:
+        MessageBox.Show("サポートされていないファイル形式です。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return false;
+      }
 
-        private bool OpenFile(string filename, ModelFormat theformat)
-        {
-            switch (theformat) {
-            case ModelFormat.IMAGE:
-            case ModelFormat.STL:
-            case ModelFormat.VRML:
-            case ModelFormat.UNKNOWN:
-                MessageBox.Show("サポートされていないファイル形式です。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
+      this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
 
-			this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+      bool result = this.view1.Import(filename, theformat);
 
-            bool result = this.view1.Import(filename, theformat);
+      this.Cursor = System.Windows.Forms.Cursors.Default;
 
-			this.Cursor = System.Windows.Forms.Cursors.Default;
+      if (!result) {
+        MessageBox.Show("ファイルの読み込みに失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return false;
+      }
 
-            if (!result) {
-                MessageBox.Show("ファイルの読み込みに失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-
-            return true;
-        }
+      return true;
+    }
 
 		private bool OpenFile()
 		{

@@ -26,6 +26,8 @@ public:
 
     // Object manager
     std::map<int, TopoDS_Shape> shapeman;
+    // Clipping plane manager
+    std::map<int, Handle(Graphic3d_ClipPlane)> clipman;
 
 public: // Ruby
 	Mirb* myMirb;

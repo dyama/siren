@@ -214,6 +214,10 @@
 // for sweepp command.
 #include <Law_S.hxx>
 
+// Graphic3d
+#include <Graphic3d_ClipPlane.hxx>
+#include <Graphic3d_SequenceOfHClipPlane.hxx>
+
 // new 
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>

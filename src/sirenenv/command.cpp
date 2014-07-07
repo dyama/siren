@@ -67,7 +67,9 @@ bool OCCViewer::mruby_init()
 	regcmd("color",     &color,     4,0, "Set color of object.",            "color(obj, R, G, B) -> nil");
 	regcmd("bgcolor",   &bgcolor,   3,3, "Set color of background.",        "bgcolor(topR, topG, topB, btmR, btmG, btmB) -> nil");
 	regcmd("transparency", &transparency, 2,0, "Set transparency of object.", "transparency(obj, value = 0.0(non-clear) to 1.0(clear)) -> nil");
-	regcmd("select",    &select,    1,9, "Select an object.",               "select(ObjID) -> nil");
+	regcmd("select",    &select,    1,0, "Select an object.",               "select(ObjID) -> nil");
+	regcmd("clipon",    &clipon,    3,0, "",                                "clipon(name, pos[x, y, z], dir[x, y, z]) -> nil");
+	regcmd("clipoff",   &clipoff,   1,0, "",                                "clipoff(name) -> nil");
 
 	// Boolean operation commands
 	regcmd("common",    &common,    2,1, "Common boolean operation.",       "common(obj1, obj2) -> String");
@@ -571,6 +573,69 @@ mrb_value select(mrb_state* mrb, mrb_value self)
 	}
 
     cur->aiscxt->SetSelected(hashape, Standard_True);
+
+    return mrb_nil_value();
+}
+
+/**
+ * \brief Add and enable a clipping plane.
+ */
+mrb_value clipon(mrb_state* mrb, mrb_value self)
+{
+    mrb_int index;
+    mrb_value pos, dir;
+	int argc = mrb_get_args(mrb, "iAA", &index, &pos, &dir);
+
+    gp_Pnt gpos = *ar2pnt(mrb, pos);
+    gp_Dir gdir = *ar2dir(mrb, dir);
+
+    Handle(Graphic3d_ClipPlane) p = new Graphic3d_ClipPlane(gp_Pln(gpos, gdir));
+    p->SetCapping(Standard_True);
+    p->SetCappingMaterial(Graphic3d_MaterialAspect(Graphic3d_NOM_SHINY_PLASTIC));
+    //p->SetCappingHatch(Aspect_HS_DIAGONAL_45_WIDE);
+    //p->SetCappingHatchOn();
+
+    if (cur->clipman.find(index) != cur->clipman.end()) {
+        // Update when already exists.
+        cur->clipman.erase(index);
+    }
+    cur->clipman.insert(std::pair<int, Handle(Graphic3d_ClipPlane)>(index, p));
+
+    Graphic3d_SequenceOfHClipPlane ary;
+    std::map<int, Handle(Graphic3d_ClipPlane)>::iterator it = cur->clipman.begin();
+    for (; it != cur->clipman.end(); it++) {
+        Handle(Graphic3d_ClipPlane) pp = (*it).second;
+        pp->SetOn(Standard_True);
+        ary.Append(pp);
+    }
+    cur->view->SetClipPlanes(ary);
+    // hashape->SetClipPlanes(ary);
+
+    mrb_load_string(mrb, "update");
+    return mrb_nil_value();
+}
+
+/**
+ * \brief Remove and disable a clipping plane.
+ */
+mrb_value clipoff(mrb_state* mrb, mrb_value self)
+{
+    mrb_int index;
+	int argc = mrb_get_args(mrb, "i", &index);
+
+    std::map<int, Handle(Graphic3d_ClipPlane)>::iterator it
+        = cur->clipman.find(index);
+
+    if (it == cur->clipman.end()) {
+		static const char m[] = "No such index of clipping plane.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    Handle(Graphic3d_ClipPlane) pp = (*it).second;
+    pp->SetOn(Standard_False);
+    cur->clipman.erase((*it).first);
+    
+    mrb_load_string(mrb, "update");
 
     return mrb_nil_value();
 }
@@ -1417,6 +1482,9 @@ mrb_value loft(mrb_state* mrb, mrb_value self)
             return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     	}
         TopAbs_ShapeEnum type = shape.ShapeType();
+
+        // ↓ TopExp_Explorer で WIRE を掘ってやったほうが親切
+        //////////////////////////
         if (type == TopAbs_WIRE) {
             TopoDS_Wire w = TopoDS::Wire(shape);
             ts.AddWire(w);
@@ -1425,6 +1493,7 @@ mrb_value loft(mrb_state* mrb, mrb_value self)
             // EdgeやCompoundなEdgeの場合
             // Wireを作る？
         }
+        //////////////////////////
     }
 
     mrb_value result;
@@ -3320,30 +3389,93 @@ mrb_value debug2(mrb_state* mrb, mrb_value self)
 #include <Graphic3d_AspectText3d.hxx>
 mrb_value debug(mrb_state* mrb, mrb_value self)
 {
+    mrb_int target;
+    int argc = mrb_get_args(mrb, "i", &target);
 
-    BRepBuilderAPI_MakePolygon mp;
-    mp.Add(gp_Pnt(0, 0, 0));
-    mp.Add(gp_Pnt(10, 0, 0));
-    mp.Add(gp_Pnt(10, 5, 0));
-    mp.Add(gp_Pnt(20, 5, 0));
-    mp.Add(gp_Pnt(20, 15, 0));
-    mp.Add(gp_Pnt(15, 12, 0));
-    mp.Add(gp_Pnt(5, 12, 0));
-    mp.Add(gp_Pnt(3, 10, 0));
-    mp.Add(gp_Pnt(0, 0, 0));
-
-    mp.Build();
-
-    if (mp.IsDone()) {
-        TopoDS_Wire w = mp.Wire();
-		BRepBuilderAPI_MakeFace mf(w, Standard_True);
-		mf.Build();
-		if (mf.IsDone()) {
-            TopoDS_Face f = mf.Face();
-            return mrb_fixnum_value(::set(f, self));
-		}
+    Handle(AIS_Shape) hashape = ::getAISShape((int)target);
+    if (hashape.IsNull()) {
+        static const char m[] = "No such named object.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     }
+
+    Handle(Graphic3d_ClipPlane) p
+        = new Graphic3d_ClipPlane(gp_Pln(gp_Pnt(0, -1, 0), gp_Dir(0, 1, 0)));
+    
+    p->SetCapping(Standard_True);
+    p->SetCappingMaterial(Graphic3d_MaterialAspect(Graphic3d_NameOfMaterial::Graphic3d_NOM_SHINY_PLASTIC));
+    //p->SetCappingHatch(Aspect_HatchStyle::Aspect_HS_DIAGONAL_45_WIDE);
+    //p->SetCappingHatchOn();
+
+    p->SetOn(Standard_True);
+
+    Graphic3d_SequenceOfHClipPlane ary;
+    ary.Append(p);
+    // cur->view->SetClipPlanes(ary);
+    hashape->SetClipPlanes(ary);
+
     return mrb_nil_value();
+
+////    TColgp_Array2OfPnt poles(0, 3, 0, 3);
+ ///    poles.SetValue(0, 0, gp_Pnt( 0,  0, 20));
+ ///    poles.SetValue(0, 1, gp_Pnt( 0, 10, 20));
+ ///    poles.SetValue(0, 2, gp_Pnt( 0, 20, 20));
+ ///    poles.SetValue(0, 3, gp_Pnt( 0, 30, 20));
+ ///    poles.SetValue(1, 0, gp_Pnt(10,  0, 10));
+ ///    poles.SetValue(1, 1, gp_Pnt(10, 10, 10));
+ ///    poles.SetValue(1, 2, gp_Pnt(10, 20,  5));
+ ///    poles.SetValue(1, 3, gp_Pnt(10, 30,  0));
+ ///    poles.SetValue(2, 0, gp_Pnt(20,  0,  0));
+ ///    poles.SetValue(2, 1, gp_Pnt(20, 10,  5));
+ ///    poles.SetValue(2, 2, gp_Pnt(20, 20, 10));
+ ///    poles.SetValue(2, 3, gp_Pnt(20, 30, 10));
+ ///    poles.SetValue(3, 0, gp_Pnt(30,  0, 20));
+ ///    poles.SetValue(3, 1, gp_Pnt(30, 10, 20));
+ ///    poles.SetValue(3, 2, gp_Pnt(30, 20, 20));
+ ///    poles.SetValue(3, 3, gp_Pnt(30, 30, 20));
+ ///
+ ///    Handle(Geom_BezierSurface) s = NULL;
+ ///    //if (argc == 2) {
+ ///    //    // ウェイトが指定された場合
+ ///    //    TColStd_Array2OfReal weights(0, rlen-1, 0, clen-1);
+ ///    //    for (int r=0; r<rlen; r++) {
+ ///    //        mrb_value ar = mrb_ary_ref(mrb, wtary, r);
+ ///    //        for (int c=0; c<clen; c++) {
+ ///    //            mrb_value val = mrb_ary_ref(mrb, ar, c);
+ ///    //            double value = mrb_float(val);
+ ///    //            weights.SetValue(r, c, (Standard_Real)value);
+ ///    //        }
+ ///    //    }
+ ///    //    s = new Geom_BezierSurface(poles, weights);
+ ///    //}
+ ///    //else {
+ ///        s = new Geom_BezierSurface(poles);
+ ///    //}
+ ///    TopoDS_Face f = BRepBuilderAPI_MakeFace(s, 1.0e-7);
+ ///    return mrb_fixnum_value(::set(f, self));
+
+    // BRepBuilderAPI_MakePolygon mp;
+    // mp.Add(gp_Pnt(0, 0, 0));
+    // mp.Add(gp_Pnt(10, 0, 0));
+    // mp.Add(gp_Pnt(10, 5, 0));
+    // mp.Add(gp_Pnt(20, 5, 0));
+    // mp.Add(gp_Pnt(20, 15, 0));
+    // mp.Add(gp_Pnt(15, 12, 0));
+    // mp.Add(gp_Pnt(5, 12, 0));
+    // mp.Add(gp_Pnt(3, 10, 0));
+    // mp.Add(gp_Pnt(0, 0, 0));
+
+    // mp.Build();
+
+    // if (mp.IsDone()) {
+    //     TopoDS_Wire w = mp.Wire();
+	// 	BRepBuilderAPI_MakeFace mf(w, Standard_True);
+	// 	mf.Build();
+	// 	if (mf.IsDone()) {
+    //         TopoDS_Face f = mf.Face();
+    //         return mrb_fixnum_value(::set(f, self));
+	// 	}
+    // }
+    //return mrb_nil_value();
 // #if 0
 //     Handle(Prs3d_Presentation) aPrs;
 //     // get the group

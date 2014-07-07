@@ -123,81 +123,78 @@ namespace siren
 		public void DeleteObjects()
 		{
 			myViewer.EraseObjects();
-		}
+    }
 
-        /// <summary>
-        /// インポート
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-		public bool Import(string filename, siren.ModelFormat format)
-		{
-            if (!System.IO.File.Exists(filename))
-                return false;
-            switch (format) {
-            case ModelFormat.BREP:
-                {
-                    filename = filename.Replace(@"\", @"\\"); // escape
-                    int err = parent.myTerm.execute("a = brepload(\"" + filename + "\")");
-                    if (err == 0) {
-                        parent.myTerm.execute("fit");
-                        return true;
-                    }
-                    else
-                        return false;
-                }
-            case ModelFormat.IGES:
-                {
-                    filename = filename.Replace(@"\", @"\\"); // escape
-                    int err = parent.myTerm.execute("a = igesload(\"" + filename + "\")");
-                    if (err == 0) {
-                        parent.myTerm.execute("fit");
-                        return true;
-                    }
-                    else
-                        return false;
-                }
-                /*
-            case ModelFormat.CSFDB:
-            case ModelFormat.STEP:
-                bool result = myViewer.TranslateModel(filename, (int)format, true) ;
-                if (result)
-                    myViewer.ZoomAllView();
-                return result;
-                 */
-            default:
-                return false;
-            }
-		}
+    /// <summary>
+    /// インポート
+    /// </summary>
+    /// <param name="filename"></param>
+    /// <param name="format"></param>
+    /// <returns></returns>
+    public bool Import(string filename, siren.ModelFormat format)
+    {
+      if (!System.IO.File.Exists(filename))
+        return false;
 
-        /// <summary>
-        /// エクスポート
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-		public bool Export(string filename, ModelFormat format)
-		{
-            switch (format) {
-            case ModelFormat.BREP:
-                {
-                    filename = filename.Replace(@"\", @"\\"); // escape
-                    return (parent.myTerm.execute("brepsave(\"" + filename + "\", selected[0])") == 0);
-                }
-            //case ModelFormat.CSFDB:
-                /*
-            case ModelFormat.IGES:
-            case ModelFormat.STEP:
-            case ModelFormat.STL:
-            case ModelFormat.VRML:
-            case ModelFormat.IMAGE:
-                return myViewer.TranslateModel(filename, (int)format, false);
-                 */
-            default:
-                return false;
-            }
-		}
+      int err = 0;
+      filename = filename.Replace(@"\", @"\\"); // escape
+
+      switch (format) {
+      case ModelFormat.BREP: {
+          err = parent.myTerm.execute("a = brepload(\"" + filename + "\")");
+        }
+        break;
+      case ModelFormat.IGES: {
+          parent.myTerm.execute("a = igesload(\"" + filename + "\")");
+        }
+        break;
+      /*
+      case ModelFormat.CSFDB:
+      case ModelFormat.STEP:
+          bool result = myViewer.TranslateModel(filename, (int)format, true) ;
+          if (result)
+              myViewer.ZoomAllView();
+          return result;
+       */
+      default:
+        return false;
+      }
+      if (err == 0) {
+        parent.myTerm.execute("bndbox a");
+        parent.myTerm.execute("scale a, 0.001, [0, 0, 0]");
+        parent.myTerm.execute("fit");
+        return true;
+      }
+      else
+        return false;
+    }
+
+    /// <summary>
+    /// エクスポート
+    /// </summary>
+    /// <param name="filename"></param>
+    /// <param name="format"></param>
+    /// <returns></returns>
+    public bool Export(string filename, ModelFormat format)
+    {
+      switch (format) {
+      case ModelFormat.BREP: {
+          filename = filename.Replace(@"\", @"\\"); // escape
+          return (parent.myTerm.execute("brepsave(\"" + filename + "\", selected[0])") == 0);
+        }
+      //case ModelFormat.CSFDB:
+      /*
+      case ModelFormat.IGES:
+      case ModelFormat.STEP:
+      case ModelFormat.STL:
+      case ModelFormat.VRML:
+      case ModelFormat.IMAGE:
+      return myViewer.TranslateModel(filename, (int)format, false);
+       */
+      default:
+        return false;
+      }
+    }
 
 		public Viewer Viewer
 		{
