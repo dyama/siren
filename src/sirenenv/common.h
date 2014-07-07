@@ -25,7 +25,7 @@ mrb_value pnt2ar    (mrb_state* mrb, const gp_Pnt& rPnt);
 mrb_value vec2ar    (mrb_state* mrb, const gp_Vec& rVec);
 
 int set(const TopoDS_Shape& shape, const mrb_value& self);
-void display(const TopoDS_Shape& shape);
+void display(const TopoDS_Shape& shape, bool is_active);
 void unset(int hashcode);
 
 Handle(AIS_Shape) getAISShape(int hashcode);

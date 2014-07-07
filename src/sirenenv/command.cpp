@@ -60,7 +60,7 @@ bool OCCViewer::mruby_init()
 	regcmd("mirror",    &mirror,    3,0, "Mirror copy specified object.",   "mirror(obj, center[X, Y, Z], normal[X, Y, Z]) -> ObjID");
 
 	// Visualization commands
-	regcmd("display",   &display,   1,0, "Dislay object.",                  "display(obj) -> nil");
+	regcmd("display",   &display,   1,1, "Dislay object.",                  "display(obj, activate = true) -> nil");
 	regcmd("hide",      &hide,      1,0, "Hide object.",                    "hide(obj) -> nil");
 	regcmd("fit",       &fit,       0,0, "Fit view to objects",             "fit() -> nil");
 	regcmd("update",    &update,    0,0, "Update current viewer.",          "update() -> nil");
@@ -70,7 +70,7 @@ bool OCCViewer::mruby_init()
 	regcmd("select",    &select,    1,0, "Select an object.",               "select(ObjID) -> nil");
 	regcmd("clipon",    &clipon,    3,1, "",                                "clipon(name, pos[x, y, z], dir[x, y, z]) -> nil");
 	regcmd("clipoff",   &clipoff,   1,0, "",                                "clipoff(name) -> nil");
-    // regcmd("activate",  &activate,  1,0, "",                                "");
+    regcmd("activate",  &activate,  1,0, "",                                "");
 
 	// Boolean operation commands
 	regcmd("common",    &common,    2,1, "Common boolean operation.",       "common(obj1, obj2) -> String");
@@ -129,12 +129,14 @@ bool OCCViewer::mruby_init()
 	// デフォルトのグローバル変数定義
 	myMirb->user_exec(
 		"$DRAW = true;"
+		"$ACTIVE = true;"
 		"$DIST = 10;"
 		"$ANG = 15;"
 		"$SUP = 1.25;"
 		"$SDOWN = 0.75;"
 		"$tri10 = [10,10,10];"
-        "def is_draw; $DRAW; end"
+        "def is_draw; $DRAW; end;"
+        "def is_active; $ACTIVE; end;"
 		);
 
     // バイトコードのロード
@@ -213,8 +215,9 @@ int set(const TopoDS_Shape& shape, const mrb_value& self)
     cur->shapeman.insert(std::pair<int, TopoDS_Shape>(code, shape));
 
     mrb_value r = mrb_funcall(cur->myMirb->mrb, self, "is_draw", 0);
+    mrb_value a = mrb_funcall(cur->myMirb->mrb, self, "is_active", 0);
     if (mrb_bool(r)) {
-        display(shape);
+        display(shape, mrb_bool(a));
     }
 
     return code;
@@ -385,7 +388,7 @@ mrb_value update(mrb_state* mrb, mrb_value self)
 /**
  * \brief 
  */
-void display(const TopoDS_Shape& shape)
+void display(const TopoDS_Shape& shape, bool activate)
 {
 	if (cur->aiscxt.IsNull()) {
 		throw "No AIS Interactive Context.";
@@ -405,9 +408,15 @@ void display(const TopoDS_Shape& shape)
     }
 	cur->aiscxt->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
 
-    cur->aiscxt->Activate(hashape);
 	cur->aiscxt->Display(hashape);
-	cur->aiscxt->SetSelected(hashape, Standard_False);
+
+    if (activate) {
+        cur->aiscxt->Activate(hashape);
+    	cur->aiscxt->SetSelected(hashape, Standard_False);
+    }
+    else {
+        cur->aiscxt->Deactivate(hashape);
+    }
 
     return;
 }
@@ -421,13 +430,14 @@ mrb_value display(mrb_state* mrb, mrb_value self)
 		return mrb_nil_value();
 
     mrb_value obj;
-    int argc = mrb_get_args(mrb, "o", &obj);
+    mrb_bool is_active;
+    int argc = mrb_get_args(mrb, "o|b", &obj, &is_active);
     if (mrb_fixnum_p(obj)) {
     	Handle(AIS_Shape) hashape = ::getAISShape(mrb_fixnum(obj));
     	if (!hashape.IsNull())
             redisplay(hashape);
         else
-            display(cur->shapeman[mrb_fixnum(obj)]);
+            display(cur->shapeman[mrb_fixnum(obj)], (bool)is_active);
     }
     else if (mrb_array_p(obj)) {
         for (int i=0; i<mrb_ary_len(mrb, obj); i++) {
@@ -437,7 +447,7 @@ mrb_value display(mrb_state* mrb, mrb_value self)
             if (!hashape.IsNull())
                 redisplay(hashape);
             else
-                display(cur->shapeman[hc]);
+                display(cur->shapeman[hc], (bool)is_active);
         }
     }
     else {
@@ -644,6 +654,28 @@ mrb_value clipoff(mrb_state* mrb, mrb_value self)
     cur->clipman.erase((*it).first);
     
     mrb_load_string(mrb, "update");
+
+    return mrb_nil_value();
+}
+
+mrb_value activate(mrb_state* mrb, mrb_value self)
+{
+    mrb_int target;
+    mrb_bool is_true;
+    int argc = mrb_get_args(mrb, "ib", &target, &is_true);
+
+    Handle(AIS_Shape) hashape = ::getAISShape(target);
+    if (hashape.IsNull()) {
+        static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    if (is_true) {
+        cur->aiscxt->Activate(hashape);
+    }
+    else {
+        cur->aiscxt->Deactivate(hashape);
+    }
 
     return mrb_nil_value();
 }
