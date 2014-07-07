@@ -217,7 +217,7 @@ int set(const TopoDS_Shape& shape, const mrb_value& self)
     mrb_value r = mrb_funcall(cur->myMirb->mrb, self, "is_draw", 0);
     mrb_value a = mrb_funcall(cur->myMirb->mrb, self, "is_active", 0);
     if (mrb_bool(r)) {
-        display(shape, mrb_bool(a));
+        display(shape, mrb_bool(a), true);
     }
 
     return code;
@@ -388,7 +388,7 @@ mrb_value update(mrb_state* mrb, mrb_value self)
 /**
  * \brief 
  */
-void display(const TopoDS_Shape& shape, bool activate)
+void display(const TopoDS_Shape& shape, bool activate, bool shaded)
 {
 	if (cur->aiscxt.IsNull()) {
 		throw "No AIS Interactive Context.";
@@ -404,7 +404,10 @@ void display(const TopoDS_Shape& shape, bool activate)
     	//hashape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram(myShader);
 
     	cur->aiscxt->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
-    	cur->aiscxt->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
+        if (shaded)
+        	cur->aiscxt->SetDisplayMode(hashape, 1/* 0:wireframe, 1:shading */, Standard_False);
+        else
+        	cur->aiscxt->SetDisplayMode(hashape, 0/* 0:wireframe, 1:shading */, Standard_False);
     }
 	cur->aiscxt->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
 
@@ -431,13 +434,14 @@ mrb_value display(mrb_state* mrb, mrb_value self)
 
     mrb_value obj;
     mrb_bool is_active;
-    int argc = mrb_get_args(mrb, "o|b", &obj, &is_active);
+    mrb_bool is_shaded;
+    int argc = mrb_get_args(mrb, "o|bb", &obj, &is_active, &is_shaded);
     if (mrb_fixnum_p(obj)) {
     	Handle(AIS_Shape) hashape = ::getAISShape(mrb_fixnum(obj));
     	if (!hashape.IsNull())
             redisplay(hashape);
         else
-            display(cur->shapeman[mrb_fixnum(obj)], (bool)is_active);
+            display(cur->shapeman[mrb_fixnum(obj)], (bool)is_active, (bool)is_shaded);
     }
     else if (mrb_array_p(obj)) {
         for (int i=0; i<mrb_ary_len(mrb, obj); i++) {
@@ -447,7 +451,7 @@ mrb_value display(mrb_state* mrb, mrb_value self)
             if (!hashape.IsNull())
                 redisplay(hashape);
             else
-                display(cur->shapeman[hc], (bool)is_active);
+                display(cur->shapeman[hc], (bool)is_active, (bool)is_shaded);
         }
     }
     else {
