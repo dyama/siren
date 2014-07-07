@@ -68,8 +68,9 @@ bool OCCViewer::mruby_init()
 	regcmd("bgcolor",   &bgcolor,   3,3, "Set color of background.",        "bgcolor(topR, topG, topB, btmR, btmG, btmB) -> nil");
 	regcmd("transparency", &transparency, 2,0, "Set transparency of object.", "transparency(obj, value = 0.0(non-clear) to 1.0(clear)) -> nil");
 	regcmd("select",    &select,    1,0, "Select an object.",               "select(ObjID) -> nil");
-	regcmd("clipon",    &clipon,    3,0, "",                                "clipon(name, pos[x, y, z], dir[x, y, z]) -> nil");
+	regcmd("clipon",    &clipon,    3,1, "",                                "clipon(name, pos[x, y, z], dir[x, y, z]) -> nil");
 	regcmd("clipoff",   &clipoff,   1,0, "",                                "clipoff(name) -> nil");
+    // regcmd("activate",  &activate,  1,0, "",                                "");
 
 	// Boolean operation commands
 	regcmd("common",    &common,    2,1, "Common boolean operation.",       "common(obj1, obj2) -> String");
@@ -584,19 +585,26 @@ mrb_value clipon(mrb_state* mrb, mrb_value self)
 {
     mrb_int index;
     mrb_value pos, dir;
-	int argc = mrb_get_args(mrb, "iAA", &index, &pos, &dir);
+    mrb_bool use_cap;
+	int argc = mrb_get_args(mrb, "iAA|b", &index, &pos, &dir, &use_cap);
 
     gp_Pnt gpos = *ar2pnt(mrb, pos);
     gp_Dir gdir = *ar2dir(mrb, dir);
 
     Handle(Graphic3d_ClipPlane) p = new Graphic3d_ClipPlane(gp_Pln(gpos, gdir));
-    p->SetCapping(Standard_True);
-    p->SetCappingMaterial(Graphic3d_MaterialAspect(Graphic3d_NOM_SHINY_PLASTIC));
-    //p->SetCappingHatch(Aspect_HS_DIAGONAL_45_WIDE);
-    //p->SetCappingHatchOn();
+
+    if (use_cap) {
+        p->SetCapping(Standard_True);
+        p->SetCappingMaterial(Graphic3d_MaterialAspect(Graphic3d_NOM_STONE));
+        //p->SetCappingHatch(Aspect_HS_DIAGONAL_45_WIDE);
+        //p->SetCappingHatchOn();
+    }
+    else {
+        p->SetCapping(Standard_False);
+    }
 
     if (cur->clipman.find(index) != cur->clipman.end()) {
-        // Update when already exists.
+        // Update when the index already exists.
         cur->clipman.erase(index);
     }
     cur->clipman.insert(std::pair<int, Handle(Graphic3d_ClipPlane)>(index, p));
@@ -3389,30 +3397,6 @@ mrb_value debug2(mrb_state* mrb, mrb_value self)
 #include <Graphic3d_AspectText3d.hxx>
 mrb_value debug(mrb_state* mrb, mrb_value self)
 {
-    mrb_int target;
-    int argc = mrb_get_args(mrb, "i", &target);
-
-    Handle(AIS_Shape) hashape = ::getAISShape((int)target);
-    if (hashape.IsNull()) {
-        static const char m[] = "No such named object.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-    }
-
-    Handle(Graphic3d_ClipPlane) p
-        = new Graphic3d_ClipPlane(gp_Pln(gp_Pnt(0, -1, 0), gp_Dir(0, 1, 0)));
-    
-    p->SetCapping(Standard_True);
-    p->SetCappingMaterial(Graphic3d_MaterialAspect(Graphic3d_NameOfMaterial::Graphic3d_NOM_SHINY_PLASTIC));
-    //p->SetCappingHatch(Aspect_HatchStyle::Aspect_HS_DIAGONAL_45_WIDE);
-    //p->SetCappingHatchOn();
-
-    p->SetOn(Standard_True);
-
-    Graphic3d_SequenceOfHClipPlane ary;
-    ary.Append(p);
-    // cur->view->SetClipPlanes(ary);
-    hashape->SetClipPlanes(ary);
-
     return mrb_nil_value();
 
 ////    TColgp_Array2OfPnt poles(0, 3, 0, 3);
