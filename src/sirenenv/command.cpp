@@ -64,7 +64,8 @@ bool OCCViewer::mruby_init()
 	regcmd("hide",      &hide,      1,0, "Hide object.",                    "hide(obj) -> nil");
 	regcmd("fit",       &fit,       0,0, "Fit view to objects",             "fit() -> nil");
 	regcmd("update",    &update,    0,0, "Update current viewer.",          "update() -> nil");
-	regcmd("color",     &color,     1,3, "Set color of object.",            "color(obj, R, G, B) -> nil");
+	regcmd("color",     &color,     1,3, "Set/Get color of shape.",         "color(obj, R, G, B) -> nil");
+    regcmd("material",  &material,  1,1, "Set/Get material of shape.",      "material(obj, material_no) -> nil|material_no");
 	regcmd("bgcolor",   &bgcolor,   3,3, "Set color of background.",        "bgcolor(topR, topG, topB, btmR, btmG, btmB) -> nil");
 	regcmd("transparency", &transparency, 2,0, "Set transparency of object.", "transparency(obj, value = 0.0(non-clear) to 1.0(clear)) -> nil");
 	regcmd("select",    &select,    1,0, "Select an object.",               "select(ObjID) -> nil");
@@ -543,6 +544,31 @@ mrb_value color(mrb_state* mrb, mrb_value self)
     }
 
 	return mrb_nil_value();
+}
+
+/**
+ * \brief Set/Get material of shape.
+ */
+mrb_value material(mrb_state* mrb, mrb_value self)
+{
+    mrb_int target, mno;
+	int argc = mrb_get_args(mrb, "i|i", &target, &mno);
+
+	Handle(AIS_Shape) hashape = ::getAISShape(target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    if (argc == 2) {
+        // Set material by material no.
+        cur->aiscxt->SetMaterial(hashape, (Graphic3d_NameOfMaterial)mno);
+    }
+    else {
+        // Get material no of shape.
+        return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+    }
+    return mrb_nil_value();
 }
 
 /**

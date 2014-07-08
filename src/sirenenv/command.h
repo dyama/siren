@@ -99,6 +99,7 @@ mrb_value savestep    (mrb_state*, mrb_value);
 mrb_value loadstep    (mrb_state*, mrb_value);
 mrb_value loadstl     (mrb_state*, mrb_value);
 mrb_value savestl     (mrb_state*, mrb_value);
+mrb_value savestl     (mrb_state*, mrb_value);
 mrb_value savevrml    (mrb_state*, mrb_value);
 
 // Visualization
@@ -107,6 +108,7 @@ mrb_value update      (mrb_state*, mrb_value);
 mrb_value display     (mrb_state*, mrb_value);
 mrb_value hide        (mrb_state*, mrb_value);
 mrb_value color       (mrb_state*, mrb_value);
+mrb_value material    (mrb_state*, mrb_value);
 mrb_value bgcolor     (mrb_state*, mrb_value);
 mrb_value transparency(mrb_state*, mrb_value);
 mrb_value select      (mrb_state*, mrb_value);
