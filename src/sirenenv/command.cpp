@@ -123,6 +123,7 @@ bool OCCViewer::mruby_init()
 	regcmd("igesload",  &loadiges,  1,0, "Load object from an IGES.",       "igesload(path) -> Shape");
 	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path) -> Shape");
 	regcmd("stlsave",   &savestl,   2,0, "Save object to an STL file.",     "stlsave(obj, path) -> nil");
+    regcmd("vrmlsave",  &savevrml,  2,0, "Save object to a VRML file.",     "vrmlsave(obj, path) -> nil");
 
 	// regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");
 
@@ -3377,7 +3378,7 @@ mrb_value loadstl(mrb_state* mrb, mrb_value self)
 }
 
 /**
- * \brief Save object from STL file
+ * \brief Save object to STL file
  */
 mrb_value savestl(mrb_state* mrb, mrb_value self)
 {
@@ -3387,11 +3388,32 @@ mrb_value savestl(mrb_state* mrb, mrb_value self)
 
 	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
 	if (hashape.IsNull()) {
-		static const char m[] = "No such named object.";
+		static const char m[] = "No such index of shape.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
     StlAPI_Writer writer;
+    writer.Write(hashape->Shape(), (Standard_CString)RSTRING_PTR(path));
+
+    return mrb_nil_value();
+}
+
+/**
+ * \brief Save object to VRML file
+ */
+mrb_value savevrml(mrb_state* mrb, mrb_value self)
+{
+    mrb_int target;
+    mrb_value path;
+	int argc = mrb_get_args(mrb, "iS", &target, &path);
+
+	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
+	if (hashape.IsNull()) {
+		static const char m[] = "No such index of shape.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    VrmlAPI_Writer writer;
     writer.Write(hashape->Shape(), (Standard_CString)RSTRING_PTR(path));
 
     return mrb_nil_value();
