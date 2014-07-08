@@ -434,15 +434,6 @@ void OCCViewer::SetDisplayMode(int aMode)
 	 aiscxt->UpdateCurrentViewer();
 }
 
-void OCCViewer::SetColor(int r, int g, int b)
-{
-	if (aiscxt.IsNull())
-		return;
-	Quantity_Color col =  Quantity_Color(r/255.,g/255.,b/255.,Quantity_TOC_RGB);
-	for (;aiscxt->MoreCurrent ();aiscxt->NextCurrent ())
-	          aiscxt->SetColor (aiscxt->Current(),col.Name());
-}
-
 void OCCViewer::ObjectColor(int& r, int& g, int& b)
 {
 	if (aiscxt.IsNull())
@@ -545,28 +536,6 @@ bool OCCViewer::ImportCsfdb(wchar_t* filename)
 	return true;
 }
 
-bool OCCViewer::ImportIges(wchar_t* filename)
-{
-    char fname[_MAX_PATH];
-	{
-		setlocale(LC_CTYPE, "");
-	    size_t len;
-	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
-	}
-	Standard_CString aFileName = (Standard_CString)fname; // filename;
-    IGESControl_Reader Reader;
-    int status = Reader.ReadFile(aFileName);
-
-    if (status == IFSelect_RetDone)
-    {
-        Reader.TransferRoots();
-        TopoDS_Shape aShape = Reader.OneShape();
-        aiscxt->Display(new AIS_Shape(aShape));
-    } else
-		return false;
-	aiscxt->UpdateCurrentViewer();
-	return true;
-}
 
 bool OCCViewer::ImportStep(wchar_t* filename)
 {
@@ -604,29 +573,6 @@ bool OCCViewer::ImportStep(wchar_t* filename)
 	return true;
 }
 
-bool OCCViewer::ExportIges(wchar_t* filename)
-{
-    char fname[_MAX_PATH];
-	{
-		setlocale(LC_CTYPE, "");
-	    size_t len;
-	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
-	}
-	IGESControl_Controller::Init();
-	IGESControl_Writer writer(Interface_Static::CVal("XSTEP.iges.unit"),
-                               Interface_Static::IVal("XSTEP.iges.writebrep.mode"));
- 
-	for (aiscxt->InitCurrent(); aiscxt->MoreCurrent(); aiscxt->NextCurrent())
-	{
-		Handle_AIS_InteractiveObject anIO = aiscxt->Current();
-		Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
-		TopoDS_Shape shape = anIS->Shape();
-		writer.AddShape (shape);
-	}
-	writer.ComputeModel();
-	return (bool)writer.Write((Standard_CString)fname);
-}
-
 bool OCCViewer::ExportStep(wchar_t* filename)
 {
     char fname[_MAX_PATH];
@@ -651,62 +597,6 @@ bool OCCViewer::ExportStep(wchar_t* filename)
     status = writer.Write((Standard_CString)fname);
     if (status != IFSelect_RetDone)
             return false;
-	return true;
-}
-
-bool OCCViewer::ExportStl(wchar_t* filename)
-{
-    char fname[_MAX_PATH];
-	{
-		setlocale(LC_CTYPE, "");
-	    size_t len;
-	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
-	}
-	TopoDS_Compound comp;
-	BRep_Builder builder;
-	builder.MakeCompound(comp);
-
-	for (aiscxt->InitCurrent(); aiscxt->MoreCurrent(); aiscxt->NextCurrent())
-	{
-		Handle_AIS_InteractiveObject anIO = aiscxt->Current();
-		Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
-		TopoDS_Shape shape = anIS->Shape();
-		if (shape.IsNull()) 
-			return false;    
-		builder.Add(comp, shape);
-	}
-
-	StlAPI_Writer writer;
-	writer.Write(comp, (Standard_CString)fname);
-	return true;
-}
-
-bool OCCViewer::ExportVrml(wchar_t* filename)
-{
-    char fname[_MAX_PATH];
-	{
-		setlocale(LC_CTYPE, "");
-	    size_t len;
-	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
-	}
-	TopoDS_Compound res;
-	BRep_Builder builder;
-	builder.MakeCompound(res);
-
-	for (aiscxt->InitCurrent(); aiscxt->MoreCurrent(); aiscxt->NextCurrent())
-	{
-		Handle_AIS_InteractiveObject anIO = aiscxt->Current();
-		Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
-		TopoDS_Shape shape = anIS->Shape();
-		if (shape.IsNull())
-			return false;
-        
-		builder.Add(res, shape);
-	}
-
-	VrmlAPI_Writer writer;
-	writer.Write(res, (Standard_CString)fname);
-
 	return true;
 }
 

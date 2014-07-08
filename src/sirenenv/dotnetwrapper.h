@@ -760,12 +760,6 @@ namespace sirenenv
                 myOCCViewer->SetDisplayMode(aMode);
         }
 
-        void SetColor(int r, int g, int b)
-        {
-            if (myOCCViewer != NULL)
-                myOCCViewer->SetColor(r, g, b);
-        }
-
         int GetObjColR(void)
         {
             int r, g, b;

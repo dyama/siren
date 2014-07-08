@@ -458,7 +458,7 @@ namespace siren
         r = c.R;
         g = c.G;
         b = c.B;
-        this.view1.Viewer.SetColor(r, g, b);
+        myTerm.execute("color selected[0], " + c.R.ToString() + ", " + c.G.ToString() + ", " + c.B.ToString() + "");
       }
       this.view1.Viewer.UpdateCurrentViewer();
     }

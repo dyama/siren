@@ -91,35 +91,6 @@ namespace siren
             get { return _currentDisplayMode; }
         }
 
-		public void ChangeColor(bool IsObjectColor)
-		{
-			int r, g, b;
-			if (IsObjectColor) {
-				r = myViewer.GetObjColR();
-				g = myViewer.GetObjColG();
-				b = myViewer.GetObjColB();
-			}
-			else {
-				r = myViewer.GetBGColR();
-				g = myViewer.GetBGColG();
-				b = myViewer.GetBGColB();
-			}
-			System.Windows.Forms.ColorDialog ColDlg = new ColorDialog();
-			ColDlg.Color=System.Drawing.Color.FromArgb(r, g, b);
-			if (ColDlg.ShowDialog() == DialogResult.OK) {
-				Color c = ColDlg.Color;
-				r = c.R;
-				g = c.G;
-				b = c.B;
-				if (IsObjectColor)
-					myViewer.SetColor(r, g, b);
-				else
-					myViewer.SetBackgroundColor(r, g, b);
-			}
-			this.myViewer.UpdateCurrentViewer();
-
-		}
-
 		public void DeleteObjects()
 		{
 			myViewer.EraseObjects();

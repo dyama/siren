@@ -64,7 +64,7 @@ bool OCCViewer::mruby_init()
 	regcmd("hide",      &hide,      1,0, "Hide object.",                    "hide(obj) -> nil");
 	regcmd("fit",       &fit,       0,0, "Fit view to objects",             "fit() -> nil");
 	regcmd("update",    &update,    0,0, "Update current viewer.",          "update() -> nil");
-	regcmd("color",     &color,     4,0, "Set color of object.",            "color(obj, R, G, B) -> nil");
+	regcmd("color",     &color,     1,3, "Set color of object.",            "color(obj, R, G, B) -> nil");
 	regcmd("bgcolor",   &bgcolor,   3,3, "Set color of background.",        "bgcolor(topR, topG, topB, btmR, btmG, btmB) -> nil");
 	regcmd("transparency", &transparency, 2,0, "Set transparency of object.", "transparency(obj, value = 0.0(non-clear) to 1.0(clear)) -> nil");
 	regcmd("select",    &select,    1,0, "Select an object.",               "select(ObjID) -> nil");
@@ -501,13 +501,13 @@ mrb_value fit(mrb_state* mrb, mrb_value self)
 }
 
 /**
- * \brief 
+ * \brief Set/Get color of shape.
  */
 mrb_value color(mrb_state* mrb, mrb_value self)
 {
     mrb_int target; 
 	mrb_float r, g, b;
-	int argc = mrb_get_args(mrb, "ifff", &target, &r, &g, &b);
+	int argc = mrb_get_args(mrb, "i|fff", &target, &r, &g, &b);
 
 	Handle(AIS_Shape) hashape = ::getAISShape(target);
 	if (hashape.IsNull()) {
@@ -515,13 +515,32 @@ mrb_value color(mrb_state* mrb, mrb_value self)
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
 
-	Quantity_Color col =  Quantity_Color((Standard_Real)r/255., (Standard_Real)g/255., (Standard_Real)b/255., Quantity_TOC_RGB);
+    if (argc == 4) {
+        // Set color
+    	Quantity_Color col =  Quantity_Color(
+            (Standard_Real)(r / 255.0),
+            (Standard_Real)(g / 255.0),
+            (Standard_Real)(b / 255.0),
+            Quantity_TOC_RGB);
+    	Quantity_NameOfColor colname = col.Name();
+    	cur->aiscxt->SetColor(hashape, colname, Standard_True);
+    	return mrb_nil_value();
+    }
+    else {
+        // Get color
+        if (!hashape->HasColor())
+        	return mrb_nil_value();
 
-	//cur->aiscxt->SetColor(hashape, col, Standard_True);
-	//cur->aiscxt->SetMaterial(hashape, /*Graphic3d_NameOfMaterial::*/Graphic3d_NOM_DEFAULT);
-	//cur->aiscxt->SetColor(hashape, Quantity_NOC_RED, Standard_True);
-	Quantity_NameOfColor colname = col.Name();
-	cur->aiscxt->SetColor(hashape, colname, Standard_True);
+        Quantity_Parameter R, G, B;
+        Quantity_Color col = cur->aiscxt->Color(hashape);
+        col.Values(R, G, B, Quantity_TOC_RGB);
+
+        mrb_value res = mrb_ary_new(mrb);
+        mrb_ary_push(mrb, res, mrb_fixnum_value((int)(R * 255.0)));
+        mrb_ary_push(mrb, res, mrb_fixnum_value((int)(G * 255.0)));
+        mrb_ary_push(mrb, res, mrb_fixnum_value((int)(B * 255.0)));
+        return res;
+    }
 
 	return mrb_nil_value();
 }

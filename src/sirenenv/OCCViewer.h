@@ -64,7 +64,6 @@ public: // Shape apperance
 	void  SetAntialiasing(bool isOn);
 	void  SetHighlightColor(Quantity_NameOfColor color);
 	void  SetSelectionColor(Quantity_NameOfColor color);
-	void  SetColor(int r, int g, int b);
 	void  ObjectColor(int& r, int& g, int& b);
 	void  BackgroundColor(int& r, int& g, int& b);
 	void  SetBackgroundColor(int r, int g, int b);
