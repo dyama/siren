@@ -810,12 +810,6 @@ namespace sirenenv
                 myOCCViewer->SetMaterial(theMaterial);
         }
 
-        void SetTransparency(int TheTrans)
-        {
-            if (myOCCViewer != NULL)
-                myOCCViewer->SetTransparency(TheTrans);
-        }
-
         void SetAntialiasing(bool isOn)
         {
             if (myOCCViewer != NULL)

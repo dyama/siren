@@ -201,7 +201,7 @@ namespace siren
       if (this.view1 == null)
         return;
       siren.TransparencyDialog t = new TransparencyDialog();
-      t.Viewer = this.view1.Viewer;
+      t.t = myTerm;
       t.ShowDialog(this.view1);
     }
 

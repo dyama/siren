@@ -486,13 +486,6 @@ void OCCViewer::SetMaterial(int theMaterial)
 	aiscxt->UpdateCurrentViewer();
 }
 
-void OCCViewer::SetTransparency(int theTrans)
-{
-	if (aiscxt.IsNull())
-		return;
-	for(aiscxt->InitCurrent(); aiscxt->MoreCurrent(); aiscxt->NextSelected())
-		aiscxt->SetTransparency(aiscxt->Current(), ((Standard_Real)theTrans) / 10.0);
-}
 /*
 bool OCCViewer::ImportCsfdb(wchar_t* filename)
 {

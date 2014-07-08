@@ -60,7 +60,6 @@ public: // Information
 
 public: // Shape apperance
 	void  SetMaterial(int theMaterial);
-	void  SetTransparency(int theTrans);
 	void  SetAntialiasing(bool isOn);
 	void  SetHighlightColor(Quantity_NameOfColor color);
 	void  SetSelectionColor(Quantity_NameOfColor color);
@@ -88,16 +87,6 @@ public: // Mouse events bindings
 public: // Common functions
 	int   CharToInt(char symbol);
 	bool  xy2xyz(int Xs, int Ys, double& X, double& Y, double& Z, bool usePrecision);
-
-public: // I/O
-	// bool  ImportCsfdb(wchar_t* filename);
-	// bool  ImportIges (wchar_t* filename);
-	// bool  ImportStep (wchar_t* filename);
-	// bool  ExportIges (wchar_t* filename);
-	// bool  ExportStep  (wchar_t* filename);
-	// bool  ExportStl  (wchar_t* filename);
-	// bool  ExportVrml (wchar_t* filename);
-	// bool  Dump       (wchar_t* filename);
 
 };
 
