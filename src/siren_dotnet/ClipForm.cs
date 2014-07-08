@@ -9,6 +9,10 @@ using System.Windows.Forms;
 
 namespace siren
 {
+
+  /// <summary>
+  /// Clipping planes dialog
+  /// </summary>
   public partial class ClipForm : Form
   {
     double x_min, x_max;
@@ -38,15 +42,13 @@ namespace siren
     {
       InitBars();
 
-      t.execute("__bu_act = $ACTIVE; $ACTIVE = false;");
-      t.execute("__bu_drw = $DRAW; $DRAW = false;");
       double sx = x_max - x_min - 2;
       double sy = y_max - y_min - 2;
       double sz = z_max - z_min - 2;
-      t.execute("__cpbox = box [" + sx.ToString() + "," + sy.ToString() + "," + sz.ToString() + "]");
-      t.execute("__cpbox = translate __cpbox, [" + (x_min + 1).ToString() + ","+(y_min+1).ToString()+","+(z_min+1).ToString()+"]");
-      t.execute("$ACTIVE = __bu_act;");
-      t.execute("$DRAW = __bu_drw;");
+      t.execute("__bu_act = $ACTIVE; $ACTIVE = false; __bu_drw = $DRAW; $DRAW = false;");
+      t.execute("__cpbox = box [" + sx.ToString() + "," + sy.ToString() + "," + sz.ToString() + "]"
+        + ", [" + (x_min + 1).ToString() + ","+(y_min+1).ToString()+","+(z_min+1).ToString()+"]");
+      t.execute("$ACTIVE = __bu_act; $DRAW = __bu_drw;");
       t.execute("display __cpbox, false, false");
     }
 
@@ -58,13 +60,11 @@ namespace siren
       if (sx <= 0) sx = 1;
       if (sy <= 0) sy = 1;
       if (sz <= 0) sz = 1;
-      t.execute("__bu_act = $ACTIVE; $ACTIVE = false;", null, false, false);
-      t.execute("__bu_drw = $DRAW; $DRAW = false;", null, false, false);
+      t.execute("__bu_act = $ACTIVE; $ACTIVE = false; __bu_drw = $DRAW; $DRAW = false;", null, false, false);
       t.execute("erase __cpbox;", null, false, false);
-      t.execute("__cpbox = box [" + sx.ToString() + "," + sy.ToString() + "," + sz.ToString() + "]", null, false, false);
-      t.execute("__cpbox = translate __cpbox, [" + (tb_xmin.Value + 0.1).ToString() + ","+(tb_ymin.Value+0.1).ToString()+","+(tb_zmin.Value+0.1).ToString()+"]", null, false, false);
-      t.execute("$ACTIVE = __bu_act;", null, false, false);
-      t.execute("$DRAW = __bu_drw;", null, false, false);
+      t.execute("__cpbox = box [" + sx.ToString() + "," + sy.ToString() + "," + sz.ToString() + "], "
+        + " [" + (tb_xmin.Value + 0.1).ToString() + ","+(tb_ymin.Value+0.1).ToString()+","+(tb_zmin.Value+0.1).ToString()+"]", null, false, false);
+      t.execute("$ACTIVE = __bu_act;$DRAW = __bu_drw", null, false, false);
       t.execute("display __cpbox, false, false", null, false, false);
     }
 
