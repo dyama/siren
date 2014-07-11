@@ -3421,21 +3421,24 @@ mrb_value loadbrep(mrb_state* mrb, mrb_value self)
  */
 mrb_value saveiges(mrb_state* mrb, mrb_value self)
 {
-    mrb_int target;
+    mrb_value shapes;
     mrb_value path;
-	int argc = mrb_get_args(mrb, "iS", &target, &path);
-
-	TopoDS_Shape shape = ::getTopoDSShape((int)target);
-	if (shape.IsNull()) {
-		static const char m[] = "No such named object.";
-        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
-	}
+	int argc = mrb_get_args(mrb, "AS", &shapes, &path);
 
 	IGESControl_Controller::Init();
 	IGESControl_Writer writer(Interface_Static::CVal("XSTEP.iges.unit"),
                                Interface_Static::IVal("XSTEP.iges.writebrep.mode"));
- 
-	writer.AddShape(shape);
+
+    for (int i=0; i < mrb_ary_len(mrb, shapes); i++) {
+        mrb_int target = mrb_fixnum(mrb_ary_ref(mrb, shapes, i));
+    	TopoDS_Shape shape = ::getTopoDSShape((int)target);
+    	if (shape.IsNull()) {
+    		static const char m[] = "No such named object.";
+            return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    	}
+    	writer.AddShape(shape);
+    }
+
 	writer.ComputeModel();
 
     if (writer.Write((Standard_CString)RSTRING_PTR(path)) == Standard_False) {
@@ -3459,12 +3462,32 @@ mrb_value loadiges(mrb_state* mrb, mrb_value self)
 	mrb_value result;
 
     if (stat == IFSelect_RetDone) {
-	    iges_reader.TransferRoots();
+        try {
+    	    iges_reader.TransferRoots();
+        }
+        catch (...) {
+    		static const char m[] = "Failed to TransferRoots() with an IGES file.";
+            return mrb_exc_new(mrb, E_RUNTIME_ERROR, m, sizeof(m) - 1);
+        }
+#if 0
+        // As one shape
 	    TopoDS_Shape shape = iges_reader.OneShape();
-#if USECLASS
-        ::regist(shape, result, true);
-#else
         result = mrb_fixnum_value(::set(shape, self));
+#else
+        // Some shapes
+        result = mrb_ary_new(mrb);
+        for (int i=1; i <= iges_reader.NbShapes(); i++) {
+            try {
+                TopoDS_Shape shape = iges_reader.Shape(i);
+                mrb_value id = mrb_fixnum_value(::set(shape, self));
+                mrb_ary_push(mrb, result, id);
+            }
+            catch(...) {
+                // skip
+            }
+        }
+        if (mrb_ary_len(mrb, result) < 1)
+            result = mrb_nil_value();
 #endif
 	}
 	else {
