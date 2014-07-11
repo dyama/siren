@@ -2404,7 +2404,12 @@ mrb_value erase(mrb_state* mrb, mrb_value self)
 		static const char m[] = "No such specified object.";
         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
     }
-    cur->aiscxt->UpdateCurrentViewer();
+
+    mrb_value r = mrb_funcall(cur->myMirb->mrb, self, "is_draw", 0);
+    if (mrb_bool(r)) {
+        cur->aiscxt->UpdateCurrentViewer();
+    }
+
 	return mrb_nil_value();
 }
 
