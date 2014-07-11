@@ -156,6 +156,7 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_par
 	// highlight color, selection color
     aiscxt->SetHilightColor(Quantity_NOC_YELLOW);
 	aiscxt->SelectionColor(Quantity_NOC_RED);
+    aiscxt->SetToHilightSelected(Standard_True);
 
 	// trihedron at origin point
 	// Handle(Geom_Axis2Placement) aTrihedronAxis = new Geom_Axis2Placement(gp::XOY());
@@ -189,31 +190,33 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_par
             = new Visual3d_Layer(viewer->Viewer(), Aspect_TOL_OVERLAY, Standard_False);
         lay->Clear();
         lay->Begin();
-        {
-            lay->SetViewport(1600, 1000);
-            //lay->SetTransparency(0.5);
+        lay->SetViewport(w, h);
+        lay->SetOrtho( 0, Max(w, h), Max(w, h), 0, Aspect_TOC_TOP_LEFT);
+        //lay->SetTextAttributes("Times-Roman", Aspect_TODT_NORMAL, Quantity_Color(Quantity_NOC_ORANGE));
+        //lay->SetTextAttributes((Standard_CString)"Arial", Aspect_TODT_NORMAL, Quantity_Color(Quantity_NOC_WHITE));
+        lay->SetTextAttributes(Font_NOF_ASCII_MONO, Aspect_TODT_NORMAL, Quantity_NOC_WHITE);
+        lay->DrawText((Standard_CString)"A", 0.0, 0.0, 40.0);
+        // {
+        //     //lay->SetTransparency(0.5);
 
-            lay->BeginPolygon(); {
-                lay->SetColor(Quantity_Color(1., 0., 0., Quantity_TOC_RGB));
-                lay->AddVertex(.95, -.9);
-                lay->AddVertex(.95, -.95);
-                lay->AddVertex(.8, -.95);
-                lay->AddVertex(.8, -.9);
-                lay->AddVertex(.95, -.9);
-            } lay->ClosePrimitive();
-            lay->BeginPolyline(); {
-                lay->SetColor(Quantity_Color(1., 1., 1., Quantity_TOC_RGB));
-                lay->AddVertex(-.95, .9);
-                lay->AddVertex(-.95, -.5);
-                lay->AddVertex(-.8, -.5);
-                lay->AddVertex(-.8, .9);
-                lay->AddVertex(-.95, .9);
-            } lay->ClosePrimitive();
+        //     lay->BeginPolygon(); {
+        //         lay->SetColor(Quantity_Color(1., 0., 0., Quantity_TOC_RGB));
+        //         lay->AddVertex(.95, -.9);
+        //         lay->AddVertex(.95, -.95);
+        //         lay->AddVertex(.8, -.95);
+        //         lay->AddVertex(.8, -.9);
+        //         lay->AddVertex(.95, -.9);
+        //     } lay->ClosePrimitive();
+        //     lay->BeginPolyline(); {
+        //         lay->SetColor(Quantity_Color(1., 1., 1., Quantity_TOC_RGB));
+        //         lay->AddVertex(-.95, .9);
+        //         lay->AddVertex(-.95, -.5);
+        //         lay->AddVertex(-.8, -.5);
+        //         lay->AddVertex(-.8, .9);
+        //         lay->AddVertex(-.95, .9);
+        //     } lay->ClosePrimitive();
 
-            //lay->SetTextAttributes("Times-Roman", Aspect_TODT_NORMAL, Quantity_Color(Quantity_NOC_ORANGE));
-            //lay->SetTextAttributes((Standard_CString)"Arial", Aspect_TODT_NORMAL, Quantity_Color(Quantity_NOC_WHITE));
-            lay->DrawText((Standard_CString)"A", -2.0, 0.0, 500.0);
-        }
+        // }
         lay->End();
     }
 #endif
@@ -257,7 +260,6 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_par
 		viewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
 	}
 #endif
-
 
 	aiscxt->UpdateCurrentViewer();
 

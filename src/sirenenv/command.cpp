@@ -31,6 +31,7 @@ bool OCCViewer::mruby_init()
 	regcmd("version",   &version,   0,0, "",                                "version() -> String");
 	regcmd("debug",     &debug,     0,1, "",                                "");
     regcmd("all",       &all,       0,0, "Get an array of all objects.",    "all() -> Ary[ObjID, ...]");
+    regcmd("init",      &init,      0,0, "Initialize context.",             "init() -> nil");
 
 	// Infomation/Status commands
 	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(ObjID) -> Ary[min[X,Y,Z], max[X,Y,Z]]");
@@ -75,6 +76,7 @@ bool OCCViewer::mruby_init()
     // regcmd("clip2on",   &clip2on,   5,0, "Set two clipping plane.",         "clip2on(name1, name2, pos[x, y, z], dir[x, y, z], thickness) -> nil");
     regcmd("activate",  &activate,  1,0, "",                                "");
     regcmd("dump",      &dump,      1,0, "Dump current view to image file.","dump(path) -> nil");
+    regcmd("reset",     &reset,     0,0, "Reset view",                      "reset() -> nil");
 
 	// Boolean operation commands
 	regcmd("common",    &common,    2,1, "Common boolean operation.",       "common(obj1, obj2) -> String");
@@ -426,7 +428,7 @@ void display(const TopoDS_Shape& shape, bool activate, bool shaded)
     }
 	cur->aiscxt->SetColor(hashape, Quantity_NOC_WHITE, Standard_False);
 
-	cur->aiscxt->Display(hashape);
+	cur->aiscxt->Display(hashape /*, 1, 1, Standard_True, Standard_True */);
 
     if (activate) {
         cur->aiscxt->Activate(hashape);
@@ -787,6 +789,15 @@ mrb_value dump(mrb_state* mrb, mrb_value self)
     return mrb_nil_value();
 }
 
+/**
+ * \brief Reset view
+ */
+mrb_value reset(mrb_state* mrb, mrb_value self)
+{
+    cur->view->Reset();
+    return mrb_nil_value();
+}
+
 // ------
 
 /**
@@ -859,6 +870,12 @@ mrb_value selected(mrb_state* mrb, mrb_value self)
 {
 	mrb_value ar = mrb_ary_new(mrb);
 	char* aname = NULL;
+
+    // Show const TopoDS_Shape& AIS_InteractiveContext::DetectedCurrentShape() const
+    // Show const Handle(AIS_InteractiveObject) AIS_InteractiveContext::DetectedCurrentShape() const
+    // Show Standard_Boolean AIS_InteractiveContext::HasSelectedShape() const
+    // Hilight( aisobj, update = true)
+    // InitDetected(), InitCurrent(), InitSelected(), MoreDetected(), NextDetected()
 
 	cur->aiscxt->InitCurrent();
 	for (; cur->aiscxt->MoreCurrent(); cur->aiscxt->NextCurrent()) {
@@ -3606,6 +3623,9 @@ mrb_value version(mrb_state* mrb, mrb_value self)
     return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
 }
 
+/**
+ * \brief Get all shape id.
+ */
 mrb_value all(mrb_state* mrb, mrb_value self)
 {
     mrb_value result = mrb_ary_new(mrb);
@@ -3621,6 +3641,14 @@ mrb_value all(mrb_state* mrb, mrb_value self)
         return result;
 }
 
+/**
+ * \brief Initialize context
+ */
+mrb_value init(mrb_state* mrb, mrb_value self)
+{
+    return mrb_exc_new(mrb, E_NOTIMP_ERROR, NULL, 0);
+}
+
 mrb_value debug2(mrb_state* mrb, mrb_value self)
 {
     return mrb_fixnum_value(123);
@@ -3634,6 +3662,18 @@ mrb_value debug2(mrb_state* mrb, mrb_value self)
 #include <Graphic3d_AspectText3d.hxx>
 mrb_value debug(mrb_state* mrb, mrb_value self)
 {
+
+    mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
+	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
+    Standard_Integer layer_id;
+    cur->viewer->AddZLayer(layer_id);
+    cur->aiscxt->SetZLayer(hashape, layer_id);
+    // cur->aiscxt->BeginImmediateDraw();
+    // cur->aiscxt->ImmediateAdd(hashape);
+    // cur->aiscxt->EndImmediateDraw();
+    cur->aiscxt->UpdateCurrentViewer();
+
     return mrb_nil_value();
 
 ////    TColgp_Array2OfPnt poles(0, 3, 0, 3);

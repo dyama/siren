@@ -17,6 +17,7 @@ mrb_value help        (mrb_state*, mrb_value);
 mrb_value version     (mrb_state*, mrb_value);
 mrb_value debug       (mrb_state*, mrb_value);
 mrb_value all         (mrb_state*, mrb_value);
+mrb_value init        (mrb_state*, mrb_value);
 
 mrb_value selmode     (mrb_state*, mrb_value);
 
@@ -118,5 +119,6 @@ mrb_value clipon      (mrb_state*, mrb_value);
 mrb_value clipoff     (mrb_state*, mrb_value);
 mrb_value activate    (mrb_state*, mrb_value);
 mrb_value dump        (mrb_state*, mrb_value);
+mrb_value reset       (mrb_state*, mrb_value);
 
 #endif // _COMMAND_H_

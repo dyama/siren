@@ -34,6 +34,7 @@
 #include <Aspect_TypeOfDisplayText.hxx>
 
 #include <OSD_Path.hxx>
+#include <Font_NameOfFont.hxx>
 
 //collections
 #include <TCollection.hxx>
