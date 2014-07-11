@@ -692,10 +692,11 @@ mrb_value clipon(mrb_state* mrb, mrb_value self)
         cur->clipman.insert(std::pair<int, Handle(Graphic3d_ClipPlane)>(index, p));
     }
 
-    if (args <= 4) {
+    if (argc <= 4) {
         // シーケンスに詰め込み
         Graphic3d_SequenceOfHClipPlane ary;
-        Graphic3d_SequenceOfHClipPlane* pary = Graphic3d_SequenceOfHClipPlane();
+        // Graphic3d_SequenceOfHClipPlane* pary = new Graphic3d_SequenceOfHClipPlane();
+        // delete(pary);
         for (it = cur->clipman.begin(); it != cur->clipman.end(); it++) {
             Handle(Graphic3d_ClipPlane) pp = (*it).second;
             pp->SetOn(Standard_True);
