@@ -48,6 +48,7 @@ public: // View, Viewer
 	void  UpdateCurrentViewer(void);
 	void  setProjection(V3d_TypeOfOrientation dir);
 	void  ZoomAllView(void);
+    void  ZFitAll(void);
 	void  PanGloView(void);
 	void  ResetView(void);
 	void  SetDisplayMode(int aMode);

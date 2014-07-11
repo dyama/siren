@@ -357,6 +357,7 @@ namespace siren
             myViewer.SetDegenerateModeOn();
             myDegenerateModeIsOn = true;
           }
+          this.Viewer.ZFitAll();
           break;
 
         default:
@@ -375,6 +376,7 @@ namespace siren
             myViewer.SetDegenerateModeOn();
             myDegenerateModeIsOn = true;
           }
+          this.Viewer.ZFitAll();
         }
         break;
 

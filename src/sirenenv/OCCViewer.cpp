@@ -415,6 +415,12 @@ void OCCViewer::ZoomAllView(void)
 	}
 }
 
+void OCCViewer::ZFitAll(void)
+{
+    if (!view.IsNull())
+        view->ZFitAll();
+}
+
 float OCCViewer::Scale(void)
 {
 	if (view.IsNull())

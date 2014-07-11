@@ -748,6 +748,12 @@ namespace sirenenv
                 myOCCViewer->ZoomAllView();
         }
 
+        void ZFitAll(void)
+        {
+            if (myOCCViewer != NULL)
+                myOCCViewer->ZFitAll();
+        }
+
         void Reset(void)
         {
             if (myOCCViewer != NULL)
