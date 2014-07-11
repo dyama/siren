@@ -537,7 +537,9 @@ mrb_value color(mrb_state* mrb, mrb_value self)
             (Standard_Real)(b / 255.0),
             Quantity_TOC_RGB);
     	Quantity_NameOfColor colname = col.Name();
-    	cur->aiscxt->SetColor(hashape, colname, Standard_True);
+
+        mrb_value r = mrb_funcall(cur->myMirb->mrb, self, "is_draw", 0);
+        cur->aiscxt->SetColor(hashape, colname, mrb_bool(r) ? Standard_True : Standard_False);
     	return mrb_nil_value();
     }
     else {
@@ -576,6 +578,10 @@ mrb_value material(mrb_state* mrb, mrb_value self)
     if (argc == 2) {
         // Set material by material no.
         cur->aiscxt->SetMaterial(hashape, (Graphic3d_NameOfMaterial)mno);
+        mrb_value r = mrb_funcall(cur->myMirb->mrb, self, "is_draw", 0);
+        if (mrb_bool(r)) {
+            cur->aiscxt->UpdateCurrentViewer();
+        }
     }
     else {
         // Get material no of shape.

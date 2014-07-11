@@ -614,6 +614,7 @@ int OCCViewer::NbSelected(void)
 {
 	if (aiscxt.IsNull())
 		return false;
+    aiscxt->UpdateSelected(Standard_False);
     return (int)aiscxt->NbSelected();
 }
 

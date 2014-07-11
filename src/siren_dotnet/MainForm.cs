@@ -71,8 +71,7 @@ namespace siren
       else {
       }
 
-      // dummy
-      propertyGrid1.SelectedObject = this;
+      propertyGrid1.SelectedObject = null;
 
       myTerm.set(view1.Viewer, this);
       changeState();
@@ -80,6 +79,9 @@ namespace siren
       this.Cursor = System.Windows.Forms.Cursors.Default;
 
       view1.Viewer.RedrawView();
+
+      setToolBarButtonState(0);
+      return;
     }
 
     void MainForm_DragEnter(object sender, DragEventArgs e)
@@ -462,9 +464,8 @@ namespace siren
         r = c.R;
         g = c.G;
         b = c.B;
-        myTerm.execute("color selected[0], " + c.R.ToString() + ", " + c.G.ToString() + ", " + c.B.ToString() + "");
+        myTerm.execute("__bu_draw = $DRAW; $DRAW = false; selected.each { |n| color n, " + c.R.ToString() + ", " + c.G.ToString() + ", " + c.B.ToString() + " }; $DRAW = __bu_draw; update");
       }
-      this.view1.Viewer.UpdateCurrentViewer();
     }
 
     private void tsbClipPlane_Click(object sender, EventArgs e)
@@ -656,7 +657,7 @@ namespace siren
       this.view1.Viewer.ZoomAllView();
     }
 
-    int prev_nb_selected = 0;
+    int prev_nb_selected = -1;
     public void changeState()
     {
       int nb_selected = this.view1.Viewer.NbSelected();
