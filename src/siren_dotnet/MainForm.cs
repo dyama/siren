@@ -94,8 +94,16 @@ namespace siren
       List<string> files = new List<string>((string[])e.Data.GetData(DataFormats.FileDrop, false));
       if (files != null) {
         foreach (string file in files) {
-          if (!OpenFile(file, Common.getFormatByExt(file)))
-            break;
+          Cursor bu_cursor = Cursor.Current;
+          bool is_done = false;
+          if (Regex.IsMatch(file, @"\.rb$", RegexOptions.IgnoreCase)) {
+            // siren script file (ruby)
+            is_done = myTerm.LoadScriptFile(file, false);
+          }
+          else {
+            is_done = OpenFile(file, Common.getFormatByExt(file));
+          }
+          Cursor.Current = bu_cursor;
         }
       }
     }

@@ -77,7 +77,7 @@ namespace siren
     /// <param name="cmd"></param>
     public int execute(string cmd, Control focus, bool echo, bool use_func)
     {
-      if (System.Text.RegularExpressions.Regex.IsMatch(cmd, @"^\s*$"))
+      if (Regex.IsMatch(cmd, @"^\s*$"))
         return -1;
 
       Cursor bu_cursor = Cursor.Current;
@@ -242,29 +242,36 @@ namespace siren
         return;
       }
       this.previous_path = d.FileName;
-
-      StreamReader sr = new StreamReader(this.previous_path, Encoding.UTF8);
-      tb.Text = "";
-      string buf;
-      while ((buf = sr.ReadLine()) != null) {
-        tb.Text += buf + Environment.NewLine;
-      }
-      sr.Close();
+      LoadScriptFile(d.FileName, false);
     }
 
     private void tsbRelaod_Click(object sender, EventArgs e)
     {
-      if (File.Exists(this.previous_path)) {
-        StreamReader sr = new StreamReader(this.previous_path, Encoding.UTF8);
-        tb.Text = "";
+      if (!LoadScriptFile(this.previous_path, false)) {
+        tsbRelaod.Enabled = false;
+      }
+    }
+
+    public bool LoadScriptFile(string path, bool add)
+    {
+      bool result = false;
+      if (File.Exists(path)) {
+        StreamReader sr = new StreamReader(path, Encoding.UTF8);
+        if (add) {
+          tb.Text = Environment.NewLine;
+        }
+        else {
+          tb.Text = "";
+        }
         string buf;
         while ((buf = sr.ReadLine()) != null) {
           tb.Text += buf + Environment.NewLine;
         }
         sr.Close();
+        result = true;
       }
+      return result;
     }
-
 
   }
 }

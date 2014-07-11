@@ -4,8 +4,6 @@
 # IJN destroyer Shimakaze
 # (c) dyama 2014
 
-$DRAW = false
-
 $ap = [0, 0, 0]
 $yaxis = [0, 1, 0]
 
@@ -77,9 +75,9 @@ erase parts
 
 erase [hulls, tops, btms]
 
-display res
-
 fit
+
+translate res, [0, 50, 0]
 
 # 零式五連想魚雷発射管
 def torpedo
@@ -171,7 +169,6 @@ def torpedo
     comp.push(cylinder([xa,-y,z+h],[1,0,0],r,xf-xa,r360))
     comp.push(cylinder([xa,-y,z+h],[0,1,0],r,y*2,r360))
 
-    # 上の構造物
     comp.push(box([4,0.2,0.7],[len/15*7, 1.2,z-0.5]))
     comp.push(box([4,0.2,0.7],[len/15*7,-1.2,z-0.5]))
 
@@ -185,3 +182,8 @@ def torpedo
     compound comp
 
 end
+
+torpedo
+
+fit
+

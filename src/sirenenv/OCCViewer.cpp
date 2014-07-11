@@ -243,7 +243,7 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_par
 		gp_Pnt p(0, 0, 0);
 		gp_Vec v(0, 0, 1);
 		gp_Ax3 ax(p, v);
-		Quantity_Length XOrigin = 10;
+		Quantity_Length XOrigin = 0;
 		Quantity_Length YOrigin = 0;
 		Quantity_Length XStep = 10;
 		Quantity_Length YStep = 10;
