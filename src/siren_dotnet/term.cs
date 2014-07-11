@@ -244,7 +244,11 @@ namespace siren
       this.previous_path = d.FileName;
 
       StreamReader sr = new StreamReader(this.previous_path, Encoding.UTF8);
-      tb.Text = sr.ReadToEnd();
+      tb.Text = "";
+      string buf;
+      while ((buf = sr.ReadLine()) != null) {
+        tb.Text += buf + Environment.NewLine;
+      }
       sr.Close();
     }
 
@@ -252,7 +256,11 @@ namespace siren
     {
       if (File.Exists(this.previous_path)) {
         StreamReader sr = new StreamReader(this.previous_path, Encoding.UTF8);
-        tb.Text = sr.ReadToEnd();
+        tb.Text = "";
+        string buf;
+        while ((buf = sr.ReadLine()) != null) {
+          tb.Text += buf + Environment.NewLine;
+        }
         sr.Close();
       }
     }

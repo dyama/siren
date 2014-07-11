@@ -125,7 +125,7 @@ bool OCCViewer::mruby_init()
 	regcmd("brepsave",  &savebrep,  2,0, "Save object to a file.",          "brepsave(path, obj) -> nil");
 	regcmd("brepload",  &loadbrep,  1,0, "Load object from a file.",        "brepload(path) -> Shape");
 	regcmd("igessave",  &saveiges,  2,0, "Save object to an IGES.",         "igessave(path, obj) -> nil");
-	regcmd("igesload",  &loadiges,  1,0, "Load object from an IGES.",       "igesload(path) -> Shape");
+	regcmd("igesload",  &loadiges,  1,1, "Load object from an IGES.",       "igesload(path, oneshape = false) -> ary[shape, ...] | shape");
 	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path) -> Shape");
 	regcmd("stlsave",   &savestl,   2,0, "Save object to an STL file.",     "stlsave(obj, path) -> nil");
     regcmd("vrmlsave",  &savevrml,  2,0, "Save object to a VRML file.",     "vrmlsave(obj, path) -> nil");
@@ -3466,7 +3466,8 @@ mrb_value saveiges(mrb_state* mrb, mrb_value self)
 mrb_value loadiges(mrb_state* mrb, mrb_value self)
 {
     mrb_value path;
-	int argc = mrb_get_args(mrb, "S", &path);
+    mrb_bool oneshape;
+	int argc = mrb_get_args(mrb, "S|b", &path, &oneshape);
 
     IGESControl_Reader iges_reader;
     int stat = iges_reader.ReadFile((Standard_CString)RSTRING_PTR(path));
@@ -3480,27 +3481,30 @@ mrb_value loadiges(mrb_state* mrb, mrb_value self)
     		static const char m[] = "Failed to TransferRoots() with an IGES file.";
             return mrb_exc_new(mrb, E_RUNTIME_ERROR, m, sizeof(m) - 1);
         }
-#if 0
-        // As one shape
-	    TopoDS_Shape shape = iges_reader.OneShape();
-        result = mrb_fixnum_value(::set(shape, self));
-#else
-        // Some shapes
-        result = mrb_ary_new(mrb);
-        for (int i=1; i <= iges_reader.NbShapes(); i++) {
-            try {
-                TopoDS_Shape shape = iges_reader.Shape(i);
-                mrb_value id = mrb_fixnum_value(::set(shape, self));
-                mrb_ary_push(mrb, result, id);
-            }
-            catch(...) {
-                // skip
-            }
+
+        if (oneshape) {
+            // As one shape
+    	    TopoDS_Shape shape = iges_reader.OneShape();
+            result = mrb_fixnum_value(::set(shape, self));
         }
-        if (mrb_ary_len(mrb, result) < 1)
-            result = mrb_nil_value();
-#endif
-	}
+        else {
+            // Some shapes
+            result = mrb_ary_new(mrb);
+            for (int i=1; i <= iges_reader.NbShapes(); i++) {
+                try {
+                    TopoDS_Shape shape = iges_reader.Shape(i);
+                    mrb_value id = mrb_fixnum_value(::set(shape, self));
+                    mrb_ary_push(mrb, result, id);
+                }
+                catch(...) {
+                    // Add nil value at raise exception.
+                    mrb_ary_push(mrb, result, mrb_nil_value());
+                }
+            }
+            if (mrb_ary_len(mrb, result) < 1)
+                result = mrb_nil_value();
+        }
+    }
 	else {
 		static const char m[] = "Failed to load IGES file.";
         result = mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);

@@ -29,11 +29,11 @@ hullp = loft lines
 
 ltopp = polyline(wl[0] + [wl[0][0]])
 gtopp = wire([ltopp])
-topp  = wire2plane(gtopp)
+topp  = wire2face(gtopp)
 
 lbtmp = polyline(wl.last + [wl.last[0]])
 gbtmp = wire([lbtmp])
-btmp  = wire2plane(gbtmp)
+btmp  = wire2face(gbtmp)
 
 lines.each do |n|
     erase n
@@ -57,7 +57,7 @@ def updk_mold_solid
 
     hoge = polyline ul
     fuga = wire([hoge])
-    piyo = wire2plane(fuga)
+    piyo = wire2face(fuga)
     result = sweepv(piyo, [0, -n*2, 0])
 
     erase [hoge, fuga, piyo]
@@ -81,12 +81,12 @@ display res
 
 fit
 
-# —ë®ŒÜ˜A‘z‹›—‹”­ËŠÇ
+# é›¶å¼äº”é€£æƒ³é­šé›·ç™ºå°„ç®¡
 def torpedo
 
     r360 = 6.28318531
 
-    # ‹ãO®_‘f‹›—‹ L9000 x R610mm
+    # ä¹ä¸‰å¼é…¸ç´ é­šé›· L9000 x R610mm
     len = 10.0
     r   = 0.7/2
     z   = 1.0
@@ -94,7 +94,7 @@ def torpedo
 
     comp = []
 
-    # ”­ËŠÇ
+    # ç™ºå°„ç®¡
     (0...5).each do |i|
         y = (i-2)*0.9
         comp.push(cylinder([0,y,z],           dir, r,     len,  r360))
@@ -106,7 +106,7 @@ def torpedo
         comp.push(cylinder([len-2,y-0.2,z+r], dir, 0.1,   1.85, r360))
     end
 
-    # ”­ËŠÇ§º –{‘Ì
+    # ç™ºå°„ç®¡åˆ¶å®¤ æœ¬ä½“
     y = 2.5
     z = 2.0
     fx = 0.8
@@ -121,11 +121,11 @@ def torpedo
     a4 = wire([polyline([[x,-y,0],    [x-fx/2,-y+fy,z*0.8],[x-fx/2,y-fy,z*0.8],[x,y,0],     [x,-y,0]])])
     ws = [a1, a2, a3, a4]
     comp.push(loft(ws))
-    comp.push(wire2plane(a1))
-    comp.push(wire2plane(a4))
+    comp.push(wire2face(a1))
+    comp.push(wire2face(a4))
     erase ws
 
-    # Æ€‘‹
+    # ç…§æº–çª“
     x = len/15*4+1
     zs = 1.4
     zu = 1.7
@@ -133,24 +133,24 @@ def torpedo
     comp.push(sweepv(a,[0.5,0,0]))
     erase a
 
-    # ‘‹
+    # çª“
     a = box([0.5,0.5,0.3],[x-0.5,1.4,1.6])
     comp.push(a)
     b = copy(a)
     comp.push(mirror(b,[0,0,0],[0,-1,0]))
 
-    # o“üŒû(ƒTƒCƒh)
+    # å‡ºå…¥å£(ã‚µã‚¤ãƒ‰)
     w = 6
     a = polyline([[6,-w/2,0], [6,-w/2,1.8], [6.8,-w/2,1.8], [6.8,-w/2,0]])
     comp.push(sweepv(a,[0,w,0]))
     erase a
 
-    # ƒ}ƒ“ƒz[ƒ‹
+    # ãƒãƒ³ãƒ›ãƒ¼ãƒ«
     x = len/15*7
     comp.push(cylinder([x,0,2],[0,0,1],0.3,0.3,r360))
     comp.push(cylinder([x,0,2],[0,0,1],0.4,0.2,r360))
 
-    # è‚·‚è
+    # æ‰‹ã™ã‚Š
     xa = len/15*6
     xf = len/15*12
     z  = 2.0
@@ -171,15 +171,15 @@ def torpedo
     comp.push(cylinder([xa,-y,z+h],[1,0,0],r,xf-xa,r360))
     comp.push(cylinder([xa,-y,z+h],[0,1,0],r,y*2,r360))
 
-    # ã‚Ì\‘¢•¨
+    # ä¸Šã®æ§‹é€ ç‰©
     comp.push(box([4,0.2,0.7],[len/15*7, 1.2,z-0.5]))
     comp.push(box([4,0.2,0.7],[len/15*7,-1.2,z-0.5]))
 
-    # ƒTƒCƒh‚Ì\‘¢•¨
+    # ã‚µã‚¤ãƒ‰ã®æ§‹é€ ç‰©
     y = 2.95
     comp.push(box([0.4,y*2,0.5],[len/15*7,-y,0.3]))
 
-    # ‘äÀ
+    # å°åº§
     comp.push(cylinder([5.25,0,0],[0,0,-1],1.5,0.2,r360))
 
     compound comp
