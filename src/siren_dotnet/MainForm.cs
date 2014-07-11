@@ -59,18 +59,6 @@ namespace siren
 
       splitContainer3.Visible = false;
 
-      List<string> args = new List<string>(System.Environment.GetCommandLineArgs());
-      // コマンドライン引数から開く
-      args.RemoveAt(0); // 自身の呼び出しパス
-      if (args != null && args.Count > 0) {
-        foreach (string file in args) {
-          if (!OpenFile(file, Common.getFormatByExt(file)))
-            break;
-        }
-      }
-      else {
-      }
-
       propertyGrid1.SelectedObject = null;
 
       myTerm.set(view1.Viewer, this);
@@ -81,6 +69,23 @@ namespace siren
       view1.Viewer.RedrawView();
 
       setToolBarButtonState(0);
+
+      return;
+    }
+
+    private void MainForm_Shown(object sender, EventArgs e)
+    {
+      Application.DoEvents();
+
+      List<string> args = new List<string>(System.Environment.GetCommandLineArgs());
+      // コマンドライン引数から開く
+      args.RemoveAt(0); // 自身の呼び出しパス
+      if (args != null && args.Count > 0) {
+        foreach (string file in args) {
+          if (!OpenFile(file, Common.getFormatByExt(file)))
+            break;
+        }
+      }
       return;
     }
 
@@ -110,29 +115,48 @@ namespace siren
 
     #endregion // イベント
 
-    private bool OpenFile(string filename, ModelFormat theformat)
+    private bool OpenFile(string filename, ModelFormat format)
     {
-      switch (theformat) {
+      switch (format) {
       case ModelFormat.IMAGE:
-      case ModelFormat.STL:
       case ModelFormat.VRML:
       case ModelFormat.UNKNOWN:
         MessageBox.Show("サポートされていないファイル形式です。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return false;
       }
 
-      this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+      bool result = false;
 
-      bool result = this.view1.Import(filename, theformat);
-
-      this.Cursor = System.Windows.Forms.Cursors.Default;
-
-      if (!result) {
-        MessageBox.Show("ファイルの読み込みに失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      if (!System.IO.File.Exists(filename)) {
+        MessageBox.Show("ファイルが存在しないか、アクセスできません。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return false;
       }
 
-      return true;
+      filename = filename.Replace(@"\", @"\\"); // escape
+
+      switch (format) {
+      case ModelFormat.BREP: 
+          result = (myTerm.execute("a = brepload(\"" + filename + "\")") == 0);
+        break;
+      case ModelFormat.IGES:
+        result = (myTerm.execute("a = igesload(\"" + filename + "\")") == 0);
+        break;
+      case ModelFormat.STL:
+        result = (myTerm.execute("a = stlload(\"" + filename + "\")") == 0);
+        break;
+      // case ModelFormat.STEP:
+      default:
+        return false;
+      }
+
+      if (result) {
+        myTerm.execute("fit", this, true, false);
+      }
+      else {
+        MessageBox.Show("ファイルの読み込みに失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+
+      return result;
     }
 
     private bool OpenFile()
@@ -143,11 +167,11 @@ namespace siren
       string filter="";
       d.RestoreDirectory = true;
 
-      filter = "対応している全てのファイル(brep brp ble csfdb stp step igs iges)|*.brep; *.brp; *.rle; *.csfdb; *.stp; *.step; *.igs; *.iges";
+      filter = "対応している全てのファイル|*.brep; *.brp; *.rle; *.stp; *.step; *.igs; *.iges; *.stl";
       filter += "|BREP ファイル(*.brep *.brp *.rle)|*.brep; *.brp; *.rle";
-      filter += "|CSFDB ファイル(*.csfdb)|*.csfdb";
-      filter += "|STEP ファイル(*.stp *.step)|*.stp; *.step";
       filter += "|IGES ファイル(*.igs *.iges)|*.igs; *.iges";
+      filter += "|STEP ファイル(*.stp *.step)|*.stp; *.step";
+      filter += "|STL ファイル(*.stl)|*.stl";
       d.Filter = filter + "|All files (*.*)|*.*";
 
       if (d.ShowDialog() != DialogResult.OK)
@@ -158,21 +182,34 @@ namespace siren
 
     private bool SaveFile(string filename, ModelFormat format)
     {
-      switch (format) {
-      case ModelFormat.UNKNOWN:
-      case ModelFormat.CSFDB:
+      if (format == ModelFormat.UNKNOWN) {
         MessageBox.Show("サポートされていないファイル形式です。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return false;
       }
 
-      this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+      bool result = false;
 
-      if (this.view1 == null)
+      filename = filename.Replace(@"\", @"\\"); // escape
+
+      switch (format) {
+      case ModelFormat.BREP:
+        result = (myTerm.execute("brepsave(\"" + filename + "\", selected[0])") == 0);
+        break;
+      case ModelFormat.IGES:
+        result = (myTerm.execute("igessave(??, \"" + filename + "\"") == 0);
+        break;
+      case ModelFormat.VRML:
+        result = (myTerm.execute("vrmlsave(?, \"" + filename + "\"") == 0);
+        break;
+      case ModelFormat.STL:
+        result = (myTerm.execute("stlsave(?, \"" + filename + "\"") == 0);
+        break;
+      case ModelFormat.STEP:
+        result = (myTerm.execute("stepsave(?, \"" + filename + "\"") == 0);
+        break;
+      default:
         return false;
-
-      bool result = this.view1.Export(filename, format);
-
-      this.Cursor = System.Windows.Forms.Cursors.Default;
+      }
 
       if (!result) {
         MessageBox.Show("ファイルの保存に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -187,13 +224,11 @@ namespace siren
       System.Windows.Forms.SaveFileDialog  d = new SaveFileDialog();
       string filter="";
       filter += "BREP ファイル(*.brep *.brp *.rle)|*.brep; *.brp; *.rle";
-      //filter += "|CSFDB ファイル(*.csfdb)|*.csfdb";
-      filter += "|STEP ファイル(*.stp *.step)|*.step; *.stp";
+      //filter += "|STEP ファイル(*.stp *.step)|*.step; *.stp";
       filter += "|IGES ファイル(*.igs *.iges)| *.iges; *.igs";
-      filter += "|VRML ファイル(*.vrml)|*.vrml";
+      filter += "|VRML ファイル(*.wrl)|*.wrl";
       filter += "|STL ファイル(*.stl)|*.stl";
       //filter += "|WebGL JavaScript ファイル(*.js)|*.js";
-      filter += "|画像ファイル(*.bmp *.gif *.xwd)| *.bmp; *.gif; *.xwd";
       d.Filter = filter;
 
       if (d.ShowDialog() != DialogResult.OK)
@@ -1039,7 +1074,6 @@ namespace siren
       this.view1.Focus();
       return;
     }
-
 
 
   }

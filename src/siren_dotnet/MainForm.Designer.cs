@@ -1051,7 +1051,7 @@ namespace siren
           this.toolStripGeneral.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
           this.toolStripGeneral.Location = new System.Drawing.Point(3, 0);
           this.toolStripGeneral.Name = "toolStripGeneral";
-          this.toolStripGeneral.Size = new System.Drawing.Size(415, 25);
+          this.toolStripGeneral.Size = new System.Drawing.Size(384, 25);
           this.toolStripGeneral.TabIndex = 15;
           // 
           // toolStripSeparator1
@@ -1182,6 +1182,7 @@ namespace siren
           this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
           this.Text = "siren";
           this.Load += new System.EventHandler(this.MainForm_Load);
+          this.Shown += new System.EventHandler(this.MainForm_Shown);
           this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
           this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
           this.toolStripMain.ResumeLayout(false);

@@ -122,13 +122,13 @@ bool OCCViewer::mruby_init()
     regcmd("contour",   &contour,   2,0, "Trim face by contour wire.",      "");
 
 	// I/O commands
-	regcmd("brepsave",  &savebrep,  2,0, "Save object to a file.",          "brepsave(path, obj) -> nil");
-	regcmd("brepload",  &loadbrep,  1,0, "Load object from a file.",        "brepload(path) -> Shape");
-	regcmd("igessave",  &saveiges,  2,0, "Save object to an IGES.",         "igessave(path, obj) -> nil");
+	regcmd("brepsave",  &savebrep,  2,0, "Save object to a file.",          "brepsave(shape, path) -> nil");
+	regcmd("brepload",  &loadbrep,  1,0, "Load object from a file.",        "brepload(path) -> shape");
+	regcmd("igessave",  &saveiges,  2,0, "Save object to an IGES.",         "igessave(ary[shape, ...], path) -> nil");
 	regcmd("igesload",  &loadiges,  1,1, "Load object from an IGES.",       "igesload(path, oneshape = false) -> ary[shape, ...] | shape");
-	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path) -> Shape");
-	regcmd("stlsave",   &savestl,   2,0, "Save object to an STL file.",     "stlsave(obj, path) -> nil");
-    regcmd("vrmlsave",  &savevrml,  2,0, "Save object to a VRML file.",     "vrmlsave(obj, path) -> nil");
+	regcmd("stlload",   &loadstl,   1,0, "Load object from an STL file.",   "stlload(path) -> shape");
+	regcmd("stlsave",   &savestl,   2,0, "Save object to an STL file.",     "stlsave(shape, path) -> nil");
+    regcmd("vrmlsave",  &savevrml,  2,0, "Save object to a VRML file.",     "vrmlsave(shape, path) -> nil");
 
 	// regcmd("selmode",   &selmode,   1,0, "Change selection mode.",          "");
 
@@ -3371,9 +3371,9 @@ mrb_value isin(mrb_state* mrb, mrb_value self)
  */
 mrb_value savebrep(mrb_state* mrb, mrb_value self)
 {
-    mrb_value path;
 	mrb_int target; 
-	int argc = mrb_get_args(mrb, "Si", &path, &target);
+    mrb_value path;
+	int argc = mrb_get_args(mrb, "iS", &target, &path);
 
 	mrb_value result;
 
