@@ -28,12 +28,12 @@ namespace siren
 
       t = aterm;
 
-      x_min = -10 * 10;
-      x_max = 32 * 10;
-      y_min = -10 * 10;
-      y_max = 10 * 10;
-      z_min = -10 * 10;
-      z_max = 10 * 10;
+      x_min = -6.5;
+      x_max = 324.5;
+      y_min = -31;
+      y_max = 31;
+      z_min = -1;
+      z_max = 56;
 
       return;
     }
@@ -90,6 +90,18 @@ namespace siren
       tb_zmax.Minimum = (int)z_min;
       tb_zmax.Maximum = (int)z_max;
       tb_zmax.Value = tb_zmax.Maximum;
+
+      tb_x.Minimum = (int)x_min;
+      tb_x.Maximum = (int)x_max;
+      tb_x.Value = (int)((x_max - x_min) / 2);
+
+      // tb_y.Minimum = (int)y_min;
+      // tb_y.Maximum = (int)y_max;
+      // tb_y.Value = (int)((y_max - y_min) / 2);
+
+      // tb_z.Minimum = (int)z_min;
+      // tb_z.Maximum = (int)z_max;
+      // tb_z.Value = (int)((z_max - y_min) / 2);
 
       return;
     }
@@ -153,6 +165,45 @@ namespace siren
     private void btOk_Click(object sender, EventArgs e)
     {
       Close();
+    }
+
+    private void cb_section_CheckedChanged(object sender, EventArgs e)
+    {
+      if (cb_section.Checked)
+        t.execute("hide __cpbox;", null, false, false);
+      else
+        t.execute("display __cpbox;", null, false, false);
+
+      label6.Enabled = cb_section.Checked;
+      tb_x.Enabled = cb_section.Checked;
+      //tb_y.Enabled = cb_section.Checked;
+      //tb_z.Enabled = cb_section.Checked;
+
+      label2.Enabled = !cb_section.Checked;
+      tb_xmin.Enabled = !cb_section.Checked;
+      tb_ymin.Enabled = !cb_section.Checked;
+      tb_zmin.Enabled = !cb_section.Checked;
+
+      label4.Enabled = !cb_section.Checked;
+      tb_xmax.Enabled = !cb_section.Checked;
+      tb_ymax.Enabled = !cb_section.Checked;
+      tb_zmax.Enabled = !cb_section.Checked;
+    }
+
+    private void tb_x_Scroll(object sender, EventArgs e)
+    {
+      double thickness = 0.5; // m
+      tb_xmin.Value = (int)(tb_x.Value - thickness / 2);
+      tb_xmax.Value = (int)(tb_x.Value + thickness / 2);
+
+      double val = (double)tb_xmin.Value;
+      string cap = cb_usecap.Checked ? "true" : "false";
+      t.execute(
+        "clipon 100, [" + (val - thickness / 2).ToString() + ", 0, 0], [1, 0, 0], " + cap + ";" +
+        "clipon 101, [" + (val + thickness / 2).ToString() + ", 0, 0], [-1, 0, 0], " + cap + ";" +
+        "update",
+        null, false, false);
+      // updatebox();
     }
 
 

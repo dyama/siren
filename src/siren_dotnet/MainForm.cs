@@ -8,6 +8,7 @@
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using sirenenv;
 
 namespace siren
@@ -40,7 +41,7 @@ namespace siren
       view1.InitViewer();
       view1.InitV3D(false);
 
-      this.view2 = new ViewForm(this, TypeOfOrientation.Zneg, false);
+      this.view2 = new ViewForm(this, TypeOfOrientation.Zpos, false);
       view2.Dock = DockStyle.Fill;
       splitContainer4.Panel1.Controls.Add(this.view2);
       view2.InitViewer();
@@ -54,7 +55,7 @@ namespace siren
       view3.InitViewer();
       view3.SetContext(view1.Viewer);
       view3.Viewer.CreateNewView(view3.Handle, false, false);
-      view3.Viewer.setProjection(TypeOfOrientation.Ypos);
+      view3.Viewer.setProjection(TypeOfOrientation.Yneg);
 
       splitContainer3.Visible = false;
 
@@ -416,7 +417,10 @@ namespace siren
       if (d.ShowDialog() != DialogResult.OK)
         return;
 
-      SaveFile(d.FileName, ModelFormat.IMAGE);
+      string path = d.FileName;
+      path = path.Replace(@"\", "/");
+
+      this.myTerm.execute("dump \"" + path + "\"", null, true, false);
     }
 
     private void tsbDisplayMode_Click(object sender, EventArgs e)
@@ -429,7 +433,7 @@ namespace siren
     private void tsbDelete_Click(object sender, EventArgs e)
     {
       if (this.view1 != null) {
-        this.view1.Viewer.EraseObjects();
+        myTerm.execute("erase selected");
       }
     }
 
@@ -480,25 +484,158 @@ namespace siren
     }
 
     #region Materialize
-    private void tsbMaterial_ButtonClick(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.DEFAULT); }
-    private void miGold_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.GOLD); }
-    private void miSilver_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.SILVER); }
-    private void miCopper_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.COPPER); }
-    private void miBronze_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.BRONZE); }
-    private void miPewter_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.PEWTER); }
-    private void miBrass_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.BRASS); }
-    private void miSteel_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.STEEL); }
-    private void miAluminium_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.ALUMINIUM); }
-    private void miMetalized_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.METALIZED); }
-    private void miStone_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.STONE); }
-    private void miPlaster_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.PLASTER); }
-    private void miObsidian_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.OBSIDIAN); }
-    private void miJade_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.JADE); }
-    private void miPlastic_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.PLASTIC); }
-    private void miPlastic2_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.SHINY_PLASTIC); }
-    private void miSatin_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.SATIN); }
-    private void miGNC_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.NEON_GNC); }
-    private void miPHC_Click(object sender, EventArgs e) { if (this.view1 == null) return; this.view1.Viewer.SetMaterial((int)NameOfMaterial.NEON_PHC); }
+
+    private void
+    tsbMaterial_ButtonClick(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.DEFAULT).ToString(), this, true, false);
+    }
+
+    private void
+    miGold_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.GOLD).ToString(), this, true, false);
+    }
+
+    private void
+    miSilver_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.SILVER).ToString(), this, true, false);
+    }
+
+    private void
+    miCopper_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.COPPER).ToString(), this, true, false);
+    }
+
+    private void
+    miBronze_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.BRONZE).ToString(), this, true, false);
+    }
+
+    private void
+    miPewter_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.PEWTER).ToString(), this, true, false);
+    }
+
+    private void
+    miBrass_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.BRASS).ToString(), this, true, false);
+    }
+
+    private void
+    miSteel_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.STEEL).ToString(), this, true, false);
+    }
+
+    private void
+    miAluminium_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.ALUMINIUM).ToString(), this, true, false);
+    }
+
+    private void
+    miMetalized_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.METALIZED).ToString(), this, true, false);
+    }
+
+    private void
+    miStone_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.STONE).ToString(), this, true, false);
+    }
+
+    private void
+    miPlaster_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.PLASTER).ToString(), this, true, false);
+    }
+
+    private void
+    miObsidian_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.OBSIDIAN).ToString(), this, true, false);
+    }
+
+    private void
+    miJade_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.JADE).ToString(), this, true, false);
+    }
+
+    private void
+    miPlastic_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.PLASTIC).ToString(), this, true, false);
+    }
+
+    private void
+    miPlastic2_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.SHINY_PLASTIC).ToString(), this, true, false);
+    }
+
+    private void
+    miSatin_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.SATIN).ToString(), this, true, false);
+    }
+
+    private void
+    miGNC_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.NEON_GNC).ToString(), this, true, false);
+    }
+
+    private void
+    miPHC_Click(object sender, EventArgs e)
+    {
+      if (this.view1 == null)
+        return;
+      myTerm.execute("material ?, " + ((int)NameOfMaterial.NEON_PHC).ToString(), this, true, false);
+    }
     #endregion
 
     #region ViewDirection
@@ -519,11 +656,15 @@ namespace siren
       this.view1.Viewer.ZoomAllView();
     }
 
+    int prev_nb_selected = 0;
     public void changeState()
     {
       int nb_selected = this.view1.Viewer.NbSelected();
-      setToolBarButtonState(nb_selected);
       setPropertyState(nb_selected);
+      if (prev_nb_selected != nb_selected) {
+        setToolBarButtonState(nb_selected);
+      }
+      prev_nb_selected = nb_selected;
     }
 
     /// <summary>
@@ -560,7 +701,24 @@ namespace siren
           f = f && double.TryParse(ma[4].Value, out ly);
           f = f && double.TryParse(ma[5].Value, out lz);
 
-          this.SelectedObject = new ObjectProperty(x, y, z, sx, sy, sz, lx, ly, lz);
+          this.myTerm.execute("selected[0]", this.view1, false, false);
+          result = this.myTerm.result_string;
+          ma = re.Matches(result);
+          int id;
+          if (!int.TryParse(ma[0].Value, out id)) {
+            id = 0;
+          }
+          this.myTerm.execute("type selected[0]", this.view1, false, false);
+          result = this.myTerm.result_string;
+          ma = re.Matches(result);
+          int type;
+          if (!int.TryParse(ma[0].Value, out type)) {
+            type = 0;
+          }
+
+          this.SelectedObject = new ObjectProperty(
+            ((siren.ShapeType)type).ToString(), id,
+            x, y, z, sx, sy, sz, lx, ly, lz);
           propertyGrid1.SelectedObject = this.SelectedObject;
         }
         catch {

@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
+using System.Diagnostics;
+
 namespace siren
 {
     public delegate void change_state_func();
@@ -98,7 +100,13 @@ namespace siren
                 return 0;
             }
 
+            //double sec;
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
             int err = myViewer.mruby_exec(cmd, out errmsg);
+            //sw.Stop();
+            //sec = (double)sw.ElapsedTicks / (double)Stopwatch.Frequency;
+            //Console.WriteLine(sec);
 
             if (!myViewer.mruby_isCodeBlockOpen())
                 result += (err == 0) ? p() : errmsg;

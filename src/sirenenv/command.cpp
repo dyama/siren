@@ -64,14 +64,17 @@ bool OCCViewer::mruby_init()
 	regcmd("hide",      &hide,      1,0, "Hide object.",                    "hide(obj) -> nil");
 	regcmd("fit",       &fit,       0,0, "Fit view to objects",             "fit() -> nil");
 	regcmd("update",    &update,    0,0, "Update current viewer.",          "update() -> nil");
+	regcmd("redraw",    &redraw,    0,0, "Redraw current viewer.",          "redraw() -> nil");
 	regcmd("color",     &color,     1,3, "Set/Get color of shape.",         "color(obj, R, G, B) -> nil");
     regcmd("material",  &material,  1,1, "Set/Get material of shape.",      "material(obj, material_no) -> nil|material_no");
 	regcmd("bgcolor",   &bgcolor,   3,3, "Set color of background.",        "bgcolor(topR, topG, topB, btmR, btmG, btmB) -> nil");
 	regcmd("transparency", &transparency, 2,0, "Set transparency of object.", "transparency(obj, value = 0.0(non-clear) to 1.0(clear)) -> nil");
 	regcmd("select",    &select,    1,0, "Select an object.",               "select(ObjID) -> nil");
-	regcmd("clipon",    &clipon,    3,1, "",                                "clipon(name, pos[x, y, z], dir[x, y, z]) -> nil");
-	regcmd("clipoff",   &clipoff,   1,0, "",                                "clipoff(name) -> nil");
+	regcmd("clipon",    &clipon,    3,2, "Set clipping plane.",             "clipon(name, pos[x, y, z], dir[x, y, z], use_cap = false, ary[shape, ...] = nil) -> nil");
+	regcmd("clipoff",   &clipoff,   1,0, "Remove clipping plane",           "clipoff(name) -> nil");
+    // regcmd("clip2on",   &clip2on,   5,0, "Set two clipping plane.",         "clip2on(name1, name2, pos[x, y, z], dir[x, y, z], thickness) -> nil");
     regcmd("activate",  &activate,  1,0, "",                                "");
+    regcmd("dump",      &dump,      1,0, "Dump current view to image file.","dump(path) -> nil");
 
 	// Boolean operation commands
 	regcmd("common",    &common,    2,1, "Common boolean operation.",       "common(obj1, obj2) -> String");
@@ -116,6 +119,7 @@ bool OCCViewer::mruby_init()
 	regcmd("wire2face", &wire2face, 1,1, "Make a face with boundary wire.", "wire2face(wire, is_plane = false) -> String");
 	regcmd("shell2solid",&shell2solid,1,0, "Make a solid by shell.",        "shell2solid(ObjID) -> ObjID");
     regcmd("triangle",  &triangle,  1,2, "Make triangle mesh from face.",   "triangle(ObjID, Deflection, Angle) -> ObjID");
+    regcmd("contour",   &contour,   2,0, "Trim face by contour wire.",      "");
 
 	// I/O commands
 	regcmd("brepsave",  &savebrep,  2,0, "Save object to a file.",          "brepsave(path, obj) -> nil");
@@ -390,6 +394,15 @@ mrb_value update(mrb_state* mrb, mrb_value self)
 /**
  * \brief 
  */
+mrb_value redraw(mrb_state* mrb, mrb_value self)
+{
+    cur->view->Redraw();
+	return mrb_nil_value();
+}
+
+/**
+ * \brief 
+ */
 void display(const TopoDS_Shape& shape, bool activate, bool shaded)
 {
 	if (cur->aiscxt.IsNull()) {
@@ -646,13 +659,17 @@ mrb_value clipon(mrb_state* mrb, mrb_value self)
     mrb_int index;
     mrb_value pos, dir;
     mrb_bool use_cap;
-	int argc = mrb_get_args(mrb, "iAA|b", &index, &pos, &dir, &use_cap);
+    mrb_value shapes;
+	int argc = mrb_get_args(mrb, "iAA|bA", &index, &pos, &dir, &use_cap, &shapes);
 
     gp_Pnt gpos = *ar2pnt(mrb, pos);
     gp_Dir gdir = *ar2dir(mrb, dir);
 
+    // ClipPlane の作成
     Handle(Graphic3d_ClipPlane) p = new Graphic3d_ClipPlane(gp_Pln(gpos, gdir));
 
+    // 断面キャップの設定
+    // ソリッド以外のシェイプ(例えば面)に適用すると表示が乱れる。
     if (use_cap) {
         p->SetCapping(Standard_True);
         p->SetCappingMaterial(Graphic3d_MaterialAspect(Graphic3d_NOM_STONE));
@@ -663,23 +680,38 @@ mrb_value clipon(mrb_state* mrb, mrb_value self)
         p->SetCapping(Standard_False);
     }
 
-    if (cur->clipman.find(index) != cur->clipman.end()) {
+    // ClipPlane 管理マップに追加or更新
+    std::map<int, Handle(Graphic3d_ClipPlane)>::iterator it;
+    if ((it = cur->clipman.find(index)) != cur->clipman.end()) {
         // Update when the index already exists.
-        cur->clipman.erase(index);
+        (*it).second = p;
+        // cur->clipman.erase(index);
     }
-    cur->clipman.insert(std::pair<int, Handle(Graphic3d_ClipPlane)>(index, p));
-
-    Graphic3d_SequenceOfHClipPlane ary;
-    std::map<int, Handle(Graphic3d_ClipPlane)>::iterator it = cur->clipman.begin();
-    for (; it != cur->clipman.end(); it++) {
-        Handle(Graphic3d_ClipPlane) pp = (*it).second;
-        pp->SetOn(Standard_True);
-        ary.Append(pp);
+    else {
+        // New plane
+        cur->clipman.insert(std::pair<int, Handle(Graphic3d_ClipPlane)>(index, p));
     }
-    cur->view->SetClipPlanes(ary);
-    // hashape->SetClipPlanes(ary);
 
-    mrb_load_string(mrb, "update");
+    if (args <= 4) {
+        // シーケンスに詰め込み
+        Graphic3d_SequenceOfHClipPlane ary;
+        Graphic3d_SequenceOfHClipPlane* pary = Graphic3d_SequenceOfHClipPlane();
+        for (it = cur->clipman.begin(); it != cur->clipman.end(); it++) {
+            Handle(Graphic3d_ClipPlane) pp = (*it).second;
+            pp->SetOn(Standard_True);
+            ary.Append(pp);
+        }
+        // ビュー全体に適用
+        cur->view->SetClipPlanes(ary);
+    }
+    else {
+        // 個別クリッピング 
+        // hashape->SetClipPlanes(ary);
+    }
+
+    cur->aiscxt->UpdateCurrentViewer();
+    // cur->view->Redraw();
+    // mrb_load_string(mrb, "update");
     return mrb_nil_value();
 }
 
@@ -703,7 +735,8 @@ mrb_value clipoff(mrb_state* mrb, mrb_value self)
     pp->SetOn(Standard_False);
     cur->clipman.erase((*it).first);
     
-    mrb_load_string(mrb, "update");
+    cur->aiscxt->UpdateCurrentViewer();
+    // mrb_load_string(mrb, "update");
 
     return mrb_nil_value();
 }
@@ -725,6 +758,23 @@ mrb_value activate(mrb_state* mrb, mrb_value self)
     }
     else {
         cur->aiscxt->Deactivate(hashape);
+    }
+
+    return mrb_nil_value();
+}
+
+/**
+ * \brief Dump current view to image file
+ */
+mrb_value dump(mrb_state* mrb, mrb_value self)
+{
+    mrb_value path;
+    int argc = mrb_get_args(mrb, "S", &path);
+
+	cur->view->Redraw();
+    if (!cur->view->Dump((Standard_CString)RSTRING_PTR(path))) {
+		static const char m[] = "Failed to save dumpped image file.";
+        return mrb_exc_new(mrb, E_RUNTIME_ERROR, m, sizeof(m) - 1);
     }
 
     return mrb_nil_value();
@@ -1530,13 +1580,13 @@ mrb_value wire(mrb_state* mrb, mrb_value self)
 		}
 		shape = mw.Shape();
 		if (shape.IsNull()) {
-			delete(wd);
+			// delete(wd);
 			static const char m[] = "Failed to make a wire.";
 			return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 		}
 	}
     catch (...) {
-		delete(wd);
+		// delete(wd);
 		static const char m[] = "Failed to make a wire.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
@@ -2835,6 +2885,51 @@ mrb_value triangle(mrb_state* mrb, mrb_value self)
     hashape->Set(comp);
 
     return mrb_nil_value();
+}
+
+/**
+ * \brief Trim face by contour wire.
+ */
+mrb_value contour(mrb_state* mrb, mrb_value self)
+{
+    mrb_int id_face, id_wire;
+	int argc = mrb_get_args(mrb, "ii", &id_face, &id_wire);
+
+	TopoDS_Shape sface = ::getTopoDSShape(id_face);
+	if (sface.IsNull()) {
+		static const char m[] = "No such face of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+    if (sface.ShapeType() != TopAbs_FACE) {
+		static const char m[] = "Incorrect shape type of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+    TopoDS_Face face = TopoDS::Face(sface);
+
+	TopoDS_Shape swire = ::getTopoDSShape(id_wire);
+	if (swire.IsNull()) {
+		static const char m[] = "No such wire of specified at second.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+    if (swire.ShapeType() != TopAbs_WIRE) {
+		static const char m[] = "Incorrect shape type of specified at second.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+    TopoDS_Wire wire = TopoDS::Wire(swire);
+
+#if 1
+    Handle(Geom_Surface) gsurf  = BRep_Tool::Surface(face);
+    TopoDS_Shape shape = BRepBuilderAPI_MakeFace(gsurf, wire, Standard_True);
+#else
+    TopoDS_Shape shape = BRepBuilderAPI_MakeFace(face, wire);
+#endif
+
+    if (shape.IsNull()) {
+		static const char m[] = "Failed to make a face.";
+        return mrb_exc_new(mrb, E_RUNTIME_ERROR, m, sizeof(m) - 1);
+    }
+
+	return mrb_fixnum_value(::set(shape, self));
 }
 
 /**

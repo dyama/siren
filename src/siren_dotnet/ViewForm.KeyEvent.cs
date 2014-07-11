@@ -264,7 +264,7 @@ namespace siren
     private void eraseSelected()
     {
       if (Viewer.NbSelected() > 0) {
-        parent.myTerm.execute("selected.each { |item| erase item }", this, true, true);
+        parent.myTerm.execute("selected.each { |item| erase item; update }", this, true, true);
       }
     }
 

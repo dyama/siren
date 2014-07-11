@@ -59,14 +59,12 @@ public: // Information
     int   NbSelected(void);
 
 public: // Shape apperance
-	void  SetMaterial(int theMaterial);
 	void  SetAntialiasing(bool isOn);
 	void  SetHighlightColor(Quantity_NameOfColor color);
 	void  SetSelectionColor(Quantity_NameOfColor color);
 	void  ObjectColor(int& r, int& g, int& b);
 	void  BackgroundColor(int& r, int& g, int& b);
 	void  SetBackgroundColor(int r, int g, int b);
-	void  EraseObjects(void);
 
 public: // Mouse events bindings
 	float Scale(void);

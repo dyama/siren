@@ -126,8 +126,6 @@ namespace siren
         return false;
       }
       if (err == 0) {
-        parent.myTerm.execute("bndbox a");
-        parent.myTerm.execute("scale a, 0.001, [0, 0, 0]");
         parent.myTerm.execute("fit");
         return true;
       }
@@ -148,13 +146,14 @@ namespace siren
           filename = filename.Replace(@"\", @"\\"); // escape
           return (parent.myTerm.execute("brepsave(\"" + filename + "\", selected[0])") == 0);
         }
+       // case ModelFormat.IMAGE: {
+       // }
       //case ModelFormat.CSFDB:
       /*
       case ModelFormat.IGES:
       case ModelFormat.STEP:
       case ModelFormat.STL:
       case ModelFormat.VRML:
-      case ModelFormat.IMAGE:
       return myViewer.TranslateModel(filename, (int)format, false);
        */
       default:

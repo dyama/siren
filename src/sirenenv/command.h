@@ -89,6 +89,7 @@ mrb_value wire2pts    (mrb_state*, mrb_value);
 mrb_value wire2face   (mrb_state*, mrb_value);
 mrb_value shell2solid (mrb_state*, mrb_value);
 mrb_value triangle    (mrb_state*, mrb_value);
+mrb_value contour     (mrb_state*, mrb_value);
 
 // I/O
 mrb_value savebrep    (mrb_state*, mrb_value);
@@ -105,6 +106,7 @@ mrb_value savevrml    (mrb_state*, mrb_value);
 // Visualization
 mrb_value fit         (mrb_state*, mrb_value);
 mrb_value update      (mrb_state*, mrb_value);
+mrb_value redraw      (mrb_state*, mrb_value);
 mrb_value display     (mrb_state*, mrb_value);
 mrb_value hide        (mrb_state*, mrb_value);
 mrb_value color       (mrb_state*, mrb_value);
@@ -115,5 +117,6 @@ mrb_value select      (mrb_state*, mrb_value);
 mrb_value clipon      (mrb_state*, mrb_value);
 mrb_value clipoff     (mrb_state*, mrb_value);
 mrb_value activate    (mrb_state*, mrb_value);
+mrb_value dump        (mrb_state*, mrb_value);
 
 #endif // _COMMAND_H_

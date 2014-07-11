@@ -49,6 +49,8 @@
 #include <TColgp_HArray1OfVec.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 
+#include <TopAbs_ShapeEnum.hxx>
+
 //for OCC graphic
 #include <Aspect_DisplayConnection.hxx>
 #include <WNT_Window.hxx>

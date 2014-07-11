@@ -790,12 +790,6 @@ namespace sirenenv
                 myOCCViewer->SetBackgroundColor(r, g, b);
         }
 
-        void EraseObjects(void)
-        {
-            if (myOCCViewer != NULL)
-                myOCCViewer->EraseObjects();
-        }
-
         float GetOCCVersion(void)
         {
             if (myOCCViewer == NULL)
@@ -804,74 +798,12 @@ namespace sirenenv
                 return myOCCViewer->GetVersion();
         }
 
-        void SetMaterial(int theMaterial)
-        {
-            if (myOCCViewer != NULL)
-                myOCCViewer->SetMaterial(theMaterial);
-        }
-
         void SetAntialiasing(bool isOn)
         {
             if (myOCCViewer != NULL)
                 myOCCViewer->SetAntialiasing(isOn);
         }
-/*
-        bool TranslateModel(System::String^ filename, int format, bool IsImport)
-        {
-            if (myOCCViewer == NULL)
-                return false;
 
-            int length = filename->Length;
-
-            wchar_t* fname = new wchar_t[length+1];
-            for(int i = 0; i<length; i++)
-                fname[i] = (wchar_t)filename->ToCharArray()[i];
-
-            fname[length] = L'\0';
-            bool res;
-            if (IsImport)
-            {
-                switch(format)
-                {
-                case 1:
-                    res=myOCCViewer->ImportCsfdb(fname);
-                    break;
-                case 2:
-                    res=myOCCViewer->ImportStep(fname);
-                    break;
-                case 3:
-                    res=myOCCViewer->ImportIges(fname);
-                    break;
-                default:
-                    res=false;
-                }
-            } else 
-            {
-                switch(format)
-                {
-                case 2:
-                    res=myOCCViewer->ExportStep(fname);
-                    break;
-                case 3:
-                    res=myOCCViewer->ExportIges(fname);
-                    break;
-                case 4:
-                    res=myOCCViewer->ExportVrml(fname);
-                    break;
-                case 5:
-                    res=myOCCViewer->ExportStl(fname);
-                    break;
-                case 6:
-                    res=myOCCViewer->Dump(fname);
-                    break;
-                default:
-                    res=false;
-                }
-            }
-            delete [] fname;
-            return res;
-        }
-*/
         bool IsObjectSelected(void)
         {
             if (myOCCViewer != NULL)

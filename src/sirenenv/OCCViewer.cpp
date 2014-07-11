@@ -218,6 +218,7 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_par
     }
 #endif
 
+#if 0
 	// grid
 	{
 		gp_Pnt p(0, 0, 0);
@@ -236,6 +237,26 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_par
 		viewer->SetRectangularGridGraphicValues(XSize, YSize, Offset);
 		viewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
 	}
+#else
+	// grid
+	{
+		gp_Pnt p(0, 0, 0);
+		gp_Vec v(0, 0, 1);
+		gp_Ax3 ax(p, v);
+		Quantity_Length XOrigin = 10;
+		Quantity_Length YOrigin = 0;
+		Quantity_Length XStep = 10;
+		Quantity_Length YStep = 10;
+		Quantity_Length Rotation = 0;
+		Quantity_Length XSize = XStep * 40 + 1.0e-7;
+		Quantity_Length YSize = YStep * 10 + 1.0e-7;
+		Quantity_Length Offset = 0;
+		viewer->SetPrivilegedPlane(ax);
+		viewer->SetRectangularGridValues(XOrigin, YOrigin, XStep, YStep, Rotation);
+		viewer->SetRectangularGridGraphicValues(XSize, YSize, Offset);
+		viewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
+	}
+#endif
 
 
 	aiscxt->UpdateCurrentViewer();
@@ -463,27 +484,9 @@ void OCCViewer::SetBackgroundColor(int r, int g, int b)
 		view->SetBackgroundColor(Quantity_TOC_RGB,r/255.,g/255.,b/255.);
 }
 
-void OCCViewer::EraseObjects(void)
-{
-	if (aiscxt.IsNull())
-		return;
-	for(aiscxt->InitCurrent();aiscxt->MoreCurrent();aiscxt->NextCurrent())
-        aiscxt->Erase(aiscxt->Current(),Standard_True);
-	aiscxt->ClearCurrents();
-}
-
 float OCCViewer::GetVersion(void)
 {
 	return (float)OCC_VERSION;
-}
-
-void OCCViewer::SetMaterial(int theMaterial)
-{
-	if (aiscxt.IsNull())
-		return;
-    for (aiscxt->InitCurrent(); aiscxt->MoreCurrent (); aiscxt->NextCurrent ())
-        aiscxt->SetMaterial(aiscxt->Current(), (Graphic3d_NameOfMaterial)theMaterial);
-	aiscxt->UpdateCurrentViewer();
 }
 
 /*
@@ -591,20 +594,6 @@ bool OCCViewer::ExportStep(wchar_t* filename)
     if (status != IFSelect_RetDone)
             return false;
 	return true;
-}
-
-bool OCCViewer::Dump(wchar_t* filename)
-{
-    char fname[_MAX_PATH];
-	{
-		setlocale(LC_CTYPE, "");
-	    size_t len;
-	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
-	}
-	if (view.IsNull())
-		return false;
-	view->Redraw();
-    return (bool)view->Dump((Standard_CString)fname);
 }
 */
 bool OCCViewer::IsObjectSelected(void)

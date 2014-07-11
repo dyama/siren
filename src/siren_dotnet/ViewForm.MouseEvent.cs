@@ -225,13 +225,7 @@ namespace siren
             break;
           }
         }
-#if DEBUG
-        double xx, yy, zz;
-        myViewer.xy2xyz(e.X, e.Y, out xx, out yy, out zz, true);
-        System.Diagnostics.Debug.Print(xx.ToString() + ", " + yy.ToString() + ", " + zz.ToString());
-#endif
         break;
-
       case MouseButtons.Right:
         if (allowRotation) {
           if (!myDegenerateModeIsOn)
