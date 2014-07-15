@@ -162,6 +162,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SectionForm.Designer.cs">
+      <DependentUpon>SectionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="term.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -197,6 +203,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SectionForm.resx">
+      <DependentUpon>SectionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="term.resx">
       <DependentUpon>term.cs</DependentUpon>

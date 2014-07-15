@@ -81,7 +81,7 @@ namespace siren
     private void MyTransparency_ValueChanged(object sender, System.EventArgs e)
     {
       double transp = ((double)this.MyTransparency.Value) / 10;
-      t.execute("transparency ?, " + transp.ToString());
+      t.execute("selected.each { do |id| transparency id, " + transp.ToString() + " }");
     }
 
   }

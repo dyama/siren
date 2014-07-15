@@ -59,8 +59,8 @@ void OCCViewer::initViewAppearance(bool grad, bool is_raytracing, bool is_shadow
         Quantity_Color color_top(0.35, 0.35, 0.35, Quantity_TOC_RGB);
         Quantity_Color color_btm(0.10, 0.10, 0.10, Quantity_TOC_RGB);
 #else
-        Quantity_Color color_top(0.00, 0.40, 0.70, Quantity_TOC_RGB);
-        Quantity_Color color_btm(0.00, 0.03, 0.05, Quantity_TOC_RGB);
+        Quantity_Color color_top(0.00, 0.50, 0.70, Quantity_TOC_RGB);
+        Quantity_Color color_btm(0.00, 0.13, 0.25, Quantity_TOC_RGB);
 #endif
         view->SetBgGradientColors(color_top, color_btm, Aspect_GFM_VER, Standard_False);
     }
@@ -220,6 +220,7 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_par
         lay->End();
     }
 #endif
+
 
 #if 0
 	// grid

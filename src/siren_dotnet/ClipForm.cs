@@ -91,18 +91,6 @@ namespace siren
       tb_zmax.Maximum = (int)z_max;
       tb_zmax.Value = tb_zmax.Maximum;
 
-      tb_x.Minimum = (int)x_min;
-      tb_x.Maximum = (int)x_max;
-      tb_x.Value = (int)((x_max - x_min) / 2);
-
-      // tb_y.Minimum = (int)y_min;
-      // tb_y.Maximum = (int)y_max;
-      // tb_y.Value = (int)((y_max - y_min) / 2);
-
-      // tb_z.Minimum = (int)z_min;
-      // tb_z.Maximum = (int)z_max;
-      // tb_z.Value = (int)((z_max - y_min) / 2);
-
       return;
     }
 
@@ -110,7 +98,7 @@ namespace siren
     {
       double val = (double)((TrackBar)sender).Value;
       string cap = cb_usecap.Checked ? "true" : "false";
-      t.execute("clipon 100, [" + val.ToString() + ", 0, 0], [1, 0, 0], " + cap);
+      t.execute("clipon 100, [" + val.ToString() + ", 0, 0], [1, 0, 0], " + cap, null, true, false);
       updatebox();
     }
 
@@ -118,7 +106,7 @@ namespace siren
     {
       double val = (double)((TrackBar)sender).Value;
       string cap = cb_usecap.Checked ? "true" : "false";
-      t.execute("clipon 101, [" + val.ToString() + ", 0, 0], [-1, 0, 0], " + cap);
+      t.execute("clipon 101, [" + val.ToString() + ", 0, 0], [-1, 0, 0], " + cap, null, true, false);
       updatebox();
     }
 
@@ -126,7 +114,7 @@ namespace siren
     {
       double val = (double)((TrackBar)sender).Value;
       string cap = cb_usecap.Checked ? "true" : "false";
-      t.execute("clipon 200, [0, " + val.ToString() + ", 0], [0, 1, 0], " + cap);
+      t.execute("clipon 200, [0, " + val.ToString() + ", 0], [0, 1, 0], " + cap, null, true, false);
       updatebox();
     }
 
@@ -134,7 +122,7 @@ namespace siren
     {
       double val = (double)((TrackBar)sender).Value;
       string cap = cb_usecap.Checked ? "true" : "false";
-      t.execute("clipon 201, [0, " + val.ToString() + ", 0], [0, -1, 0], " + cap);
+      t.execute("clipon 201, [0, " + val.ToString() + ", 0], [0, -1, 0], " + cap, null, true, false);
       updatebox();
     }
 
@@ -142,7 +130,7 @@ namespace siren
     {
       double val = (double)((TrackBar)sender).Value;
       string cap = cb_usecap.Checked ? "true" : "false";
-      t.execute("clipon 300, [0, 0, " + val.ToString() + "], [0, 0, 1], " + cap);
+      t.execute("clipon 300, [0, 0, " + val.ToString() + "], [0, 0, 1], " + cap, null, true, false);
       updatebox();
     }
 
@@ -150,7 +138,7 @@ namespace siren
     {
       double val = (double)((TrackBar)sender).Value;
       string cap = cb_usecap.Checked ? "true" : "false";
-      t.execute("clipon 301, [0, 0, " + val.ToString() + "], [0, 0, -1], " + cap);
+      t.execute("clipon 301, [0, 0, " + val.ToString() + "], [0, 0, -1], " + cap, null, true, false);
       updatebox();
     }
 
@@ -165,45 +153,6 @@ namespace siren
     private void btOk_Click(object sender, EventArgs e)
     {
       Close();
-    }
-
-    private void cb_section_CheckedChanged(object sender, EventArgs e)
-    {
-      if (cb_section.Checked)
-        t.execute("hide __cpbox;", null, false, false);
-      else
-        t.execute("display __cpbox;", null, false, false);
-
-      label6.Enabled = cb_section.Checked;
-      tb_x.Enabled = cb_section.Checked;
-      //tb_y.Enabled = cb_section.Checked;
-      //tb_z.Enabled = cb_section.Checked;
-
-      label2.Enabled = !cb_section.Checked;
-      tb_xmin.Enabled = !cb_section.Checked;
-      tb_ymin.Enabled = !cb_section.Checked;
-      tb_zmin.Enabled = !cb_section.Checked;
-
-      label4.Enabled = !cb_section.Checked;
-      tb_xmax.Enabled = !cb_section.Checked;
-      tb_ymax.Enabled = !cb_section.Checked;
-      tb_zmax.Enabled = !cb_section.Checked;
-    }
-
-    private void tb_x_Scroll(object sender, EventArgs e)
-    {
-      double thickness = 0.5; // m
-      tb_xmin.Value = (int)(tb_x.Value - thickness / 2);
-      tb_xmax.Value = (int)(tb_x.Value + thickness / 2);
-
-      double val = (double)tb_xmin.Value;
-      string cap = cb_usecap.Checked ? "true" : "false";
-      t.execute(
-        "clipon 100, [" + (val - thickness / 2).ToString() + ", 0, 0], [1, 0, 0], " + cap + ";" +
-        "clipon 101, [" + (val + thickness / 2).ToString() + ", 0, 0], [-1, 0, 0], " + cap + ";" +
-        "update",
-        null, false, false);
-      // updatebox();
     }
 
 

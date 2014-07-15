@@ -77,6 +77,7 @@ bool OCCViewer::mruby_init()
     regcmd("activate",  &activate,  1,0, "",                                "");
     regcmd("dump",      &dump,      1,0, "Dump current view to image file.","dump(path) -> nil");
     regcmd("reset",     &reset,     0,0, "Reset view",                      "reset() -> nil");
+    regcmd("text",      &text,      3,3, "Draw text",                       "");
 
 	// Boolean operation commands
 	regcmd("common",    &common,    2,1, "Common boolean operation.",       "common(obj1, obj2) -> String");
@@ -667,8 +668,8 @@ mrb_value clipon(mrb_state* mrb, mrb_value self)
     mrb_int index;
     mrb_value pos, dir;
     mrb_bool use_cap;
-    mrb_value shapes;
-	int argc = mrb_get_args(mrb, "iAA|bA", &index, &pos, &dir, &use_cap, &shapes);
+    mrb_int target;
+	int argc = mrb_get_args(mrb, "iAA|bi", &index, &pos, &dir, &use_cap, &target);
 
     gp_Pnt gpos = *ar2pnt(mrb, pos);
     gp_Dir gdir = *ar2dir(mrb, dir);
@@ -700,25 +701,51 @@ mrb_value clipon(mrb_state* mrb, mrb_value self)
         cur->clipman.insert(std::pair<int, Handle(Graphic3d_ClipPlane)>(index, p));
     }
 
-    if (argc <= 4) {
-        // シーケンスに詰め込み
-        Graphic3d_SequenceOfHClipPlane ary;
-        // Graphic3d_SequenceOfHClipPlane* pary = new Graphic3d_SequenceOfHClipPlane();
-        // delete(pary);
-        for (it = cur->clipman.begin(); it != cur->clipman.end(); it++) {
-            Handle(Graphic3d_ClipPlane) pp = (*it).second;
-            pp->SetOn(Standard_True);
-            ary.Append(pp);
+    // シーケンスに詰め込み
+    Graphic3d_SequenceOfHClipPlane ary;
+    // Graphic3d_SequenceOfHClipPlane* pary = new Graphic3d_SequenceOfHClipPlane();
+    // delete(pary);
+    for (it = cur->clipman.begin(); it != cur->clipman.end(); it++) {
+#if 1
+        if (argc <=4) {
+            if ((*it).first == 110 || (*it).first == 111 ||
+                (*it).first == 210 || (*it).first == 211 ||
+                (*it).first == 310 || (*it).first == 311)
+                continue;
         }
+#endif
+        Handle(Graphic3d_ClipPlane) pp = (*it).second;
+        pp->SetOn(Standard_True);
+        ary.Append(pp);
+    }
+    if (argc <= 4) {
         // ビュー全体に適用
         cur->view->SetClipPlanes(ary);
     }
     else {
         // 個別クリッピング 
-        // hashape->SetClipPlanes(ary);
+        // for (int i = 0; i < mrb_ary_len(mrb, shapes); i++) {
+        //     mrb_value item = mrb_ary_ref(mrb, shapes, i);
+        //     mrb_int target = mrb_fixnum(item);
+        //     Handle(AIS_Shape) hashape = ::getAISShape(target);
+        //     if (hashape.IsNull()) {
+        //         static const char m[] = "No such object of specified argument.";
+        //         return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+        //     }
+        //     hashape->SetClipPlanes(ary);
+        // }
+        Handle(AIS_Shape) hashape = ::getAISShape(target);
+        if (hashape.IsNull()) {
+            static const char m[] = "No such object of specified argument.";
+            return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+        }
+        hashape->SetClipPlanes(ary);
     }
 
-    cur->aiscxt->UpdateCurrentViewer();
+    mrb_value r = mrb_funcall(cur->myMirb->mrb, self, "is_draw", 0);
+    if (mrb_bool(r)) {
+        cur->aiscxt->UpdateCurrentViewer();
+    }
     // cur->view->Redraw();
     // mrb_load_string(mrb, "update");
     return mrb_nil_value();
@@ -795,6 +822,64 @@ mrb_value dump(mrb_state* mrb, mrb_value self)
 mrb_value reset(mrb_state* mrb, mrb_value self)
 {
     cur->view->Reset();
+    return mrb_nil_value();
+}
+
+/**
+ * \brief 
+ */
+mrb_value text(mrb_state* mrb, mrb_value self)
+{
+    mrb_value pos, text;
+    mrb_bool zoomable;
+    mrb_float height, angle;
+    mrb_value color;
+	int argc = mrb_get_args(mrb, "AfS|bfA", &pos, &height, &text, &zoomable, &angle, &color);
+
+    /*
+        wchar_t* strw = L"PDF[1]";
+        char    strmfw[32];
+        setlocale( LC_ALL, "Japanese" ); 
+        wcstombs( strmfw, strw, sizeof( strmfw ) );
+    */
+
+    gp_Pnt* p = ar2pnt(mrb, pos);
+
+	char* c_text = RSTRING_PTR(text);
+    TCollection_ExtendedString occ_text(c_text);
+
+    Handle(Prs3d_Presentation)     aPrs   = new Prs3d_Presentation(cur->aiscxt->CurrentViewer()->Viewer(), Standard_True);
+    Handle(Graphic3d_Group)        hgrp   = Prs3d_Root::CurrentGroup(aPrs);
+    Handle(Graphic3d_AspectText3d) h_text = new Graphic3d_AspectText3d();
+
+    //h_text->SetFont(Standard_CString(Font_NOF_KANJI_MONO));
+    //h_text->SetFont(Standard_CString(Font_NOF_ASCII_MONO));
+    //h_text->SetFont(Standard_CString("MS Gothic"));
+    //h_text->SetFont(Standard_CString("ＭＳ 明朝"));
+    h_text->SetFont(Standard_CString("Meiryo UI"));
+    //h_text->SetExpansionFactor(2.5);
+
+    h_text->SetTextZoomable(zoomable ? Standard_True : Standard_False);
+    h_text->SetTextAngle(argc > 4 ? (Standard_Real)angle : 0.0);
+    if (argc == 6) {
+        gp_Pnt* col = ar2pnt(mrb, color);
+        Quantity_Color mycolor = Quantity_Color(col->X() / 255, col->Y() / 255, col->Z() / 255, Quantity_TOC_RGB);
+        h_text->SetColor(mycolor);
+    }
+    else {
+        h_text->SetColor(Quantity_Color(1.0, 1.0, 1.0, Quantity_TOC_RGB));
+    }
+    hgrp->SetPrimitivesAspect(h_text);
+
+    Graphic3d_Vertex v(p->X(), p->Y(), p->Z());
+    hgrp->Text(occ_text, v, (Standard_Real)height, Standard_True);
+    aPrs->Display();
+
+    mrb_value r = mrb_funcall(cur->myMirb->mrb, self, "is_draw", 0);
+    if (mrb_bool(r)) {
+        cur->aiscxt->UpdateCurrentViewer();
+    }
+
     return mrb_nil_value();
 }
 
@@ -3662,11 +3747,11 @@ mrb_value debug2(mrb_state* mrb, mrb_value self)
 #include <Graphic3d_AspectText3d.hxx>
 mrb_value debug(mrb_state* mrb, mrb_value self)
 {
-
     mrb_int target;
 	int argc = mrb_get_args(mrb, "i", &target);
 	Handle(AIS_Shape) hashape = ::getAISShape((int)target);
     Standard_Integer layer_id;
+
     cur->viewer->AddZLayer(layer_id);
     cur->aiscxt->SetZLayer(hashape, layer_id);
     // cur->aiscxt->BeginImmediateDraw();
@@ -3737,22 +3822,7 @@ mrb_value debug(mrb_state* mrb, mrb_value self)
 	// 	}
     // }
     //return mrb_nil_value();
-// #if 0
-//     Handle(Prs3d_Presentation) aPrs;
-//     // get the group
-//     Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (aPrs);
-//     // change the text aspect
-//     Handle(Graphic3d_AspectText3d) aTextAspect = new Graphic3d_AspectText3d ();
-//     aTextAspect->SetTextZoomable (Standard_True);
-//     aTextAspect->SetTextAngle (45.0);
-//     aGroup->SetPrimitivesAspect (aTextAspect);
-//     
-//     // add a text primitive to the structure
-//     Graphic3d_Vertex aPoint (1, 1, 1);
-//     aGroup->Text (Standard_CString ("Text"), aPoint, 16.0);
-// 
-//     return mrb_nil_value();
-// #endif
+
 //     mrb_int target;
 // 	int argc = mrb_get_args(mrb, "i", &target);
 // 

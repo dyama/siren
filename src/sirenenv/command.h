@@ -120,5 +120,6 @@ mrb_value clipoff     (mrb_state*, mrb_value);
 mrb_value activate    (mrb_state*, mrb_value);
 mrb_value dump        (mrb_state*, mrb_value);
 mrb_value reset       (mrb_state*, mrb_value);
+mrb_value text        (mrb_state*, mrb_value);
 
 #endif // _COMMAND_H_

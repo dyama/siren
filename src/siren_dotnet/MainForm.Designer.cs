@@ -136,6 +136,7 @@ namespace siren
           this.toolStripGeneral = new System.Windows.Forms.ToolStrip();
           this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
           this.tsbClipPlane = new System.Windows.Forms.ToolStripButton();
+          this.tsbSectionClipper = new System.Windows.Forms.ToolStripButton();
           this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
           this.splitContainer1 = new System.Windows.Forms.SplitContainer();
           this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -143,6 +144,8 @@ namespace siren
           this.splitContainer4 = new System.Windows.Forms.SplitContainer();
           this.myTerm = new siren.term();
           this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+          this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+          this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
           this.toolStripMain.SuspendLayout();
           this.toolStripGeneral.SuspendLayout();
           this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -1042,7 +1045,10 @@ namespace siren
             this.tsbAxoView,
             this.tsbResetView,
             this.tsbHlr,
+            this.toolStripSeparator12,
             this.tsbClipPlane,
+            this.tsbSectionClipper,
+            this.toolStripSeparator2,
             this.tsbDisplayMode,
             this.tsbTransparency,
             this.toolStripSeparator10,
@@ -1051,7 +1057,7 @@ namespace siren
           this.toolStripGeneral.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
           this.toolStripGeneral.Location = new System.Drawing.Point(3, 0);
           this.toolStripGeneral.Name = "toolStripGeneral";
-          this.toolStripGeneral.Size = new System.Drawing.Size(384, 25);
+          this.toolStripGeneral.Size = new System.Drawing.Size(450, 25);
           this.toolStripGeneral.TabIndex = 15;
           // 
           // toolStripSeparator1
@@ -1068,6 +1074,17 @@ namespace siren
           this.tsbClipPlane.Size = new System.Drawing.Size(23, 22);
           this.tsbClipPlane.Text = "クリッピング";
           this.tsbClipPlane.Click += new System.EventHandler(this.tsbClipPlane_Click);
+          // 
+          // tsbSectionClipper
+          // 
+          this.tsbSectionClipper.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+          this.tsbSectionClipper.Image = ((System.Drawing.Image)(resources.GetObject("tsbSectionClipper.Image")));
+          this.tsbSectionClipper.ImageTransparentColor = System.Drawing.Color.Magenta;
+          this.tsbSectionClipper.Name = "tsbSectionClipper";
+          this.tsbSectionClipper.Size = new System.Drawing.Size(23, 22);
+          this.tsbSectionClipper.Text = "セクション";
+          this.tsbSectionClipper.ToolTipText = "セクション";
+          this.tsbSectionClipper.Click += new System.EventHandler(this.tsbSectionClipper_Click);
           // 
           // toolStripContainer1
           // 
@@ -1166,6 +1183,16 @@ namespace siren
           this.propertyGrid1.Name = "propertyGrid1";
           this.propertyGrid1.Size = new System.Drawing.Size(152, 716);
           this.propertyGrid1.TabIndex = 0;
+          // 
+          // toolStripSeparator2
+          // 
+          this.toolStripSeparator2.Name = "toolStripSeparator2";
+          this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+          // 
+          // toolStripSeparator12
+          // 
+          this.toolStripSeparator12.Name = "toolStripSeparator12";
+          this.toolStripSeparator12.Size = new System.Drawing.Size(6, 25);
           // 
           // MainForm
           // 
@@ -1309,6 +1336,9 @@ namespace siren
         private PropertyGrid propertyGrid1;
         public term myTerm;
         private ToolStripButton tsbClipPlane;
+        private ToolStripButton tsbSectionClipper;
+        private ToolStripSeparator toolStripSeparator12;
+        private ToolStripSeparator toolStripSeparator2;
 
     }
 }

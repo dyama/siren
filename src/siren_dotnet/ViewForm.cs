@@ -64,7 +64,9 @@ namespace siren
       }
       // Init default visual appearance.
       myViewer.SetAntialiasing(false);
-      myViewer.setHighlightColor(NameOfColor.ORANGE);
+      // myViewer.setHighlightColor(NameOfColor.ORANGE);
+      // myViewer.setSelectionColor(NameOfColor.BLUE4);
+      myViewer.setHighlightColor(NameOfColor.RED);
       myViewer.setSelectionColor(NameOfColor.YELLOW);
       myViewer.setProjection(orient);
     }

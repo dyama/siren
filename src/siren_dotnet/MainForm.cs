@@ -519,6 +519,14 @@ namespace siren
       return;
     }
 
+    private void tsbSectionClipper_Click(object sender, EventArgs e)
+    {
+      SectionForm cf = new SectionForm(this.myTerm);
+      cf.StartPosition = FormStartPosition.CenterParent;
+      cf.Show();
+      return;
+    }
+
     private void tsbHlr_Click(object sender, EventArgs e)
     {
       if (this.view1 == null)
@@ -1074,6 +1082,7 @@ namespace siren
       this.view1.Focus();
       return;
     }
+
 
 
   }

@@ -40,16 +40,12 @@
       this.label5 = new System.Windows.Forms.Label();
       this.cb_usecap = new System.Windows.Forms.CheckBox();
       this.btOk = new System.Windows.Forms.Button();
-      this.label6 = new System.Windows.Forms.Label();
-      this.tb_x = new System.Windows.Forms.TrackBar();
-      this.cb_section = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.tb_xmin)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.tb_xmax)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.tb_ymin)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.tb_ymax)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.tb_zmin)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.tb_zmax)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.tb_x)).BeginInit();
       this.SuspendLayout();
       // 
       // tb_xmin
@@ -176,7 +172,7 @@
       // btOk
       // 
       this.btOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btOk.Location = new System.Drawing.Point(551, 175);
+      this.btOk.Location = new System.Drawing.Point(345, 175);
       this.btOk.Name = "btOk";
       this.btOk.Size = new System.Drawing.Size(93, 23);
       this.btOk.TabIndex = 13;
@@ -184,48 +180,12 @@
       this.btOk.UseVisualStyleBackColor = true;
       this.btOk.Click += new System.EventHandler(this.btOk_Click);
       // 
-      // label6
-      // 
-      this.label6.Enabled = false;
-      this.label6.Location = new System.Drawing.Point(444, 9);
-      this.label6.Name = "label6";
-      this.label6.Size = new System.Drawing.Size(200, 23);
-      this.label6.TabIndex = 17;
-      this.label6.Text = "Section";
-      this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-      // 
-      // tb_x
-      // 
-      this.tb_x.Enabled = false;
-      this.tb_x.Location = new System.Drawing.Point(444, 35);
-      this.tb_x.Maximum = 100;
-      this.tb_x.Name = "tb_x";
-      this.tb_x.Size = new System.Drawing.Size(200, 42);
-      this.tb_x.TabIndex = 14;
-      this.tb_x.TickFrequency = 10;
-      this.tb_x.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-      this.tb_x.Scroll += new System.EventHandler(this.tb_x_Scroll);
-      // 
-      // cb_section
-      // 
-      this.cb_section.AutoSize = true;
-      this.cb_section.Location = new System.Drawing.Point(158, 179);
-      this.cb_section.Name = "cb_section";
-      this.cb_section.Size = new System.Drawing.Size(114, 16);
-      this.cb_section.TabIndex = 18;
-      this.cb_section.Text = "切断面のみを表示";
-      this.cb_section.UseVisualStyleBackColor = true;
-      this.cb_section.CheckedChanged += new System.EventHandler(this.cb_section_CheckedChanged);
-      // 
       // ClipForm
       // 
       this.AcceptButton = this.btOk;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(655, 209);
-      this.Controls.Add(this.cb_section);
-      this.Controls.Add(this.label6);
-      this.Controls.Add(this.tb_x);
+      this.ClientSize = new System.Drawing.Size(454, 209);
       this.Controls.Add(this.btOk);
       this.Controls.Add(this.cb_usecap);
       this.Controls.Add(this.label5);
@@ -256,7 +216,6 @@
       ((System.ComponentModel.ISupportInitialize)(this.tb_ymax)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.tb_zmin)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.tb_zmax)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.tb_x)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -277,8 +236,5 @@
     private System.Windows.Forms.Label label5;
     private System.Windows.Forms.CheckBox cb_usecap;
     private System.Windows.Forms.Button btOk;
-    private System.Windows.Forms.Label label6;
-    private System.Windows.Forms.TrackBar tb_x;
-    private System.Windows.Forms.CheckBox cb_section;
   }
 }

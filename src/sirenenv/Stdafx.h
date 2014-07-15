@@ -237,6 +237,13 @@
 
 #include <TopOpeBRep_FaceEdgeIntersector.hxx>
 
+
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Vertex.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+
 // libraries
 #pragma comment (lib, "TKernel.lib")
 #pragma comment (lib, "PTKernel.lib")
