@@ -1,9 +1,7 @@
  siren - the simple CAD viewer
 ============================================================
 
-![siren](http://dyama.org/siren/siren_screenshot.png "siren")
-
-![siren raytracing rendering mode](http://dyama.org/wp-content/uploads/occt670-raytracing-sample-300x164.png "siren raytracing rendering mode")
+![siren](https://cloud.githubusercontent.com/assets/1341877/3596696/707f9aa6-0cc8-11e4-9372-2585799d858e.png)
 
  About siren
 ------------------------------------------------------------
