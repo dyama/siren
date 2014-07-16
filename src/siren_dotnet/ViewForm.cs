@@ -79,7 +79,6 @@ namespace siren
     private void ViewForm_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
     {
       myViewer.RedrawView();
-      myViewer.UpdateView();
     }
 
     protected DisplayMode _currentDisplayMode = DisplayMode.WIREFRAME;
@@ -228,6 +227,17 @@ namespace siren
     private void onMouseLeave(object sender, EventArgs e)
     {
       focuser.BackColor = Color.DarkRed;
+    }
+
+    protected override void OnPaintBackground(PaintEventArgs e)
+    {
+      //base.OnPaintBackground(e);
+    }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+      //base.OnPaint(e);
+      Viewer.RedrawView();
     }
 
   }

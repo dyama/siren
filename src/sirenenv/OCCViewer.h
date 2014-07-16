@@ -45,6 +45,7 @@ public: // View, Viewer
 	Handle_AIS_InteractiveContext GetAISContext(void);
 	void  UpdateView(void);
 	void  RedrawView(void);
+	void  Redraw(int x, int y, int w, int h);
 	void  WindowFitAll(int Xmin, int Ymin, int Xmax, int Ymax);
 	void  UpdateCurrentViewer(void);
 	void  setProjection(V3d_TypeOfOrientation dir);

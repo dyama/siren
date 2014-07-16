@@ -77,6 +77,10 @@ namespace siren
     {
       Application.DoEvents();
 
+      view1.Viewer.UpdateView();
+      view2.Viewer.UpdateView();
+      view3.Viewer.UpdateView();
+
       List<string> args = new List<string>(System.Environment.GetCommandLineArgs());
       // コマンドライン引数から開く
       args.RemoveAt(0); // 自身の呼び出しパス
@@ -1062,6 +1066,9 @@ namespace siren
           splitContainer4.Panel2.Controls.Add(view3);
         }
       }
+      this.view1.Update();
+      this.view2.Update();
+      this.view3.Update();
       return;
     }
 
@@ -1083,7 +1090,38 @@ namespace siren
       return;
     }
 
+    private void splitContainer3_Paint(object sender, PaintEventArgs e)
+    {
+      view1.Viewer.UpdateView();
+      view2.Viewer.UpdateView();
+      view3.Viewer.UpdateView();
+    }
 
+    private void splitContainer4_Panel1_Paint(object sender, PaintEventArgs e)
+    {
+      view1.Viewer.UpdateView();
+      view2.Viewer.UpdateView();
+      view3.Viewer.UpdateView();
+    }
+
+    private void MainForm_Paint(object sender, PaintEventArgs e)
+    {
+      view1.Viewer.UpdateView();
+      view2.Viewer.UpdateView();
+      view3.Viewer.UpdateView();
+    }
+
+    private void MainForm_Resize(object sender, EventArgs e)
+    {
+      view1.Viewer.UpdateView();
+      view2.Viewer.UpdateView();
+      view3.Viewer.UpdateView();
+    }
+
+    private void tsbVersion_Click(object sender, EventArgs e)
+    {
+      siren.SplashForm.ShowSplash();
+    }
 
   }
 

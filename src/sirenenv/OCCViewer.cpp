@@ -291,6 +291,12 @@ void OCCViewer::RedrawView(void)
 		view->Redraw();
 }
 
+void OCCViewer::Redraw(int x, int y, int w, int h)
+{
+	if (!view.IsNull())
+		view->Redraw(x, y, w, h);
+}
+
 void OCCViewer::SetAntialiasing(bool isOn)
 {
 	if (!view.IsNull()) {

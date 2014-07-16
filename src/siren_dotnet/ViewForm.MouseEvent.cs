@@ -105,20 +105,23 @@ namespace siren
       // 	this.IsRectVisible = true;
       // }
 
-
       p = new Pen(System.Drawing.Color.White, 2);
 
       if (p == null)
         return;
 
-      int x = Math.Min(this.myXmin, this.myXmax);
-      int y = Math.Min(this.myYmin, this.myYmax);
+      int x = Math.Min(myXmin, myXmax);
+      int y = Math.Min(myYmin, myYmax);
+      int w = Math.Abs(myXmax - myXmin);
+      int h = Math.Abs(myYmax - myYmin);
 
-      this.myViewer.UpdateView();
+      gr.FillRectangle(Brushes.Black, x, y, w, h);
+      //this.myViewer.UpdateView();
       //this.myViewer.RedrawView();
+      //this.myViewer.UpdateCurrentViewer();
+      this.myViewer.Redraw(x, y, w, h);
 
-      gr.DrawRectangle(p, x, y, Math.Abs(myXmax - myXmin), Math.Abs(myYmax - myYmin));
-
+      gr.DrawRectangle(p, x, y, w, h);
 
       this.theRectDownX = Math.Max(this.myXmin, this.myXmax);
       this.theRectDownY = Math.Max(this.myYmin, this.myYmax);

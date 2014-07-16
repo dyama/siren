@@ -606,6 +606,12 @@ namespace sirenenv
                 myOCCViewer->RedrawView();
         }
 
+        void Redraw(int x, int y, int w, int h)
+        {
+            if (myOCCViewer != NULL)
+                myOCCViewer->Redraw(x, y, w, h);
+        }
+
         void UpdateView(void)
         {
             if (myOCCViewer != NULL)
