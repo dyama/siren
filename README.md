@@ -1,7 +1,7 @@
  siren - the simple CAD viewer
 ============================================================
 
-![siren](https://cloud.githubusercontent.com/assets/1341877/3596696/707f9aa6-0cc8-11e4-9372-2585799d858e.png)
+![siren](https://cloud.githubusercontent.com/assets/1341877/3607823/cca7ab46-0d51-11e4-9168-7443938a99d8.png)
 
  About siren
 ------------------------------------------------------------
