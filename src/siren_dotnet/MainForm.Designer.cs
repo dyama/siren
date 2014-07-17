@@ -139,6 +139,9 @@ namespace siren
           this.tsbClipPlane = new System.Windows.Forms.ToolStripButton();
           this.tsbSectionClipper = new System.Windows.Forms.ToolStripButton();
           this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+          this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
+          this.tsbHelp = new System.Windows.Forms.ToolStripButton();
+          this.tsbVersion = new System.Windows.Forms.ToolStripButton();
           this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
           this.splitContainer1 = new System.Windows.Forms.SplitContainer();
           this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -146,9 +149,6 @@ namespace siren
           this.splitContainer4 = new System.Windows.Forms.SplitContainer();
           this.myTerm = new siren.term();
           this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
-          this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
-          this.tsbHelp = new System.Windows.Forms.ToolStripButton();
-          this.tsbVersion = new System.Windows.Forms.ToolStripButton();
           this.toolStripMain.SuspendLayout();
           this.toolStripGeneral.SuspendLayout();
           this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -977,6 +977,7 @@ namespace siren
           // tsbRender
           // 
           this.tsbRender.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+          this.tsbRender.Enabled = false;
           this.tsbRender.Image = ((System.Drawing.Image)(resources.GetObject("tsbRender.Image")));
           this.tsbRender.ImageTransparentColor = System.Drawing.Color.Magenta;
           this.tsbRender.Name = "tsbRender";
@@ -1089,6 +1090,7 @@ namespace siren
           // tsbSectionClipper
           // 
           this.tsbSectionClipper.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+          this.tsbSectionClipper.Enabled = false;
           this.tsbSectionClipper.Image = ((System.Drawing.Image)(resources.GetObject("tsbSectionClipper.Image")));
           this.tsbSectionClipper.ImageTransparentColor = System.Drawing.Color.Magenta;
           this.tsbSectionClipper.Name = "tsbSectionClipper";
@@ -1101,6 +1103,33 @@ namespace siren
           // 
           this.toolStripSeparator2.Name = "toolStripSeparator2";
           this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+          // 
+          // toolStripSeparator13
+          // 
+          this.toolStripSeparator13.Name = "toolStripSeparator13";
+          this.toolStripSeparator13.Size = new System.Drawing.Size(6, 25);
+          // 
+          // tsbHelp
+          // 
+          this.tsbHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+          this.tsbHelp.Enabled = false;
+          this.tsbHelp.Image = ((System.Drawing.Image)(resources.GetObject("tsbHelp.Image")));
+          this.tsbHelp.ImageTransparentColor = System.Drawing.Color.Magenta;
+          this.tsbHelp.Name = "tsbHelp";
+          this.tsbHelp.Size = new System.Drawing.Size(23, 22);
+          this.tsbHelp.Text = "ヘルプ";
+          this.tsbHelp.ToolTipText = "ヘルプ";
+          // 
+          // tsbVersion
+          // 
+          this.tsbVersion.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+          this.tsbVersion.Image = ((System.Drawing.Image)(resources.GetObject("tsbVersion.Image")));
+          this.tsbVersion.ImageTransparentColor = System.Drawing.Color.Magenta;
+          this.tsbVersion.Name = "tsbVersion";
+          this.tsbVersion.Size = new System.Drawing.Size(23, 22);
+          this.tsbVersion.Text = "バージョン情報";
+          this.tsbVersion.ToolTipText = "バージョン情報";
+          this.tsbVersion.Click += new System.EventHandler(this.tsbVersion_Click);
           // 
           // toolStripContainer1
           // 
@@ -1204,32 +1233,6 @@ namespace siren
           this.propertyGrid1.Name = "propertyGrid1";
           this.propertyGrid1.Size = new System.Drawing.Size(152, 716);
           this.propertyGrid1.TabIndex = 0;
-          // 
-          // toolStripSeparator13
-          // 
-          this.toolStripSeparator13.Name = "toolStripSeparator13";
-          this.toolStripSeparator13.Size = new System.Drawing.Size(6, 25);
-          // 
-          // tsbHelp
-          // 
-          this.tsbHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-          this.tsbHelp.Image = ((System.Drawing.Image)(resources.GetObject("tsbHelp.Image")));
-          this.tsbHelp.ImageTransparentColor = System.Drawing.Color.Magenta;
-          this.tsbHelp.Name = "tsbHelp";
-          this.tsbHelp.Size = new System.Drawing.Size(23, 22);
-          this.tsbHelp.Text = "ヘルプ";
-          this.tsbHelp.ToolTipText = "ヘルプ";
-          // 
-          // tsbVersion
-          // 
-          this.tsbVersion.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-          this.tsbVersion.Image = ((System.Drawing.Image)(resources.GetObject("tsbVersion.Image")));
-          this.tsbVersion.ImageTransparentColor = System.Drawing.Color.Magenta;
-          this.tsbVersion.Name = "tsbVersion";
-          this.tsbVersion.Size = new System.Drawing.Size(23, 22);
-          this.tsbVersion.Text = "バージョン情報";
-          this.tsbVersion.ToolTipText = "バージョン情報";
-          this.tsbVersion.Click += new System.EventHandler(this.tsbVersion_Click);
           // 
           // MainForm
           // 

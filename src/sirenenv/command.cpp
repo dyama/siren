@@ -9,6 +9,7 @@
 #include "OCCViewer.h"
 
 #define USECLASS 0
+#define DISABLETESTCOMMAND
 
 /**
  * \brief 
@@ -31,7 +32,9 @@ bool OCCViewer::mruby_init()
 	regcmd("version",   &version,   0,0, "",                                "version() -> String");
 	regcmd("debug",     &debug,     0,1, "",                                "");
     regcmd("all",       &all,       0,0, "Get an array of all objects.",    "all() -> Ary[ObjID, ...]");
+#if DESABLETESTCOMMAND
     regcmd("init",      &init,      0,0, "Initialize context.",             "init() -> nil");
+#endif
 
 	// Infomation/Status commands
 	regcmd("bndbox",    &bndbox,    1,0, "Get area of object exist.",       "bndbox(ObjID) -> Ary[min[X,Y,Z], max[X,Y,Z]]");
@@ -76,8 +79,10 @@ bool OCCViewer::mruby_init()
     // regcmd("clip2on",   &clip2on,   5,0, "Set two clipping plane.",         "clip2on(name1, name2, pos[x, y, z], dir[x, y, z], thickness) -> nil");
     regcmd("activate",  &activate,  1,0, "",                                "");
     regcmd("dump",      &dump,      1,0, "Dump current view to image file.","dump(path) -> nil");
+#if DESABLETESTCOMMAND
     regcmd("reset",     &reset,     0,0, "Reset view",                      "reset() -> nil");
     regcmd("text",      &text,      3,3, "Draw text",                       "");
+#endif
 
 	// Boolean operation commands
 	regcmd("common",    &common,    2,1, "Common boolean operation.",       "common(obj1, obj2) -> String");
@@ -113,7 +118,9 @@ bool OCCViewer::mruby_init()
     regcmd("bzsurf",    &bzsurf,    1,1, "Make a bezier surface.",          "bzsurf([[pu, ...], [pv, ...]], [[wu, ...], [wv, ...]]) -> ObjID");
     regcmd("bssurf",    &bssurf,    0,0, "Make a B-spline surface.",        "");
     regcmd("offset",    &offset,    1,1, "Make an offset surface.",         "offset(surface, offset_value) -> ObjID");
+#if DESABLETESTCOMMAND
     regcmd("thick",     &thick,     2,0, "Make a thicknessed solid.",        "thick(surface, offset_value) -> ObjID");
+#endif
 
     regcmd("projw",     &projw,     3,0, "Make a cylindrical projection of wire on surface.", "");
 
@@ -122,7 +129,9 @@ bool OCCViewer::mruby_init()
 	regcmd("wire2face", &wire2face, 1,1, "Make a face with boundary wire.", "wire2face(wire, is_plane = false) -> String");
 	regcmd("shell2solid",&shell2solid,1,0, "Make a solid by shell.",        "shell2solid(ObjID) -> ObjID");
     regcmd("triangle",  &triangle,  1,2, "Make triangle mesh from face.",   "triangle(ObjID, Deflection, Angle) -> ObjID");
+#if DESABLETESTCOMMAND
     regcmd("contour",   &contour,   2,0, "Trim face by contour wire.",      "");
+#endif
 
 	// I/O commands
 	regcmd("brepsave",  &savebrep,  2,0, "Save object to a file.",          "brepsave(shape, path) -> nil");
