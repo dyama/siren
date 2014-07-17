@@ -222,7 +222,7 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_par
 #endif
 
 
-#if 0
+#if 1
 	// grid
 	{
 		gp_Pnt p(0, 0, 0);
@@ -233,8 +233,8 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_par
 		Quantity_Length XStep = 10;
 		Quantity_Length YStep = 10;
 		Quantity_Length Rotation = 0;
-		Quantity_Length XSize = XStep * 10 + 1.0e-7;
-		Quantity_Length YSize = YStep * 10 + 1.0e-7;
+		Quantity_Length XSize = XStep * 20 + 1.0e-7;
+		Quantity_Length YSize = YStep * 20 + 1.0e-7;
 		Quantity_Length Offset = 0;
 		viewer->SetPrivilegedPlane(ax);
 		viewer->SetRectangularGridValues(XOrigin, YOrigin, XStep, YStep, Rotation);
@@ -242,7 +242,7 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_par
 		viewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
 	}
 #else
-	// grid
+	// grid for demo
 	{
 		gp_Pnt p(0, 0, 0);
 		gp_Vec v(0, 0, 1);
