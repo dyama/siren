@@ -49,6 +49,7 @@
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray1OfVec.hxx>
 #include <TColgp_Array2OfPnt.hxx>
+#include <TColGeom_Array2OfBezierSurface.hxx>
 
 #include <TopAbs_ShapeEnum.hxx>
 
@@ -243,6 +244,13 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_AspectText3d.hxx>
+
+// for Get outer wire of a face.
+#include <ShapeAnalysis.hxx>
+#include <ShapeAnalysis_FreeBounds.hxx>
+
+// B-Spline surface to Bezier surface.
+#include <GeomConvert_BSplineSurfaceToBezierSurface.hxx>
 
 // libraries
 #pragma comment (lib, "TKernel.lib")

@@ -91,6 +91,8 @@ mrb_value wire2face   (mrb_state*, mrb_value);
 mrb_value shell2solid (mrb_state*, mrb_value);
 mrb_value triangle    (mrb_state*, mrb_value);
 mrb_value contour     (mrb_state*, mrb_value);
+mrb_value outerw      (mrb_state*, mrb_value);
+mrb_value bs2bzsurf   (mrb_state*, mrb_value);
 
 // I/O
 mrb_value savebrep    (mrb_state*, mrb_value);

@@ -132,6 +132,9 @@ bool OCCViewer::mruby_init()
 #if DESABLETESTCOMMAND
     regcmd("contour",   &contour,   2,0, "Trim face by contour wire.",      "");
 #endif
+    regcmd("outerw",    &outerw,    1,0, "Get outer wire of a face.",       "outerw(shape) -> shape");
+    regcmd("bs2bzsurf", &bs2bzsurf, 1,0, "Convert B-Spline to Bezier surface.","bs2bzsurf(shape) -> shape");
+    
 
 	// I/O commands
 	regcmd("brepsave",  &savebrep,  2,0, "Save object to a file.",          "brepsave(shape, path) -> nil");
@@ -452,7 +455,7 @@ void display(const TopoDS_Shape& shape, bool activate, bool shaded)
 }
 
 /**
- * \brief 
+ * \brief Display hidden shape.
  */
 mrb_value display(mrb_state* mrb, mrb_value self)
 {
@@ -468,7 +471,7 @@ mrb_value display(mrb_state* mrb, mrb_value self)
     	if (!hashape.IsNull())
             redisplay(hashape);
         else
-            display(cur->shapeman[mrb_fixnum(obj)], (bool)is_active, (bool)is_shaded);
+            display(cur->shapeman[mrb_fixnum(obj)], is_active == TRUE, is_shaded == TRUE);
     }
     else if (mrb_array_p(obj)) {
         for (int i=0; i<mrb_ary_len(mrb, obj); i++) {
@@ -478,7 +481,7 @@ mrb_value display(mrb_state* mrb, mrb_value self)
             if (!hashape.IsNull())
                 redisplay(hashape);
             else
-                display(cur->shapeman[hc], (bool)is_active, (bool)is_shaded);
+                display(cur->shapeman[hc], is_active == TRUE, is_shaded == TRUE);
         }
     }
     else {
@@ -489,7 +492,7 @@ mrb_value display(mrb_state* mrb, mrb_value self)
 }
 
 /**
- * \brief 
+ * \brief Hide displayed shape.
  */
 mrb_value hide(mrb_state* mrb, mrb_value self)
 {
@@ -511,7 +514,7 @@ mrb_value hide(mrb_state* mrb, mrb_value self)
 }
 
 /**
- * \brief 
+ * \brief Fit all visible shapes to screen 
  */
 mrb_value fit(mrb_state* mrb, mrb_value self)
 {
@@ -603,7 +606,7 @@ mrb_value material(mrb_state* mrb, mrb_value self)
 }
 
 /**
- * \brief 
+ * \brief Set background color
  */
 mrb_value bgcolor(mrb_state* mrb, mrb_value self)
 {
@@ -628,6 +631,9 @@ mrb_value bgcolor(mrb_state* mrb, mrb_value self)
 	return mrb_nil_value();
 }
 
+/**
+ * \brief Set transparency
+ */
 mrb_value transparency(mrb_state* mrb, mrb_value self)
 {
     mrb_int target;
@@ -786,6 +792,9 @@ mrb_value clipoff(mrb_state* mrb, mrb_value self)
     return mrb_nil_value();
 }
 
+/**
+ * \brief Activate shape for selection
+ */
 mrb_value activate(mrb_state* mrb, mrb_value self)
 {
     mrb_int target;
@@ -2526,6 +2535,7 @@ mrb_value erase(mrb_state* mrb, mrb_value self)
     if (mrb_bool(r)) {
         cur->aiscxt->UpdateCurrentViewer();
     }
+    cur->aiscxt->UpdateCurrent();
 
 	return mrb_nil_value();
 }
@@ -3053,6 +3063,82 @@ mrb_value contour(mrb_state* mrb, mrb_value self)
     }
 
 	return mrb_fixnum_value(::set(shape, self));
+}
+
+/**
+ * \brief Get outer wire of a face.
+ */
+mrb_value outerw(mrb_state* mrb, mrb_value self)
+{
+	mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
+
+	TopoDS_Shape shape = ::getTopoDSShape(target);
+	if (shape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+
+    if (shape.ShapeType() == TopAbs_FACE) {
+        TopoDS_Face face = TopoDS::Face(shape);
+        TopoDS_Wire wire = ShapeAnalysis::OuterWire(face);
+        return mrb_fixnum_value(::set(wire, self));
+    }
+    else {
+        ShapeAnalysis_FreeBounds safb(shape, 1.0e+1);
+        TopoDS_Compound comp = safb.GetClosedWires();
+        return mrb_fixnum_value(::set(comp, self));
+    }
+}
+
+/**
+ * \brief 
+ */
+mrb_value bs2bzsurf(mrb_state* mrb, mrb_value self)
+{
+	mrb_int target;
+	int argc = mrb_get_args(mrb, "i", &target);
+
+	TopoDS_Shape shape = ::getTopoDSShape(target);
+	if (shape.IsNull()) {
+		static const char m[] = "No such object name of specified at first.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+	}
+    if (shape.ShapeType() != TopAbs_FACE) {
+		static const char m[] = "Specified shape is not face.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+    TopoDS_Face face = TopoDS::Face(shape);
+    Handle(Geom_Surface) gsurf  = BRep_Tool::Surface(face);
+
+    Handle(Geom_BSplineSurface) gbssurf = Handle(Geom_BSplineSurface)::DownCast(gsurf);
+    if (gbssurf == NULL) {
+		static const char m[] = "Specified shape is not B-Spline surface.";
+        return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
+    }
+
+    GeomConvert_BSplineSurfaceToBezierSurface converter(gbssurf);
+    
+    TColGeom_Array2OfBezierSurface ary(1, converter.NbUPatches(), 1, converter.NbVPatches());
+    converter.Patches(ary);
+
+    mrb_value result = mrb_ary_new(mrb);
+    for (int r = ary.LowerRow(); r <= ary.UpperRow(); r++) {
+        mrb_value row = mrb_ary_new(mrb);
+        for (int c = ary.LowerCol(); c <= ary.UpperCol(); c++) {
+            Handle(Geom_BezierSurface) gbzsurf = ary.Value(r, c);
+            TopoDS_Face patch = BRepBuilderAPI_MakeFace(gbzsurf, 1.0e-1);
+            mrb_value id = mrb_fixnum_value(::set(patch, self));
+            mrb_ary_push(mrb, row, id);
+        }
+        mrb_ary_push(mrb, result, row);
+    }
+
+    // if (mrb_ary_len(mrb, result) < 1)
+    //     return mrb_nil_value();
+
+    // Return empty array if result is empty, it is not nil.
+    return result;
 }
 
 /**
