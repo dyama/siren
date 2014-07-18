@@ -1,4 +1,4 @@
- siren - the simple CAD viewer
+ siren - the simple CAD system
 ============================================================
 
 ![siren](https://cloud.githubusercontent.com/assets/1341877/3607823/cca7ab46-0d51-11e4-9168-7443938a99d8.png)
@@ -6,8 +6,7 @@
  About siren
 ------------------------------------------------------------
 
-siren is a simple CAD viewer for Microsoft Windows. siren
-makes your some useful and quickly operations.
+siren is a simple CAD system for Microsoft Windows.
 
  How to build
 ------------------------------------------------------------
