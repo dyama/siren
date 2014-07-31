@@ -1064,7 +1064,7 @@ namespace siren
           this.toolStripGeneral.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
           this.toolStripGeneral.Location = new System.Drawing.Point(3, 0);
           this.toolStripGeneral.Name = "toolStripGeneral";
-          this.toolStripGeneral.Size = new System.Drawing.Size(502, 25);
+          this.toolStripGeneral.Size = new System.Drawing.Size(471, 25);
           this.toolStripGeneral.TabIndex = 15;
           // 
           // toolStripSeparator1

@@ -7,7 +7,7 @@
     <ProjectGuid>{B9914BB3-B886-4B41-B48D-350EBEBEFD1F}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>256.ico</ApplicationIcon>
+    <ApplicationIcon>siren_icon.ico</ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>siren_dotnet</AssemblyName>
@@ -270,7 +270,7 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="256.ico" />
+    <Content Include="siren_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
