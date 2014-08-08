@@ -279,13 +279,13 @@ void OCCViewer::SetSelectionColor(Quantity_NameOfColor color)
 	return;
 }
 
-void OCCViewer::UpdateView(void)
+void OCCViewer::MustBeResized(void)
 {
 	if (!view.IsNull())
 		view->MustBeResized();
 }
 
-void OCCViewer::RedrawView(void)
+void OCCViewer::Redraw(void)
 {
 	if (!view.IsNull())
 		view->Redraw();
@@ -295,6 +295,12 @@ void OCCViewer::Redraw(int x, int y, int w, int h)
 {
 	if (!view.IsNull())
 		view->Redraw(x, y, w, h);
+}
+
+void OCCViewer::UpdateCurrentViewer(void)
+{
+	if (!aiscxt.IsNull())
+		aiscxt->UpdateCurrentViewer();
 }
 
 void OCCViewer::SetAntialiasing(bool isOn)
@@ -401,12 +407,6 @@ void OCCViewer::BackgroundColor(int& r, int& g, int& b)
 	r = (int)R1*255;
 	g = (int)G1*255;
 	b = (int)B1*255;
-}
-
-void OCCViewer::UpdateCurrentViewer(void)
-{
-	if (!aiscxt.IsNull())
-		aiscxt->UpdateCurrentViewer();
 }
 
 void OCCViewer::setProjection(V3d_TypeOfOrientation dir)

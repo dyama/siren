@@ -43,11 +43,11 @@ public: // View, Viewer
     void  CreateNewView(void* wnd, bool grad, bool is_raytracing);
 	bool  SetAISContext(OCCViewer* Viewer);
 	Handle_AIS_InteractiveContext GetAISContext(void);
-	void  UpdateView(void);
-	void  RedrawView(void);
+	void  MustBeResized(void);
+	void  Redraw(void);
 	void  Redraw(int x, int y, int w, int h);
-	void  WindowFitAll(int Xmin, int Ymin, int Xmax, int Ymax);
 	void  UpdateCurrentViewer(void);
+	void  WindowFitAll(int Xmin, int Ymin, int Xmax, int Ymax);
 	void  setProjection(V3d_TypeOfOrientation dir);
 	void  ZoomAllView(void);
     void  ZFitAll(void);

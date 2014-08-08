@@ -600,10 +600,10 @@ namespace sirenenv
                 return false;
         }
 
-        void RedrawView(void)
+        void Redraw(void)
         {
             if (myOCCViewer != NULL)
-                myOCCViewer->RedrawView();
+                myOCCViewer->Redraw();
         }
 
         void Redraw(int x, int y, int w, int h)
@@ -612,10 +612,10 @@ namespace sirenenv
                 myOCCViewer->Redraw(x, y, w, h);
         }
 
-        void UpdateView(void)
+        void MustBeResized(void)
         {
             if (myOCCViewer != NULL)
-                myOCCViewer->UpdateView();
+                myOCCViewer->MustBeResized();
         }
 
         void SetDegenerateModeOn(void)

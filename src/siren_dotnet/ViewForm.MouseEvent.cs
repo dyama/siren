@@ -278,7 +278,7 @@ namespace siren
             break;
           case CurAct3d.ROTATE:
             myViewer.Rotation(e.X, e.Y);
-            myViewer.RedrawView();
+            myViewer.Redraw();
             break;
           default:
             break;

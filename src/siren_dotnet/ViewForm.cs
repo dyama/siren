@@ -31,6 +31,7 @@ namespace siren
     {
       InitializeComponent();
 
+
       myViewer = new Viewer();
 
       parent = aParent;
@@ -47,6 +48,7 @@ namespace siren
       focuser.BackColor = Color.DarkRed;
       focuser.BorderStyle = BorderStyle.FixedSingle;
       this.Controls.Add(focuser);
+
     }
 
     //private System.Windows.Forms.ImageList imageList1;
@@ -71,15 +73,6 @@ namespace siren
       myViewer.setProjection(orient);
     }
 
-    private void ViewForm_SizeChanged(object sender, System.EventArgs e)
-    {
-      myViewer.UpdateView();
-    }
-
-    private void ViewForm_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
-    {
-      myViewer.RedrawView();
-    }
 
     protected DisplayMode _currentDisplayMode = DisplayMode.WIREFRAME;
     public DisplayMode currentDisplayMode
@@ -229,16 +222,31 @@ namespace siren
       focuser.BackColor = Color.DarkRed;
     }
 
+    #region "•`‰æŠÖ˜A"
+
     protected override void OnPaintBackground(PaintEventArgs e)
     {
-      //base.OnPaintBackground(e);
+      // Disable auto re-paint background
+      // base.OnPaintBackground(e);
     }
 
     protected override void OnPaint(PaintEventArgs e)
     {
-      //base.OnPaint(e);
-      Viewer.RedrawView();
+      // Disable auto re-paint
+      // base.OnPaint(e);
     }
+
+    private void ViewForm_SizeChanged(object sender, System.EventArgs e)
+    {
+      myViewer.MustBeResized();
+    }
+
+    private void ViewForm_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
+    {
+      myViewer.Redraw();
+    }
+
+    #endregion
 
   }
 

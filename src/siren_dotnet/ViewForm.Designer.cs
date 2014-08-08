@@ -27,7 +27,6 @@ namespace siren
       // 
       this.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
       this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.DoubleBuffered = true;
       this.Name = "ViewForm";
       this.Size = new System.Drawing.Size(462, 320);
       this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.onMouseWheel);

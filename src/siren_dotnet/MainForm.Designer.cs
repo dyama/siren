@@ -1200,7 +1200,6 @@ namespace siren
           this.splitContainer3.Size = new System.Drawing.Size(1003, 611);
           this.splitContainer3.SplitterDistance = 334;
           this.splitContainer3.TabIndex = 0;
-          this.splitContainer3.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer3_Paint);
           // 
           // splitContainer4
           // 
@@ -1211,7 +1210,6 @@ namespace siren
           // 
           // splitContainer4.Panel1
           // 
-          this.splitContainer4.Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer4_Panel1_Paint);
           this.splitContainer4.Size = new System.Drawing.Size(334, 611);
           this.splitContainer4.SplitterDistance = 301;
           this.splitContainer4.TabIndex = 0;
@@ -1249,11 +1247,9 @@ namespace siren
           this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
           this.Text = "siren";
           this.Load += new System.EventHandler(this.MainForm_Load);
-          this.Paint += new System.Windows.Forms.PaintEventHandler(this.MainForm_Paint);
           this.Shown += new System.EventHandler(this.MainForm_Shown);
           this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
           this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
-          this.Resize += new System.EventHandler(this.MainForm_Resize);
           this.toolStripMain.ResumeLayout(false);
           this.toolStripMain.PerformLayout();
           this.toolStripGeneral.ResumeLayout(false);

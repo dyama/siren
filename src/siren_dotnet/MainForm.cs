@@ -66,8 +66,6 @@ namespace siren
       myTerm.setChangeStateFunc(changeState);
       this.Cursor = System.Windows.Forms.Cursors.Default;
 
-      view1.Viewer.RedrawView();
-
       setToolBarButtonState(0);
 
       return;
@@ -77,9 +75,9 @@ namespace siren
     {
       Application.DoEvents();
 
-      view1.Viewer.UpdateView();
-      view2.Viewer.UpdateView();
-      view3.Viewer.UpdateView();
+      view1.Viewer.UpdateCurrentViewer();
+      view2.Viewer.UpdateCurrentViewer();
+      view3.Viewer.UpdateCurrentViewer();
 
       List<string> args = new List<string>(System.Environment.GetCommandLineArgs());
       // コマンドライン引数から開く
@@ -1088,34 +1086,6 @@ namespace siren
     {
       this.view1.Focus();
       return;
-    }
-
-    private void splitContainer3_Paint(object sender, PaintEventArgs e)
-    {
-      view1.Viewer.UpdateView();
-      view2.Viewer.UpdateView();
-      view3.Viewer.UpdateView();
-    }
-
-    private void splitContainer4_Panel1_Paint(object sender, PaintEventArgs e)
-    {
-      view1.Viewer.UpdateView();
-      view2.Viewer.UpdateView();
-      view3.Viewer.UpdateView();
-    }
-
-    private void MainForm_Paint(object sender, PaintEventArgs e)
-    {
-      view1.Viewer.UpdateView();
-      view2.Viewer.UpdateView();
-      view3.Viewer.UpdateView();
-    }
-
-    private void MainForm_Resize(object sender, EventArgs e)
-    {
-      view1.Viewer.UpdateView();
-      view2.Viewer.UpdateView();
-      view3.Viewer.UpdateView();
     }
 
     private void tsbVersion_Click(object sender, EventArgs e)
