@@ -42,7 +42,7 @@ public: // View, Viewer
     bool  InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_parsepective);
     void  CreateNewView(void* wnd, bool grad, bool is_raytracing);
 	bool  SetAISContext(OCCViewer* Viewer);
-	Handle_AIS_InteractiveContext GetAISContext(void);
+	Handle(AIS_InteractiveContext) GetAISContext(void);
 	void  MustBeResized(void);
 	void  Redraw(void);
 	void  Redraw(int x, int y, int w, int h);
@@ -72,8 +72,7 @@ public: // Shape apperance
 public: // Mouse events bindings
 	float Scale(void);
 	void  setScale(double f);
-	void  SetDegenerateModeOn(void);
-	void  SetDegenerateModeOff(void);
+	void  SetComputedMode(bool value);
 	void  Place(int x, int y, float zoomFactor);
 	void  Zoom(int x1, int y1, int x2, int y2);
 	void  Pan(int x, int y);

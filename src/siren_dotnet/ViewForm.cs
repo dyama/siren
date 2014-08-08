@@ -107,18 +107,13 @@ namespace siren
       set { this.myCurMode = value; }
     }
 
-    public float Zoom { set { this.myCurZoom = value; } }
-
     public bool DegenerateMode
     {
-      get { return this.myDegenerateModeIsOn; }
+      get { return this.IsShading; }
       set
       {
-        this.myDegenerateModeIsOn = value;
-        if (value)
-          myViewer.SetDegenerateModeOn();
-        else
-          myViewer.SetDegenerateModeOff();
+        this.IsShading = value;
+        myViewer.SetComputedMode(value);
       }
     }
 

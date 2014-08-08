@@ -21,8 +21,7 @@ namespace siren
   public partial class ViewForm : System.Windows.Forms.UserControl
   {
     protected CurAct3d myCurMode;
-    protected float myCurZoom;// ~ Quantity_Factor
-    public bool myDegenerateModeIsOn;
+    public bool IsShading;
     protected int myXmin;
     protected int myYmin;
     protected int myXmax;
@@ -37,7 +36,7 @@ namespace siren
     protected void initMouseEvent()
     {
       myCurMode = CurAct3d.NOTHING;
-      myDegenerateModeIsOn = true;
+      IsShading = true;
       IsRectVisible = false;
 
       return;
@@ -75,8 +74,7 @@ namespace siren
         theButtonDownY = y;
       }
       else if (theState == MouseState.UP) {
-        myViewer.Select(Math.Min(theButtonDownX, x), Math.Min(theButtonDownY, y),
-          Math.Max(theButtonDownX, x), Math.Max(theButtonDownY, y));
+        myViewer.Select(Math.Min(theButtonDownX, x), Math.Min(theButtonDownY, y), Math.Max(theButtonDownX, x), Math.Max(theButtonDownY, y));
       }
     }
 
@@ -204,187 +202,118 @@ namespace siren
     {
       switch (e.Button) {
       case MouseButtons.Left:
-        myXmin = e.X; myYmin = e.Y;
-        myXmax = e.X; myYmax = e.Y;
+        myXmin = myXmax = e.X;
+        myYmin = myYmax = e.Y;
         if (myCurSpKey == CurSpKey.CTRL) {
           this.Cursor = System.Windows.Forms.Cursors.SizeWE;
           myCurMode = CurAct3d.ZOOM;
         }
-        else {
-          switch (myCurMode) {
-          case CurAct3d.NOTHING:
-            DragEvent(myXmax, myYmax, MouseState.DOWN);
-            break;
-          case CurAct3d.ROTATE:
-            if (!myDegenerateModeIsOn)
-              myViewer.SetDegenerateModeOn();
-            //start the rotation
+        else if (myCurMode == CurAct3d.NOTHING) {
+          DragEvent(myXmax, myYmax, MouseState.DOWN);
+        }
+        break;
+      case MouseButtons.Right: {
+          if (allowRotation) {
+            if (!IsShading)
+              myViewer.SetComputedMode(false);
+            this.Cursor = System.Windows.Forms.Cursors.SizeAll;
             myViewer.StartRotation(e.X, e.Y);
-            break;
-          case siren.CurAct3d.WINZOOM:
-            this.Cursor = System.Windows.Forms.Cursors.Hand;
-            break;
-          default:
-            break;
           }
         }
         break;
-      case MouseButtons.Right:
-        if (allowRotation) {
-          if (!myDegenerateModeIsOn)
-            myViewer.SetDegenerateModeOn();
-          this.Cursor = System.Windows.Forms.Cursors.SizeAll;
-          myViewer.StartRotation(e.X, e.Y);
+      case MouseButtons.Middle: {
+          this.Cursor = System.Windows.Forms.Cursors.NoMove2D;
         }
         break;
-
-      case MouseButtons.Middle:
-        this.Cursor = System.Windows.Forms.Cursors.NoMove2D;
-        break;
-
-      default:
-        break;
+      default: {
+          break;
+        }
       }
     }
 
     private void onMouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
     {
-      if (e.Button == MouseButtons.Left) {
-        if (myCurSpKey == CurSpKey.CTRL) {
-          myViewer.Zoom(myXmax, myYmax, e.X, e.Y);
-          myXmax = e.X; myYmax = e.Y;
-        }
-        else {
-          switch (myCurMode) {
-          case CurAct3d.NOTHING:
+      switch (e.Button) {
+      case MouseButtons.Left: {
+          if (myCurSpKey == CurSpKey.CTRL) {
+            myViewer.Zoom(myXmax, myYmax, e.X, e.Y);
+            myXmax = e.X; myYmax = e.Y;
+          }
+          else if (myCurMode == CurAct3d.NOTHING) {
             DrawRectangle(false);
             myXmax = e.X; myYmax = e.Y;
             DrawRectangle(true);
-            break;
-          case CurAct3d.ZOOM:
-            myViewer.Zoom(myXmax, myYmax, e.X, e.Y);
-            myXmax = e.X; myYmax = e.Y;
-            break;
-          // case CurAct3d.WINZOOM:
-          // 	DrawRectangle(false);
-          // 	myXmax=e.X; myYmax=e.Y;
-          // 	DrawRectangle(true);//add brush here
-          // 	break;
-          case CurAct3d.PAN:
-            myViewer.Pan(e.X - myXmax, myYmax - e.Y);
-            myXmax = e.X; myYmax = e.Y;
-            break;
-          case CurAct3d.GLOPAN:
-            break;
-          case CurAct3d.ROTATE:
-            myViewer.Rotation(e.X, e.Y);
-            myViewer.Redraw();
-            break;
-          default:
-            break;
           }
         }
+        break;
+      case MouseButtons.Middle: {
+          myViewer.Pan(e.X - myXmax, myYmax - e.Y);
+          myXmax = e.X; myYmax = e.Y;
+        }
+        break;
+      case MouseButtons.Right: {
+          if (allowRotation)
+            myViewer.Rotation(e.X, e.Y);
+        }
+        break;
+      default: {
+          myXmax = e.X; myYmax = e.Y;
+          myViewer.MoveTo(e.X, e.Y);
+        }
+        break;
       }
-      else if (e.Button == MouseButtons.Middle) {
-        myViewer.Pan(e.X - myXmax, myYmax - e.Y);
-        myXmax = e.X; myYmax = e.Y;
-      }
-      else if (e.Button == MouseButtons.Right) {
-        if (allowRotation)
-          myViewer.Rotation(e.X, e.Y);
-      }
-      else {
-        myXmax = e.X; myYmax = e.Y;
-        myViewer.MoveTo(e.X, e.Y);
-      }
+
       return;
     }
 
     private void onMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
     {
       switch (e.Button) {
-      case MouseButtons.Left:
-        if (myCurSpKey == CurSpKey.CTRL) {
-          this.Cursor = System.Windows.Forms.Cursors.Default;
-          return;
-        }
-        switch (myCurMode) {
-        case CurAct3d.NOTHING:
-          if (e.X == myXmin && e.Y == myYmin) {
-            myXmax = e.X;
-            myYmax = e.Y;
-            if (myCurSpKey == CurSpKey.SHIFT)
-              myViewer.ShiftSelect();
-            else
-              myViewer.Select();
+      case MouseButtons.Left: {
+          if (myCurSpKey == CurSpKey.CTRL) {
+            this.Cursor = Cursors.Default;
+            return;
+          }
+          if (myCurMode == CurAct3d.NOTHING) {
+            if (e.X == myXmin && e.Y == myYmin) {
+              myXmax = e.X;
+              myYmax = e.Y;
+              if (myCurSpKey == CurSpKey.SHIFT) {
+                myViewer.ShiftSelect();
+              }
+              else {
+                myViewer.Select();
+              }
+            }
+            else {
+              myXmax = e.X;
+              myYmax = e.Y;
+              DragEvent(myXmax, myYmax, MouseState.UP);
+            }
           }
           else {
-            myXmax = e.X; myYmax = e.Y;
-            //DrawRectangle(false);
-            DragEvent(myXmax, myYmax, MouseState.UP);
+            myCurMode = CurAct3d.NOTHING;
           }
-          break;
-
-        case CurAct3d.ZOOM:
-          myCurMode = CurAct3d.NOTHING;
-          break;
-
-        // case CurAct3d.WINZOOM:
-        // 	myXmax = e.X;
-        //     myYmax = e.Y;
-        // 	DrawRectangle(false);
-        // 	int ValZWMin = 1;
-        // 	if (Math.Abs(myXmax-myXmin)>ValZWMin && Math.Abs(myXmax-myYmax)>ValZWMin)
-        // 		myViewer.WindowFitAll(myXmin, myYmin, myXmax, myYmax);
-        // 	this.Cursor = System.Windows.Forms.Cursors.Default;
-        // 	siren.MainForm f = (siren.MainForm)this.ParentForm;
-        // 	myCurMode = CurAct3d.NOTHING;
-        // 	break;
-
-        case CurAct3d.PAN:
-          myCurMode = CurAct3d.NOTHING;
-          break;
-
-        case CurAct3d.GLOPAN:
-          myViewer.Place(e.X, e.Y, myCurZoom);
-          myCurMode = CurAct3d.NOTHING;
-          break;
-
-        case CurAct3d.ROTATE:
-          myCurMode = CurAct3d.NOTHING;
-          if (!myDegenerateModeIsOn) {
-            myViewer.SetDegenerateModeOff();
-            myDegenerateModeIsOn = false;
-          }
-          else {
-            myViewer.SetDegenerateModeOn();
-            myDegenerateModeIsOn = true;
-          }
-          this.Viewer.ZFitAll();
-          break;
-
-        default:
-          break;
-
         }
         break;
-
-      case MouseButtons.Right:
-        if (allowRotation) {
-          if (!myDegenerateModeIsOn) {
-            myViewer.SetDegenerateModeOff();
-            myDegenerateModeIsOn = false;
+      case MouseButtons.Right: {
+          if (allowRotation) {
+            if (!IsShading) {
+              myViewer.SetComputedMode(true);
+              IsShading = false;
+            }
+            else {
+              myViewer.SetComputedMode(false);
+              IsShading = true;
+            }
+            this.Viewer.ZFitAll();
           }
-          else {
-            myViewer.SetDegenerateModeOn();
-            myDegenerateModeIsOn = true;
-          }
-          this.Viewer.ZFitAll();
         }
         break;
-
-      default:
-        break;
+      default: {
+          // nothing to do
+          break;
+        }
       }
 
       this.Cursor = System.Windows.Forms.Cursors.Default;

@@ -301,6 +301,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\dotnettype.h"
+			>
+		</File>
+		<File
 			RelativePath=".\dotnetwrapper.h"
 			>
 		</File>

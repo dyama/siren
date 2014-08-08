@@ -313,16 +313,10 @@ void OCCViewer::SetAntialiasing(bool isOn)
 	}
 }
 
-void OCCViewer::SetDegenerateModeOn(void)
+void OCCViewer::SetComputedMode(bool value)
 {
 	if (!view.IsNull())
-		view->SetComputedMode (Standard_False);
-}
-
-void OCCViewer::SetDegenerateModeOff(void)
-{
-	if (!view.IsNull())
-		view->SetComputedMode (Standard_True);
+		view->SetComputedMode(value ? Standard_True : Standard_False);
 }
 
 void OCCViewer::WindowFitAll(int Xmin, int Ymin, int Xmax, int Ymax)

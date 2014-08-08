@@ -306,4 +306,6 @@
 static std::map<std::string, structHelp*> Help;       // Help string map
 static OCCViewer* cur;
 
+#pragma warning(disable:4099)
+
 #endif

@@ -533,7 +533,7 @@ namespace siren
     {
       if (this.view1 == null)
         return;
-      this.view1.myDegenerateModeIsOn = !this.view1.myDegenerateModeIsOn;
+      this.view1.IsShading = !this.view1.IsShading;
       this.view1.Viewer.UpdateCurrentViewer();
     }
 
