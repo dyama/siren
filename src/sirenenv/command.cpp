@@ -666,8 +666,8 @@ mrb_value clipon(mrb_state* mrb, mrb_value self)
     mrb_int target;
 	int argc = mrb_get_args(mrb, "iAA|bi", &index, &pos, &dir, &use_cap, &target);
 
-    gp_Pnt gpos = *ar2pnt(mrb, pos);
-    gp_Dir gdir = *ar2dir(mrb, dir);
+    gp_Pnt gpos = ar2pnt(mrb, pos);
+    gp_Dir gdir = ar2dir(mrb, dir);
 
     // ClipPlane �̍쐬
     Handle(Graphic3d_ClipPlane) p = new Graphic3d_ClipPlane(gp_Pln(gpos, gdir));
@@ -829,7 +829,7 @@ mrb_value text(mrb_state* mrb, mrb_value self)
         wcstombs( strmfw, strw, sizeof( strmfw ) );
     */
 
-    gp_Pnt* p = ar2pnt(mrb, pos);
+    gp_Pnt p = ar2pnt(mrb, pos);
 
 	char* c_text = RSTRING_PTR(text);
     TCollection_ExtendedString occ_text(c_text);
@@ -848,8 +848,8 @@ mrb_value text(mrb_state* mrb, mrb_value self)
     h_text->SetTextZoomable(zoomable ? Standard_True : Standard_False);
     h_text->SetTextAngle(argc > 4 ? (Standard_Real)angle : 0.0);
     if (argc == 6) {
-        gp_Pnt* col = ar2pnt(mrb, color);
-        Quantity_Color mycolor = Quantity_Color(col->X() / 255, col->Y() / 255, col->Z() / 255, Quantity_TOC_RGB);
+        gp_Pnt col = ar2pnt(mrb, color);
+        Quantity_Color mycolor = Quantity_Color(col.X() / 255, col.Y() / 255, col.Z() / 255, Quantity_TOC_RGB);
         h_text->SetColor(mycolor);
     }
     else {
@@ -857,7 +857,7 @@ mrb_value text(mrb_state* mrb, mrb_value self)
     }
     hgrp->SetPrimitivesAspect(h_text);
 
-    Graphic3d_Vertex v(p->X(), p->Y(), p->Z());
+    Graphic3d_Vertex v(p.X(), p.Y(), p.Z());
     hgrp->Text(occ_text, v, (Standard_Real)height, Standard_True);
     aPrs->Display();
 
@@ -992,7 +992,7 @@ mrb_value translate(mrb_state* mrb, mrb_value self)
 
     TopoDS_Shape shape = ::getTopoDSShape(target); checkexist(shape);
 
-	gp_Pnt pvec = *ar2pnt(mrb, vec);
+	gp_Pnt pvec = ar2pnt(mrb, vec);
 	gp_Vec myvec(pvec.X(), pvec.Y(), pvec.Z());
 	gp_Trsf trsf;
 	trsf.SetTranslation(myvec);
@@ -1023,7 +1023,7 @@ mrb_value rotate(mrb_state* mrb, mrb_value self)
     TopoDS_Shape shape = ::getTopoDSShape(target); checkexist(shape);
 
 	Standard_Real ang = (double)a * (M_PI / 180.0);
-	gp_Ax1 ax = *ar2ax1(mrb, pos, norm);
+	gp_Ax1 ax = ar2ax1(mrb, pos, norm);
 	gp_Trsf trsf;
     trsf.SetRotation(ax, ang);
     shape.Move(trsf);
@@ -1052,7 +1052,7 @@ mrb_value scale(mrb_state* mrb, mrb_value self)
 
     TopoDS_Shape shape = ::getTopoDSShape(target); checkexist(shape);
 
-    gp_Pnt p = (argc == 2) ? gp_Pnt(0, 0, 0) : *ar2pnt(mrb, pos);
+    gp_Pnt p = (argc == 2) ? gp_Pnt(0, 0, 0) : ar2pnt(mrb, pos);
 	gp_Trsf trsf;
     trsf.SetScale(p, (Standard_Real)s);
     shape.Move(trsf);
@@ -1080,7 +1080,7 @@ mrb_value mirror(mrb_state* mrb, mrb_value self)
 
     TopoDS_Shape shape = ::getTopoDSShape(target); checkexist(shape);
 
-	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
+	gp_Ax2 ax = ar2ax2(mrb, pos, norm);
 	gp_Trsf trsf;
     trsf.SetMirror(ax);
     shape.Move(trsf);
@@ -1124,8 +1124,8 @@ mrb_value line(mrb_state* mrb, mrb_value self)
     mrb_value sp, tp;
     int argc = mrb_get_args(mrb, "AA", &sp, &tp);
 
-	gp_Pnt _sp = *ar2pnt(mrb, sp);
-	gp_Pnt _tp = *ar2pnt(mrb, tp);
+	gp_Pnt _sp = ar2pnt(mrb, sp);
+	gp_Pnt _tp = ar2pnt(mrb, tp);
 
 	BRepBuilderAPI_MakeEdge line(_sp, _tp);
     TopoDS_Shape shape = line.Shape();
@@ -1153,7 +1153,7 @@ mrb_value polyline(mrb_state* mrb, mrb_value self)
 	try {
 		for (int i=0; i<psize; i++) {
 			mrb_value pt = mrb_ary_ref(mrb, pts, i);
-			gp_Pnt pnt = *ar2pnt(mrb, pt);
+			gp_Pnt pnt = ar2pnt(mrb, pt);
 			poly.Add(pnt);
 		}
 		poly.Build();
@@ -1200,7 +1200,7 @@ mrb_value curve(mrb_state* mrb, mrb_value self)
     Handle(TColgp_HArray1OfPnt) pary = new TColgp_HArray1OfPnt(1, psize);
 	for (int i=0; i<psize; i++) {
 		mrb_value pt = mrb_ary_ref(mrb, pts, i);
-		gp_Pnt pnt = *ar2pnt(mrb, pt);
+		gp_Pnt pnt = ar2pnt(mrb, pt);
 		pary->SetValue(i+1, pnt);
 	}
     GeomAPI_Interpolate intp(pary, Standard_False, 1.0e-7);
@@ -1216,7 +1216,7 @@ mrb_value curve(mrb_state* mrb, mrb_value self)
 				use->SetValue(i+1, Standard_False);	
 			}
 			else {
-				gp_Dir dir = *ar2dir(mrb, avec);
+				gp_Dir dir = ar2dir(mrb, avec);
 				vec.SetValue(i+1, dir);
 				use->SetValue(i+1, Standard_True);	
 			}
@@ -1249,8 +1249,8 @@ mrb_value box(mrb_state* mrb, mrb_value self)
     mrb_value pos;
     int argc = mrb_get_args(mrb, "A|A", &size, &pos);
 
-	gp_Pnt s = *ar2pnt(mrb, size);
-	gp_Pnt op = (argc == 2) ? *ar2pnt(mrb, pos) : gp_Pnt(0.0, 0.0, 0.0);
+	gp_Pnt s = ar2pnt(mrb, size);
+	gp_Pnt op = (argc == 2) ? ar2pnt(mrb, pos) : gp_Pnt(0.0, 0.0, 0.0);
 
 	TopoDS_Shape shape;
 	try {
@@ -1281,7 +1281,7 @@ mrb_value sphere(mrb_state* mrb, mrb_value self)
     int argc = mrb_get_args(mrb, "f|A", &r, &pos);
 
 	gp_Pnt op
-		= (argc == 2) ? *ar2pnt(mrb, pos) : gp_Pnt(0.0, 0.0, 0.0);
+		= (argc == 2) ? ar2pnt(mrb, pos) : gp_Pnt(0.0, 0.0, 0.0);
 
 	TopoDS_Shape shape;
 	try {
@@ -1311,7 +1311,7 @@ mrb_value cylinder(mrb_state* mrb, mrb_value self)
     mrb_float r, h, a;
 	int argc = mrb_get_args(mrb, "AAfff", &pos, &norm, &r, &h, &a);
 
-	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
+	gp_Ax2 ax = ar2ax2(mrb, pos, norm);
 
 	TopoDS_Shape shape;
 	try {
@@ -1341,7 +1341,7 @@ mrb_value cone(mrb_state* mrb, mrb_value self)
 	mrb_float r1, r2, h, ang;
 	int argc = mrb_get_args(mrb, "AAffff", &pos, &norm, &r1, &r2, &h, &ang);
 
-	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
+	gp_Ax2 ax = ar2ax2(mrb, pos, norm);
 
 	TopoDS_Shape shape;
 	try {
@@ -1371,7 +1371,7 @@ mrb_value torus(mrb_state* mrb, mrb_value self)
 	mrb_value pos, norm;
 	int argc = mrb_get_args(mrb, "AAfff", &pos, &norm, &r1, &r2, &ang);
 
-	gp_Ax2 ax = *ar2ax2(mrb, pos, norm);
+	gp_Ax2 ax = ar2ax2(mrb, pos, norm);
 
 	TopoDS_Shape shape;
 	try {
@@ -1401,9 +1401,9 @@ mrb_value plane(mrb_state* mrb, mrb_value self)
 	mrb_float umin, umax, vmin, vmax;
 	int argc = mrb_get_args(mrb, "AAAffff", &pos, &norm, &vdir, &umin, &umax, &vmin, &vmax);
 
-	gp_Pnt _pos = *ar2pnt(mrb, pos);
-	gp_Dir _norm = *ar2dir(mrb, norm);
-    gp_Dir _vdir = *ar2dir(mrb, vdir);
+	gp_Pnt _pos = ar2pnt(mrb, pos);
+	gp_Dir _norm = ar2dir(mrb, norm);
+    gp_Dir _vdir = ar2dir(mrb, vdir);
     gp_Ax3 ax(_pos, _norm, _vdir);
 	gp_Pln _pln(ax);
 
@@ -1438,7 +1438,7 @@ mrb_value polygon(mrb_state* mrb, mrb_value self)
 
     for (int i=0; i<mrb_ary_len(mrb, pts); i++) {
         mrb_value p = mrb_ary_ref(mrb, pts, i);
-		gp_Pnt pp = *ar2pnt(mrb, p);
+		gp_Pnt pp = ar2pnt(mrb, p);
         mp.Add(pp);
     }
 
@@ -1478,7 +1478,7 @@ mrb_value sweepv(mrb_state* mrb, mrb_value self)
 	TopoDS_Wire path;
 
 	try {
-        gp_Pnt _vec = *ar2pnt(mrb, vec);
+        gp_Pnt _vec = ar2pnt(mrb, vec);
         gp_Pnt _pt = gp_Pnt(0., 0., 0.).Transformed(profile.Location());
         TopoDS_Edge pe = BRepBuilderAPI_MakeEdge(_pt, _vec);
         path = BRepBuilderAPI_MakeWire(pe);
@@ -1779,7 +1779,7 @@ mrb_value bzsurf(mrb_state* mrb, mrb_value self)
         mrb_value ar = mrb_ary_ref(mrb, ptary, r);
         for (int c=0; c<clen; c++) {
             mrb_value p = mrb_ary_ref(mrb, ar, c);
-            gp_Pnt pp = *::ar2pnt(mrb, p);
+            gp_Pnt pp = ar2pnt(mrb, p);
             poles.SetValue(r, c, pp);
         }
     }
@@ -2023,10 +2023,10 @@ mrb_value projw(mrb_state* mrb, mrb_value self)
 	TopoDS_Shape wire = ::getTopoDSShape(w); checkexist(wire);
 	TopoDS_Shape face = ::getTopoDSShape(f); checkexist(face);
 
-    gp_Vec* vec = ::ar2vec(mrb, v);
+    gp_Vec vec = ar2vec(mrb, v);
 
     TopoDS_Shape shape;
-    BRepProj_Projection bpp(wire, face, *vec);
+    BRepProj_Projection bpp(wire, face, vec);
 
     shape = bpp.Shape();
 
@@ -2063,7 +2063,7 @@ mrb_value location(mrb_state* mrb, mrb_value self)
     TopoDS_Shape shape = hashape->Shape();
 
     if (argc == 2) {
-        gp_Pnt p = *ar2pnt(mrb, location);
+        gp_Pnt p = ar2pnt(mrb, location);
         gp_Trsf tr;
         tr.SetTranslation(gp_Vec(p.X(), p.Y(), p.Z()));
         shape.Location(TopLoc_Location(tr));
@@ -2145,7 +2145,7 @@ mrb_value cparam(mrb_state* mrb, mrb_value self)
     int argc = mrb_get_args(mrb, "iA", &target, &xyz);
 
     TopoDS_Shape shape = ::getTopoDSShape(target); checkexist(shape);
-    gp_Pnt p = *::ar2pnt(mrb, xyz);
+    gp_Pnt p = ar2pnt(mrb, xyz);
 
     Standard_Real tol = 1.0e-7;
     TopExp_Explorer exp(shape, TopAbs_EDGE);
@@ -3311,7 +3311,7 @@ mrb_value isin(mrb_state* mrb, mrb_value self)
     // do type check
     TopoDS_Solid solid = TopoDS::Solid(shape);
 
-    gp_Pnt p = *::ar2pnt(mrb, point);
+    gp_Pnt p = ar2pnt(mrb, point);
 
     mrb_value result;
 

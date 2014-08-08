@@ -33,64 +33,64 @@ double ar2double(mrb_state* mrb, mrb_value& ary, int index)
 /**
  * \brief 
  */
-gp_Pnt* ar2pnt(mrb_state* mrb, mrb_value& ary)
+gp_Pnt ar2pnt(mrb_state* mrb, mrb_value& ary)
 {
 	double x = ar2double(mrb, ary, 0);
 	double y = ar2double(mrb, ary, 1);
 	double z = ar2double(mrb, ary, 2);
-	return new gp_Pnt(x, y, z);
+	return gp_Pnt(x, y, z);
 }
 
 /**
  * \brief 
  */
-gp_Vec* ar2vec(mrb_state* mrb, mrb_value& ary)
+gp_Vec ar2vec(mrb_state* mrb, mrb_value& ary)
 {
 	double x = ar2double(mrb, ary, 0);
 	double y = ar2double(mrb, ary, 1);
 	double z = ar2double(mrb, ary, 2);
-	return new gp_Vec(x, y, z);
+	return gp_Vec(x, y, z);
 }
 
 /**
  * \brief 
  */
-gp_Dir* ar2dir(mrb_state* mrb, mrb_value& ary)
+gp_Dir ar2dir(mrb_state* mrb, mrb_value& ary)
 {
 	double x = ar2double(mrb, ary, 0);
 	double y = ar2double(mrb, ary, 1);
 	double z = ar2double(mrb, ary, 2);
-	return new gp_Dir(x, y, z);
+	return gp_Dir(x, y, z);
 }
 
 /**
  * \brief 
  */
-gp_Ax1* ar2ax1(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
+gp_Ax1 ar2ax1(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
 {
-	gp_Pnt gpnt = *ar2pnt(mrb, pos);
-	gp_Dir gdir = *ar2dir(mrb, dir);
-	return new gp_Ax1(gpnt, gdir);
+	gp_Pnt gpnt = ar2pnt(mrb, pos);
+	gp_Dir gdir = ar2dir(mrb, dir);
+	return gp_Ax1(gpnt, gdir);
 }
 
 /**
  * \brief 
  */
-gp_Ax2* ar2ax2(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
+gp_Ax2 ar2ax2(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
 {
-	gp_Pnt gpnt = *ar2pnt(mrb, pos);
-	gp_Dir gdir = *ar2dir(mrb, dir);
-	return new gp_Ax2(gpnt, gdir);
+	gp_Pnt gpnt = ar2pnt(mrb, pos);
+	gp_Dir gdir = ar2dir(mrb, dir);
+	return gp_Ax2(gpnt, gdir);
 }
 
 /**
  * \brief 
  */
-gp_Ax3* ar2ax3(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
+gp_Ax3 ar2ax3(mrb_state* mrb, mrb_value& pos, mrb_value& dir)
 {
-	gp_Pnt gpnt = *ar2pnt(mrb, pos);
-	gp_Dir gdir = *ar2dir(mrb, dir);
-	return new gp_Ax3(gpnt, gdir);
+	gp_Pnt gpnt = ar2pnt(mrb, pos);
+	gp_Dir gdir = ar2dir(mrb, dir);
+	return gp_Ax3(gpnt, gdir);
 }
 
 /**

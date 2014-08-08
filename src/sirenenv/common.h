@@ -60,12 +60,12 @@ inline mrb_value mrb_exc_incorrecttype(mrb_state* mrb, TopAbs_ShapeEnum type)
 /* ------------------------------------------ */
 
 double    ar2double (mrb_state* mrb, mrb_value& ary, int index);
-gp_Pnt*   ar2pnt    (mrb_state* mrb, mrb_value& ary);
-gp_Vec*   ar2vec    (mrb_state* mrb, mrb_value& ary);
-gp_Dir*   ar2dir    (mrb_state* mrb, mrb_value& ary);
-gp_Ax1*   ar2ax1    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
-gp_Ax2*   ar2ax2    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
-gp_Ax3*   ar2ax3    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
+gp_Pnt    ar2pnt    (mrb_state* mrb, mrb_value& ary);
+gp_Vec    ar2vec    (mrb_state* mrb, mrb_value& ary);
+gp_Dir    ar2dir    (mrb_state* mrb, mrb_value& ary);
+gp_Ax1    ar2ax1    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
+gp_Ax2    ar2ax2    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
+gp_Ax3    ar2ax3    (mrb_state* mrb, mrb_value& pos, mrb_value& dir);
 mrb_value pnt2ar    (mrb_state* mrb, const gp_Pnt& rPnt);
 mrb_value vec2ar    (mrb_state* mrb, const gp_Vec& rVec);
 
