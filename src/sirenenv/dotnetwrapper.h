@@ -20,6 +20,7 @@ namespace sirenenv
 
     private:
         OCCViewer* myOCCViewer;
+
     public:
 
         bool InitViewer(System::IntPtr wnd, bool grad, bool is_raytracing, bool is_persepective)
@@ -58,12 +59,6 @@ namespace sirenenv
         {
             if (myOCCViewer != NULL)
                 myOCCViewer->WindowFitAll(Xmin, Ymin, Xmax, Ymax);
-        }
-
-        void Place(int x, int y, float zoomFactor)
-        {	
-            if (myOCCViewer != NULL)
-                myOCCViewer->Place(x, y, zoomFactor);
         }
 
         void Zoom(int x1, int y1, int x2, int y2)
@@ -118,30 +113,6 @@ namespace sirenenv
         {
             if (myOCCViewer != NULL)
                 myOCCViewer->ShiftSelect();
-        }
-
-        int GetBGColR(void)
-        {
-            int r, b, g;
-            if (myOCCViewer != NULL)
-                myOCCViewer->BackgroundColor(r,g,b);
-            return r;
-        }
-
-        int GetBGColG(void)
-        {
-            int r, b, g;
-            if (myOCCViewer != NULL)
-                myOCCViewer->BackgroundColor(r,g,b);
-            return g;
-        }
-
-        int GetBGColB(void)
-        {
-            int r, b, g;
-            if (myOCCViewer != NULL)
-                myOCCViewer->BackgroundColor(r,g,b);
-            return b;
         }
 
         void UpdateCurrentViewer(void)
@@ -218,20 +189,6 @@ namespace sirenenv
             if (myOCCViewer != NULL)
                 myOCCViewer->ObjectColor(r, g, b);
             return b;
-        }
-
-        void SetBackgroundColor(int r, int g, int b)
-        {
-            if (myOCCViewer != NULL)
-                myOCCViewer->SetBackgroundColor(r, g, b);
-        }
-
-        float GetOCCVersion(void)
-        {
-            if (myOCCViewer == NULL)
-                return 0.0;
-            else
-                return myOCCViewer->GetVersion();
         }
 
         void SetAntialiasing(bool isOn)

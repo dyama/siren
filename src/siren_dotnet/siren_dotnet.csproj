@@ -135,9 +135,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -195,10 +192,6 @@
     <Compile Include="ViewForm.MouseEvent.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <EmbeddedResource Include="AboutDialog.resx">
-      <DependentUpon>AboutDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="ClipForm.resx">
       <DependentUpon>ClipForm.cs</DependentUpon>
     </EmbeddedResource>

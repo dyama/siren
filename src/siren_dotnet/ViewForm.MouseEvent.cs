@@ -237,27 +237,32 @@ namespace siren
       case MouseButtons.Left: {
           if (myCurSpKey == CurSpKey.CTRL) {
             myViewer.Zoom(myXmax, myYmax, e.X, e.Y);
-            myXmax = e.X; myYmax = e.Y;
+            myXmax = e.X;
+            myYmax = e.Y;
           }
           else if (myCurMode == CurAct3d.NOTHING) {
             DrawRectangle(false);
-            myXmax = e.X; myYmax = e.Y;
+            myXmax = e.X;
+            myYmax = e.Y;
             DrawRectangle(true);
           }
         }
         break;
       case MouseButtons.Middle: {
           myViewer.Pan(e.X - myXmax, myYmax - e.Y);
-          myXmax = e.X; myYmax = e.Y;
+          myXmax = e.X;
+          myYmax = e.Y;
         }
         break;
       case MouseButtons.Right: {
-          if (allowRotation)
+          if (allowRotation) {
             myViewer.Rotation(e.X, e.Y);
+          }
         }
         break;
       default: {
-          myXmax = e.X; myYmax = e.Y;
+          myXmax = e.X;
+          myYmax = e.Y;
           myViewer.MoveTo(e.X, e.Y);
         }
         break;

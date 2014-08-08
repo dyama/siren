@@ -325,13 +325,6 @@ void OCCViewer::WindowFitAll(int Xmin, int Ymin, int Xmax, int Ymax)
 		view->WindowFitAll(Xmin, Ymin, Xmax, Ymax);
 }
 
-void OCCViewer::Place(int x, int y, float zoomFactor)
-{
-	Quantity_Factor aZoomFactor = zoomFactor;
-	if (!view.IsNull())
-		view->Place(x, y, aZoomFactor);
-}
-
 void OCCViewer::Zoom(int x1, int y1, int x2, int y2)
 {
 	if (!view.IsNull())
@@ -389,18 +382,6 @@ void OCCViewer::ShiftSelect(void)
 	if (!aiscxt.IsNull()) {
 		aiscxt->ShiftSelect();
 	}
-}
-
-void OCCViewer::BackgroundColor(int& r, int& g, int& b)
-{
-	Standard_Real R1;
-	Standard_Real G1;
-	Standard_Real B1;
-	if (!view.IsNull())
-		view->BackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
-	r = (int)R1*255;
-	g = (int)G1*255;
-	b = (int)B1*255;
 }
 
 void OCCViewer::setProjection(V3d_TypeOfOrientation dir)
@@ -487,61 +468,7 @@ void OCCViewer::ObjectColor(int& r, int& g, int& b)
   	}
 }
 
-void OCCViewer::SetBackgroundColor(int r, int g, int b)
-{
-	if (!view.IsNull())
-		view->SetBackgroundColor(Quantity_TOC_RGB,r/255.,g/255.,b/255.);
-}
-
-float OCCViewer::GetVersion(void)
-{
-	return (float)OCC_VERSION;
-}
-
 /*
-bool OCCViewer::ImportCsfdb(wchar_t* filename)
-{
-    char fname[_MAX_PATH];
-	{
-		setlocale(LC_CTYPE, "");
-	    size_t len;
-	    wcstombs_s(&len, fname, _MAX_PATH, filename, _MAX_PATH);
-	}
-
-	Standard_CString aFileName = (Standard_CString) fname;
-    if (FSD_File::IsGoodFileType(aFileName) != Storage_VSOk)
-	    return false;
-
-    static FSD_File fileDriver;
-    TCollection_AsciiString aName(aFileName);
-    if (fileDriver.Open(aName, Storage_VSRead) != Storage_VSOk)
-        return false;
-
-    Handle(ShapeSchema) schema = new ShapeSchema();
-    Handle(Storage_Data) data  = schema->Read(fileDriver);
-    if (data->ErrorStatus() != Storage_VSOk)
-        return false;
-    fileDriver.Close();
-
-    Handle(Storage_HSeqOfRoot) roots = data->Roots();
-    for (int i = 1; i <= roots->Length() ; i++)
-    {
-        Handle(Storage_Root) r = roots->Value(i);
-        Handle(Standard_Persistent) p = r->Object();
-        Handle(PTopoDS_HShape) aPShape = Handle(PTopoDS_HShape)::DownCast(p);
-        if (!aPShape.IsNull())
-        {
-	        PTColStd_PersistentTransientMap aMap;
-	        TopoDS_Shape aTShape;
-            MgtBRep::Translate(aPShape, aMap, aTShape, MgtBRep_WithTriangle);
-			aiscxt->Display(new AIS_Shape(aTShape));
-        }
-    }
-
-	return true;
-}
-
-
 bool OCCViewer::ImportStep(wchar_t* filename)
 {
     char fname[_MAX_PATH];

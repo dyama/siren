@@ -31,7 +31,6 @@ namespace siren
     {
       InitializeComponent();
 
-
       myViewer = new Viewer();
 
       parent = aParent;
@@ -51,7 +50,6 @@ namespace siren
 
     }
 
-    //private System.Windows.Forms.ImageList imageList1;
     private Viewer myViewer;
 
     /// <summary>
@@ -66,10 +64,8 @@ namespace siren
       }
       // Init default visual appearance.
       myViewer.SetAntialiasing(false);
-      // myViewer.setHighlightColor(NameOfColor.ORANGE);
-      // myViewer.setSelectionColor(NameOfColor.BLUE4);
-      myViewer.setHighlightColor(NameOfColor.RED);
-      myViewer.setSelectionColor(NameOfColor.YELLOW);
+      myViewer.setHighlightColor(NameOfColor.ORANGE);
+      myViewer.setSelectionColor(NameOfColor.BLUE4);
       myViewer.setProjection(orient);
     }
 
