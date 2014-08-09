@@ -58,12 +58,12 @@ namespace siren
     public void InitV3D(bool is_raytracing)
     {
       IntPtr handle = this.Handle;
-      if (!myViewer.InitViewer(handle, true, is_raytracing, false)) {
+      if (!myViewer.InitViewer(handle, true, is_raytracing, true)) {
         MessageBox.Show("グラフィックシステム初期化エラー", "Error!",
             MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
       // Init default visual appearance.
-      myViewer.SetAntialiasing(false);
+      myViewer.SetAntialiasing(true);
       myViewer.setHighlightColor(NameOfColor.ORANGE);
       myViewer.setSelectionColor(NameOfColor.BLUE4);
       myViewer.setProjection(orient);

@@ -195,7 +195,7 @@ namespace siren
 
       switch (format) {
       case ModelFormat.BREP:
-        result = (myTerm.execute("brepsave(\"" + filename + "\", selected[0])") == 0);
+        result = (myTerm.execute("brepsave(?, \"" + filename + "\")") == 0);
         break;
       case ModelFormat.IGES:
         result = (myTerm.execute("igessave(??, \"" + filename + "\"") == 0);

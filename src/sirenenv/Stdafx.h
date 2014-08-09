@@ -245,6 +245,11 @@
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_AspectText3d.hxx>
 
+// Presentation shadow not exsits in 6.7.0.
+// Is the class exists in only latest version?
+// http://tracker.dev.opencascade.org/plugin.php?page=Source/list&id=5&offset=13
+// #include <Prs3d_PresentationShadow.hxx>
+
 // for Get outer wire of a face.
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_FreeBounds.hxx>
