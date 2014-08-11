@@ -34,8 +34,9 @@ public: // Ruby
 	Mirb* myMirb;
 	bool  mruby_init();
 	bool  mruby_cleenup();
-	int   mruby_exec(char* cmd);
+#if 1
 	int   mruby_exec(char* command, std::string& errmsg);
+#endif
 	void  regcmd(const char* name, mrb_func_t func, int arg_req, int arg_opt, const char* desc, const char* usage);
 
 public: // View, Viewer

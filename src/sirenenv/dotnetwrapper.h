@@ -9,6 +9,8 @@
 
 #using <mscorlib.dll>
 #include "OCCViewer.h"
+#include "World.h"
+#include "Camera.h"
 #include "dotnettype.h"
 
 using namespace System::Runtime::InteropServices;
@@ -21,7 +23,19 @@ namespace sirenenv
     private:
         OCCViewer* myOCCViewer;
 
+    protected:
+        sirenenv::Camera* myCamera;
+        sirenenv::World*  myWorld;
+
     public:
+
+        Viewer()
+        {
+            myOCCViewer = NULL;
+            myCamera    = NULL;
+            myWorld     = NULL;
+            return;
+        }
 
         bool InitViewer(System::IntPtr wnd, bool grad, bool is_raytracing, bool is_persepective)
         {
@@ -281,7 +295,12 @@ namespace sirenenv
             }
 
             std::string _errmsg;
+#if 1
             int res = myOCCViewer->mruby_exec(cmd, _errmsg);
+#else
+            cur = myOCCViewer;
+            int res = myOCCViewer->myMirb->user_exec(cmd, _errmsg);
+#endif
 
             errmsg = gcnew System::String(_errmsg.c_str());
 

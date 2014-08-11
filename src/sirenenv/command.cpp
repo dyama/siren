@@ -192,15 +192,7 @@ bool OCCViewer::mruby_cleenup()
 	return true;
 }
 
-/**
- * \brief 
- */
-int OCCViewer::mruby_exec(char* command)
-{
-	std::string errmsg;
-	return myMirb->user_exec(command, errmsg);
-}
-
+#if 1
 /**
  * \brief 
  */
@@ -213,19 +205,9 @@ int OCCViewer::mruby_exec(char* command, std::string& errmsg)
 	if (cur == NULL)
 		return -1;
 
-#if 0
-	cur->aiscxt = aiscxt;
-	if (cur->aiscxt.IsNull())
-		return -1;
-	cur->view = view;
-	if (cur->view.IsNull())
-		return -1;
-#endif
-
-	int res = myMirb->user_exec(command, errmsg);
-
-	return res;
+	return myMirb->user_exec(command, errmsg);
 }
+#endif
 
 /**
  * \brief 

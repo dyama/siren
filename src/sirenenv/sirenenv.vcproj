@@ -285,6 +285,14 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath=".\Camera.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Camera.h"
+			>
+		</File>
+		<File
 			RelativePath=".\command.cpp"
 			>
 		</File>
@@ -330,6 +338,22 @@
 		</File>
 		<File
 			RelativePath=".\Stdafx.h"
+			>
+		</File>
+		<File
+			RelativePath=".\TestClass.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TestClass.h"
+			>
+		</File>
+		<File
+			RelativePath=".\World.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\World.h"
 			>
 		</File>
 	</Files>

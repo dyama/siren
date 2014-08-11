@@ -8,6 +8,10 @@
 #include "StdAfx.h"
 #include "OCCViewer.h"
 
+#include "TestClass.h"
+#include "World.h"
+#include "Camera.h"
+
 #pragma warning(disable : 4800)
 
 /**
@@ -21,6 +25,9 @@ OCCViewer::OCCViewer(void)
 	aiscxt = NULL;
 
 	mruby_init();
+    sirenenv::RTestClass::install(myMirb->mrb);
+    sirenenv::RWorld::install(myMirb->mrb);
+    sirenenv::RCamera::install(myMirb->mrb);
 }
 
 /**
