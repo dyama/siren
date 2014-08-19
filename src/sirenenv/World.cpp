@@ -116,7 +116,7 @@ namespace sirenenv {
         mrb_value initialize(mrb_state* mrb, mrb_value self)
         {
             // Initialize data type first, otherwise segmentation fault occurs.
-            DATA_TYPE(self) = &cppclassdeftype;
+            DATA_TYPE(self) = &dt;
             DATA_PTR(self) = NULL;
 
             World* p = new World();
@@ -133,7 +133,7 @@ namespace sirenenv {
 
         mrb_value to_s(mrb_state* mrb, mrb_value self)
         {
-            World* me = static_cast<World*>(mrb_get_datatype(mrb, self, &cppclassdeftype));
+             World* me = static_cast<World*>(mrb_get_datatype(mrb, self, &dt));
             char buf[32];
             _snprintf_s(buf, sizeof(buf), "#World<%d>", &me);
             return mrb_str_new_cstr(mrb, buf);
@@ -143,28 +143,28 @@ namespace sirenenv {
 
         mrb_value init(mrb_state* mrb, mrb_value self)
         {
-            World* me = static_cast<World*>(mrb_get_datatype(mrb, self, &cppclassdeftype));
+            World* me = static_cast<World*>(mrb_get_datatype(mrb, self, &dt));
             me->Init();
             return mrb_nil_value();
         }
 
         mrb_value updateworld(mrb_state* mrb, mrb_value self)
         {
-            World* me = static_cast<World*>(mrb_get_datatype(mrb, self, &cppclassdeftype));
+            World* me = static_cast<World*>(mrb_get_datatype(mrb, self, &dt));
             me->UpdateWorld();
             return mrb_nil_value();
         }
 
         mrb_value eraseobjects(mrb_state* mrb, mrb_value self)
         {
-            World* me = static_cast<World*>(mrb_get_datatype(mrb, self, &cppclassdeftype));
+            World* me = static_cast<World*>(mrb_get_datatype(mrb, self, &dt));
             me->EraseObjects();
             return mrb_nil_value();
         }
 
         mrb_value isobjectselected(mrb_state* mrb, mrb_value self)
         {
-            World* me = static_cast<World*>(mrb_get_datatype(mrb, self, &cppclassdeftype));
+            World* me = static_cast<World*>(mrb_get_datatype(mrb, self, &dt));
             mrb_bool res = me->IsObjectSelected() ? TRUE : FALSE;
             return mrb_bool_value(res);
         }

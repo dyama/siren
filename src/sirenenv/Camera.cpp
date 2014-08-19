@@ -245,12 +245,17 @@ namespace sirenenv {
             mrb_bool pers;
             int argc = mrb_get_args(mrb, "oib", &world, &hwnd, &pers);
 
-            struct mrb_data_type t = { "World", RWorld::cleenup };
-            void* vp = mrb_get_datatype(mrb, world, &t);
+
+            // struct mrb_data_type t = { "World", RWorld::cleenup };
+            // void* vp = mrb_get_datatype(mrb, world, &t);
+            // World* w = static_cast<World*>(vp);
             // World* w = static_cast<World*>(mrb_get_datatype(mrb, world, &RWorld::cppclassdeftype));
+
+            void* vp = mrb_get_datatype(mrb, world, &(RWorld::dt));
             World* w = static_cast<World*>(vp);
 
-            Camera* p = new Camera(w, (HWND)hwnd, pers != 0);
+            // Camera* p = new Camera(w, (HWND)hwnd, pers != 0);
+            Camera* p = NULL;
 
             DATA_PTR(self) = p;
             return self;

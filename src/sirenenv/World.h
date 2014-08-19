@@ -35,7 +35,7 @@ namespace sirenenv
 
     namespace RWorld {
         void cleenup(mrb_state* mrb, void *ptr);
-        static struct mrb_data_type cppclassdeftype = { "World", RWorld::cleenup };
+        static struct mrb_data_type dt = { "World", RWorld::cleenup };
         mrb_value initialize(mrb_state* mrb, mrb_value self);
         // ---
         mrb_value to_s(mrb_state* mrb, mrb_value self);
