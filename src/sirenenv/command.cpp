@@ -2940,7 +2940,7 @@ mrb_value bs2bzsurf(mrb_state* mrb, mrb_value self)
 	Handle(Geom_Surface) gsurf  = BRep_Tool::Surface(face);
 
 	Handle(Geom_BSplineSurface) gbssurf = Handle(Geom_BSplineSurface)::DownCast(gsurf);
-	if (gbssurf == NULL) {
+	if (gbssurf == NULL || gbssurf.IsNull()) {
 		static const char m[] = "Specified shape is not B-Spline surface.";
 		return mrb_exc_new(mrb, E_ARGUMENT_ERROR, m, sizeof(m) - 1);
 	}
