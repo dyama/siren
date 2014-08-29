@@ -2681,7 +2681,7 @@ mrb_value wire2pts(mrb_state* mrb, mrb_value self)
 			// first point
 			mrb_ary_push(mrb, line, pnt2ar(mrb, adaptor.Value(first_param)));
 
-			for (int i=0; i<unidef.NbPoints(); i++)
+			for (int i=1; i<=unidef.NbPoints(); i++)
 				mrb_ary_push(mrb, line, pnt2ar(mrb, unidef.Value(i)));
 
 			// last point
