@@ -249,9 +249,14 @@ namespace siren
         }
         break;
       case MouseButtons.Middle: {
-          myViewer.Pan(e.X - myXmax, myYmax - e.Y);
-          myXmax = e.X;
-          myYmax = e.Y;
+				double x = Math.Abs( e.X - myXmax );
+				double y = Math.Abs(e.Y - myYmax);
+				if ( x > 5 || y > 5 )
+				{
+					myViewer.Pan(e.X - myXmax, myYmax - e.Y);
+					myXmax = e.X;
+					myYmax = e.Y;
+				}
         }
         break;
       case MouseButtons.Right: {
