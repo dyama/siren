@@ -1460,7 +1460,7 @@ mrb_value sweepv(mrb_state* mrb, mrb_value self)
 	TopoDS_Wire path;
 
 	try {
-		gp_Pnt _vec = ar2pnt(mrb, vec);
+    gp_Pnt _vec = ar2pnt(mrb, vec).Transformed(profile.Location());
 		gp_Pnt _pt = gp_Pnt(0., 0., 0.).Transformed(profile.Location());
 		TopoDS_Edge pe = BRepBuilderAPI_MakeEdge(_pt, _vec);
 		path = BRepBuilderAPI_MakeWire(pe);
