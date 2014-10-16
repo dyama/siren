@@ -1866,7 +1866,7 @@ mrb_value bssurf(mrb_state* mrb, mrb_value self)
 	}
 
 	Handle(Geom_BSplineSurface) hg_bssurf = new Geom_BSplineSurface(poles, weights, uknots, vknots, umults, vmults, udeg, vdeg);
-	TopoDS_Shell shape = BRepBuilderAPI_MakeShell(hg_bssurf);
+	TopoDS_Face shape = BRepBuilderAPI_MakeFace(hg_bssurf, 1.0e-1);
 
 #if 0
 	Standard_Integer udeg = 1;
