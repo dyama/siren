@@ -1064,7 +1064,7 @@ namespace siren
           this.toolStripGeneral.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
           this.toolStripGeneral.Location = new System.Drawing.Point(3, 0);
           this.toolStripGeneral.Name = "toolStripGeneral";
-          this.toolStripGeneral.Size = new System.Drawing.Size(471, 25);
+          this.toolStripGeneral.Size = new System.Drawing.Size(502, 25);
           this.toolStripGeneral.TabIndex = 15;
           // 
           // toolStripSeparator1
@@ -1090,7 +1090,6 @@ namespace siren
           // tsbSectionClipper
           // 
           this.tsbSectionClipper.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-          this.tsbSectionClipper.Enabled = false;
           this.tsbSectionClipper.Image = ((System.Drawing.Image)(resources.GetObject("tsbSectionClipper.Image")));
           this.tsbSectionClipper.ImageTransparentColor = System.Drawing.Color.Magenta;
           this.tsbSectionClipper.Name = "tsbSectionClipper";
@@ -1207,9 +1206,6 @@ namespace siren
           this.splitContainer4.Location = new System.Drawing.Point(0, 0);
           this.splitContainer4.Name = "splitContainer4";
           this.splitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal;
-          // 
-          // splitContainer4.Panel1
-          // 
           this.splitContainer4.Size = new System.Drawing.Size(334, 611);
           this.splitContainer4.SplitterDistance = 301;
           this.splitContainer4.TabIndex = 0;

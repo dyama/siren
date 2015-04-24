@@ -56,14 +56,12 @@
 //for OCC graphic
 #include <Aspect_DisplayConnection.hxx>
 #include <WNT_Window.hxx>
-#include <Graphic3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
 
 //for object display
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
-#include <V3d_PerspectiveView.hxx>
 #include <V3d_TypeOfOrientation.hxx>
 #include <V3d_TypeOfVisualization.hxx>
 #include <V3d_TypeOfShadingModel.hxx>

@@ -10,20 +10,11 @@ namespace sirenenv {
         if (aWorld->GetContext().IsNull())
             return;
 
-        // View の作成
-        if (persepective) {
-            myView = new V3d_PerspectiveView(aWorld->GetContext()->CurrentViewer());
-        }
-        else {
-            myView = aWorld->GetContext()->CurrentViewer()->CreateView();
-        }
+        myView = aWorld->GetContext()->CurrentViewer()->CreateView();
 
         // ウィンドウとのマッピング
-        // Handle(WNT_Window) aWNTWindow = new WNT_Window(reinterpret_cast<HWND>(aWindowHandle.ToPointer()));
         Handle(WNT_Window) aWNTWindow = new WNT_Window(aWindowHandle);
         myView->SetWindow(aWNTWindow);
-        // Standard_Integer w = 100, h = 100;
-        // aWNTWindow->Size(w, h);
         if (!aWNTWindow->IsMapped()) {
             aWNTWindow->Map();
         }

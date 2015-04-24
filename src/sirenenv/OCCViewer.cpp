@@ -44,16 +44,16 @@ OCCViewer::~OCCViewer(void)
 */
 void OCCViewer::initViewAppearance(bool grad, bool is_raytracing, bool is_shadow, bool is_antialias, bool is_reflection)
 {
-	if (is_raytracing) { // Enable ray tracing mode
-		view->SetRaytracingMode();
-		view->EnableGLLight(Standard_True);
-		is_shadow     ? view->EnableRaytracedShadows()      : view->DisableRaytracedShadows();
-		is_antialias  ? view->EnableRaytracedAntialiasing() : view->DisableRaytracedAntialiasing();
-		is_reflection ? view->EnableRaytracedReflections()  : view->DisableRaytracedReflections();
-	}
-	else { // OpenGL rasterize rennaring mode
-		view->SetRasterizationMode();
-	}
+	//if (is_raytracing) { // Enable ray tracing mode
+	//	view->SetRaytracingMode();
+	//	view->EnableGLLight(Standard_True);
+	//	is_shadow     ? view->EnableRaytracedShadows()      : view->DisableRaytracedShadows();
+	//	is_antialias  ? view->EnableRaytracedAntialiasing() : view->DisableRaytracedAntialiasing();
+	//	is_reflection ? view->EnableRaytracedReflections()  : view->DisableRaytracedReflections();
+	//}
+	//else { // OpenGL rasterize rennaring mode
+	//	view->SetRasterizationMode();
+	//}
 	//view->SetShadingModel(V3d_GOURAUD);
 
 	if (grad) { // Background color
@@ -90,7 +90,6 @@ void OCCViewer::initViewAppearance(bool grad, bool is_raytracing, bool is_shadow
 	view->SetEye(-1, -1, 1);
 	view->SetScale(5.0); // 15.0 for perspective view
 	view->SetUp(0.0, 0.0, 1.0);
-	view->SetCenter(0.0, 0.0);
 
 	//view->SetAntialiasingOn();
 	//view->SetClipPlanes();
@@ -110,8 +109,12 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_per
 {
 	// init graphic driver
 	try {
-		Handle(Aspect_DisplayConnection) aDisplayConnection;
-		myGraphicDriver = Graphic3d::InitGraphicDriver(aDisplayConnection);
+#if OCC_VERSION_MAJOR >= 6 && OCC_VERSION_MINOR >= 7
+        Handle(Aspect_DisplayConnection) dc;
+        myGraphicDriver = new OpenGl_GraphicDriver(dc);
+#else
+        myGraphicDriver = new OpenGl_GraphicDriver();
+#endif
 	}
 	catch (Standard_Failure) {
 		return false;
@@ -195,7 +198,7 @@ bool OCCViewer::InitViewer(void* wnd, bool grad, bool is_raytracing, bool is_per
 
 	// Init view
 	{
-		view = is_perspective ? new V3d_PerspectiveView(viewer) : viewer->CreateView();
+		view = viewer->CreateView();
 
 		// Mapping view to a Window
 		Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (wnd));
@@ -585,8 +588,12 @@ void OCCViewer::CreateNewView(void* wnd, bool grad, bool is_raytracing)
 	view = aiscxt->CurrentViewer()->CreateView();
 	if (myGraphicDriver.IsNull())
 	{
-		Handle(Aspect_DisplayConnection) aDisplayConnection;
-		myGraphicDriver = Graphic3d::InitGraphicDriver(aDisplayConnection);
+#if OCC_VERSION_MAJOR >= 6 && OCC_VERSION_MINOR >= 7
+    Handle(Aspect_DisplayConnection) dc;
+    myGraphicDriver = new OpenGl_GraphicDriver(dc);
+#else
+    myGraphicDriver = new OpenGl_GraphicDriver();
+#endif
 	}
 	Handle(WNT_Window) aWNTWindow = new WNT_Window(reinterpret_cast<HWND> (wnd));
 	view->SetWindow(aWNTWindow);

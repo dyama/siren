@@ -288,7 +288,7 @@ namespace sirenenv
             if (myOCCViewer == NULL || myOCCViewer->myMirb == NULL)
                 return -1;
 
-            char cmd[1024] = {0}; // one line
+            char cmd[102400] = {0}; // one line
 
             for (int i=0; i<str->Length; i++) {
                 cmd[i] = (char)str->ToCharArray()[i];
